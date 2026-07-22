@@ -1,0 +1,1271 @@
+[1796271] dot_bench@127.0.0.1
+  void dot_kernel<float, 128, 0, cublasDotParams<cublasGemvTensor<const float>, cublasGemvTensorStridedBatched<float>>>(T4) (2112, 1, 1)x(128, 1, 1), Context 1, Stream 13, Device 0, CC 9.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ----------- ------------
+    Metric Name             Metric Unit Metric Value
+    ----------------------- ----------- ------------
+    DRAM Frequency                  Ghz         3.20
+    SM Frequency                    Ghz         1.35
+    Elapsed Cycles                cycle       346652
+    Memory Throughput                 %        91.12
+    DRAM Throughput                   %        91.12
+    Duration                         us       256.58
+    L1/TEX Cache Throughput           %        39.20
+    Waves Per SM                                   1
+    L2 Cache Throughput               %        93.18
+    SM Active Cycles              cycle    328692.06
+    Compute (SM) Throughput           %        33.70
+    ----------------------- ----------- ------------
+
+    GPU Throughput Chart
+    Table Name : GPU Throughput
+    ---------------- ----------- ------------
+    Metric Name      Metric Unit Metric Value
+    ---------------- ----------- ------------
+    Memory [%]                 %        91.12
+    Compute (SM) [%]           %        33.70
+    ---------------- ----------- ------------
+
+    GPU Throughput Breakdown
+    Table Name : Compute Throughput Breakdown
+    ------------------------------------------------------------------------- ----------- ------------
+    Metric Name                                                               Metric Unit Metric Value
+    ------------------------------------------------------------------------- ----------- ------------
+    SM: Issue Active                                                                    %        33.70
+    SM: Inst Executed                                                                   %        33.68
+    SM: Pipe Alu Cycles Active                                                          %        30.03
+    SM: Inst Executed Pipe Lsu                                                          %        18.80
+    SM: Pipe Fmaheavy Cycles Active                                                     %        16.44
+    SM: Pipe Fma Cycles Active                                                          %        10.41
+    SM: Mio Inst Issued                                                                 %         9.53
+    SM: Inst Executed Pipe Cbu Pred On Any                                              %         9.24
+    SM: Mio2rf Writeback Active                                                         %         4.64
+    SM: Inst Executed Pipe Adu                                                          %         0.53
+    IDC: Request Cycles Active                                                          %         0.19
+    SM: Mio Pq Read Cycles Active                                                       %         0.06
+    SM: Mio Pq Write Cycles Active                                                      %         0.06
+    SM: Inst Executed Pipe Uniform                                                      %         0.01
+    SM: Inst Executed Pipe Ipa                                                          %            0
+    SM: Inst Executed Pipe Tex                                                          %            0
+    SM: Inst Executed Pipe Xu                                                           %            0
+    SM: Instruction Throughput Internal Activity                                        %            0
+    SM: Memory Throughput Internal Activity                                             %            0
+    SM: Pipe Fp64 Cycles Active                                                         %            0
+    SM: Pipe Shared Cycles Active                                                       %            0
+    SM: Pipe Tensor Cycles Active                                                       %            0
+    SM: Pipe Tensor Op Dmma Cycles Active                                               %            0
+    SM: Pipe Tensor Type Hmma Hgmma Qgmma Imma Igmma Bmma Bgmma Cycles Active           %            0
+    SM: Pipe Tma Cycles Active                                                          %            0
+    ------------------------------------------------------------------------- ----------- ------------
+
+    Table Name : Memory Throughput Breakdown
+    -------------------------------------------------------- ----------- ------------
+    Metric Name                                              Metric Unit Metric Value
+    -------------------------------------------------------- ----------- ------------
+    DRAM: Dram Sectors                                                 %        91.12
+    L2: D Sectors Fill Device                                          %        90.91
+    DRAM: Cycles Active                                                %        87.18
+    L2: D Sectors                                                      %        68.27
+    L2: T Sectors                                                      %        45.69
+    L2: Lts2xbar Cycles Active                                         %        45.48
+    L2: T Tag Requests                                                 %        45.47
+    GPU: Compute Memory Access Throughput Internal Activity            %        45.23
+    L1: Data Pipe Lsu Wavefronts                                       %        37.23
+    L2: Xbar2lts Cycles Active                                         %        21.93
+    L1: Lsuin Requests                                                 %        18.80
+    L1: Lsu Writeback Active                                           %        18.46
+    L1: M Xbar2l1tex Read Sectors                                      %        18.36
+    L1: Data Bank Reads                                                %         9.20
+    L1: Data Bank Writes                                               %         9.20
+    L1: M L1tex2xbar Req Cycles Active                                 %         9.19
+    GPU: Compute Memory Request Throughput Internal Activity           %            0
+    L1: Data Pipe Tex Wavefronts                                       %            0
+    L1: F Wavefronts                                                   %            0
+    L1: M Xbar2l1tex Read Sectors Mem Dshared                          %            0
+    L1: Tex Writeback Active                                           %            0
+    L1: Texin Sm2tex Req Cycles Active                                 %         0.00
+    L1: Tmain Requests                                                 %            0
+    L2: D Atomic Input Cycles Active                                   %            0
+    L2: D Decomp Input Sectors                                         %            0
+    L2: D Sectors Fill Sysmem                                          %         0.00
+    -------------------------------------------------------- ----------- ------------
+
+    INF   This workload is utilizing greater than 80.0% of the available compute or memory performance of this device.  
+          To further improve performance, work will likely need to be shifted from the most utilized to another unit.   
+          Start by analyzing DRAM in the Memory Workload Analysis section.                                              
+
+    Section: GPU Speed Of Light Roofline Chart (Overview)
+    ----------------------------------------------------------- ----------- ------------
+    Metric Name                                                 Metric Unit Metric Value
+    ----------------------------------------------------------- ----------- ------------
+    Theoretical Predicated-On DFMA Thread Instructions Executed  inst/cycle         8448
+    Theoretical Predicated-On FFMA Thread Instructions Executed  inst/cycle        16896
+    Predicated-On DFMA Thread Instructions Executed Per Cycle    inst/cycle            0
+    Predicated-On FFMA Thread Instructions Executed Per Cycle    inst/cycle       387.80
+    ----------------------------------------------------------- ----------- ------------
+
+    Overview Rooflines
+    Table Name : Floating Point Operations Roofline
+    Single Precision Roofline
+    Peak Work
+    ----------------------------------------- ----------- ------------
+    Metric Name                               Metric Unit Metric Value
+    ----------------------------------------- ----------- ------------
+    Theoretical Predicated-On FFMA Operations        inst        33792
+    SM Frequency                                      Ghz         1.35
+    ----------------------------------------- ----------- ------------
+
+    Peak Traffic
+    --------------------------------- ----------- ------------
+    Metric Name                       Metric Unit Metric Value
+    --------------------------------- ----------- ------------
+    Theoretical DRAM Bytes Accessible Kbyte/cycle         1.50
+    DRAM Frequency                            Ghz         3.20
+    --------------------------------- ----------- ------------
+
+    Double Precision Roofline
+    Peak Work
+    ----------------------------------------- ----------- ------------
+    Metric Name                               Metric Unit Metric Value
+    ----------------------------------------- ----------- ------------
+    Theoretical Predicated-On DFMA Operations        inst        16896
+    SM Frequency                                      Ghz         1.35
+    ----------------------------------------- ----------- ------------
+
+    Peak Traffic
+    --------------------------------- ----------- ------------
+    Metric Name                       Metric Unit Metric Value
+    --------------------------------- ----------- ------------
+    Theoretical DRAM Bytes Accessible Kbyte/cycle         1.50
+    DRAM Frequency                            Ghz         3.20
+    --------------------------------- ----------- ------------
+
+    Single Precision Achieved Value
+    Achieved Work
+    --------------------------------------------------------- ----------- ------------
+    Metric Name                                               Metric Unit Metric Value
+    --------------------------------------------------------- ----------- ------------
+    Predicated-On FFMA Operations Per Cycle                          inst       775.61
+    SM Frequency                                                      Ghz         1.35
+    Predicated-On FADD Thread Instructions Executed Per Cycle  inst/cycle         2.34
+    Predicated-On FMUL Thread Instructions Executed Per Cycle  inst/cycle            0
+    --------------------------------------------------------- ----------- ------------
+
+    Achieved Traffic
+    -------------- ----------- ------------
+    Metric Name    Metric Unit Metric Value
+    -------------- ----------- ------------
+    DRAM Bandwidth     Tbyte/s         4.19
+    -------------- ----------- ------------
+
+    Double Precision Achieved Value
+    Achieved Work
+    --------------------------------------------------------- ----------- ------------
+    Metric Name                                               Metric Unit Metric Value
+    --------------------------------------------------------- ----------- ------------
+    Predicated-On DFMA Operations Per Cycle                          inst            0
+    SM Frequency                                                      Ghz         1.35
+    Predicated-On DADD Thread Instructions Executed Per Cycle  inst/cycle            0
+    Predicated-On DMUL Thread Instructions Executed Per Cycle  inst/cycle            0
+    --------------------------------------------------------- ----------- ------------
+
+    Achieved Traffic
+    -------------- ----------- ------------
+    Metric Name    Metric Unit Metric Value
+    -------------- ----------- ------------
+    DRAM Bandwidth     Tbyte/s         4.19
+    -------------- ----------- ------------
+
+    INF   The ratio of peak float (FP32) to double (FP64) performance on this device is 2:1. The workload achieved 2%   
+          of this device's FP32 peak performance and 0% of its FP64 peak performance. See the Profiling Guide           
+          (https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#roofline) for more details on roofline      
+          analysis.                                                                                                     
+
+    Section: Memory Workload Analysis
+    --------------------------------------- ----------- ------------
+    Metric Name                             Metric Unit Metric Value
+    --------------------------------------- ----------- ------------
+    Local Memory Spilling Requests                                 0
+    Local Memory Spilling Request Overhead            %            0
+    L2 Sector Promotion Misses                        %         0.00
+    Shared Memory Spilling Requests                                0
+    Shared Memory Spilling Request Overhead           %            0
+    Memory Throughput                           Tbyte/s         4.19
+    Mem Busy                                          %        68.27
+    Max Bandwidth                                     %        91.12
+    Instructions Executed                          inst     61550272
+    L1/TEX Hit Rate                                   %        50.00
+    L2 Persisting Size                            Mbyte        11.80
+    L2 Compression Success Rate                       %            0
+    L2 Compression Ratio                              %            0
+    L2 Compression Input Sectors                 sector         3968
+    L2 Hit Rate                                       %         0.77
+    L2 Sector Misses                             sector     50334255
+    L2 Sector Misses from Promotion              sector          267
+    Mem Pipes Busy                                    %        18.80
+    --------------------------------------- ----------- ------------
+
+    Section: Scheduler Statistics
+    -------------------------------------- ----------- ------------
+    Metric Name                            Metric Unit Metric Value
+    -------------------------------------- ----------- ------------
+    One or More Eligible                             %        35.20
+    Issued Warp Per Scheduler                                  0.35
+    No Eligible                                      %        64.80
+    Theoretical Active Warps Per Scheduler        warp           16
+    Active Warps Per Scheduler                    warp        15.78
+    Eligible Warps Per Scheduler                  warp         0.50
+    -------------------------------------- ----------- ------------
+
+    Table Name : Warps Per Scheduler
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Issued Warp Per Scheduler                           0.35
+    Theoretical Warps Per Scheduler        warp           16
+    GPU Maximum Warps Per Scheduler        warp           16
+    Active Warps Per Scheduler             warp        15.78
+    Eligible Warps Per Scheduler           warp         0.50
+    ------------------------------- ----------- ------------
+
+    OPT   Est. Local Speedup: 8.883%                                                                                    
+          Every scheduler is capable of issuing one instruction per cycle, but for this workload each scheduler only    
+          issues an instruction every 2.8 cycles. This might leave hardware resources underutilized and may lead to     
+          less optimal performance. Out of the maximum of 16 warps per scheduler, this workload allocates an average    
+          of 15.78 active warps per scheduler, but only an average of 0.50 warps were eligible per cycle. Eligible      
+          warps are the subset of active warps that are ready to issue their next instruction. Every cycle with no      
+          eligible warp results in no instruction being issued and the issue slot remains unused. To increase the       
+          number of eligible warps, avoid possible load imbalances due to highly different execution durations per      
+          warp. Reducing stalls indicated on the Warp State Statistics and Source Counters sections can help, too.      
+
+    Section: Launch Statistics
+    -------------------------------- --------------- ---------------
+    Metric Name                          Metric Unit    Metric Value
+    -------------------------------- --------------- ---------------
+    Block Size                                                   128
+    Cluster Scheduling Policy                           PolicySpread
+    Cluster Size                                                   0
+    Function Cache Configuration                     CachePreferNone
+    Grid Size                                                   2112
+    Registers Per Thread             register/thread              28
+    Shared Memory Configuration Size           Kbyte           65.54
+    Driver Shared Memory Per Block       Kbyte/block            1.02
+    Dynamic Shared Memory Per Block       byte/block               0
+    Static Shared Memory Per Block        byte/block             512
+    # SMs                                         SM             132
+    Stack Size                                                  1024
+    Threads                                   thread          270336
+    # TPCs                                                        66
+    Enabled TPC IDs                                              all
+    Uses Green Context                                             0
+    Waves Per SM                                                   1
+    Theoretical Occupancy                          %             100
+    Achieved Occupancy                             %          100.29
+    -------------------------------- --------------- ---------------
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Max Active Clusters                 cluster            0
+    Max Cluster Size                      block            8
+    Overall GPU Occupancy                     %            0
+    Cluster Occupancy                         %            0
+    Block Limit Barriers                  block           32
+    Block Limit SM                        block           32
+    Block Limit Registers                 block           16
+    Block Limit Shared Mem                block           42
+    Block Limit Warps                     block           16
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %       100.29
+    Achieved Active Warps Per SM           warp        64.19
+    Theoretical Warps Per Scheduler        warp           16
+    GPU Maximum Warps Per Scheduler        warp           16
+    ------------------------------- ----------- ------------
+
+    % Occupancy Graphs
+    Table Name : Impact of Varying Register Count Per Thread
+    ------------------------------ --------------- ------------------------------
+    Metric Name                        Metric Unit                   Metric Value
+    ------------------------------ --------------- ------------------------------
+    % Occupancy Per Register Count      %/register      8956 (100; 100; 100; 100;
+                                                         100; 100; 100; 100; 100;
+                                                         100; 100; 100; 100; 100;
+                                                         100; 100; 100; 100; 100;
+                                                         100; 100; 100; 100; 100;
+                                                         100; 100; 100; 100; 100;
+                                                      100; 100; 100; 100; 75; 75;
+                                                      75; 75; 75; 75; 75; 75; 62;
+                                                      62; 62; 62; 62; 62; 62; 62;
+                                                      56; 56; 56; 56; 56; 56; 56;
+                                                      56; 50; 50; 50; 50; 50; 50;
+                                                      50; 50; 43; 43; 43; 43; 43;
+                                                      43; 43; 43; 37; 37; 37; 37;
+                                                      37; 37; 37; 37; 31; 31; 31;
+                                                      31; 31; 31; 31; 31; 31; 31;
+                                                      31; 31; 31; 31; 31; 31; 25;
+                                                      25; 25; 25; 25; 25; 25; 25;
+                                                      25; 25; 25; 25; 25; 25; 25;
+                                                      25; 25; 25; 25; 25; 25; 25;
+                                                      25; 25; 25; 25; 25; 25; 25;
+                                                      25; 25; 25; 18; 18; 18; 18;
+                                                      18; 18; 18; 18; 18; 18; 18;
+                                                      18; 18; 18; 18; 18; 18; 18;
+                                                      18; 18; 18; 18; 18; 18; 18;
+                                                      18; 18; 18; 18; 18; 18; 18;
+                                                      18; 18; 18; 18; 18; 18; 18;
+                                                      18; 12; 12; 12; 12; 12; 12;
+                                                      12; 12; 12; 12; 12; 12; 12;
+                                                      12; 12; 12; 12; 12; 12; 12;
+                                                      12; 12; 12; 12; 12; 12; 12;
+                                                      12; 12; 12; 12; 12; 12; 12;
+                                                      12; 12; 12; 12; 12; 12; 12;
+                                                      12; 12; 12; 12; 12; 12; 12;
+                                                      12; 12; 12; 12; 12; 12; 12;
+                                                      12; 12; 12; 12; 12; 12; 12;
+                                                      12; 12; 12; 12; 12; 12; 12;
+                                                      12; 12; 12; 12; 12; 12; 12;
+                                                      12; 12; 12; 12; 12; 12; 12;
+                                                              12; 12; 12; 12; 12)
+    Registers Per Thread           register/thread                             28
+    ------------------------------ --------------- ------------------------------
+
+    Table Name : Impact of Varying Block Size
+    -------------------------- ----------- ------------------------------
+    Metric Name                Metric Unit                   Metric Value
+    -------------------------- ----------- ------------------------------
+    % Occupancy Per Block Size           %    5706 (50; 50; 50; 100; 100;
+                                                98; 98; 100; 100; 93; 93;
+                                                93; 93; 98; 98; 100; 100;
+                                              98; 98; 93; 93; 85; 85; 93;
+                                              93; 81; 81; 87; 87; 93; 93;
+                                                100; 100; 79; 79; 84; 84;
+                                              89; 89; 93; 93; 98; 98; 68;
+                                              68; 71; 71; 75; 75; 78; 78;
+                                              81; 81; 84; 84; 87; 87; 90;
+                                            90; 93; 93; 96; 96; 100; 100)
+    Block Size                                                        128
+    -------------------------- ----------- ------------------------------
+
+    Table Name : Impact of Varying Shared Memory Usage Per Block
+    ------------------------------- ----------- ------------------------------
+    Metric Name                     Metric Unit                   Metric Value
+    ------------------------------- ----------- ------------------------------
+    % Occupancy Per Shared Mem Size     %/Kbyte  4.68 (0.10; 0.10; 0.10; 0.10;
+                                                       0.10; 0.10; 0.10; 0.10;
+                                                       0.10; 0.09; 0.07; 0.07;
+                                                       0.06; 0.06; 0.06; 0.05;
+                                                       0.05; 0.04; 0.04; 0.04;
+                                                       0.04; 0.04; 0.03; 0.03;
+                                                       0.03; 0.03; 0.03; 0.03;
+                                                       0.03; 0.03; 0.03; 0.03;
+                                                       0.03; 0.02; 0.02; 0.02;
+                                                       0.02; 0.02; 0.02; 0.02;
+                                                       0.02; 0.02; 0.02; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                          0.01; 0.01; 0.01; 0)
+    Shared Memory Per Block         Kbyte/block                           1.54
+    ------------------------------- ----------- ------------------------------
+
+    Table Name : Impact of Varying Block Barriers
+    ----------------------------------- ----------- ------------------------------
+    Metric Name                         Metric Unit                   Metric Value
+    ----------------------------------- ----------- ------------------------------
+    % Occupancy Per Block Barriers Size                  1399 (100; 100; 100; 100;
+                                                      100; 75; 62; 56; 50; 43; 37;
+                                                       31; 31; 25; 25; 25; 25; 18;
+                                                       18; 18; 18; 18; 12; 12; 12;
+                                                       12; 12; 12; 12; 12; 12; 12;
+                                                       12; 6; 6; 6; 6; 6; 6; 6; 6;
+                                                        6; 6; 6; 6; 6; 6; 6; 6; 6;
+                                                        6; 6; 6; 6; 6; 6; 6; 6; 6;
+                                                                 6; 6; 6; 6; 6; 6)
+    Block Barrier Count                                                          1
+    ----------------------------------- ----------- ------------------------------
+
+    # Warps Graphs
+    Table Name : Impact of Varying Register Count Per Thread
+    -------------------------- --------------- ------------------------------
+    Metric Name                    Metric Unit                   Metric Value
+    -------------------------- --------------- ------------------------------
+    # Warps Per Register Count                  5792 (64; 64; 64; 64; 64; 64;
+                                                  64; 64; 64; 64; 64; 64; 64;
+                                                  64; 64; 64; 64; 64; 64; 64;
+                                                  64; 64; 64; 64; 64; 64; 64;
+                                                  64; 64; 64; 64; 64; 64; 48;
+                                                  48; 48; 48; 48; 48; 48; 48;
+                                                  40; 40; 40; 40; 40; 40; 40;
+                                                  40; 36; 36; 36; 36; 36; 36;
+                                                  36; 36; 32; 32; 32; 32; 32;
+                                                  32; 32; 32; 28; 28; 28; 28;
+                                                  28; 28; 28; 28; 24; 24; 24;
+                                                  24; 24; 24; 24; 24; 20; 20;
+                                                  20; 20; 20; 20; 20; 20; 20;
+                                                  20; 20; 20; 20; 20; 20; 20;
+                                                  16; 16; 16; 16; 16; 16; 16;
+                                                  16; 16; 16; 16; 16; 16; 16;
+                                                  16; 16; 16; 16; 16; 16; 16;
+                                                  16; 16; 16; 16; 16; 16; 16;
+                                                  16; 16; 16; 16; 12; 12; 12;
+                                                  12; 12; 12; 12; 12; 12; 12;
+                                                  12; 12; 12; 12; 12; 12; 12;
+                                                  12; 12; 12; 12; 12; 12; 12;
+                                                  12; 12; 12; 12; 12; 12; 12;
+                                                  12; 12; 12; 12; 12; 12; 12;
+                                                 12; 12; 8; 8; 8; 8; 8; 8; 8;
+                                                   8; 8; 8; 8; 8; 8; 8; 8; 8;
+                                                   8; 8; 8; 8; 8; 8; 8; 8; 8;
+                                                   8; 8; 8; 8; 8; 8; 8; 8; 8;
+                                                   8; 8; 8; 8; 8; 8; 8; 8; 8;
+                                                   8; 8; 8; 8; 8; 8; 8; 8; 8;
+                                                   8; 8; 8; 8; 8; 8; 8; 8; 8;
+                                                   8; 8; 8; 8; 8; 8; 8; 8; 8;
+                                                   8; 8; 8; 8; 8; 8; 8; 8; 8;
+                                                   8; 8; 8; 8; 8; 8; 8; 8; 8)
+    Registers Per Thread       register/thread                             28
+    -------------------------- --------------- ------------------------------
+
+    Table Name : Impact of Varying Block Size
+    ---------------------- ----------- ------------------------------
+    Metric Name            Metric Unit                   Metric Value
+    ---------------------- ----------- ------------------------------
+    Block Size                                                    128
+    # Warps Per Block Size              3670 (32; 32; 32; 64; 64; 63;
+                                          63; 64; 64; 60; 60; 60; 60;
+                                          63; 63; 64; 64; 63; 63; 60;
+                                          60; 55; 55; 60; 60; 52; 52;
+                                          56; 56; 60; 60; 64; 64; 51;
+                                          51; 54; 54; 57; 57; 60; 60;
+                                          63; 63; 44; 44; 46; 46; 48;
+                                          48; 50; 50; 52; 52; 54; 54;
+                                          56; 56; 58; 58; 60; 60; 62;
+                                                          62; 64; 64)
+    ---------------------- ----------- ------------------------------
+
+    Table Name : Impact of Varying Shared Memory Usage Per Block
+    --------------------------- ----------- ------------------------------
+    Metric Name                 Metric Unit                   Metric Value
+    --------------------------- ----------- ------------------------------
+    # Warps Per Shared Mem Size              3076 (64; 64; 64; 64; 64; 64;
+                                               64; 64; 64; 56; 48; 44; 40;
+                                               36; 36; 32; 32; 28; 28; 24;
+                                               24; 24; 20; 20; 20; 20; 16;
+                                               16; 16; 16; 16; 16; 16; 12;
+                                               12; 12; 12; 12; 12; 12; 12;
+                                              12; 12; 8; 8; 8; 8; 8; 8; 8;
+                                                8; 8; 8; 8; 8; 8; 8; 8; 8;
+                                                8; 8; 8; 8; 8; 8; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                             4; 4; 4; 4; 4; 4; 4; 4; 4; 0)
+    Shared Memory Per Block     Kbyte/block                           1.54
+    --------------------------- ----------- ------------------------------
+
+    Table Name : Impact of Varying Block Barriers
+    ------------------------------- ----------- ------------------------------
+    Metric Name                     Metric Unit                   Metric Value
+    ------------------------------- ----------- ------------------------------
+    Block Barrier Count                                                      1
+    # Warps Per Block Barriers Size               908 (64; 64; 64; 64; 64; 48;
+                                                   40; 36; 32; 28; 24; 20; 20;
+                                                   16; 16; 16; 16; 12; 12; 12;
+                                                  12; 12; 8; 8; 8; 8; 8; 8; 8;
+                                                    8; 8; 8; 8; 4; 4; 4; 4; 4;
+                                                    4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                    4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                    4; 4; 4; 4; 4; 4; 4; 4; 4)
+    ------------------------------- ----------- ------------------------------
+
+    Active Clusters
+    Table Name : Impact of Varying Cluster Size
+    --------------- ----------- ------------
+    Metric Name     Metric Unit Metric Value
+    --------------- ----------- ------------
+    Cluster Size                           0
+    Active Clusters                        0
+    --------------- ----------- ------------
+
+  void reduce_1Block_kernel<float, 128, 7, cublasGemvTensorStridedBatched<float>, cublasGemvTensor<float>, cublasGemvTensor<float>>(const T1 *, T1, T4, int, const T1 *, T1, T5, T6, cublasPointerMode_t, cublasLtEpilogue_t, cublasGemvTensorStridedBatched<const biasType<T6::value_type, T1>::type>) (1, 1, 1)x(128, 1, 1), Context 1, Stream 13, Device 0, CC 9.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ----------- ------------
+    Metric Name             Metric Unit Metric Value
+    ----------------------- ----------- ------------
+    DRAM Frequency                  Ghz         3.18
+    SM Frequency                    Ghz         1.35
+    Elapsed Cycles                cycle         7765
+    Memory Throughput                 %         0.30
+    DRAM Throughput                   %         0.06
+    Duration                         us         5.73
+    L1/TEX Cache Throughput           %        19.88
+    Waves Per SM                                0.00
+    L2 Cache Throughput               %         1.04
+    SM Active Cycles              cycle        40.25
+    Compute (SM) Throughput           %         0.03
+    ----------------------- ----------- ------------
+
+    GPU Throughput Chart
+    Table Name : GPU Throughput
+    ---------------- ----------- ------------
+    Metric Name      Metric Unit Metric Value
+    ---------------- ----------- ------------
+    Memory [%]                 %         0.30
+    Compute (SM) [%]           %         0.03
+    ---------------- ----------- ------------
+
+    GPU Throughput Breakdown
+    Table Name : Compute Throughput Breakdown
+    ------------------------------------------------------------------------- ----------- ------------
+    Metric Name                                                               Metric Unit Metric Value
+    ------------------------------------------------------------------------- ----------- ------------
+    SM: Inst Executed                                                                   %         0.03
+    SM: Issue Active                                                                    %         0.03
+    SM: Inst Executed Pipe Adu                                                          %         0.02
+    SM: Pipe Alu Cycles Active                                                          %         0.02
+    IDC: Request Cycles Active                                                          %         0.01
+    SM: Inst Executed Pipe Cbu Pred On Any                                              %         0.01
+    SM: Inst Executed Pipe Lsu                                                          %         0.01
+    SM: Mio Inst Issued                                                                 %         0.01
+    SM: Pipe Fma Cycles Active                                                          %         0.01
+    SM: Pipe Fmaheavy Cycles Active                                                     %         0.01
+    SM: Inst Executed Pipe Ipa                                                          %            0
+    SM: Inst Executed Pipe Tex                                                          %            0
+    SM: Inst Executed Pipe Uniform                                                      %         0.00
+    SM: Inst Executed Pipe Xu                                                           %         0.00
+    SM: Instruction Throughput Internal Activity                                        %            0
+    SM: Memory Throughput Internal Activity                                             %            0
+    SM: Mio2rf Writeback Active                                                         %         0.00
+    SM: Mio Pq Read Cycles Active                                                       %         0.00
+    SM: Mio Pq Write Cycles Active                                                      %         0.00
+    SM: Pipe Fp64 Cycles Active                                                         %            0
+    SM: Pipe Shared Cycles Active                                                       %         0.00
+    SM: Pipe Tensor Cycles Active                                                       %         0.00
+    SM: Pipe Tensor Op Dmma Cycles Active                                               %            0
+    SM: Pipe Tensor Type Hmma Hgmma Qgmma Imma Igmma Bmma Bgmma Cycles Active           %            0
+    SM: Pipe Tma Cycles Active                                                          %            0
+    ------------------------------------------------------------------------- ----------- ------------
+
+    Table Name : Memory Throughput Breakdown
+    -------------------------------------------------------- ----------- ------------
+    Metric Name                                              Metric Unit Metric Value
+    -------------------------------------------------------- ----------- ------------
+    L2: Xbar2lts Cycles Active                                         %         0.30
+    GPU: Compute Memory Access Throughput Internal Activity            %         0.28
+    L2: T Tag Requests                                                 %         0.26
+    L2: T Sectors                                                      %         0.25
+    L2: Lts2xbar Cycles Active                                         %         0.23
+    L2: D Sectors                                                      %         0.11
+    L1: Texin Sm2tex Req Cycles Active                                 %         0.10
+    L2: D Sectors Fill Device                                          %         0.07
+    DRAM: Cycles Active                                                %         0.06
+    DRAM: Dram Sectors                                                 %         0.06
+    L1: M L1tex2xbar Req Cycles Active                                 %         0.03
+    L1: Data Pipe Lsu Wavefronts                                       %         0.01
+    L1: Lsu Writeback Active                                           %         0.01
+    L1: Lsuin Requests                                                 %         0.01
+    L1: M Xbar2l1tex Read Sectors                                      %         0.01
+    GPU: Compute Memory Request Throughput Internal Activity           %            0
+    L1: Data Bank Reads                                                %         0.00
+    L1: Data Bank Writes                                               %         0.00
+    L1: Data Pipe Tex Wavefronts                                       %            0
+    L1: F Wavefronts                                                   %            0
+    L1: M Xbar2l1tex Read Sectors Mem Dshared                          %            0
+    L1: Tex Writeback Active                                           %            0
+    L1: Tmain Requests                                                 %            0
+    L2: D Atomic Input Cycles Active                                   %            0
+    L2: D Decomp Input Sectors                                         %            0
+    L2: D Sectors Fill Sysmem                                          %         0.00
+    -------------------------------------------------------- ----------- ------------
+
+    OPT   This kernel grid is too small to fill the available resources on this device, resulting in only 0.00 full     
+          waves across all SMs. Look at Launch Statistics for more details.                                             
+
+    Section: GPU Speed Of Light Roofline Chart (Overview)
+    ----------------------------------------------------------- ----------- ------------
+    Metric Name                                                 Metric Unit Metric Value
+    ----------------------------------------------------------- ----------- ------------
+    Theoretical Predicated-On DFMA Thread Instructions Executed  inst/cycle         8448
+    Theoretical Predicated-On FFMA Thread Instructions Executed  inst/cycle        16896
+    Predicated-On DFMA Thread Instructions Executed Per Cycle    inst/cycle            0
+    Predicated-On FFMA Thread Instructions Executed Per Cycle    inst/cycle         0.00
+    ----------------------------------------------------------- ----------- ------------
+
+    Overview Rooflines
+    Table Name : Floating Point Operations Roofline
+    Single Precision Roofline
+    Peak Work
+    ----------------------------------------- ----------- ------------
+    Metric Name                               Metric Unit Metric Value
+    ----------------------------------------- ----------- ------------
+    Theoretical Predicated-On FFMA Operations        inst        33792
+    SM Frequency                                      Ghz         1.35
+    ----------------------------------------- ----------- ------------
+
+    Peak Traffic
+    --------------------------------- ----------- ------------
+    Metric Name                       Metric Unit Metric Value
+    --------------------------------- ----------- ------------
+    Theoretical DRAM Bytes Accessible Kbyte/cycle         1.50
+    DRAM Frequency                            Ghz         3.18
+    --------------------------------- ----------- ------------
+
+    Double Precision Roofline
+    Peak Work
+    ----------------------------------------- ----------- ------------
+    Metric Name                               Metric Unit Metric Value
+    ----------------------------------------- ----------- ------------
+    Theoretical Predicated-On DFMA Operations        inst        16896
+    SM Frequency                                      Ghz         1.35
+    ----------------------------------------- ----------- ------------
+
+    Peak Traffic
+    --------------------------------- ----------- ------------
+    Metric Name                       Metric Unit Metric Value
+    --------------------------------- ----------- ------------
+    Theoretical DRAM Bytes Accessible Kbyte/cycle         1.50
+    DRAM Frequency                            Ghz         3.18
+    --------------------------------- ----------- ------------
+
+    Single Precision Achieved Value
+    Achieved Work
+    --------------------------------------------------------- ----------- ------------
+    Metric Name                                               Metric Unit Metric Value
+    --------------------------------------------------------- ----------- ------------
+    Predicated-On FFMA Operations Per Cycle                          inst         0.00
+    SM Frequency                                                      Ghz         1.35
+    Predicated-On FADD Thread Instructions Executed Per Cycle  inst/cycle         0.29
+    Predicated-On FMUL Thread Instructions Executed Per Cycle  inst/cycle            0
+    --------------------------------------------------------- ----------- ------------
+
+    Achieved Traffic
+    -------------- ----------- ------------
+    Metric Name    Metric Unit Metric Value
+    -------------- ----------- ------------
+    DRAM Bandwidth     Gbyte/s         2.95
+    -------------- ----------- ------------
+
+    Double Precision Achieved Value
+    Achieved Work
+    --------------------------------------------------------- ----------- ------------
+    Metric Name                                               Metric Unit Metric Value
+    --------------------------------------------------------- ----------- ------------
+    Predicated-On DFMA Operations Per Cycle                          inst            0
+    SM Frequency                                                      Ghz         1.35
+    Predicated-On DADD Thread Instructions Executed Per Cycle  inst/cycle            0
+    Predicated-On DMUL Thread Instructions Executed Per Cycle  inst/cycle            0
+    --------------------------------------------------------- ----------- ------------
+
+    Achieved Traffic
+    -------------- ----------- ------------
+    Metric Name    Metric Unit Metric Value
+    -------------- ----------- ------------
+    DRAM Bandwidth     Gbyte/s         2.95
+    -------------- ----------- ------------
+
+    INF   The ratio of peak float (FP32) to double (FP64) performance on this device is 2:1. The workload achieved      
+          close to 0% of this device's FP32 peak performance and 0% of its FP64 peak performance. See the Profiling     
+          Guide (https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#roofline) for more details on         
+          roofline analysis.                                                                                            
+
+    Section: Memory Workload Analysis
+    --------------------------------------- ----------- ------------
+    Metric Name                             Metric Unit Metric Value
+    --------------------------------------- ----------- ------------
+    Local Memory Spilling Requests                                 0
+    Local Memory Spilling Request Overhead            %            0
+    L2 Sector Promotion Misses                        %            0
+    Shared Memory Spilling Requests                                0
+    Shared Memory Spilling Request Overhead           %            0
+    Memory Throughput                           Gbyte/s         2.95
+    Mem Busy                                          %         0.28
+    Max Bandwidth                                     %         0.30
+    Instructions Executed                          inst         1031
+    L1/TEX Hit Rate                                   %            0
+    L2 Persisting Size                            Mbyte        11.80
+    L2 Compression Success Rate                       %            0
+    L2 Compression Ratio                              %            0
+    L2 Compression Input Sectors                 sector          325
+    L2 Hit Rate                                       %        56.12
+    L2 Sector Misses                             sector          918
+    L2 Sector Misses from Promotion              sector            0
+    Mem Pipes Busy                                    %         0.02
+    --------------------------------------- ----------- ------------
+
+    Section: Scheduler Statistics
+    -------------------------------------- ----------- ------------
+    Metric Name                            Metric Unit Metric Value
+    -------------------------------------- ----------- ------------
+    One or More Eligible                             %         4.96
+    Issued Warp Per Scheduler                                  0.05
+    No Eligible                                      %        95.04
+    Theoretical Active Warps Per Scheduler        warp           16
+    Active Warps Per Scheduler                    warp            1
+    Eligible Warps Per Scheduler                  warp         0.05
+    -------------------------------------- ----------- ------------
+
+    Table Name : Warps Per Scheduler
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Issued Warp Per Scheduler                           0.05
+    Theoretical Warps Per Scheduler        warp           16
+    GPU Maximum Warps Per Scheduler        warp           16
+    Active Warps Per Scheduler             warp            1
+    Eligible Warps Per Scheduler           warp         0.05
+    ------------------------------- ----------- ------------
+
+    OPT   Est. Local Speedup: 95.04%                                                                                    
+          Every scheduler is capable of issuing one instruction per cycle, but for this workload each scheduler only    
+          issues an instruction every 20.2 cycles. This might leave hardware resources underutilized and may lead to    
+          less optimal performance. Out of the maximum of 16 warps per scheduler, this workload allocates an average    
+          of 1.00 active warps per scheduler, but only an average of 0.05 warps were eligible per cycle. Eligible       
+          warps are the subset of active warps that are ready to issue their next instruction. Every cycle with no      
+          eligible warp results in no instruction being issued and the issue slot remains unused. To increase the       
+          number of eligible warps, reduce the time the active warps are stalled by inspecting the top stall reasons    
+          on the Warp State Statistics and Source Counters sections.                                                    
+
+    Section: Launch Statistics
+    -------------------------------- --------------- ---------------
+    Metric Name                          Metric Unit    Metric Value
+    -------------------------------- --------------- ---------------
+    Block Size                                                   128
+    Cluster Scheduling Policy                           PolicySpread
+    Cluster Size                                                   0
+    Function Cache Configuration                     CachePreferNone
+    Grid Size                                                      1
+    Registers Per Thread             register/thread              24
+    Shared Memory Configuration Size           Kbyte           65.54
+    Driver Shared Memory Per Block       Kbyte/block            1.02
+    Dynamic Shared Memory Per Block       byte/block               0
+    Static Shared Memory Per Block        byte/block             768
+    # SMs                                         SM             132
+    Stack Size                                                  1024
+    Threads                                   thread             128
+    # TPCs                                                        66
+    Enabled TPC IDs                                              all
+    Uses Green Context                                             0
+    Waves Per SM                                                0.00
+    Theoretical Occupancy                          %             100
+    Achieved Occupancy                             %            6.10
+    -------------------------------- --------------- ---------------
+
+    OPT   Est. Speedup: 99.24%                                                                                          
+          The grid for this launch is configured to execute only 1 block, which is less than the 132 multiprocessors    
+          used. This can underutilize some multiprocessors. If you do not intend to execute this kernel concurrently    
+          with other workloads, consider reducing the block size to have at least one block per multiprocessor or       
+          increase the size of the grid to fully utilize the available hardware resources. See the Hardware Model       
+          (https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-hw-model) description for more      
+          details on launch configurations.                                                                             
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Max Active Clusters                 cluster            0
+    Max Cluster Size                      block            8
+    Overall GPU Occupancy                     %            0
+    Cluster Occupancy                         %            0
+    Block Limit Barriers                  block           32
+    Block Limit SM                        block           32
+    Block Limit Registers                 block           21
+    Block Limit Shared Mem                block           36
+    Block Limit Warps                     block           16
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %         6.10
+    Achieved Active Warps Per SM           warp         3.91
+    Theoretical Warps Per Scheduler        warp           16
+    GPU Maximum Warps Per Scheduler        warp           16
+    ------------------------------- ----------- ------------
+
+    % Occupancy Graphs
+    Table Name : Impact of Varying Register Count Per Thread
+    ------------------------------ --------------- ------------------------------
+    Metric Name                        Metric Unit                   Metric Value
+    ------------------------------ --------------- ------------------------------
+    % Occupancy Per Register Count      %/register      8956 (100; 100; 100; 100;
+                                                         100; 100; 100; 100; 100;
+                                                         100; 100; 100; 100; 100;
+                                                         100; 100; 100; 100; 100;
+                                                         100; 100; 100; 100; 100;
+                                                         100; 100; 100; 100; 100;
+                                                      100; 100; 100; 100; 75; 75;
+                                                      75; 75; 75; 75; 75; 75; 62;
+                                                      62; 62; 62; 62; 62; 62; 62;
+                                                      56; 56; 56; 56; 56; 56; 56;
+                                                      56; 50; 50; 50; 50; 50; 50;
+                                                      50; 50; 43; 43; 43; 43; 43;
+                                                      43; 43; 43; 37; 37; 37; 37;
+                                                      37; 37; 37; 37; 31; 31; 31;
+                                                      31; 31; 31; 31; 31; 31; 31;
+                                                      31; 31; 31; 31; 31; 31; 25;
+                                                      25; 25; 25; 25; 25; 25; 25;
+                                                      25; 25; 25; 25; 25; 25; 25;
+                                                      25; 25; 25; 25; 25; 25; 25;
+                                                      25; 25; 25; 25; 25; 25; 25;
+                                                      25; 25; 25; 18; 18; 18; 18;
+                                                      18; 18; 18; 18; 18; 18; 18;
+                                                      18; 18; 18; 18; 18; 18; 18;
+                                                      18; 18; 18; 18; 18; 18; 18;
+                                                      18; 18; 18; 18; 18; 18; 18;
+                                                      18; 18; 18; 18; 18; 18; 18;
+                                                      18; 12; 12; 12; 12; 12; 12;
+                                                      12; 12; 12; 12; 12; 12; 12;
+                                                      12; 12; 12; 12; 12; 12; 12;
+                                                      12; 12; 12; 12; 12; 12; 12;
+                                                      12; 12; 12; 12; 12; 12; 12;
+                                                      12; 12; 12; 12; 12; 12; 12;
+                                                      12; 12; 12; 12; 12; 12; 12;
+                                                      12; 12; 12; 12; 12; 12; 12;
+                                                      12; 12; 12; 12; 12; 12; 12;
+                                                      12; 12; 12; 12; 12; 12; 12;
+                                                      12; 12; 12; 12; 12; 12; 12;
+                                                      12; 12; 12; 12; 12; 12; 12;
+                                                              12; 12; 12; 12; 12)
+    Registers Per Thread           register/thread                             24
+    ------------------------------ --------------- ------------------------------
+
+    Table Name : Impact of Varying Block Size
+    -------------------------- ----------- ------------------------------
+    Metric Name                Metric Unit                   Metric Value
+    -------------------------- ----------- ------------------------------
+    % Occupancy Per Block Size           %    5706 (50; 50; 50; 100; 100;
+                                                98; 98; 100; 100; 93; 93;
+                                                93; 93; 98; 98; 100; 100;
+                                              98; 98; 93; 93; 85; 85; 93;
+                                              93; 81; 81; 87; 87; 93; 93;
+                                                100; 100; 79; 79; 84; 84;
+                                              89; 89; 93; 93; 98; 98; 68;
+                                              68; 71; 71; 75; 75; 78; 78;
+                                              81; 81; 84; 84; 87; 87; 90;
+                                            90; 93; 93; 96; 96; 100; 100)
+    Block Size                                                        128
+    -------------------------- ----------- ------------------------------
+
+    Table Name : Impact of Varying Shared Memory Usage Per Block
+    ------------------------------- ----------- ------------------------------
+    Metric Name                     Metric Unit                   Metric Value
+    ------------------------------- ----------- ------------------------------
+    % Occupancy Per Shared Mem Size     %/Kbyte  4.68 (0.10; 0.10; 0.10; 0.10;
+                                                       0.10; 0.10; 0.10; 0.10;
+                                                       0.10; 0.09; 0.07; 0.07;
+                                                       0.06; 0.06; 0.06; 0.05;
+                                                       0.05; 0.04; 0.04; 0.04;
+                                                       0.04; 0.04; 0.03; 0.03;
+                                                       0.03; 0.03; 0.03; 0.03;
+                                                       0.03; 0.03; 0.03; 0.03;
+                                                       0.03; 0.02; 0.02; 0.02;
+                                                       0.02; 0.02; 0.02; 0.02;
+                                                       0.02; 0.02; 0.02; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                       0.01; 0.01; 0.01; 0.01;
+                                                          0.01; 0.01; 0.01; 0)
+    Shared Memory Per Block         Kbyte/block                           1.79
+    ------------------------------- ----------- ------------------------------
+
+    Table Name : Impact of Varying Block Barriers
+    ----------------------------------- ----------- ------------------------------
+    Metric Name                         Metric Unit                   Metric Value
+    ----------------------------------- ----------- ------------------------------
+    % Occupancy Per Block Barriers Size                  1399 (100; 100; 100; 100;
+                                                      100; 75; 62; 56; 50; 43; 37;
+                                                       31; 31; 25; 25; 25; 25; 18;
+                                                       18; 18; 18; 18; 12; 12; 12;
+                                                       12; 12; 12; 12; 12; 12; 12;
+                                                       12; 6; 6; 6; 6; 6; 6; 6; 6;
+                                                        6; 6; 6; 6; 6; 6; 6; 6; 6;
+                                                        6; 6; 6; 6; 6; 6; 6; 6; 6;
+                                                                 6; 6; 6; 6; 6; 6)
+    Block Barrier Count                                                          1
+    ----------------------------------- ----------- ------------------------------
+
+    # Warps Graphs
+    Table Name : Impact of Varying Register Count Per Thread
+    -------------------------- --------------- ------------------------------
+    Metric Name                    Metric Unit                   Metric Value
+    -------------------------- --------------- ------------------------------
+    # Warps Per Register Count                  5792 (64; 64; 64; 64; 64; 64;
+                                                  64; 64; 64; 64; 64; 64; 64;
+                                                  64; 64; 64; 64; 64; 64; 64;
+                                                  64; 64; 64; 64; 64; 64; 64;
+                                                  64; 64; 64; 64; 64; 64; 48;
+                                                  48; 48; 48; 48; 48; 48; 48;
+                                                  40; 40; 40; 40; 40; 40; 40;
+                                                  40; 36; 36; 36; 36; 36; 36;
+                                                  36; 36; 32; 32; 32; 32; 32;
+                                                  32; 32; 32; 28; 28; 28; 28;
+                                                  28; 28; 28; 28; 24; 24; 24;
+                                                  24; 24; 24; 24; 24; 20; 20;
+                                                  20; 20; 20; 20; 20; 20; 20;
+                                                  20; 20; 20; 20; 20; 20; 20;
+                                                  16; 16; 16; 16; 16; 16; 16;
+                                                  16; 16; 16; 16; 16; 16; 16;
+                                                  16; 16; 16; 16; 16; 16; 16;
+                                                  16; 16; 16; 16; 16; 16; 16;
+                                                  16; 16; 16; 16; 12; 12; 12;
+                                                  12; 12; 12; 12; 12; 12; 12;
+                                                  12; 12; 12; 12; 12; 12; 12;
+                                                  12; 12; 12; 12; 12; 12; 12;
+                                                  12; 12; 12; 12; 12; 12; 12;
+                                                  12; 12; 12; 12; 12; 12; 12;
+                                                 12; 12; 8; 8; 8; 8; 8; 8; 8;
+                                                   8; 8; 8; 8; 8; 8; 8; 8; 8;
+                                                   8; 8; 8; 8; 8; 8; 8; 8; 8;
+                                                   8; 8; 8; 8; 8; 8; 8; 8; 8;
+                                                   8; 8; 8; 8; 8; 8; 8; 8; 8;
+                                                   8; 8; 8; 8; 8; 8; 8; 8; 8;
+                                                   8; 8; 8; 8; 8; 8; 8; 8; 8;
+                                                   8; 8; 8; 8; 8; 8; 8; 8; 8;
+                                                   8; 8; 8; 8; 8; 8; 8; 8; 8;
+                                                   8; 8; 8; 8; 8; 8; 8; 8; 8)
+    Registers Per Thread       register/thread                             24
+    -------------------------- --------------- ------------------------------
+
+    Table Name : Impact of Varying Block Size
+    ---------------------- ----------- ------------------------------
+    Metric Name            Metric Unit                   Metric Value
+    ---------------------- ----------- ------------------------------
+    Block Size                                                    128
+    # Warps Per Block Size              3670 (32; 32; 32; 64; 64; 63;
+                                          63; 64; 64; 60; 60; 60; 60;
+                                          63; 63; 64; 64; 63; 63; 60;
+                                          60; 55; 55; 60; 60; 52; 52;
+                                          56; 56; 60; 60; 64; 64; 51;
+                                          51; 54; 54; 57; 57; 60; 60;
+                                          63; 63; 44; 44; 46; 46; 48;
+                                          48; 50; 50; 52; 52; 54; 54;
+                                          56; 56; 58; 58; 60; 60; 62;
+                                                          62; 64; 64)
+    ---------------------- ----------- ------------------------------
+
+    Table Name : Impact of Varying Shared Memory Usage Per Block
+    --------------------------- ----------- ------------------------------
+    Metric Name                 Metric Unit                   Metric Value
+    --------------------------- ----------- ------------------------------
+    # Warps Per Shared Mem Size              3076 (64; 64; 64; 64; 64; 64;
+                                               64; 64; 64; 56; 48; 44; 40;
+                                               36; 36; 32; 32; 28; 28; 24;
+                                               24; 24; 20; 20; 20; 20; 16;
+                                               16; 16; 16; 16; 16; 16; 12;
+                                               12; 12; 12; 12; 12; 12; 12;
+                                              12; 12; 8; 8; 8; 8; 8; 8; 8;
+                                                8; 8; 8; 8; 8; 8; 8; 8; 8;
+                                                8; 8; 8; 8; 8; 8; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                             4; 4; 4; 4; 4; 4; 4; 4; 4; 0)
+    Shared Memory Per Block     Kbyte/block                           1.79
+    --------------------------- ----------- ------------------------------
+
+    Table Name : Impact of Varying Block Barriers
+    ------------------------------- ----------- ------------------------------
+    Metric Name                     Metric Unit                   Metric Value
+    ------------------------------- ----------- ------------------------------
+    Block Barrier Count                                                      1
+    # Warps Per Block Barriers Size               908 (64; 64; 64; 64; 64; 48;
+                                                   40; 36; 32; 28; 24; 20; 20;
+                                                   16; 16; 16; 16; 12; 12; 12;
+                                                  12; 12; 8; 8; 8; 8; 8; 8; 8;
+                                                    8; 8; 8; 8; 4; 4; 4; 4; 4;
+                                                    4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                    4; 4; 4; 4; 4; 4; 4; 4; 4;
+                                                    4; 4; 4; 4; 4; 4; 4; 4; 4)
+    ------------------------------- ----------- ------------------------------
+
+    Active Clusters
+    Table Name : Impact of Varying Cluster Size
+    --------------- ----------- ------------
+    Metric Name     Metric Unit Metric Value
+    --------------- ----------- ------------
+    Cluster Size                           0
+    Active Clusters                        0
+    --------------- ----------- ------------
+
+    OPT   Est. Speedup: 93.9%                                                                                           
+          The difference between calculated theoretical (100.0%) and measured achieved occupancy (6.1%) can be the      
+          result of warp scheduling overheads or workload imbalances during the kernel execution. Load imbalances can   
+          occur between warps within a block as well as across blocks of the same kernel. See the CUDA Best Practices   
+          Guide (https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy) for more details on     
+          optimizing occupancy.                                                                                         
+

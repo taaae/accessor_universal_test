@@ -1,0 +1,35 @@
+GPU allocation
+name, uuid, driver_version, memory.total [MiB]
+NVIDIA H200 NVL, GPU-5fab73be-b679-d931-7b4c-f7f494765adc, 610.43.02, 143771 MiB
+
+NVIDIA (R) Nsight Compute Command Line Profiler
+Copyright (c) 2018-2025 NVIDIA Corporation
+Version 2025.4.1.0 (build 37053803) (public-release)
+
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /storage/home/timofeirusanov/accessor_universal_test/build-h200
+[100%] Built target dot_bench
+==PROF== Connected to process 1796271 (/storage/home/timofeirusanov/accessor_universal_test/build-h200/bin/dot_bench)
+dot_bench 2026-07-22T18:07:22Z
+GPU: NVIDIA H200 NVL (sm_90)
+CUDA runtime/driver: 13010/13030, cuBLAS: 130201
+Mode: profile, dataset: signed
+==PROF== Profiling "dot_kernel" - 0: 0%....50%....100% - 12 passes
+==PROF== Profiling "reduce_1Block_kernel" - 1: 0%....50%....100% - 12 passes
+cublasSdot N=2^27 median=1599.05 ms
+Wrote /storage/home/timofeirusanov/accessor_universal_test/
+    results/cublas_sdot_n134217728_20260722T180721Z_benchmark.csv
+==PROF== Disconnected from process 1796271
+==PROF== Report: /storage/home/timofeirusanov/accessor_universal_test/
+    results/cublas_sdot_n134217728_20260722T180721Z.ncu-rep
+
+Profile outputs:
+  /storage/home/timofeirusanov/accessor_universal_test/
+    results/cublas_sdot_n134217728_20260722T180721Z.ncu-rep
+  /storage/home/timofeirusanov/accessor_universal_test/
+    results/cublas_sdot_n134217728_20260722T180721Z_ncu_details.txt
+  /storage/home/timofeirusanov/accessor_universal_test/
+    results/cublas_sdot_n134217728_20260722T180721Z_ncu_raw.csv
+  /storage/home/timofeirusanov/accessor_universal_test/
+    results/cublas_sdot_n134217728_20260722T180721Z_benchmark.csv
