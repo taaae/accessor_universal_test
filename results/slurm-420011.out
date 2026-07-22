@@ -1,0 +1,52 @@
+GPU allocation
+name, uuid, driver_version, memory.total [MiB]
+NVIDIA H200 NVL, GPU-5fab73be-b679-d931-7b4c-f7f494765adc, 610.43.02, 143771 MiB
+
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /storage/home/timofeirusanov/accessor_universal_test/build-h200
+[100%] Built target dot_bench
+dot_bench 2026-07-22T17:37:47Z
+GPU: NVIDIA H200 NVL (sm_90)
+CUDA runtime/driver: 13010/13030, cuBLAS: 130201
+Mode: performance, dataset: signed
+cublasSdot N=2^10 median=0.00528653 ms
+cublasDdot N=2^10 median=0.00547641 ms
+cublasSdot N=2^16 median=0.00670658 ms
+cublasDdot N=2^16 median=0.00696094 ms
+cublasSdot N=2^20 median=0.00991686 ms
+cublasDdot N=2^20 median=0.0114538 ms
+cublasSdot N=2^23 median=0.0258782 ms
+cublasDdot N=2^23 median=0.0417105 ms
+cublasSdot N=2^26 median=0.135461 ms
+cublasDdot N=2^26 median=0.262843 ms
+cublasSdot N=2^27 median=0.262695 ms
+cublasDdot N=2^27 median=0.510235 ms
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/cublas_performance_20260722T173746Z.csv
+dot_bench 2026-07-22T17:37:51Z
+GPU: NVIDIA H200 NVL (sm_90)
+CUDA runtime/driver: 13010/13030, cuBLAS: 130201
+Mode: accuracy, dataset: positive
+cublasSdot N=2^10 median=0.00525811 ms
+cublasDdot N=2^10 median=0.00547658 ms
+cublasSdot N=2^16 median=0.00670668 ms
+cublasDdot N=2^16 median=0.00696063 ms
+cublasSdot N=2^20 median=0.00988983 ms
+cublasDdot N=2^20 median=0.0114343 ms
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/cublas_accuracy_positive_20260722T173746Z.csv
+dot_bench 2026-07-22T17:37:53Z
+GPU: NVIDIA H200 NVL (sm_90)
+CUDA runtime/driver: 13010/13030, cuBLAS: 130201
+Mode: accuracy, dataset: signed
+cublasSdot N=2^10 median=0.00528571 ms
+cublasDdot N=2^10 median=0.00547652 ms
+cublasSdot N=2^16 median=0.00670668 ms
+cublasDdot N=2^16 median=0.00696049 ms
+cublasSdot N=2^20 median=0.00993261 ms
+cublasDdot N=2^20 median=0.0114484 ms
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/cublas_accuracy_signed_20260722T173746Z.csv
+
+Results:
+  /storage/home/timofeirusanov/accessor_universal_test/results/cublas_performance_20260722T173746Z.csv
+  /storage/home/timofeirusanov/accessor_universal_test/results/cublas_accuracy_positive_20260722T173746Z.csv
+  /storage/home/timofeirusanov/accessor_universal_test/results/cublas_accuracy_signed_20260722T173746Z.csv

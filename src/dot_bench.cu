@@ -702,19 +702,15 @@ benchmark_result run_one(cublasHandle_t handle, cudaStream_t stream,
   result.algorithmic_flops = 2.0 * static_cast<double>(count);
 
   if (opts.run_mode == mode::profile) {
-    cuda_event start;
-    cuda_event stop;
     CUDA_CHECK(cudaProfilerStart());
-    CUDA_CHECK(cudaEventRecord(start, stream));
     launch();
-    CUDA_CHECK(cudaEventRecord(stop, stream));
-    CUDA_CHECK(cudaEventSynchronize(stop));
+    CUDA_CHECK(cudaStreamSynchronize(stream));
     CUDA_CHECK(cudaProfilerStop());
-    float milliseconds{};
-    CUDA_CHECK(cudaEventElapsedTime(&milliseconds, start, stop));
     result.iterations = 1;
     result.samples = 1;
-    result.timing_ms = summarize({static_cast<double>(milliseconds)});
+    const auto not_measured = std::numeric_limits<double>::quiet_NaN();
+    result.timing_ms = {not_measured, not_measured, not_measured,
+                        not_measured, not_measured, not_measured};
   } else {
     int iterations = opts.iterations;
     if (iterations == 0) {

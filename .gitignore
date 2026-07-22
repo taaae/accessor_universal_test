@@ -37,6 +37,7 @@
 # Executables
 *.exe
 *.out
+!results/*.out
 *.app
 
 # Build directories
@@ -67,5 +68,5 @@ vcpkg_installed/
 # test output & cache
 Testing/
 .cache/
-results/
 *.ncu-rep
+!results/*.ncu-rep

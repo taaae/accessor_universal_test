@@ -73,7 +73,10 @@ OPERATION=ddot N=67108864 ./scripts/profile_cublas_baseline.sh
 ```
 
 The script writes four timestamped artifacts: the `.ncu-rep` report, a readable
-details dump, a raw profiler-metrics CSV, and the benchmark's own one-call CSV.
+details dump, a raw profiler-metrics CSV, and the benchmark's profile metadata
+CSV. Timing and derived throughput columns in that last CSV are `nan`: Nsight
+Compute instrumentation and replay make profile-mode elapsed time unsuitable as
+a performance measurement. Use the ordinary performance-suite CSV for timing.
 
 On the configured cluster, submit the exact H200 FP32 reference case from the
 repository root:
@@ -84,7 +87,14 @@ sbatch --wait scripts/profile_cublas_sdot_h200.sbatch
 
 The batch script requests one GPU from `gpu-nvidia-h200-[1-3]`, profiles
 `cublasSdot` at `N=134217728`, and releases the allocation automatically when
-the command finishes. If the cluster reports
+the command finishes. It must be submitted from the repository root because it
+uses Slurm's submission directory to find the checkout; Slurm runs a copied
+batch script from its spool directory. The Slurm log and all profiler outputs
+are written under `results/`.
+
+Generated result files are intentionally versioned. Before committing an
+`.ncu-rep`, check its size with `du -h results/*.ncu-rep`; reports at or above
+100 MiB require Git LFS instead of regular Git. If the cluster reports
 `ERR_NVGPUCTRPERM`, ordinary benchmark timing still works, but the profiling
 hardware counters are restricted by the cluster configuration.
 

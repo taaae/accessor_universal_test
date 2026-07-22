@@ -8,11 +8,17 @@
 #SBATCH --mem=8G
 #SBATCH --gres=gpu:nvidia:1
 #SBATCH --time=00:30:00
-#SBATCH --output=slurm-%j.out
+#SBATCH --output=results/slurm-%j.out
 
 set -euo pipefail
 
-repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+repo_dir="${SLURM_SUBMIT_DIR:?submit this job from the repository root}"
+
+if [[ ! -f "${repo_dir}/CMakeLists.txt" ||
+      ! -x "${repo_dir}/scripts/profile_cublas_baseline.sh" ]]; then
+    echo "error: submit this job from the accessor_universal_test repository root" >&2
+    exit 2
+fi
 
 cd "${repo_dir}"
 srun --ntasks=1 --cpus-per-task="${SLURM_CPUS_PER_TASK}" \
