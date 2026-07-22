@@ -58,7 +58,9 @@ OPERATION=sdot PERF_POWERS=20,23,26 SAMPLES=10 \
 ## Profile one cuBLAS call
 
 The profiling script warms up cuBLAS, then enables the profiler around exactly
-one DOT operation. By default it profiles `cublasSdot` at `N=2^27`:
+one DOT operation. By default it profiles `cublasSdot` at `N=2^27` and collects
+focused speed-of-light, roofline, memory-workload, launch, occupancy, and
+scheduler sections:
 
 ```bash
 ./scripts/profile_cublas_baseline.sh
@@ -70,8 +72,19 @@ Select Ddot or another power-of-two size with environment variables:
 OPERATION=ddot N=67108864 ./scripts/profile_cublas_baseline.sh
 ```
 
-The script uses the full Nsight Compute section set so the report includes the
-roofline and memory-workload sections. If the cluster reports
+The script writes four timestamped artifacts: the `.ncu-rep` report, a readable
+details dump, a raw profiler-metrics CSV, and the benchmark's own one-call CSV.
+
+On the configured cluster, submit the exact H200 FP32 reference case from the
+repository root:
+
+```bash
+sbatch --wait scripts/profile_cublas_sdot_h200.sbatch
+```
+
+The batch script requests one GPU from `gpu-nvidia-h200-[1-3]`, profiles
+`cublasSdot` at `N=134217728`, and releases the allocation automatically when
+the command finishes. If the cluster reports
 `ERR_NVGPUCTRPERM`, ordinary benchmark timing still works, but the profiling
 hardware counters are restricted by the cluster configuration.
 
