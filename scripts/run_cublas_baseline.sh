@@ -3,7 +3,7 @@ set -euo pipefail
 
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 build_dir="${BUILD_DIR:-${repo_dir}/build}"
-results_dir="${RESULTS_DIR:-${repo_dir}/results}"
+results_dir="${RESULTS_DIR:-${repo_dir}/results/001_cublas_baseline}"
 build_jobs="${BUILD_JOBS:-4}"
 cuda_arch="${CUDA_ARCH:-90}"
 timestamp="$(date -u +%Y%m%dT%H%M%SZ)"

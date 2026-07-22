@@ -38,7 +38,8 @@ Run this after obtaining one GPU allocation:
 ./scripts/run_cublas_baseline.sh
 ```
 
-It writes three timestamped files under `results/`:
+It writes three timestamped files under
+`results/001_cublas_baseline/`:
 
 1. performance results for signed uniform inputs;
 2. accuracy results for positive inputs;
@@ -72,7 +73,8 @@ Select Ddot or another power-of-two size with environment variables:
 OPERATION=ddot N=67108864 ./scripts/profile_cublas_baseline.sh
 ```
 
-The script writes four timestamped artifacts: the `.ncu-rep` report, a readable
+The script writes four timestamped artifacts under
+`results/002_cublas_sdot_n2p27_profile/`: the `.ncu-rep` report, a readable
 details dump, a raw profiler-metrics CSV, and the benchmark's profile metadata
 CSV. Timing and derived throughput columns in that last CSV are `nan`: Nsight
 Compute instrumentation and replay make profile-mode elapsed time unsuitable as
@@ -90,13 +92,21 @@ The batch script requests one GPU from `gpu-nvidia-h200-[1-3]`, profiles
 the command finishes. It must be submitted from the repository root because it
 uses Slurm's submission directory to find the checkout; Slurm runs a copied
 batch script from its spool directory. The Slurm log and all profiler outputs
-are written under `results/`.
+are written under that experiment's directory.
 
 Generated result files are intentionally versioned. Before committing an
-`.ncu-rep`, check its size with `du -h results/*.ncu-rep`; reports at or above
-100 MiB require Git LFS instead of regular Git. If the cluster reports
+`.ncu-rep`, check its size with `du -h results/**/*.ncu-rep`; reports at or
+above 100 MiB require Git LFS instead of regular Git. If the cluster reports
 `ERR_NVGPUCTRPERM`, ordinary benchmark timing still works, but the profiling
 hardware counters are restricted by the cluster configuration.
+
+## Results organization
+
+Each distinct experiment has a numbered directory under `results/` with its
+own `README.md` describing the question, configuration, commands, and key
+findings. Timestamped reruns of the same experiment stay together. A changed
+kernel, storage format, data type, or central hypothesis gets a new numbered
+directory. See `results/README.md` for the current index.
 
 ## Direct CLI examples
 
@@ -104,12 +114,14 @@ hardware counters are restricted by the cluster configuration.
 # Large-vector FP32 performance
 ./build/bin/dot_bench \
   --mode performance --operation sdot --n 134217728 \
-  --dataset signed --output results/sdot.csv
+  --dataset signed \
+  --output results/001_cublas_baseline/sdot.csv
 
 # Accuracy and DOT condition number
 ./build/bin/dot_bench \
   --mode accuracy --operation both --powers 10,16,20 \
-  --dataset cancellation --output results/cancellation.csv
+  --dataset cancellation \
+  --output results/001_cublas_baseline/cancellation.csv
 ```
 
 Use `./build/bin/dot_bench --help` for every option.

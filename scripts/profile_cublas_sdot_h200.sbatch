@@ -8,7 +8,7 @@
 #SBATCH --mem=8G
 #SBATCH --gres=gpu:nvidia:1
 #SBATCH --time=00:30:00
-#SBATCH --output=results/slurm-%j.out
+#SBATCH --output=results/002_cublas_sdot_n2p27_profile/slurm-%j.out
 
 set -euo pipefail
 
@@ -24,7 +24,7 @@ cd "${repo_dir}"
 srun --ntasks=1 --cpus-per-task="${SLURM_CPUS_PER_TASK}" \
     env \
         BUILD_DIR="${repo_dir}/build-h200" \
-        RESULTS_DIR="${repo_dir}/results" \
+        RESULTS_DIR="${repo_dir}/results/002_cublas_sdot_n2p27_profile" \
         BUILD_JOBS="${SLURM_CPUS_PER_TASK}" \
         CUDA_ARCH=90 \
         OPERATION=sdot \
