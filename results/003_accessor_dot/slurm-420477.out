@@ -1,0 +1,61 @@
+-- Configuring done (0.2s)
+-- Generating done (0.2s)
+-- Build files have been written to: /storage/home/timofeirusanov/accessor_universal_test/build-h200
+[ 25%] Building CUDA object CMakeFiles/accessor_dot_bench.dir/src/accessor_dot_bench.cu.o
+[ 25%] Building CXX object CMakeFiles/dataset_inspect.dir/tools/inspect_dot_dataset.cpp.o
+[ 37%] Building CXX object CMakeFiles/memory_accessor_test.dir/tests/memory_accessor_test.cpp.o
+[ 50%] Building CUDA object CMakeFiles/dot_bench.dir/src/dot_bench.cu.o
+[ 62%] Linking CXX executable bin/memory_accessor_test
+[ 62%] Built target memory_accessor_test
+[ 75%] Linking CXX executable bin/dataset_inspect
+[ 75%] Built target dataset_inspect
+[ 87%] Linking CUDA executable bin/dot_bench
+[ 87%] Built target dot_bench
+ptxas info    : 29 bytes gmem
+ptxas info    : Compiling entry function '_ZN50_GLOBAL__N__656e99d8_21_accessor_dot_bench_cu_main21dot_map_reduce_kernelIdN3aut15memory_accessorIdfEEEEvT0_S4_mPT_' for 'sm_90'
+ptxas info    : Function properties for _ZN50_GLOBAL__N__656e99d8_21_accessor_dot_bench_cu_main21dot_map_reduce_kernelIdN3aut15memory_accessorIdfEEEEvT0_S4_mPT_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.414 ms
+ptxas info    : Compiling entry function '_ZN50_GLOBAL__N__656e99d8_21_accessor_dot_bench_cu_main21dot_map_reduce_kernelIfN3aut15memory_accessorIffEEEEvT0_S4_mPT_' for 'sm_90'
+ptxas info    : Function properties for _ZN50_GLOBAL__N__656e99d8_21_accessor_dot_bench_cu_main21dot_map_reduce_kernelIfN3aut15memory_accessorIffEEEEvT0_S4_mPT_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 15 registers, used 1 barriers, 44 bytes smem
+ptxas info    : Compile time = 3.066 ms
+ptxas info    : Compiling entry function '_ZN50_GLOBAL__N__656e99d8_21_accessor_dot_bench_cu_main19dot_finalize_kernelIdEEvPKT_mPS1_' for 'sm_90'
+ptxas info    : Function properties for _ZN50_GLOBAL__N__656e99d8_21_accessor_dot_bench_cu_main19dot_finalize_kernelIdEEvPKT_mPS1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 2.939 ms
+ptxas info    : Compiling entry function '_ZN50_GLOBAL__N__656e99d8_21_accessor_dot_bench_cu_main21dot_map_reduce_kernelIdPKfEEvT0_S3_mPT_' for 'sm_90'
+ptxas info    : Function properties for _ZN50_GLOBAL__N__656e99d8_21_accessor_dot_bench_cu_main21dot_map_reduce_kernelIdPKfEEvT0_S3_mPT_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 3.267 ms
+ptxas info    : Compiling entry function '_ZN50_GLOBAL__N__656e99d8_21_accessor_dot_bench_cu_main19dot_finalize_kernelIfEEvPKT_mPS1_' for 'sm_90'
+ptxas info    : Function properties for _ZN50_GLOBAL__N__656e99d8_21_accessor_dot_bench_cu_main19dot_finalize_kernelIfEEvPKT_mPS1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 1 barriers, 44 bytes smem
+ptxas info    : Compile time = 2.342 ms
+ptxas info    : Compiling entry function '_ZN50_GLOBAL__N__656e99d8_21_accessor_dot_bench_cu_main21dot_map_reduce_kernelIfPKfEEvT0_S3_mPT_' for 'sm_90'
+ptxas info    : Function properties for _ZN50_GLOBAL__N__656e99d8_21_accessor_dot_bench_cu_main21dot_map_reduce_kernelIfPKfEEvT0_S3_mPT_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 15 registers, used 1 barriers, 44 bytes smem
+ptxas info    : Compile time = 2.824 ms
+ptxas info    : Compiling entry function '_ZN50_GLOBAL__N__656e99d8_21_accessor_dot_bench_cu_main11fill_inputsEPfS0_mN3aut7dataset10parametersE' for 'sm_90'
+ptxas info    : Function properties for _ZN50_GLOBAL__N__656e99d8_21_accessor_dot_bench_cu_main11fill_inputsEPfS0_mN3aut7dataset10parametersE
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 0 barriers
+ptxas info    : Compile time = 17.348 ms
+[100%] Linking CUDA executable bin/accessor_dot_bench
+[100%] Built target accessor_dot_bench
+Internal ctest changing into directory: /storage/home/timofeirusanov/accessor_universal_test/build-h200
+Test project /storage/home/timofeirusanov/accessor_universal_test/build-h200
+    Start 1: memory_accessor_test
+1/1 Test #1: memory_accessor_test .............   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
+/storage/home/timofeirusanov/accessor_universal_test/build-h200/bin/accessor_dot_bench: error while loading shared libraries: libcudart.so.13: cannot open shared object file: No such file or directory
+srun: error: gpu-nvidia-h200-2: task 0: Exited with exit code 127

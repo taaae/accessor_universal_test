@@ -1,0 +1,23 @@
+experiment=003_accessor_dot
+started_utc=2026-07-23T15:02:27Z
+git_commit=2277a0680b7fd6caa7c160df09a8e0510d81d84e
+git_status_begin
+?? results/003_accessor_dot/run_20260723T150227Z/
+?? results/003_accessor_dot/slurm-420477.out
+git_status_end
+
+nvidia_smi
+name, uuid, pci.bus_id, driver_version, memory.total [MiB], ecc.mode.current, clocks.max.sm [MHz], clocks.max.memory [MHz], power.limit [W]
+NVIDIA H200 NVL, GPU-e2647d14-a6d5-e5f5-1b37-57460f2c92b5, 00000000:8C:00.0, 610.43.02, 143771 MiB, Enabled, 1785 MHz, 3201 MHz, 600.00 W
+
+nvcc_version
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Tue_Dec_16_07:23:41_PM_PST_2025
+Cuda compilation tools, release 13.1, V13.1.115
+Build cuda_13.1.r13.1/compiler.37061995_0
+
+ncu_version
+NVIDIA (R) Nsight Compute Command Line Profiler
+Copyright (c) 2018-2025 NVIDIA Corporation
+Version 2025.4.1.0 (build 37053803) (public-release)
