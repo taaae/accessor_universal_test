@@ -158,3 +158,19 @@ Future accessor experiments use the versioned procedural definitions under
 generation rules, validated condition numbers, and runtime plan. Large vector
 files are generated directly on the GPU outside timed regions rather than
 stored in Git.
+
+## Accessor DOT experiment
+
+Experiment 003 compares raw pointers with a pointer-sized, Ginkgo-inspired 1D
+reduced-storage accessor. All four variants use FP32 storage while independently
+varying raw/accessor loading and FP32/FP64 arithmetic:
+
+```bash
+sbatch --wait --nodelist=gpu-nvidia-h200-2 \
+  scripts/run_accessor_dot_h200.sbatch
+```
+
+Run this command from the repository root. Authoritative CUDA-event timing,
+accuracy, compact summaries, Nsight Compute reports, physical memory metrics,
+roofline data, resource usage, and SASS are written below
+`results/003_accessor_dot/`.

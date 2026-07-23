@@ -8,6 +8,7 @@ artifacts should be interpreted.
 |---:|---|---|
 | 001 | `001_cublas_baseline` | Establish cuBLAS DOT performance and accuracy baselines. |
 | 002 | `002_cublas_sdot_n2p27_profile` | Profile the HBM-bound FP32 reference case with Nsight Compute. |
+| 003 | `003_accessor_dot` | Compare raw and 1D accessor loads with FP32/FP64 arithmetic over FP32 storage. |
 
 Timestamped repetitions of an unchanged experiment belong in the existing
 directory. Create the next numbered directory when changing the kernel,
