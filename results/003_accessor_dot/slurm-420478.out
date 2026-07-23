@@ -1,0 +1,108 @@
+-- Configuring done (0.2s)
+-- Generating done (0.1s)
+-- Build files have been written to: /storage/home/timofeirusanov/accessor_universal_test/build-h200
+[ 12%] Linking CXX executable bin/memory_accessor_test
+[ 25%] Linking CXX executable bin/dataset_inspect
+[ 37%] Linking CUDA executable bin/dot_bench
+[ 50%] Linking CUDA executable bin/accessor_dot_bench
+[ 62%] Built target dataset_inspect
+[ 75%] Built target memory_accessor_test
+[ 87%] Built target dot_bench
+[100%] Built target accessor_dot_bench
+Internal ctest changing into directory: /storage/home/timofeirusanov/accessor_universal_test/build-h200
+Test project /storage/home/timofeirusanov/accessor_universal_test/build-h200
+    Start 1: memory_accessor_test
+1/1 Test #1: memory_accessor_test .............   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
+accessor_dot_bench 2026-07-23T15:04:40Z
+GPU: NVIDIA H200 NVL (sm_90, 132 SMs)
+CUDA runtime/driver: 13010/13030
+Mode: performance
+Performance N=1024 complete
+Performance N=65536 complete
+Performance N=1048576 complete
+Performance N=8388608 complete
+Performance N=67108864 complete
+Performance N=134217728 complete
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/003_accessor_dot/run_20260723T150439Z/performance_samples.csv
+accessor_dot_bench 2026-07-23T15:05:43Z
+GPU: NVIDIA H200 NVL (sm_90, 132 SMs)
+CUDA runtime/driver: 13010/13030
+Mode: accuracy
+Accuracy positive_uniform N=1024 complete
+Accuracy positive_uniform N=65536 complete
+Accuracy positive_uniform N=1048576 complete
+Accuracy signed_uniform_seed0 N=1024 complete
+Accuracy signed_uniform_seed0 N=65536 complete
+Accuracy signed_uniform_seed0 N=1048576 complete
+Accuracy signed_uniform_seed1 N=1024 complete
+Accuracy signed_uniform_seed1 N=65536 complete
+Accuracy signed_uniform_seed1 N=1048576 complete
+Accuracy signed_uniform_seed2 N=1024 complete
+Accuracy signed_uniform_seed2 N=65536 complete
+Accuracy signed_uniform_seed2 N=1048576 complete
+Accuracy cancellation_1e2 N=1024 complete
+Accuracy cancellation_1e2 N=65536 complete
+Accuracy cancellation_1e2 N=1048576 complete
+Accuracy cancellation_1e4 N=1024 complete
+Accuracy cancellation_1e4 N=65536 complete
+Accuracy cancellation_1e4 N=1048576 complete
+Accuracy cancellation_1e6 N=1024 complete
+Accuracy cancellation_1e6 N=65536 complete
+Accuracy cancellation_1e6 N=1048576 complete
+Accuracy near_orthogonal N=1024 complete
+Accuracy near_orthogonal N=65536 complete
+Accuracy near_orthogonal N=1048576 complete
+Accuracy dynamic_range_40 N=1024 complete
+Accuracy dynamic_range_40 N=65536 complete
+Accuracy dynamic_range_40 N=1048576 complete
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/003_accessor_dot/run_20260723T150439Z/accuracy.csv
+==PROF== Connected to process 2152628 (/storage/home/timofeirusanov/accessor_universal_test/build-h200/bin/accessor_dot_bench)
+accessor_dot_bench 2026-07-23T15:05:43Z
+GPU: NVIDIA H200 NVL (sm_90, 132 SMs)
+CUDA runtime/driver: 13010/13030
+Mode: profile
+==PROF== Profiling "dot_map_reduce_kernel" - 0: 0%....50%....100% - 12 passes
+==PROF== Profiling "dot_finalize_kernel" - 1: 0%....50%....100% - 12 passes
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/003_accessor_dot/run_20260723T150439Z/profile/raw_f32/raw_f32_n134217728_20260723T150439Z_metadata.csv
+==PROF== Disconnected from process 2152628
+==PROF== Report: /storage/home/timofeirusanov/accessor_universal_test/results/003_accessor_dot/run_20260723T150439Z/profile/raw_f32/raw_f32_n134217728_20260723T150439Z.ncu-rep
+==PROF== Connected to process 2152725 (/storage/home/timofeirusanov/accessor_universal_test/build-h200/bin/accessor_dot_bench)
+accessor_dot_bench 2026-07-23T15:05:47Z
+GPU: NVIDIA H200 NVL (sm_90, 132 SMs)
+CUDA runtime/driver: 13010/13030
+Mode: profile
+==PROF== Profiling "dot_map_reduce_kernel" - 0: 0%....50%....100% - 12 passes
+==PROF== Profiling "dot_finalize_kernel" - 1: 0%....50%....100% - 12 passes
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/003_accessor_dot/run_20260723T150439Z/profile/raw_f64/raw_f64_n134217728_20260723T150439Z_metadata.csv
+==PROF== Disconnected from process 2152725
+==PROF== Report: /storage/home/timofeirusanov/accessor_universal_test/results/003_accessor_dot/run_20260723T150439Z/profile/raw_f64/raw_f64_n134217728_20260723T150439Z.ncu-rep
+==PROF== Connected to process 2152822 (/storage/home/timofeirusanov/accessor_universal_test/build-h200/bin/accessor_dot_bench)
+accessor_dot_bench 2026-07-23T15:05:49Z
+GPU: NVIDIA H200 NVL (sm_90, 132 SMs)
+CUDA runtime/driver: 13010/13030
+Mode: profile
+==PROF== Profiling "dot_map_reduce_kernel" - 0: 0%....50%....100% - 12 passes
+==PROF== Profiling "dot_finalize_kernel" - 1: 0%....50%....100% - 12 passes
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/003_accessor_dot/run_20260723T150439Z/profile/accessor_f32_f32/accessor_f32_f32_n134217728_20260723T150439Z_metadata.csv
+==PROF== Disconnected from process 2152822
+==PROF== Report: /storage/home/timofeirusanov/accessor_universal_test/results/003_accessor_dot/run_20260723T150439Z/profile/accessor_f32_f32/accessor_f32_f32_n134217728_20260723T150439Z.ncu-rep
+==PROF== Connected to process 2152919 (/storage/home/timofeirusanov/accessor_universal_test/build-h200/bin/accessor_dot_bench)
+accessor_dot_bench 2026-07-23T15:05:52Z
+GPU: NVIDIA H200 NVL (sm_90, 132 SMs)
+CUDA runtime/driver: 13010/13030
+Mode: profile
+==PROF== Profiling "dot_map_reduce_kernel" - 0: 0%....50%....100% - 12 passes
+==PROF== Profiling "dot_finalize_kernel" - 1: 0%....50%....100% - 12 passes
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/003_accessor_dot/run_20260723T150439Z/profile/accessor_f64_f32/accessor_f64_f32_n134217728_20260723T150439Z_metadata.csv
+==PROF== Disconnected from process 2152919
+==PROF== Report: /storage/home/timofeirusanov/accessor_universal_test/results/003_accessor_dot/run_20260723T150439Z/profile/accessor_f64_f32/accessor_f64_f32_n134217728_20260723T150439Z.ncu-rep
+
+Experiment complete:
+  /storage/home/timofeirusanov/accessor_universal_test/results/003_accessor_dot/run_20260723T150439Z
+  /storage/home/timofeirusanov/accessor_universal_test/results/003_accessor_dot/run_20260723T150439Z/performance_summary.csv
+  /storage/home/timofeirusanov/accessor_universal_test/results/003_accessor_dot/run_20260723T150439Z/accuracy_comparison.csv
+  /storage/home/timofeirusanov/accessor_universal_test/results/003_accessor_dot/run_20260723T150439Z/profile_summary.csv

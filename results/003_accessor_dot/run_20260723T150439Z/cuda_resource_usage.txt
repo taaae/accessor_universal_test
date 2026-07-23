@@ -1,0 +1,36 @@
+
+Fatbin ptx code:
+================
+arch = sm_90
+code version = [9,1]
+host = linux
+compile_size = 64bit
+compressed
+identifier = /storage/home/timofeirusanov/accessor_universal_test/src/accessor_dot_bench.cu
+ptxasOptions = -v  --generate-line-info 
+
+Fatbin elf code:
+================
+arch = sm_90
+code version = [1,8]
+host = linux
+compile_size = 64bit
+identifier = /storage/home/timofeirusanov/accessor_universal_test/src/accessor_dot_bench.cu
+
+Resource usage:
+ Common:
+  GLOBAL:29 CONSTANT[4]:232
+ Function _ZN50_GLOBAL__N__656e99d8_21_accessor_dot_bench_cu_main21dot_map_reduce_kernelIdN3aut15memory_accessorIdfEEEEvT0_S4_mPT_:
+  REG:20 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:560 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN50_GLOBAL__N__656e99d8_21_accessor_dot_bench_cu_main21dot_map_reduce_kernelIfN3aut15memory_accessorIffEEEEvT0_S4_mPT_:
+  REG:15 STACK:0 SHARED:1068 LOCAL:0 CONSTANT[0]:560 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN50_GLOBAL__N__656e99d8_21_accessor_dot_bench_cu_main19dot_finalize_kernelIdEEvPKT_mPS1_:
+  REG:18 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:552 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN50_GLOBAL__N__656e99d8_21_accessor_dot_bench_cu_main21dot_map_reduce_kernelIdPKfEEvT0_S3_mPT_:
+  REG:20 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:560 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN50_GLOBAL__N__656e99d8_21_accessor_dot_bench_cu_main19dot_finalize_kernelIfEEvPKT_mPS1_:
+  REG:12 STACK:0 SHARED:1068 LOCAL:0 CONSTANT[0]:552 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN50_GLOBAL__N__656e99d8_21_accessor_dot_bench_cu_main21dot_map_reduce_kernelIfPKfEEvT0_S3_mPT_:
+  REG:15 STACK:0 SHARED:1068 LOCAL:0 CONSTANT[0]:560 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN50_GLOBAL__N__656e99d8_21_accessor_dot_bench_cu_main11fill_inputsEPfS0_mN3aut7dataset10parametersE:
+  REG:30 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:576 TEXTURE:0 SURFACE:0 SAMPLER:0
