@@ -150,3 +150,11 @@ Accuracy mode reports:
 
 The normalized error is the most stable comparison when cancellation makes the
 true DOT close to zero.
+
+## Reusable datasets
+
+Future accessor experiments use the versioned procedural definitions under
+`datasets/`. `datasets/dot_v1/` contains the stable DOT case IDs, seeds,
+generation rules, validated condition numbers, and runtime plan. Large vector
+files are generated directly on the GPU outside timed regions rather than
+stored in Git.

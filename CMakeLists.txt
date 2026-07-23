@@ -15,6 +15,7 @@ find_package(CUDAToolkit REQUIRED)
 
 add_executable(dot_bench src/dot_bench.cu)
 target_link_libraries(dot_bench PRIVATE CUDA::cublas CUDA::cudart)
+target_include_directories(dot_bench PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_compile_options(
     dot_bench
     PRIVATE
@@ -22,9 +23,23 @@ target_compile_options(
         "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo>"
 )
 
+add_executable(dataset_inspect tools/inspect_dot_dataset.cpp)
+target_include_directories(
+    dataset_inspect
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+target_compile_options(dataset_inspect PRIVATE -O3)
+
 set_target_properties(
     dot_bench
     PROPERTIES
         CUDA_SEPARABLE_COMPILATION OFF
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
+set_target_properties(
+    dataset_inspect
+    PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )

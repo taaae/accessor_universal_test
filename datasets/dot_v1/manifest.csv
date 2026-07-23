@@ -1,0 +1,10 @@
+id,suites,family,seed,parameter,parameter_meaning
+positive_uniform,accuracy,positive_uniform,0x123456789abcdef0,0,none
+signed_uniform_seed0,performance+accuracy,signed_uniform,0x123456789abcdef0,0,none
+signed_uniform_seed1,accuracy,signed_uniform,0x8c3c010cb4754c9d,0,none
+signed_uniform_seed2,accuracy,signed_uniform,0xd2b74407b1ce6e93,0,none
+cancellation_1e2,accuracy,controlled_cancellation,0x123456789abcdef0,6,residual_is_2^-parameter
+cancellation_1e4,accuracy,controlled_cancellation,0x123456789abcdef0,13,residual_is_2^-parameter
+cancellation_1e6,accuracy,controlled_cancellation,0x123456789abcdef0,19,residual_is_2^-parameter
+near_orthogonal,accuracy,controlled_cancellation,0x123456789abcdef0,22,residual_is_2^-parameter
+dynamic_range_40,accuracy,dynamic_range,0xa4093822299f31d0,20,exponents_are_uniform_in_[-parameter,+parameter]
