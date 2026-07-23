@@ -1,0 +1,13 @@
+experiment=003_accessor_dot
+started_utc=2026-07-23T14:54:31Z
+git_commit=7fc712b75d19a7c479b52f62fb6b68df39840eb7
+git_status_begin
+?? results/003_accessor_dot/run_20260723T145431Z/
+?? results/003_accessor_dot/slurm-420475.out
+git_status_end
+
+nvidia_smi
+name, uuid, pci.bus_id, driver_version, memory.total [MiB], ecc.mode.current, clocks.max.sm [MHz], clocks.max.memory [MHz], power.limit [W]
+NVIDIA H200 NVL, GPU-b6d611b2-961c-7bbb-45a8-2e00bfca1e85, 00000000:42:00.0, 610.43.02, 143771 MiB, Enabled, 1785 MHz, 3201 MHz, 600.00 W
+
+nvcc_version
