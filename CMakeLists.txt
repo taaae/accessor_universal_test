@@ -65,7 +65,6 @@ target_compile_options(storage_formats_test PRIVATE -O3)
 add_test(NAME storage_formats_test COMMAND storage_formats_test)
 
 add_executable(storage_formats_cuda_test src/storage_formats_cuda_test.cu)
-target_link_libraries(storage_formats_cuda_test PRIVATE CUDA::cudart)
 target_include_directories(
     storage_formats_cuda_test
     PRIVATE
@@ -113,6 +112,10 @@ set_target_properties(
 set_target_properties(
     storage_formats_cuda_test
     PROPERTIES
+        # Some batch nodes expose nvcc through PATH without adding the matching
+        # CUDA lib64 directory to LD_LIBRARY_PATH.  A static CUDA runtime keeps
+        # this validation executable independent of that loader configuration.
+        CUDA_RUNTIME_LIBRARY Static
         CUDA_SEPARABLE_COMPILATION OFF
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )
