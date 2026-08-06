@@ -1,0 +1,6 @@
+count_per_distribution=262144
+distributions=uniform_-1_1,normal_0_1
+decode_lanes=1,2,4
+arithmetic=fp64
+cuda_arch=90
+dump_sass=1
