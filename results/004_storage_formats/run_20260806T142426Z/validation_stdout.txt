@@ -1,0 +1,39 @@
+storage format CUDA validation
+GPU: NVIDIA H200 NVL (sm_90)
+values per distribution: 262144
+e1m6           uniform failed_lane_widths=0 nmse=2.440439e-04 zeros=4156 infs=0
+e2m5           uniform failed_lane_widths=0 nmse=2.440439e-04 zeros=4156 infs=0
+e3m4           uniform failed_lane_widths=0 nmse=1.523483e-04 zeros=2076 infs=0
+fp8_e4m3       uniform failed_lane_widths=0 nmse=5.578846e-04 zeros=277 infs=0
+fp8_e5m2       uniform failed_lane_widths=0 nmse=2.236486e-03 zeros=4 infs=0
+e1m14          uniform failed_lane_widths=0 nmse=3.712295e-09 zeros=18 infs=0
+e2m13          uniform failed_lane_widths=0 nmse=3.712295e-09 zeros=18 infs=0
+e3m12          uniform failed_lane_widths=0 nmse=2.312985e-09 zeros=8 infs=0
+fp16_e5m10     uniform failed_lane_widths=0 nmse=3.412391e-08 zeros=2 infs=0
+bf16_e8m7      uniform failed_lane_widths=0 nmse=2.173242e-06 zeros=2 infs=0
+e11m4          uniform failed_lane_widths=0 nmse=1.393146e-04 zeros=2 infs=0
+e1m30          uniform failed_lane_widths=0 nmse=8.673041e-19 zeros=2 infs=0
+e2m29          uniform failed_lane_widths=0 nmse=8.673041e-19 zeros=2 infs=0
+e3m28          uniform failed_lane_widths=0 nmse=5.426182e-19 zeros=2 infs=0
+fp32_e8m23     uniform failed_lane_widths=0 nmse=5.079657e-16 zeros=2 infs=0
+e11m20         uniform failed_lane_widths=0 nmse=3.255738e-14 zeros=2 infs=0
+fp64_e11m52    uniform failed_lane_widths=0 nmse=0.000000e+00 zeros=2 infs=0
+e1m6           normal  failed_lane_widths=0 nmse=8.845087e-05 zeros=3247 infs=0
+e2m5           normal  failed_lane_widths=0 nmse=inf zeros=3247 infs=23
+e3m4           normal  failed_lane_widths=0 nmse=1.800534e-04 zeros=1670 infs=0
+fp8_e4m3       normal  failed_lane_widths=0 nmse=7.039889e-04 zeros=220 infs=0
+fp8_e5m2       normal  failed_lane_widths=0 nmse=2.790504e-03 zeros=6 infs=0
+e1m14          normal  failed_lane_widths=0 nmse=5.921697e-06 zeros=17 infs=0
+e2m13          normal  failed_lane_widths=0 nmse=inf zeros=17 infs=18
+e3m12          normal  failed_lane_widths=0 nmse=2.755998e-09 zeros=8 infs=0
+fp16_e5m10     normal  failed_lane_widths=0 nmse=4.312068e-08 zeros=2 infs=0
+bf16_e8m7      normal  failed_lane_widths=0 nmse=2.765685e-06 zeros=2 infs=0
+e11m4          normal  failed_lane_widths=0 nmse=1.766032e-04 zeros=2 infs=0
+e1m30          normal  failed_lane_widths=0 nmse=5.916215e-06 zeros=2 infs=0
+e2m29          normal  failed_lane_widths=0 nmse=inf zeros=2 infs=18
+e3m28          normal  failed_lane_widths=0 nmse=6.385535e-19 zeros=2 infs=0
+fp32_e8m23     normal  failed_lane_widths=0 nmse=6.418557e-16 zeros=2 infs=0
+e11m20         normal  failed_lane_widths=0 nmse=4.120684e-14 zeros=2 infs=0
+fp64_e11m52    normal  failed_lane_widths=0 nmse=0.000000e+00 zeros=2 infs=0
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/004_storage_formats/run_20260806T142426Z/validation.csv
+All scalar, pack2, and pack4 decoders agree exactly.

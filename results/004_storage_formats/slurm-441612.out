@@ -1,0 +1,324 @@
+-- Configuring done (0.1s)
+-- Generating done (0.4s)
+-- Build files have been written to: /storage/home/timofeirusanov/accessor_universal_test/build-h200
+[ 25%] Linking CXX executable bin/dataset_inspect
+[ 25%] Built target memory_accessor_test
+[ 33%] Linking CUDA executable bin/dot_bench
+[ 41%] Linking CXX executable bin/storage_formats_test
+[ 50%] Built target dataset_inspect
+[ 58%] Built target dot_bench
+[ 66%] Building CUDA object CMakeFiles/storage_formats_cuda_test.dir/src/storage_formats_cuda_test.cu.o
+[ 75%] Built target storage_formats_test
+[ 83%] Linking CUDA executable bin/accessor_dot_bench
+[ 91%] Built target accessor_dot_bench
+ptxas info    : 0 bytes gmem
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage11fp64_e11m52EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage11fp64_e11m52EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 0 barriers
+ptxas info    : Compile time = 2.451 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage11fp64_e11m52EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage11fp64_e11m52EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 1.500 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage11fp64_e11m52EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage11fp64_e11m52EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 0 barriers
+ptxas info    : Compile time = 1.354 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage6e11m20EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage6e11m20EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 0 barriers
+ptxas info    : Compile time = 1.561 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage6e11m20EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage6e11m20EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 1.427 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage6e11m20EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage6e11m20EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 0 barriers
+ptxas info    : Compile time = 1.338 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage10fp32_e8m23EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage10fp32_e8m23EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 0 barriers
+ptxas info    : Compile time = 1.513 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage10fp32_e8m23EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage10fp32_e8m23EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 1.403 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage10fp32_e8m23EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage10fp32_e8m23EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 1.341 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage5e3m28EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage5e3m28EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 23 registers, used 0 barriers
+ptxas info    : Compile time = 4.847 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage5e3m28EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage5e3m28EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 0 barriers
+ptxas info    : Compile time = 3.418 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage5e3m28EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage5e3m28EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 17 registers, used 0 barriers
+ptxas info    : Compile time = 2.523 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage5e2m29EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage5e2m29EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 23 registers, used 0 barriers
+ptxas info    : Compile time = 4.663 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage5e2m29EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage5e2m29EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 0 barriers
+ptxas info    : Compile time = 3.409 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage5e2m29EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage5e2m29EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 17 registers, used 0 barriers
+ptxas info    : Compile time = 2.520 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage5e1m30EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage5e1m30EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 0 barriers
+ptxas info    : Compile time = 4.335 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage5e1m30EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage5e1m30EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 25 registers, used 0 barriers
+ptxas info    : Compile time = 3.144 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage5e1m30EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage5e1m30EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 0 barriers
+ptxas info    : Compile time = 2.366 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage5e11m4EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage5e11m4EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 0 barriers
+ptxas info    : Compile time = 1.621 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage5e11m4EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage5e11m4EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 1.468 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage5e11m4EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage5e11m4EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 1.457 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage9bf16_e8m7EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage9bf16_e8m7EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 0 barriers
+ptxas info    : Compile time = 1.615 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage9bf16_e8m7EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage9bf16_e8m7EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 17 registers, used 0 barriers
+ptxas info    : Compile time = 1.565 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage9bf16_e8m7EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage9bf16_e8m7EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 1.363 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage10fp16_e5m10EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage10fp16_e5m10EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 0 barriers
+ptxas info    : Compile time = 1.668 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage10fp16_e5m10EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage10fp16_e5m10EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 1.449 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage10fp16_e5m10EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage10fp16_e5m10EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 1.358 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage5e3m12EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage5e3m12EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 25 registers, used 0 barriers
+ptxas info    : Compile time = 4.797 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage5e3m12EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage5e3m12EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 0 barriers
+ptxas info    : Compile time = 3.334 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage5e3m12EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage5e3m12EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 17 registers, used 0 barriers
+ptxas info    : Compile time = 2.474 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage5e2m13EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage5e2m13EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 25 registers, used 0 barriers
+ptxas info    : Compile time = 4.648 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage5e2m13EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage5e2m13EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 0 barriers
+ptxas info    : Compile time = 3.335 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage5e2m13EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage5e2m13EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 17 registers, used 0 barriers
+ptxas info    : Compile time = 2.466 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage5e1m14EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage5e1m14EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 0 barriers
+ptxas info    : Compile time = 4.422 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage5e1m14EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage5e1m14EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 0 barriers
+ptxas info    : Compile time = 3.164 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage5e1m14EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage5e1m14EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 0 barriers
+ptxas info    : Compile time = 2.346 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage8fp8_e5m2EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage8fp8_e5m2EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 0 barriers
+ptxas info    : Compile time = 1.698 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage8fp8_e5m2EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage8fp8_e5m2EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 17 registers, used 0 barriers
+ptxas info    : Compile time = 1.490 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage8fp8_e5m2EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage8fp8_e5m2EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 15 registers, used 0 barriers
+ptxas info    : Compile time = 1.416 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage8fp8_e4m3EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage8fp8_e4m3EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 0 barriers
+ptxas info    : Compile time = 1.639 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage8fp8_e4m3EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage8fp8_e4m3EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 17 registers, used 0 barriers
+ptxas info    : Compile time = 1.483 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage8fp8_e4m3EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage8fp8_e4m3EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 15 registers, used 0 barriers
+ptxas info    : Compile time = 1.417 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage4e3m4EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage4e3m4EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 25 registers, used 0 barriers
+ptxas info    : Compile time = 4.664 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage4e3m4EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage4e3m4EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 0 barriers
+ptxas info    : Compile time = 3.378 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage4e3m4EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage4e3m4EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 17 registers, used 0 barriers
+ptxas info    : Compile time = 2.478 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage4e2m5EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage4e2m5EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 25 registers, used 0 barriers
+ptxas info    : Compile time = 4.861 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage4e2m5EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage4e2m5EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 0 barriers
+ptxas info    : Compile time = 3.374 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage4e2m5EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage4e2m5EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 17 registers, used 0 barriers
+ptxas info    : Compile time = 2.462 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage4e1m6EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack4_kernelIN3aut7storage4e1m6EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 29 registers, used 0 barriers
+ptxas info    : Compile time = 4.425 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage4e1m6EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main19decode_pack2_kernelIN3aut7storage4e1m6EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 0 barriers
+ptxas info    : Compile time = 3.321 ms
+ptxas info    : Compiling entry function '_ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage4e1m6EEEvPKNS2_5codecIT_E12storage_typeEPdm' for 'sm_90'
+ptxas info    : Function properties for _ZN57_GLOBAL__N__7b2c8c14_28_storage_formats_cuda_test_cu_main20decode_scalar_kernelIN3aut7storage4e1m6EEEvPKNS2_5codecIT_E12storage_typeEPdm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 0 barriers
+ptxas info    : Compile time = 2.349 ms
+[100%] Linking CUDA executable bin/storage_formats_cuda_test
+[100%] Built target storage_formats_cuda_test
+Internal ctest changing into directory: /storage/home/timofeirusanov/accessor_universal_test/build-h200
+Test project /storage/home/timofeirusanov/accessor_universal_test/build-h200
+    Start 1: memory_accessor_test
+1/2 Test #1: memory_accessor_test .............   Passed    0.00 sec
+    Start 2: storage_formats_test
+2/2 Test #2: storage_formats_test .............   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 2
+
+Total Test time (real) =   0.01 sec
+storage format CUDA validation
+GPU: NVIDIA H200 NVL (sm_90)
+values per distribution: 262144
+e1m6           uniform failed_lane_widths=0 nmse=2.440439e-04 zeros=4156 infs=0
+e2m5           uniform failed_lane_widths=0 nmse=2.440439e-04 zeros=4156 infs=0
+e3m4           uniform failed_lane_widths=0 nmse=1.523483e-04 zeros=2076 infs=0
+fp8_e4m3       uniform failed_lane_widths=0 nmse=5.578846e-04 zeros=277 infs=0
+fp8_e5m2       uniform failed_lane_widths=0 nmse=2.236486e-03 zeros=4 infs=0
+e1m14          uniform failed_lane_widths=0 nmse=3.712295e-09 zeros=18 infs=0
+e2m13          uniform failed_lane_widths=0 nmse=3.712295e-09 zeros=18 infs=0
+e3m12          uniform failed_lane_widths=0 nmse=2.312985e-09 zeros=8 infs=0
+fp16_e5m10     uniform failed_lane_widths=0 nmse=3.412391e-08 zeros=2 infs=0
+bf16_e8m7      uniform failed_lane_widths=0 nmse=2.173242e-06 zeros=2 infs=0
+e11m4          uniform failed_lane_widths=0 nmse=1.393146e-04 zeros=2 infs=0
+e1m30          uniform failed_lane_widths=0 nmse=8.673041e-19 zeros=2 infs=0
+e2m29          uniform failed_lane_widths=0 nmse=8.673041e-19 zeros=2 infs=0
+e3m28          uniform failed_lane_widths=0 nmse=5.426182e-19 zeros=2 infs=0
+fp32_e8m23     uniform failed_lane_widths=0 nmse=5.079657e-16 zeros=2 infs=0
+e11m20         uniform failed_lane_widths=0 nmse=3.255738e-14 zeros=2 infs=0
+fp64_e11m52    uniform failed_lane_widths=0 nmse=0.000000e+00 zeros=2 infs=0
+e1m6           normal  failed_lane_widths=0 nmse=8.845087e-05 zeros=3247 infs=0
+e2m5           normal  failed_lane_widths=0 nmse=inf zeros=3247 infs=23
+e3m4           normal  failed_lane_widths=0 nmse=1.800534e-04 zeros=1670 infs=0
+fp8_e4m3       normal  failed_lane_widths=0 nmse=7.039889e-04 zeros=220 infs=0
+fp8_e5m2       normal  failed_lane_widths=0 nmse=2.790504e-03 zeros=6 infs=0
+e1m14          normal  failed_lane_widths=0 nmse=5.921697e-06 zeros=17 infs=0
+e2m13          normal  failed_lane_widths=0 nmse=inf zeros=17 infs=18
+e3m12          normal  failed_lane_widths=0 nmse=2.755998e-09 zeros=8 infs=0
+fp16_e5m10     normal  failed_lane_widths=0 nmse=4.312068e-08 zeros=2 infs=0
+bf16_e8m7      normal  failed_lane_widths=0 nmse=2.765685e-06 zeros=2 infs=0
+e11m4          normal  failed_lane_widths=0 nmse=1.766032e-04 zeros=2 infs=0
+e1m30          normal  failed_lane_widths=0 nmse=5.916215e-06 zeros=2 infs=0
+e2m29          normal  failed_lane_widths=0 nmse=inf zeros=2 infs=18
+e3m28          normal  failed_lane_widths=0 nmse=6.385535e-19 zeros=2 infs=0
+fp32_e8m23     normal  failed_lane_widths=0 nmse=6.418557e-16 zeros=2 infs=0
+e11m20         normal  failed_lane_widths=0 nmse=4.120684e-14 zeros=2 infs=0
+fp64_e11m52    normal  failed_lane_widths=0 nmse=0.000000e+00 zeros=2 infs=0
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/004_storage_formats/run_20260806T142426Z/validation.csv
+All scalar, pack2, and pack4 decoders agree exactly.
+
+Storage-format validation complete:
+  /storage/home/timofeirusanov/accessor_universal_test/results/004_storage_formats/run_20260806T142426Z
+  /storage/home/timofeirusanov/accessor_universal_test/results/004_storage_formats/run_20260806T142426Z/validation.csv
