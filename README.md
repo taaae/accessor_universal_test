@@ -174,3 +174,20 @@ Run this command from the repository root. Authoritative CUDA-event timing,
 accuracy, compact summaries, Nsight Compute reports, physical memory metrics,
 roofline data, resource usage, and SASS are written below
 `results/003_accessor_dot/`.
+
+## Storage-format validation
+
+Experiment 004 implements the shortlisted 8-, 16-, 32-, and 64-bit storage
+formats with FP64 decode. It includes native CUDA FP8/FP16/BF16 controls,
+custom IEEE-like E2/E3 codecs, finite E1 codecs, and FP64-prefix E11M4/E11M20
+codecs. Every format has scalar, packed-2, and packed-4 CUDA load paths.
+
+Submit the correctness run from the repository root:
+
+```bash
+sbatch --wait --nodelist=gpu-nvidia-h200-2 \
+  scripts/run_storage_formats_h200.sbatch
+```
+
+Results are written below `results/004_storage_formats/`. This experiment only
+validates encoding and decoding; DOT/GEMV performance integration comes next.

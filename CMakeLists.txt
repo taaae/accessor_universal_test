@@ -55,6 +55,29 @@ target_include_directories(
 target_compile_options(memory_accessor_test PRIVATE -O3)
 add_test(NAME memory_accessor_test COMMAND memory_accessor_test)
 
+add_executable(storage_formats_test tests/storage_formats_test.cpp)
+target_include_directories(
+    storage_formats_test
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+target_compile_options(storage_formats_test PRIVATE -O3)
+add_test(NAME storage_formats_test COMMAND storage_formats_test)
+
+add_executable(storage_formats_cuda_test src/storage_formats_cuda_test.cu)
+target_link_libraries(storage_formats_cuda_test PRIVATE CUDA::cudart)
+target_include_directories(
+    storage_formats_cuda_test
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+target_compile_options(
+    storage_formats_cuda_test
+    PRIVATE
+        "$<$<COMPILE_LANGUAGE:CXX>:-O3>"
+        "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v>"
+)
+
 set_target_properties(
     dot_bench
     PROPERTIES
@@ -78,5 +101,18 @@ set_target_properties(
 set_target_properties(
     memory_accessor_test
     PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
+set_target_properties(
+    storage_formats_test
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
+set_target_properties(
+    storage_formats_cuda_test
+    PROPERTIES
+        CUDA_SEPARABLE_COMPILATION OFF
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )
