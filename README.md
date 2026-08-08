@@ -223,3 +223,18 @@ under `U(0,1)` and `N(0,1)`. It fixes GEMV `M=1024`, sweeps reduction length
 The derivation in `docs/accuracy_model.md` distinguishes exact cell integrals,
 high-resolution approximations, folded-normal approximations, overflow risks,
 and the separate FP64 kernel-arithmetic bound.
+
+## GPU accuracy simulation
+
+Experiment 007 runs deterministic Monte Carlo validation of the same formats,
+distributions, DOT sizes, and fixed-`M` GEMV cases. It uses GPU double-double
+source/storage references and records compact moments, empirical quantiles,
+encoding diagnostics, and cluster-level convergence estimates:
+
+```bash
+sbatch --wait --nodelist=gpu-nvidia-h200-1-studvm-2 \
+  scripts/run_accuracy_simulation_h200.sbatch
+```
+
+Submit from the repository root. The batch script does not choose a node by
+itself; `--nodelist` remains a submission-time choice.

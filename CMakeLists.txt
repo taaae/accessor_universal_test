@@ -64,6 +64,15 @@ target_include_directories(
 target_compile_options(storage_formats_test PRIVATE -O3)
 add_test(NAME storage_formats_test COMMAND storage_formats_test)
 
+add_executable(accuracy_statistics_test tests/accuracy_statistics_test.cpp)
+target_include_directories(
+    accuracy_statistics_test
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+target_compile_options(accuracy_statistics_test PRIVATE -O3)
+add_test(NAME accuracy_statistics_test COMMAND accuracy_statistics_test)
+
 add_executable(storage_formats_cuda_test src/storage_formats_cuda_test.cu)
 target_include_directories(
     storage_formats_cuda_test
@@ -85,6 +94,20 @@ target_include_directories(
 )
 target_compile_options(
     storage_kernels_cuda_test
+    PRIVATE
+        "$<$<COMPILE_LANGUAGE:CXX>:-O3>"
+        "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v>"
+)
+
+add_executable(accuracy_simulation src/accuracy_simulation.cu)
+target_link_libraries(accuracy_simulation PRIVATE CUDA::curand_static)
+target_include_directories(
+    accuracy_simulation
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+target_compile_options(
+    accuracy_simulation
     PRIVATE
         "$<$<COMPILE_LANGUAGE:CXX>:-O3>"
         "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v>"
@@ -123,6 +146,12 @@ set_target_properties(
 )
 
 set_target_properties(
+    accuracy_statistics_test
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
+set_target_properties(
     storage_formats_cuda_test
     PROPERTIES
         # Some batch nodes expose nvcc through PATH without adding the matching
@@ -135,6 +164,14 @@ set_target_properties(
 
 set_target_properties(
     storage_kernels_cuda_test
+    PROPERTIES
+        CUDA_RUNTIME_LIBRARY Static
+        CUDA_SEPARABLE_COMPILATION OFF
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
+set_target_properties(
+    accuracy_simulation
     PROPERTIES
         CUDA_RUNTIME_LIBRARY Static
         CUDA_SEPARABLE_COMPILATION OFF

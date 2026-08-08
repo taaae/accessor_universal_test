@@ -12,6 +12,7 @@ artifacts should be interpreted.
 | 004 | `004_storage_formats` | Validate scalar, packed-2, and packed-4 FP64 decoders for the shortlisted storage formats. |
 | 005 | `005_storage_kernels` | Validate generic FP64 DOT and row-major GEMV kernels for every storage format and x1/x2/x4 load path. |
 | 006 | `006_accuracy_model` | Predict scalar, DOT, and fixed-`M` GEMV storage error for every format under U(0,1) and N(0,1). |
+| 007 | `007_gpu_accuracy_simulation` | Validate analytical storage and kernel-error predictions with statistically replicated H200 DOT/GEMV simulations. |
 
 Timestamped repetitions of an unchanged experiment belong in the existing
 directory. Create the next numbered directory when changing the kernel,
