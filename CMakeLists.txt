@@ -127,6 +127,20 @@ target_compile_options(
         "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v>"
 )
 
+add_executable(decoder_optimization_bench src/decoder_optimization_bench.cu)
+target_link_libraries(decoder_optimization_bench PRIVATE CUDA::curand_static)
+target_include_directories(
+    decoder_optimization_bench
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+target_compile_options(
+    decoder_optimization_bench
+    PRIVATE
+        "$<$<COMPILE_LANGUAGE:CXX>:-O3>"
+        "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v>"
+)
+
 set_target_properties(
     dot_bench
     PROPERTIES
@@ -194,6 +208,14 @@ set_target_properties(
 
 set_target_properties(
     storage_performance_bench
+    PROPERTIES
+        CUDA_RUNTIME_LIBRARY Static
+        CUDA_SEPARABLE_COMPILATION OFF
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
+set_target_properties(
+    decoder_optimization_bench
     PROPERTIES
         CUDA_RUNTIME_LIBRARY Static
         CUDA_SEPARABLE_COMPILATION OFF
