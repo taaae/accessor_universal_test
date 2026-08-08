@@ -141,6 +141,20 @@ target_compile_options(
         "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v>"
 )
 
+add_executable(e2e3_strategy_smoke src/e2e3_strategy_smoke.cu)
+target_link_libraries(e2e3_strategy_smoke PRIVATE CUDA::cudart_static)
+target_include_directories(
+    e2e3_strategy_smoke
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+target_compile_options(
+    e2e3_strategy_smoke
+    PRIVATE
+        "$<$<COMPILE_LANGUAGE:CXX>:-O3>"
+        "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v>"
+)
+
 set_target_properties(
     dot_bench
     PROPERTIES
@@ -216,6 +230,14 @@ set_target_properties(
 
 set_target_properties(
     decoder_optimization_bench
+    PROPERTIES
+        CUDA_RUNTIME_LIBRARY Static
+        CUDA_SEPARABLE_COMPILATION OFF
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
+set_target_properties(
+    e2e3_strategy_smoke
     PROPERTIES
         CUDA_RUNTIME_LIBRARY Static
         CUDA_SEPARABLE_COMPILATION OFF
