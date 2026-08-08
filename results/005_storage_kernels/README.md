@@ -29,5 +29,9 @@ CTest and validator logs, CUDA resource usage, and SASS.
 Submit from the repository root:
 
 ```bash
-sbatch --wait scripts/run_storage_kernels_h200.sbatch
+sbatch --wait --nodelist=gpu-nvidia-h200-1-studvm-2 \
+  scripts/run_storage_kernels_h200.sbatch
 ```
+
+The batch script deliberately does not select a node; pass the desired H200
+with `sbatch --nodelist=...` at submission time.

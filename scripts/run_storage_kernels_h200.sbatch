@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 #SBATCH --job-name=storage-kernels
 #SBATCH --partition=compute
-#SBATCH --nodelist=gpu-nvidia-h200-[1-3]
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4

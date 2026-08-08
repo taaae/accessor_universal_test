@@ -202,7 +202,8 @@ handling, and GEMV rows use an aligned padded leading dimension.
 Submit the H200 correctness and generated-code run from the repository root:
 
 ```bash
-sbatch --wait scripts/run_storage_kernels_h200.sbatch
+sbatch --wait --nodelist=gpu-nvidia-h200-1-studvm-2 \
+  scripts/run_storage_kernels_h200.sbatch
 ```
 
 The timestamped directory below `results/005_storage_kernels/` contains
