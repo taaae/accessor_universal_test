@@ -1,0 +1,21 @@
+experiment=010_e2e3_strategy_smoke
+purpose=preliminary correctness and pathology screening
+started_utc=2026-08-08T17:35:47Z
+git_commit=58202de93ebd506d603d06e50a70392293cace0a
+git_status_begin
+?? results/010_e2e3_strategy_smoke/run_20260808T173219Z/
+?? results/010_e2e3_strategy_smoke/run_20260808T173547Z/
+?? results/010_e2e3_strategy_smoke/slurm-442279.out
+?? results/010_e2e3_strategy_smoke/slurm-442280.out
+git_status_end
+
+nvidia_smi
+name, uuid, pci.bus_id, driver_version, memory.total [MiB], ecc.mode.current
+NVIDIA H200 NVL, GPU-3bb7dc49-ebaf-ab26-a2e4-426c8b73245c, 00000000:00:10.0, 610.43.02, 143771 MiB, Enabled
+
+nvcc_version
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Tue_Dec_16_07:23:41_PM_PST_2025
+Cuda compilation tools, release 13.1, V13.1.115
+Build cuda_13.1.r13.1/compiler.37061995_0

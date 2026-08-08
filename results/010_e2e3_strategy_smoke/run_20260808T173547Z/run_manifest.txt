@@ -1,0 +1,14 @@
+dot_powers=16,22
+gemv_powers=10,12
+gemv_rows=256
+distributions=uniform_0_1,normal_0_1
+formats=e2m5,e3m4
+strategies_per_format=27
+load_widths=x1,x2,x4,x8
+warmup=3
+samples=3
+target_sample_ms=2
+base_seed=2611923443488327891
+timing=preliminary_only_not_for_final_performance_conclusions
+finished_utc=2026-08-08T17:36:05Z
+wall_time_seconds=18

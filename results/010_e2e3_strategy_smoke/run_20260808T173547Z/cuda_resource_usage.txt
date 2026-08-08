@@ -1,0 +1,348 @@
+
+Fatbin ptx code:
+================
+arch = sm_90
+code version = [9,1]
+host = linux
+compile_size = 64bit
+compressed
+identifier = /storage/home/timofeirusanov/accessor_universal_test/src/e2e3_strategy_smoke.cu
+ptxasOptions = -v  --generate-line-info 
+
+Fatbin elf code:
+================
+arch = sm_90
+code version = [1,8]
+host = linux
+compile_size = 64bit
+identifier = /storage/home/timofeirusanov/accessor_universal_test/src/e2e3_strategy_smoke.cu
+
+Resource usage:
+ Common:
+  GLOBAL:29 CONSTANT[4]:232
+ Function _ZN3aut7kernels20storage_dot_finalizeEPKdmPd:
+  REG:18 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:552 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:29 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:31 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE6ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE5ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:42 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:60 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:28 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:31 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:38 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:30 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:24 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:27 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:27 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:28 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:26 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:28 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:24 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:22 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:30 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE6ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:40 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE5ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:40 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:39 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:40 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:39 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:62 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:28 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:30 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:40 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:27 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:28 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:30 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:30 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:26 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:30 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:26 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:24 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:29 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:31 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE6ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE5ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:60 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:28 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:31 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:38 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:30 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:24 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:27 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:27 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:28 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:26 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:28 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:24 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd:
+  REG:22 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:616 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:30 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE6ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:40 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE5ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:40 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:39 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:40 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:39 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:62 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:28 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:30 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:40 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:27 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:32 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:28 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:30 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:30 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:26 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:30 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:26 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd:
+  REG:24 STACK:0 SHARED:1104 LOCAL:0 CONSTANT[0]:600 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhNS0_12table_bundleEPd:
+  REG:20 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhNS0_12table_bundleEPd:
+  REG:22 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:16 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:15 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:18 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE6ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:30 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE5ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:28 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:23 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:22 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:27 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:29 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:27 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:20 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:16 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:22 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:18 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:19 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:16 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:12 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:16 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:15 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:15 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:14 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:12 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:14 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:10 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:12 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhNS0_12table_bundleEPd:
+  REG:20 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhNS0_12table_bundleEPd:
+  REG:22 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:16 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:15 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:18 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE6ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:30 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE5ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:28 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:23 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:22 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:27 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:29 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:27 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:20 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:16 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:22 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:18 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:19 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:16 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:12 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:16 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:15 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:15 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:14 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:12 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:14 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:10 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN3aut15e2e3_strategies16decode_all_codesINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhNS0_12table_bundleEPd:
+  REG:12 STACK:0 SHARED:1024 LOCAL:0 CONSTANT[0]:584 TEXTURE:0 SURFACE:0 SAMPLER:0
