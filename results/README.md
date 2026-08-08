@@ -14,6 +14,9 @@ artifacts should be interpreted.
 | 006 | `006_accuracy_model` | Predict scalar, DOT, and fixed-`M` GEMV storage error for every format under U(0,1) and N(0,1). |
 | 007 | `007_gpu_accuracy_simulation` | Validate analytical storage and kernel-error predictions with statistically replicated H200 DOT/GEMV simulations. |
 | 008 | `008_storage_performance` | Separate decode, stream, DOT/GEMV timing and collect hardware/algorithmic roofline inputs for scalar and packed access. |
+| 009 | `009_e2e3_decoder_optimization` | Compare the initial E2M5/E3M4 scalar and packed branchless/LUT decoders. |
+| 010 | `010_e2e3_strategy_smoke` | Validate the expanded E2M5/E3M4 decoder strategy inventory and screen preliminary kernel timings. |
+| 011 | `011_e2e3_strategy_performance` | Compare complete DOT/GEMV time for all E2M5/E3M4 decoder strategies against raw FP64. |
 
 Timestamped repetitions of an unchanged experiment belong in the existing
 directory. Create the next numbered directory when changing the kernel,
