@@ -77,6 +77,19 @@ target_compile_options(
         "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v>"
 )
 
+add_executable(storage_kernels_cuda_test src/storage_kernels_cuda_test.cu)
+target_include_directories(
+    storage_kernels_cuda_test
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+target_compile_options(
+    storage_kernels_cuda_test
+    PRIVATE
+        "$<$<COMPILE_LANGUAGE:CXX>:-O3>"
+        "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v>"
+)
+
 set_target_properties(
     dot_bench
     PROPERTIES
@@ -115,6 +128,14 @@ set_target_properties(
         # Some batch nodes expose nvcc through PATH without adding the matching
         # CUDA lib64 directory to LD_LIBRARY_PATH.  A static CUDA runtime keeps
         # this validation executable independent of that loader configuration.
+        CUDA_RUNTIME_LIBRARY Static
+        CUDA_SEPARABLE_COMPILATION OFF
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
+set_target_properties(
+    storage_kernels_cuda_test
+    PROPERTIES
         CUDA_RUNTIME_LIBRARY Static
         CUDA_SEPARABLE_COMPILATION OFF
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"

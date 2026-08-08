@@ -191,3 +191,20 @@ sbatch --wait --nodelist=gpu-nvidia-h200-2 \
 
 Results are written below `results/004_storage_formats/`. This experiment only
 validates encoding and decoding; DOT/GEMV performance integration comes next.
+
+## Storage-format DOT and GEMV
+
+Experiment 005 integrates every storage codec into FP64-arithmetic DOT and
+row-major GEMV kernels. Both kernels are instantiated with scalar, x2, and x4
+load paths; non-multiple-of-four problem dimensions exercise scalar tail
+handling, and GEMV rows use an aligned padded leading dimension.
+
+Submit the H200 correctness and generated-code run from the repository root:
+
+```bash
+sbatch --wait scripts/run_storage_kernels_h200.sbatch
+```
+
+The timestamped directory below `results/005_storage_kernels/` contains
+separate DOT and GEMV validation CSVs, resource usage, and SASS. It does not
+yet report performance timing.

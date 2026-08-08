@@ -10,6 +10,7 @@ artifacts should be interpreted.
 | 002 | `002_cublas_sdot_n2p27_profile` | Profile the HBM-bound FP32 reference case with Nsight Compute. |
 | 003 | `003_accessor_dot` | Compare raw and 1D accessor loads with FP32/FP64 arithmetic over FP32 storage. |
 | 004 | `004_storage_formats` | Validate scalar, packed-2, and packed-4 FP64 decoders for the shortlisted storage formats. |
+| 005 | `005_storage_kernels` | Validate generic FP64 DOT and row-major GEMV kernels for every storage format and x1/x2/x4 load path. |
 
 Timestamped repetitions of an unchanged experiment belong in the existing
 directory. Create the next numbered directory when changing the kernel,
