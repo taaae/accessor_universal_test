@@ -209,3 +209,17 @@ sbatch --wait --nodelist=gpu-nvidia-h200-1-studvm-2 \
 The timestamped directory below `results/005_storage_kernels/` contains
 separate DOT and GEMV validation CSVs, resource usage, and SASS. It does not
 yet report performance timing.
+
+## Analytical accuracy model
+
+Experiment 006 derives storage-error predictions for all implemented formats
+under `U(0,1)` and `N(0,1)`. It fixes GEMV `M=1024`, sweeps reduction length
+`N`, and produces CSV data, SVG small multiples, and one HTML report:
+
+```bash
+./scripts/build_accuracy_model.sh
+```
+
+The derivation in `docs/accuracy_model.md` distinguishes exact cell integrals,
+high-resolution approximations, folded-normal approximations, overflow risks,
+and the separate FP64 kernel-arithmetic bound.
