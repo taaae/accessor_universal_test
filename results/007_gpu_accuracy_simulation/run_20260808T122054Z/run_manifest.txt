@@ -1,0 +1,17 @@
+dot_powers=10,14,18,22
+dot_samples=8192
+dot_statistical_batches=32
+gemv_powers=8,10,12,14,16
+gemv_rows=1024
+gemv_replicates=16
+distributions=uniform_0_1,normal_0_1
+formats=all_17
+load_lanes=1,2,4
+arithmetic=fp64_fma
+reference=gpu_double_double
+rng=curand_philox4x32_10
+base_seed=2611923443488327891
+workspace_gib=12
+cuda_arch=90
+finished_utc=2026-08-08T12:25:39Z
+wall_time_seconds=285
