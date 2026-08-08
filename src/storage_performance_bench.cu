@@ -340,14 +340,23 @@ device_info query_device() {
   cudaDeviceProp properties{};
   CUDA_CHECK(cudaGetDevice(&device));
   CUDA_CHECK(cudaGetDeviceProperties(&properties, device));
+  int memory_clock_khz{};
+  int memory_bus_width_bits{};
+  int sm_clock_khz{};
+  CUDA_CHECK(cudaDeviceGetAttribute(&memory_clock_khz,
+                                    cudaDevAttrMemoryClockRate, device));
+  CUDA_CHECK(cudaDeviceGetAttribute(&memory_bus_width_bits,
+                                    cudaDevAttrGlobalMemoryBusWidth, device));
+  CUDA_CHECK(
+      cudaDeviceGetAttribute(&sm_clock_khz, cudaDevAttrClockRate, device));
   std::ostringstream capability;
   capability << "sm_" << properties.major << properties.minor;
-  const auto hbm = 2.0 * properties.memoryClockRate * 1000.0 *
-                   properties.memoryBusWidth / 8.0 / 1.0e9;
+  const auto hbm =
+      2.0 * memory_clock_khz * 1000.0 * memory_bus_width_bits / 8.0 / 1.0e9;
   // Hopper has 64 scalar FP64 lanes per SM. This is a modeled clock-rate
   // ceiling; Nsight Compute supplies the empirical sustained ceiling.
-  const auto fp64 = properties.multiProcessorCount * 64.0 * 2.0 *
-                    properties.clockRate * 1000.0 / 1.0e9;
+  const auto fp64 = properties.multiProcessorCount * 64.0 * 2.0 * sm_clock_khz *
+                    1000.0 / 1.0e9;
   return {properties.name, capability.str(), properties.multiProcessorCount,
           hbm, fp64};
 }
