@@ -6,6 +6,7 @@
 #include <curand.h>
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
@@ -332,11 +333,11 @@ __global__ void raw_fp64_gemv(const double *matrix, const double *vector,
 }
 
 template <typename Format> struct host_tables {
-  std::vector<float> fp32{256};
-  std::vector<double> fp64{256};
-  std::vector<std::uint16_t> prefix16{256};
-  std::vector<std::uint32_t> prefix32{256};
-  std::vector<std::uint64_t> exponent_prefix{16};
+  std::array<float, 256> fp32{};
+  std::array<double, 256> fp64{};
+  std::array<std::uint16_t, 256> prefix16{};
+  std::array<std::uint32_t, 256> prefix32{};
+  std::array<std::uint64_t, 16> exponent_prefix{};
 
   host_tables() {
     for (std::size_t code = 0; code < 256; ++code) {
@@ -362,9 +363,9 @@ template <typename Format> struct host_tables {
   }
 };
 
-template <typename T>
-void upload(device_buffer<T> &target, const std::vector<T> &source) {
-  CUDA_CHECK(cudaMemcpy(target.get(), source.data(), source.size() * sizeof(T),
+template <typename T, std::size_t Size>
+void upload(device_buffer<T> &target, const std::array<T, Size> &source) {
+  CUDA_CHECK(cudaMemcpy(target.get(), source.data(), sizeof(source),
                         cudaMemcpyHostToDevice));
 }
 
