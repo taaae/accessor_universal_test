@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Methodology and data — H200 storage performance</title>
+<link rel="stylesheet" href="report.css">
+</head>
+<body>
+<header><div class="shell"><a class="brand" href="index.html">H200 storage performance</a><nav aria-label="Report sections"><a href="index.html">Overview</a><a href="total-performance.html">Total performance</a><a href="packing.html">Packed vs unpacked</a><a href="roofline.html">Roofline</a><a href="conversion.html">Conversion</a><a href="bottlenecks.html">Bottlenecks</a><a href="methodology.html" aria-current="page" class="active">Methodology</a></nav></div></header>
+<main class="shell">
+<h1>Methodology and data</h1>
+<p class="lead">How the timings and profiler measurements were collected, normalized, and kept separate.</p>
+<section class="graph-section">
+<h2>Timing stability</h2>
+<p>This summarizes variability across all 2,142 cases after 10 warmups and interleaved sampling.</p>
+<figure><img src="assets/timing-stability.svg" alt="Coefficient-of-variation distributions for each benchmark component."></figure>
+</section><section class="text-section"><h2>Definitions</h2>
+<p><strong>Total time:</strong> CUDA-event median over 15 samples; DOT includes both reduction launches and GEMV includes its complete kernel.</p>
+<p><strong>Packing speedup:</strong> logical throughput for equal decoded values or useful operations. Register decode is compared in decoded values/s, fixing the unequal-work x1/x2/x4 normalization.</p>
+<p><strong>Roofline bytes:</strong> unique encoded storage. GEMV counts its vector once because Nsight confirms cache reuse; requested bytes remain available in the raw table.</p>
+<p><strong>Profiler data:</strong> only hardware counters are used. Replay-contaminated Nsight durations never replace event timing.</p>
+</section>
+<section class="text-section"><h2>Raw files</h2><ul>
+<li><a href="../run_20260808T131626Z/timing_samples.csv">Every timing sample</a></li>
+<li><a href="../run_20260808T131626Z/timing_summary.csv">Timing summary</a></li>
+<li><a href="../run_20260808T131626Z/packed_speedups.csv">Corrected packed comparisons</a></li>
+<li><a href="../run_20260808T131626Z/profile_operations.csv">Operation-level Nsight metrics</a></li>
+<li><a href="../run_20260808T131626Z/profile_kernels.csv">Per-kernel Nsight metrics</a></li>
+</ul></section>
+</main>
+<footer><div class="shell">Source run: <code>run_20260808T131626Z</code></div></footer>
+</body>
+</html>

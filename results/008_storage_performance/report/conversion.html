@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conversion performance — H200 storage performance</title>
+<link rel="stylesheet" href="report.css">
+</head>
+<body>
+<header><div class="shell"><a class="brand" href="index.html">H200 storage performance</a><nav aria-label="Report sections"><a href="index.html">Overview</a><a href="total-performance.html">Total performance</a><a href="packing.html">Packed vs unpacked</a><a href="roofline.html">Roofline</a><a href="conversion.html" aria-current="page" class="active">Conversion</a><a href="bottlenecks.html">Bottlenecks</a><a href="methodology.html">Methodology</a></nav></div></header>
+<main class="shell">
+<h1>Conversion performance</h1>
+<p class="lead">Microbenchmarks isolate decode pressure in registers and while streaming, without treating them as additive kernel phases.</p>
+<section class="graph-section">
+<h2>Register-resident conversion</h2>
+<p>This measures decoded values per second after the packet is already in registers; it includes an FP64 add that keeps results live.</p>
+<figure><img src="assets/register-conversion.svg" alt="Register decode-plus-add throughput for x1, x2, and x4 formats."></figure>
+</section><section class="graph-section">
+<h2>Read-only versus read-and-decode</h2>
+<p>The paired panels show the payload rate each complete instruction stream sustains; their times must not be subtracted.</p>
+<figure><img src="assets/stream-decode.svg" alt="Encoded payload bandwidth for streaming loads and streaming decode kernels."></figure>
+</section><section class="graph-section">
+<h2>Distribution sensitivity</h2>
+<p>Normal-to-uniform time ratios expose branchy decoders whose cost depends on exponent patterns.</p>
+<figure><img src="assets/distribution-sensitivity.svg" alt="N(0,1) time divided by U(0,1) time for conversion and full kernels."></figure>
+</section>
+</main>
+<footer><div class="shell">Source run: <code>run_20260808T131626Z</code></div></footer>
+</body>
+</html>

@@ -27,9 +27,9 @@ three rounds. The default has 10 warmups and 15 recorded samples per case; each
 sample aggregates enough launches to target 15 ms. Raw samples are retained so
 confidence and clock-drift checks remain possible.
 
-## Planned figures
+## Report figures
 
-The recorded schema is designed for these report figures after the H200 run:
+The H200 report contains these figure groups:
 
 - **size-regime curves:** median time and encoded-payload GB/s versus N, showing
   launch-latency, cache, and HBM plateaus;
@@ -48,6 +48,22 @@ The recorded schema is designed for these report figures after the H200 run:
   parallelism;
 - **distribution sensitivity:** paired U(0,1)/N(0,1) ratios, mainly to expose
   decoder control-flow effects rather than numerical error.
+
+## Performance report
+
+The generated report is split into short, linked pages for total performance,
+packing, roofline position, conversion, bottlenecks, and methodology. Start at
+[`report/index.html`](report/index.html).
+
+Rebuild it from the newest committed run with:
+
+```bash
+scripts/build_storage_performance_report.sh
+```
+
+The report uses logical throughput when comparing x1/x2/x4. This matters for
+`register_decode`, where one packed operation decodes more values; raw elapsed
+times perform unequal work and are retained only as a secondary diagnostic.
 
 For GEMV, `unique_storage_bytes` counts the vector once and is the
 compression-aware algorithmic traffic. `requested_storage_bytes` counts the

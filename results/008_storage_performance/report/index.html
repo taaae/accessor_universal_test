@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overview — H200 storage performance</title>
+<link rel="stylesheet" href="report.css">
+</head>
+<body>
+<header><div class="shell"><a class="brand" href="index.html">H200 storage performance</a><nav aria-label="Report sections"><a href="index.html" aria-current="page" class="active">Overview</a><a href="total-performance.html">Total performance</a><a href="packing.html">Packed vs unpacked</a><a href="roofline.html">Roofline</a><a href="conversion.html">Conversion</a><a href="bottlenecks.html">Bottlenecks</a><a href="methodology.html">Methodology</a></nav></div></header>
+<main class="shell">
+<h1>Overview</h1>
+<p class="lead">A map of the H200 performance results and the shortest route to each question.</p>
+
+<div class="summary-grid">
+<div><span>Fastest large DOT</span><strong>FP8 E4M3</strong><small>0.109 ms</small></div>
+<div><span>Fastest large GEMV</span><strong>E11M4</strong><small>0.046 ms</small></div>
+<div><span>Measured HBM ceiling</span><strong>4.60 TB/s</strong><small>median memory-bound profiles</small></div>
+</div>
+<section><h2>Explore the report</h2><p>Each question has its own short page; the navigation remains available at the top.</p><div class="report-grid"><a class="report-link" href="total-performance.html"><strong>Total performance</strong><span>Complete DOT/GEMV time and size scaling.</span></a><a class="report-link" href="packing.html"><strong>Packed vs unpacked</strong><span>x2 and x4 throughput benefit over x1.</span></a><a class="report-link" href="roofline.html"><strong>Roofline</strong><span>Useful work relative to the measured HBM ceiling.</span></a><a class="report-link" href="conversion.html"><strong>Conversion</strong><span>Register decode, streaming decode, and data dependence.</span></a><a class="report-link" href="bottlenecks.html"><strong>Bottlenecks</strong><span>Nsight resource pressure, registers, and occupancy.</span></a><a class="report-link" href="methodology.html"><strong>Methodology</strong><span>Sampling, definitions, caveats, and raw data.</span></a></div></section>
+<section class="graph-section">
+<h2>All-format overview</h2>
+<p>This compares complete x4 kernel time at the largest tested N; lower bars are faster.</p>
+<figure><img src="assets/total-kernel-time.svg" alt="Horizontal bars comparing complete DOT and GEMV time for all storage formats."></figure>
+</section>
+</main>
+<footer><div class="shell">Source run: <code>run_20260808T131626Z</code></div></footer>
+</body>
+</html>

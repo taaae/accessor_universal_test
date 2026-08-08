@@ -84,6 +84,79 @@ def read_rows(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(stream))
 
 
+def write_packed_speedups(
+    summary_rows: list[dict[str, object]] | list[dict[str, str]], output_dir: Path
+) -> None:
+    if not summary_rows:
+        raise SystemExit("cannot build packed comparisons from an empty summary")
+    packed_key_fields = [
+        field
+        for field in IDENTITY
+        if field not in {"lanes", "blocks"}
+    ]
+    packed_groups: dict[tuple[str, ...], dict[int, dict[str, object]]] = defaultdict(
+        dict
+    )
+    for source in summary_rows:
+        row: dict[str, object] = dict(source)
+        key = tuple(str(row[field]) for field in packed_key_fields)
+        packed_groups[key][int(row["lanes"])] = row
+
+    packed_rows: list[dict[str, object]] = []
+    for key, lanes in sorted(packed_groups.items()):
+        if set(lanes) != {1, 2, 4}:
+            raise SystemExit(f"missing lane timing for {key}: {sorted(lanes)}")
+        scalar_time = float(lanes[1]["median_time_ms"])
+        component = str(lanes[1]["component"])
+
+        def throughput(row: dict[str, object]) -> tuple[str, float]:
+            if component == "register_decode":
+                return (
+                    "decoded_values_per_second",
+                    float(row["median_decoded_gvalues_per_s"]),
+                )
+            if component == "stream_load":
+                return (
+                    "storage_bytes_per_second",
+                    float(row["median_unique_storage_gb_per_s"]),
+                )
+            return (
+                "useful_operations_per_second",
+                float(row["median_useful_gflop_per_s"]),
+            )
+
+        comparison_metric, scalar_throughput = throughput(lanes[1])
+        for lane in (1, 2, 4):
+            row = dict(zip(packed_key_fields, key))
+            current_time = float(lanes[lane]["median_time_ms"])
+            current_metric, current_throughput = throughput(lanes[lane])
+            if current_metric != comparison_metric:
+                raise AssertionError("lane comparison metric changed within group")
+            row.update(
+                {
+                    "lanes": lane,
+                    "scalar_time_ms": scalar_time,
+                    "packed_time_ms": current_time,
+                    "comparison_metric": comparison_metric,
+                    "scalar_throughput": scalar_throughput,
+                    "packed_throughput": current_throughput,
+                    "speedup_vs_x1": current_throughput / scalar_throughput,
+                    "time_speedup_vs_x1": scalar_time / current_time,
+                    "time_change_percent_vs_x1": 100.0
+                    * (current_time / scalar_time - 1.0),
+                    "packed_cv_percent": lanes[lane]["cv_percent"],
+                }
+            )
+            packed_rows.append(row)
+
+    with (output_dir / "packed_speedups.csv").open("w", newline="") as stream:
+        writer = csv.DictWriter(
+            stream, fieldnames=list(packed_rows[0]), lineterminator="\n"
+        )
+        writer.writeheader()
+        writer.writerows(packed_rows)
+
+
 def summarize_timings(samples_path: Path, output_dir: Path) -> None:
     rows = read_rows(samples_path)
     if not rows:
@@ -168,43 +241,7 @@ def summarize_timings(samples_path: Path, output_dir: Path) -> None:
         writer.writeheader()
         writer.writerows(summary_rows)
 
-    packed_key_fields = [
-        field
-        for field in IDENTITY
-        if field not in {"lanes", "blocks"}
-    ]
-    packed_groups: dict[tuple[str, ...], dict[int, dict[str, object]]] = defaultdict(
-        dict
-    )
-    for row in summary_rows:
-        key = tuple(str(row[field]) for field in packed_key_fields)
-        packed_groups[key][int(row["lanes"])] = row
-
-    packed_rows: list[dict[str, object]] = []
-    for key, lanes in sorted(packed_groups.items()):
-        if set(lanes) != {1, 2, 4}:
-            raise SystemExit(f"missing lane timing for {key}: {sorted(lanes)}")
-        scalar_time = float(lanes[1]["median_time_ms"])
-        for lane in (1, 2, 4):
-            row = dict(zip(packed_key_fields, key))
-            current_time = float(lanes[lane]["median_time_ms"])
-            row.update(
-                {
-                    "lanes": lane,
-                    "scalar_time_ms": scalar_time,
-                    "packed_time_ms": current_time,
-                    "speedup_vs_x1": scalar_time / current_time,
-                    "time_change_percent_vs_x1": 100.0
-                    * (current_time / scalar_time - 1.0),
-                    "packed_cv_percent": lanes[lane]["cv_percent"],
-                }
-            )
-            packed_rows.append(row)
-
-    with (output_dir / "packed_speedups.csv").open("w", newline="") as stream:
-        writer = csv.DictWriter(stream, fieldnames=list(packed_rows[0]))
-        writer.writeheader()
-        writer.writerows(packed_rows)
+    write_packed_speedups(summary_rows, output_dir)
 
     print(
         f"timings: {len(rows)} samples, {len(summary_rows)} complete groups, "
@@ -457,12 +494,21 @@ def summarize_profiles(profile_dir: Path, output_dir: Path) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--samples", type=Path, required=True)
+    timing_source = parser.add_mutually_exclusive_group(required=True)
+    timing_source.add_argument("--samples", type=Path)
+    timing_source.add_argument(
+        "--summary",
+        type=Path,
+        help="reuse an existing timing summary and only rebuild packed comparisons",
+    )
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--profile-dir", type=Path)
     args = parser.parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    summarize_timings(args.samples, args.output_dir)
+    if args.samples is not None:
+        summarize_timings(args.samples, args.output_dir)
+    else:
+        write_packed_speedups(read_rows(args.summary), args.output_dir)
     if args.profile_dir is not None:
         summarize_profiles(args.profile_dir, args.output_dir)
 
