@@ -1,0 +1,18 @@
+experiment=009_e2e3_decoder_optimization
+started_utc=2026-08-08T16:18:46Z
+git_commit=09aae8fbd61ae19c1dceb0d791c1528ae6ebdc3e
+git_status_begin
+?? results/009_e2e3_decoder_optimization/run_20260808T161846Z/
+?? results/009_e2e3_decoder_optimization/slurm-442212.out
+git_status_end
+
+nvidia_smi
+name, uuid, pci.bus_id, driver_version, memory.total [MiB], ecc.mode.current, clocks.max.sm [MHz], clocks.max.memory [MHz], power.limit [W]
+NVIDIA H200 NVL, GPU-3bb7dc49-ebaf-ab26-a2e4-426c8b73245c, 00000000:00:10.0, 610.43.02, 143771 MiB, Enabled, 1785 MHz, 3201 MHz, 600.00 W
+
+nvcc_version
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Tue_Dec_16_07:23:41_PM_PST_2025
+Cuda compilation tools, release 13.1, V13.1.115
+Build cuda_13.1.r13.1/compiler.37061995_0

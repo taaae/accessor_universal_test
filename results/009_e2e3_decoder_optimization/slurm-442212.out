@@ -1,0 +1,411 @@
+-- Configuring done (0.1s)
+-- Generating done (0.3s)
+-- Build files have been written to: /storage/home/timofeirusanov/accessor_universal_test/build-h200
+[ 50%] Building CUDA object CMakeFiles/decoder_optimization_bench.dir/src/decoder_optimization_bench.cu.o
+/storage/home/timofeirusanov/accessor_universal_test/src/decoder_optimization_bench.cu(746): warning #2361-D: invalid narrowing conversion from "int" to "unsigned long"
+    device_buffer<unsigned long long> integer_sink{max_blocks};
+                                                   ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/storage/home/timofeirusanov/accessor_universal_test/src/decoder_optimization_bench.cu(747): warning #2361-D: invalid narrowing conversion from "int" to "unsigned long"
+    device_buffer<double> partials{max_blocks};
+                                   ^
+
+/storage/home/timofeirusanov/accessor_universal_test/src/decoder_optimization_bench.cu(746): warning #2361-D: invalid narrowing conversion from "int" to "unsigned long"
+    device_buffer<unsigned long long> integer_sink{max_blocks};
+                                                   ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/storage/home/timofeirusanov/accessor_universal_test/src/decoder_optimization_bench.cu(747): warning #2361-D: invalid narrowing conversion from "int" to "unsigned long"
+    device_buffer<double> partials{max_blocks};
+                                   ^
+
+ptxas info    : 29 bytes gmem
+ptxas info    : Compiling entry function '_ZN62_GLOBAL__N__2485443c_29_decoder_optimization_bench_cu_af2961a120encode_values_kernelIN3aut7storage4e3m4EEEvPKdPNS2_5codecIT_E12storage_typeEm' for 'sm_90'
+ptxas info    : Function properties for _ZN62_GLOBAL__N__2485443c_29_decoder_optimization_bench_cu_af2961a120encode_values_kernelIN3aut7storage4e3m4EEEvPKdPNS2_5codecIT_E12storage_typeEm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 0 barriers
+ptxas info    : Compile time = 4.678 ms
+ptxas info    : Compiling entry function '_ZN62_GLOBAL__N__2485443c_29_decoder_optimization_bench_cu_af2961a120encode_values_kernelIN3aut7storage4e2m5EEEvPKdPNS2_5codecIT_E12storage_typeEm' for 'sm_90'
+ptxas info    : Function properties for _ZN62_GLOBAL__N__2485443c_29_decoder_optimization_bench_cu_af2961a120encode_values_kernelIN3aut7storage4e2m5EEEvPKdPNS2_5codecIT_E12storage_typeEm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 0 barriers
+ptxas info    : Compile time = 3.809 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization4gemvINS_7storage4e3m4ENS0_6lut_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization4gemvINS_7storage4e3m4ENS0_6lut_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 7.264 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization4gemvINS_7storage4e3m4ENS0_6lut_x1EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization4gemvINS_7storage4e3m4ENS0_6lut_x1EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.815 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization4gemvINS_7storage4e3m4ENS0_13branchless_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization4gemvINS_7storage4e3m4ENS0_13branchless_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 31 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 8.964 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization4gemvINS_7storage4e3m4ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization4gemvINS_7storage4e3m4ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 37 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 11.521 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization4gemvINS_7storage4e3m4ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization4gemvINS_7storage4e3m4ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 7.049 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization4gemvINS_7storage4e2m5ENS0_6lut_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization4gemvINS_7storage4e2m5ENS0_6lut_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 7.010 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization4gemvINS_7storage4e2m5ENS0_6lut_x1EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization4gemvINS_7storage4e2m5ENS0_6lut_x1EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.793 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization4gemvINS_7storage4e2m5ENS0_13branchless_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization4gemvINS_7storage4e2m5ENS0_13branchless_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 31 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 8.850 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization4gemvINS_7storage4e2m5ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization4gemvINS_7storage4e2m5ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 37 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 11.483 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization4gemvINS_7storage4e2m5ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization4gemvINS_7storage4e2m5ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 7.026 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization4gemvINS_7storage11fp64_e11m52ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization4gemvINS_7storage11fp64_e11m52ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.481 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization4gemvINS_7storage11fp64_e11m52ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization4gemvINS_7storage11fp64_e11m52ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeESA_mmmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.021 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization14dot_map_reduceINS_7storage4e3m4ENS0_6lut_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization14dot_map_reduceINS_7storage4e3m4ENS0_6lut_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.900 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization14dot_map_reduceINS_7storage4e3m4ENS0_6lut_x1EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization14dot_map_reduceINS_7storage4e3m4ENS0_6lut_x1EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.602 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization14dot_map_reduceINS_7storage4e3m4ENS0_13branchless_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization14dot_map_reduceINS_7storage4e3m4ENS0_13branchless_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 8.636 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization14dot_map_reduceINS_7storage4e3m4ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization14dot_map_reduceINS_7storage4e3m4ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 11.443 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization14dot_map_reduceINS_7storage4e3m4ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization14dot_map_reduceINS_7storage4e3m4ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.811 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization14dot_map_reduceINS_7storage4e2m5ENS0_6lut_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization14dot_map_reduceINS_7storage4e2m5ENS0_6lut_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.885 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization14dot_map_reduceINS_7storage4e2m5ENS0_6lut_x1EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization14dot_map_reduceINS_7storage4e2m5ENS0_6lut_x1EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.597 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization14dot_map_reduceINS_7storage4e2m5ENS0_13branchless_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization14dot_map_reduceINS_7storage4e2m5ENS0_13branchless_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 8.657 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization14dot_map_reduceINS_7storage4e2m5ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization14dot_map_reduceINS_7storage4e2m5ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 11.230 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization14dot_map_reduceINS_7storage4e2m5ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization14dot_map_reduceINS_7storage4e2m5ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.795 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization14dot_map_reduceINS_7storage11fp64_e11m52ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization14dot_map_reduceINS_7storage11fp64_e11m52ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 38 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.369 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization14dot_map_reduceINS_7storage11fp64_e11m52ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization14dot_map_reduceINS_7storage11fp64_e11m52ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeESA_mPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 3.823 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization18stream_load_decodeINS_7storage4e3m4ENS0_6lut_x4EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization18stream_load_decodeINS_7storage4e3m4ENS0_6lut_x4EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.370 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization18stream_load_decodeINS_7storage4e3m4ENS0_6lut_x1EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization18stream_load_decodeINS_7storage4e3m4ENS0_6lut_x1EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.660 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization18stream_load_decodeINS_7storage4e3m4ENS0_13branchless_x4EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization18stream_load_decodeINS_7storage4e3m4ENS0_13branchless_x4EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.386 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization18stream_load_decodeINS_7storage4e3m4ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization18stream_load_decodeINS_7storage4e3m4ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 7.655 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization18stream_load_decodeINS_7storage4e3m4ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization18stream_load_decodeINS_7storage4e3m4ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.361 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization18stream_load_decodeINS_7storage4e2m5ENS0_6lut_x4EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization18stream_load_decodeINS_7storage4e2m5ENS0_6lut_x4EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.360 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization18stream_load_decodeINS_7storage4e2m5ENS0_6lut_x1EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization18stream_load_decodeINS_7storage4e2m5ENS0_6lut_x1EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.653 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization18stream_load_decodeINS_7storage4e2m5ENS0_13branchless_x4EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization18stream_load_decodeINS_7storage4e2m5ENS0_13branchless_x4EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.397 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization18stream_load_decodeINS_7storage4e2m5ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization18stream_load_decodeINS_7storage4e2m5ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 7.729 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization18stream_load_decodeINS_7storage4e2m5ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization18stream_load_decodeINS_7storage4e2m5ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.386 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization18stream_load_decodeINS_7storage11fp64_e11m52ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization18stream_load_decodeINS_7storage11fp64_e11m52ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 3.870 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization18stream_load_decodeINS_7storage11fp64_e11m52ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization18stream_load_decodeINS_7storage11fp64_e11m52ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeEmPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 3.515 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization15register_decodeINS_7storage4e3m4ENS0_6lut_x4EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization15register_decodeINS_7storage4e3m4ENS0_6lut_x4EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 0 barriers
+ptxas info    : Compile time = 4.760 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization15register_decodeINS_7storage4e3m4ENS0_6lut_x1EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization15register_decodeINS_7storage4e3m4ENS0_6lut_x1EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 0 barriers
+ptxas info    : Compile time = 4.215 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization15register_decodeINS_7storage4e3m4ENS0_13branchless_x4EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization15register_decodeINS_7storage4e3m4ENS0_13branchless_x4EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 0 barriers
+ptxas info    : Compile time = 6.362 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization15register_decodeINS_7storage4e3m4ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization15register_decodeINS_7storage4e3m4ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 0 barriers
+ptxas info    : Compile time = 8.068 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization15register_decodeINS_7storage4e3m4ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization15register_decodeINS_7storage4e3m4ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 0 barriers
+ptxas info    : Compile time = 5.374 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization15register_decodeINS_7storage4e2m5ENS0_6lut_x4EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization15register_decodeINS_7storage4e2m5ENS0_6lut_x4EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 0 barriers
+ptxas info    : Compile time = 4.762 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization15register_decodeINS_7storage4e2m5ENS0_6lut_x1EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization15register_decodeINS_7storage4e2m5ENS0_6lut_x1EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 0 barriers
+ptxas info    : Compile time = 4.210 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization15register_decodeINS_7storage4e2m5ENS0_13branchless_x4EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization15register_decodeINS_7storage4e2m5ENS0_13branchless_x4EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 0 barriers
+ptxas info    : Compile time = 6.357 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization15register_decodeINS_7storage4e2m5ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization15register_decodeINS_7storage4e2m5ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 0 barriers
+ptxas info    : Compile time = 8.272 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization15register_decodeINS_7storage4e2m5ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization15register_decodeINS_7storage4e2m5ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 0 barriers
+ptxas info    : Compile time = 5.378 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization15register_decodeINS_7storage11fp64_e11m52ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization15register_decodeINS_7storage11fp64_e11m52ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 25 registers, used 0 barriers
+ptxas info    : Compile time = 4.323 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization15register_decodeINS_7storage11fp64_e11m52ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization15register_decodeINS_7storage11fp64_e11m52ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeEmiPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 0 barriers
+ptxas info    : Compile time = 4.073 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization16decode_all_codesINS_7storage4e3m4ENS0_6lut_x4EEEvPKNS2_5codecIT_E12storage_typeEPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization16decode_all_codesINS_7storage4e3m4ENS0_6lut_x4EEEvPKNS2_5codecIT_E12storage_typeEPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 0 barriers
+ptxas info    : Compile time = 1.588 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization16decode_all_codesINS_7storage4e3m4ENS0_6lut_x1EEEvPKNS2_5codecIT_E12storage_typeEPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization16decode_all_codesINS_7storage4e3m4ENS0_6lut_x1EEEvPKNS2_5codecIT_E12storage_typeEPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 1.080 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization16decode_all_codesINS_7storage4e3m4ENS0_13branchless_x4EEEvPKNS2_5codecIT_E12storage_typeEPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization16decode_all_codesINS_7storage4e3m4ENS0_13branchless_x4EEEvPKNS2_5codecIT_E12storage_typeEPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 0 barriers
+ptxas info    : Compile time = 2.425 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization16decode_all_codesINS_7storage4e3m4ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeEPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization16decode_all_codesINS_7storage4e3m4ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeEPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 0 barriers
+ptxas info    : Compile time = 4.128 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization16decode_all_codesINS_7storage4e3m4ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeEPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization16decode_all_codesINS_7storage4e3m4ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeEPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 13 registers, used 0 barriers
+ptxas info    : Compile time = 2.013 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization16decode_all_codesINS_7storage4e2m5ENS0_6lut_x4EEEvPKNS2_5codecIT_E12storage_typeEPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization16decode_all_codesINS_7storage4e2m5ENS0_6lut_x4EEEvPKNS2_5codecIT_E12storage_typeEPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 0 barriers
+ptxas info    : Compile time = 1.554 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization16decode_all_codesINS_7storage4e2m5ENS0_6lut_x1EEEvPKNS2_5codecIT_E12storage_typeEPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization16decode_all_codesINS_7storage4e2m5ENS0_6lut_x1EEEvPKNS2_5codecIT_E12storage_typeEPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 1.085 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization16decode_all_codesINS_7storage4e2m5ENS0_13branchless_x4EEEvPKNS2_5codecIT_E12storage_typeEPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization16decode_all_codesINS_7storage4e2m5ENS0_13branchless_x4EEEvPKNS2_5codecIT_E12storage_typeEPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 0 barriers
+ptxas info    : Compile time = 2.416 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization16decode_all_codesINS_7storage4e2m5ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeEPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization16decode_all_codesINS_7storage4e2m5ENS0_10current_x4EEEvPKNS2_5codecIT_E12storage_typeEPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 0 barriers
+ptxas info    : Compile time = 3.971 ms
+ptxas info    : Compiling entry function '_ZN3aut20decoder_optimization16decode_all_codesINS_7storage4e2m5ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeEPKfPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut20decoder_optimization16decode_all_codesINS_7storage4e2m5ENS0_10current_x1EEEvPKNS2_5codecIT_E12storage_typeEPKfPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 13 registers, used 0 barriers
+ptxas info    : Compile time = 2.013 ms
+ptxas info    : Compiling entry function '_ZN3aut11performance11stream_loadINS_7storage4e3m4ELi4EEEvPKNS2_5codecIT_E12storage_typeEmPy' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut11performance11stream_loadINS_7storage4e3m4ELi4EEEvPKNS2_5codecIT_E12storage_typeEmPy
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 3.949 ms
+ptxas info    : Compiling entry function '_ZN3aut11performance11stream_loadINS_7storage4e3m4ELi1EEEvPKNS2_5codecIT_E12storage_typeEmPy' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut11performance11stream_loadINS_7storage4e3m4ELi1EEEvPKNS2_5codecIT_E12storage_typeEmPy
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 3.615 ms
+ptxas info    : Compiling entry function '_ZN3aut11performance11stream_loadINS_7storage4e2m5ELi4EEEvPKNS2_5codecIT_E12storage_typeEmPy' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut11performance11stream_loadINS_7storage4e2m5ELi4EEEvPKNS2_5codecIT_E12storage_typeEmPy
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 3.940 ms
+ptxas info    : Compiling entry function '_ZN3aut11performance11stream_loadINS_7storage4e2m5ELi1EEEvPKNS2_5codecIT_E12storage_typeEmPy' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut11performance11stream_loadINS_7storage4e2m5ELi1EEEvPKNS2_5codecIT_E12storage_typeEmPy
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 3.622 ms
+ptxas info    : Compiling entry function '_ZN3aut11performance11stream_loadINS_7storage11fp64_e11m52ELi4EEEvPKNS2_5codecIT_E12storage_typeEmPy' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut11performance11stream_loadINS_7storage11fp64_e11m52ELi4EEEvPKNS2_5codecIT_E12storage_typeEmPy
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 3.984 ms
+ptxas info    : Compiling entry function '_ZN3aut11performance11stream_loadINS_7storage11fp64_e11m52ELi1EEEvPKNS2_5codecIT_E12storage_typeEmPy' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut11performance11stream_loadINS_7storage11fp64_e11m52ELi1EEEvPKNS2_5codecIT_E12storage_typeEmPy
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 3.655 ms
+ptxas info    : Compiling entry function '_ZN3aut7kernels20storage_dot_finalizeEPKdmPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut7kernels20storage_dot_finalizeEPKdmPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 2.851 ms
+/storage/home/timofeirusanov/accessor_universal_test/src/decoder_optimization_bench.cu: In function ‘void _GLOBAL__N__2485443c_29_decoder_optimization_bench_cu_af2961a1::run_distribution(const _GLOBAL__N__2485443c_29_decoder_optimization_bench_cu_af2961a1::options&, const _GLOBAL__N__2485443c_29_decoder_optimization_bench_cu_af2961a1::device_info&, _GLOBAL__N__2485443c_29_decoder_optimization_bench_cu_af2961a1::distribution, double*, double*, double*, double*, _GLOBAL__N__2485443c_29_decoder_optimization_bench_cu_af2961a1::encoded_data<aut::storage::e2m5>&, _GLOBAL__N__2485443c_29_decoder_optimization_bench_cu_af2961a1::encoded_data<aut::storage::e3m4>&, const float*, const float*, _GLOBAL__N__2485443c_29_decoder_optimization_bench_cu_af2961a1::sample_output&, _GLOBAL__N__2485443c_29_decoder_optimization_bench_cu_af2961a1::event_timer&, _GLOBAL__N__2485443c_29_decoder_optimization_bench_cu_af2961a1::random_generator&)’:
+/storage/home/timofeirusanov/accessor_universal_test/src/decoder_optimization_bench.cu:746:50: warning: narrowing conversion of ‘(int)max_blocks’ from ‘int’ to ‘std::size_t’ {aka ‘long unsigned int’} [-Wnarrowing]
+  746 |   device_buffer<unsigned long long> integer_sink{max_blocks};
+      |                                                  ^~~~~~~~~~
+/storage/home/timofeirusanov/accessor_universal_test/src/decoder_optimization_bench.cu:747:34: warning: narrowing conversion of ‘(int)max_blocks’ from ‘int’ to ‘std::size_t’ {aka ‘long unsigned int’} [-Wnarrowing]
+  747 |   device_buffer<double> partials{max_blocks};
+      |                                  ^~~~~~~~~~
+[100%] Linking CUDA executable bin/decoder_optimization_bench
+[100%] Built target decoder_optimization_bench
+[100%] Built target memory_accessor_test
+[100%] Built target storage_formats_test
+[100%] Built target accuracy_statistics_test
+Internal ctest changing into directory: /storage/home/timofeirusanov/accessor_universal_test/build-h200
+Test project /storage/home/timofeirusanov/accessor_universal_test/build-h200
+    Start 1: memory_accessor_test
+1/3 Test #1: memory_accessor_test .............   Passed    0.00 sec
+    Start 2: storage_formats_test
+2/3 Test #2: storage_formats_test .............   Passed    0.00 sec
+    Start 3: accuracy_statistics_test
+3/3 Test #3: accuracy_statistics_test .........   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 3
+
+Total Test time (real) =   0.01 sec
+E2/E3 decoder optimization benchmark
+GPU: NVIDIA H200 NVL (sm_90)
+All 256 encodings validated for every E2/E3 strategy.
+uniform_0_1
+  DOT N=2^16 complete
+  DOT N=2^20 complete
+  DOT N=2^24 complete
+  DOT N=2^27 complete
+  GEMV N=2^10 complete
+  GEMV N=2^12 complete
+  GEMV N=2^14 complete
+  GEMV N=2^16 complete
+normal_0_1
+  DOT N=2^16 complete
+  DOT N=2^20 complete
+  DOT N=2^24 complete
+  DOT N=2^27 complete
+  GEMV N=2^10 complete
+  GEMV N=2^12 complete
+  GEMV N=2^14 complete
+  GEMV N=2^16 complete
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/009_e2e3_decoder_optimization/run_20260808T161846Z/timing_samples.csv
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/009_e2e3_decoder_optimization/run_20260808T161846Z/decoder_validation.csv
+Validated 5400 timing samples in 360 groups
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/009_e2e3_decoder_optimization/run_20260808T161846Z/timing_summary.csv
+cuobjdump fatal   : Unknown option '-demangle'
+srun: error: gpu-nvidia-h200-1-studvm-2: task 0: Exited with exit code 1

@@ -1,0 +1,11 @@
+format,strategy,lanes,finite_bit_mismatches,classification_mismatches,max_finite_abs_error
+e2m5,current_x1,1,0,0,0
+e2m5,current_x4,4,0,0,0
+e2m5,branchless_x4,4,0,0,0
+e2m5,lut_x1,1,0,0,0
+e2m5,lut_x4,4,0,0,0
+e3m4,current_x1,1,0,0,0
+e3m4,current_x4,4,0,0,0
+e3m4,branchless_x4,4,0,0,0
+e3m4,lut_x1,1,0,0,0
+e3m4,lut_x4,4,0,0,0

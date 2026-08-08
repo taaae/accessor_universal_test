@@ -1,0 +1,17 @@
+dot_powers=16,20,24,27
+gemv_powers=10,12,14,16
+gemv_rows=1024
+distributions=uniform_0_1,normal_0_1
+formats=fp64_e11m52,e2m5,e3m4
+fp64_strategies=current_x1,current_x4
+e2_e3_strategies=current_x1,current_x4,branchless_x4,lut_x1,lut_x4
+lookup_table=256_entry_fp32_read_only_global_l1
+lookup_table_bytes_per_format=1024
+lookup_initialization_timed=0
+warmup=10
+rounds=3
+samples_per_round=5
+target_sample_ms=20
+decode_repeats=256
+base_seed=2611923443488327891
+timing=CUDA_events;variants_interleaved_in_rotating_order

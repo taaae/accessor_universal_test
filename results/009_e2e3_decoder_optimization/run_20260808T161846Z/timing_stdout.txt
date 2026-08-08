@@ -1,0 +1,23 @@
+E2/E3 decoder optimization benchmark
+GPU: NVIDIA H200 NVL (sm_90)
+All 256 encodings validated for every E2/E3 strategy.
+uniform_0_1
+  DOT N=2^16 complete
+  DOT N=2^20 complete
+  DOT N=2^24 complete
+  DOT N=2^27 complete
+  GEMV N=2^10 complete
+  GEMV N=2^12 complete
+  GEMV N=2^14 complete
+  GEMV N=2^16 complete
+normal_0_1
+  DOT N=2^16 complete
+  DOT N=2^20 complete
+  DOT N=2^24 complete
+  DOT N=2^27 complete
+  GEMV N=2^10 complete
+  GEMV N=2^12 complete
+  GEMV N=2^14 complete
+  GEMV N=2^16 complete
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/009_e2e3_decoder_optimization/run_20260808T161846Z/timing_samples.csv
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/009_e2e3_decoder_optimization/run_20260808T161846Z/decoder_validation.csv
