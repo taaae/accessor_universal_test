@@ -69,6 +69,11 @@ vcpkg_installed/
 # debug information files
 *.dwo
 
+# Full CUDA disassembly can contain hundreds of megabytes of template kernels.
+# Keep focused extracts only; historical tracked dumps remain tracked.
+results/**/sass.txt
+results/**/sass.txt.gz
+
 # test output & cache
 Testing/
 .cache/

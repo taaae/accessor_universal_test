@@ -91,12 +91,8 @@ if command -v cuobjdump >/dev/null 2>&1; then
         echo "warning: cuobjdump resource-usage export failed" >&2
         echo "resource_usage=failed_nonfatal" >>"${diagnostics_status}"
     fi
-    if cuobjdump --dump-sass "${benchmark}" >"${run_dir}/sass.txt"; then
-        echo "sass=complete" >>"${diagnostics_status}"
-    else
-        echo "warning: cuobjdump SASS export failed" >&2
-        echo "sass=failed_nonfatal" >>"${diagnostics_status}"
-    fi
+    echo "sass=skipped_full_dump_exceeds_repository_artifact_budget" \
+        >>"${diagnostics_status}"
 else
     echo "cuobjdump=unavailable" \
         >"${run_dir}/compiler_diagnostics_status.txt"

@@ -56,6 +56,9 @@ sbatch --wait --nodelist=gpu-nvidia-h200-1-studvm-2 \
 
 The job creates a timestamped directory here containing raw samples, exactness
 validation, median summaries, width-matched speedups, plateau rows, compiler
-resource usage, and SASS. Compiler diagnostic exports are auxiliary and do not
-invalidate completed CUDA-event measurements if the installed `cuobjdump`
-lacks a requested capability.
+resource usage, and diagnostic status. Full SASS is intentionally excluded:
+the executable contains hundreds of template instantiations and its complete
+text dump exceeds ordinary Git hosting limits. Focused kernel extracts can be
+generated later if timing identifies a strategy worth instruction-level study.
+Compiler diagnostics are auxiliary and do not invalidate completed CUDA-event
+measurements.
