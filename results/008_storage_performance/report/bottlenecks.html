@@ -3,28 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kernel bottlenecks — H200 storage performance</title>
+<title>Kernel bottlenecks — H200 storage-format report</title>
 <link rel="stylesheet" href="report.css">
 </head>
 <body>
-<header><div class="shell"><a class="brand" href="index.html">H200 storage performance</a><nav aria-label="Report sections"><a href="index.html">Overview</a><a href="total-performance.html">Total performance</a><a href="packing.html">Packed vs unpacked</a><a href="roofline.html">Roofline</a><a href="conversion.html">Conversion</a><a href="bottlenecks.html" aria-current="page" class="active">Bottlenecks</a><a href="methodology.html">Methodology</a></nav></div></header>
+<header><div class="shell"><a class="brand" href="index.html">H200 storage-format report</a><nav aria-label="Report sections"><a href="index.html">Overview</a><a href="total-performance.html">Total performance</a><a href="same-bit-formats.html">Same-bit formats</a><a href="packing.html">Packed vs unpacked</a><a href="roofline.html">Roofline</a><a href="conversion.html">Conversion</a><a href="bottlenecks.html" aria-current="page" class="active">Bottlenecks</a><a href="accuracy.html">Accuracy</a><a href="methodology.html">Methodology</a></nav></div></header>
 <main class="shell">
 <h1>Kernel bottlenecks</h1>
 <p class="lead">Nsight Compute identifies simultaneous hardware pressure; utilization percentages overlap and are not a partition of elapsed time.</p>
 <section class="graph-section">
 <h2>Memory versus SM pressure</h2>
 <p>Upper-left points are conversion/compute limited; lower-right points are memory limited; the upper-right region is mixed.</p>
-<figure><img src="assets/bottleneck-map.svg" alt="DRAM versus SM percentage of sustained peak for x4 DOT and GEMV."></figure>
+<figure><a href="assets/bottleneck-map.svg"><img src="assets/bottleneck-map.svg" alt="DRAM versus SM percentage of sustained peak for x4 DOT and GEMV."></a></figure>
 </section><section class="graph-section">
 <h2>Which execution resources are active</h2>
 <p>This shows where conversion uses ALU or XU pipelines while FP64 accumulation and memory traffic overlap.</p>
-<figure><img src="assets/resource-heatmap.svg" alt="Heatmaps of DRAM, ALU, XU, FP64, and issue activity for every x4 format."><figcaption>Columns cannot be added into time percentages because GPU pipelines execute concurrently.</figcaption></figure>
+<figure><a href="assets/resource-heatmap.svg"><img src="assets/resource-heatmap.svg" alt="Heatmaps of DRAM, ALU, XU, FP64, and issue activity for every x4 format."></a><figcaption>Columns cannot be added into time percentages because GPU pipelines execute concurrently.</figcaption></figure>
 </section><section class="graph-section">
 <h2>Register and occupancy trade-off</h2>
 <p>Lines connect x1 circles to x4 triangles and show when packing increases per-thread state enough to reduce occupancy.</p>
-<figure><img src="assets/register-pressure.svg" alt="Registers per thread versus achieved occupancy for x1 and x4 DOT and GEMV."></figure>
+<figure><a href="assets/register-pressure.svg"><img src="assets/register-pressure.svg" alt="Registers per thread versus achieved occupancy for x1 and x4 DOT and GEMV."></a></figure>
 </section>
 </main>
-<footer><div class="shell">Source run: <code>run_20260808T131626Z</code></div></footer>
+<footer><div class="shell">Performance: <code>run_20260808T131626Z</code> · Accuracy: <code>run_20260808T122054Z</code></div></footer>
 </body>
 </html>

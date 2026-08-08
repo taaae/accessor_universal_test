@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the multi-page H200 storage-format performance report."""
+"""Build the unified multi-page H200 storage-format report."""
 
 from __future__ import annotations
 
@@ -7,6 +7,7 @@ import argparse
 import csv
 import html
 import math
+import os
 import shutil
 import statistics
 from pathlib import Path
@@ -88,6 +89,13 @@ FAMILY_COLORS = {
 
 LANE_COLORS = {1: "#6c757d", 2: "#0072B2", 4: "#D55E00"}
 BIT_MARKERS = {8: "o", 16: "s", 32: "^", 64: "D"}
+FORMAT_MARKERS = ("o", "s", "^", "D", "P", "X")
+SAME_BIT_COLORS = ("#0072B2", "#D55E00", "#009E73", "#CC79A7", "#E69F00", "#56B4E9")
+BIT_FORMATS = {
+    8: ("e1m6", "e2m5", "e3m4", "fp8_e4m3", "fp8_e5m2"),
+    16: ("e1m14", "e2m13", "e3m12", "fp16_e5m10", "bf16_e8m7", "e11m4"),
+    32: ("e1m30", "e2m29", "e3m28", "fp32_e8m23", "e11m20"),
+}
 SELECTED_FORMATS = (
     "e1m6",
     "e2m29",
@@ -111,11 +119,20 @@ LABEL_OFFSETS = {
 PAGES = (
     ("index.html", "Overview"),
     ("total-performance.html", "Total performance"),
+    ("same-bit-formats.html", "Same-bit formats"),
     ("packing.html", "Packed vs unpacked"),
     ("roofline.html", "Roofline"),
     ("conversion.html", "Conversion"),
     ("bottlenecks.html", "Bottlenecks"),
+    ("accuracy.html", "Accuracy"),
     ("methodology.html", "Methodology"),
+)
+
+ACCURACY_PAGES = (
+    ("accuracy.html", "Accuracy overview"),
+    ("accuracy-dot.html", "DOT accuracy"),
+    ("accuracy-gemv.html", "GEMV accuracy"),
+    ("accuracy-scalar.html", "Scalar and arithmetic"),
 )
 
 
@@ -135,6 +152,22 @@ def parse_args() -> argparse.Namespace:
         "--output-dir",
         type=Path,
         default=Path("results/008_storage_performance/report"),
+    )
+    parser.add_argument(
+        "--accuracy-dir",
+        type=Path,
+        default=Path("results/006_accuracy_model/generated"),
+        help="generated analytical model and H200 comparison directory",
+    )
+    parser.add_argument(
+        "--accuracy-run-dir",
+        type=Path,
+        help="GPU accuracy run directory; default: newest complete run",
+    )
+    parser.add_argument(
+        "--accuracy-results-root",
+        type=Path,
+        default=Path("results/007_gpu_accuracy_simulation"),
     )
     return parser.parse_args()
 
@@ -157,6 +190,18 @@ def newest_complete_run(root: Path) -> Path:
     )
     if not candidates:
         raise SystemExit(f"no complete performance run below {root}")
+    return candidates[-1]
+
+
+def newest_accuracy_run(root: Path) -> Path:
+    candidates = sorted(
+        path
+        for path in root.glob("run_*")
+        if (path / "simulation_summary.csv").is_file()
+        and (path / "convergence_report.csv").is_file()
+    )
+    if not candidates:
+        raise SystemExit(f"no complete accuracy run below {root}")
     return candidates[-1]
 
 
@@ -358,6 +403,141 @@ def plot_size_scaling(rows: Sequence[dict[str, str]], path: Path) -> Path:
     fig.legend(handles, labels, loc="upper center", ncol=4, frameon=False, bbox_to_anchor=(0.5, 1.02))
     fig.suptitle("Where launch overhead gives way to format-dependent throughput", y=1.12, fontsize=14)
     fig.tight_layout(rect=(0, 0, 1, 0.93))
+    return save_figure(fig, path)
+
+
+def plot_same_bit_kernel_time(
+    rows: Sequence[dict[str, str]], storage_bits: int, path: Path
+) -> Path:
+    formats = BIT_FORMATS[storage_bits]
+    color_by_format = dict(zip(formats, SAME_BIT_COLORS))
+    marker_by_format = dict(zip(formats, FORMAT_MARKERS))
+    fig, axes = plt.subplots(3, 2, figsize=(13.5, 11.2), sharey="col")
+    for row_index, lane in enumerate((1, 2, 4)):
+        for column_index, component in enumerate(("dot", "gemv")):
+            axis = axes[row_index, column_index]
+            for name in formats:
+                current = sorted(
+                    (
+                        row
+                        for row in rows
+                        if is_row(
+                            row,
+                            component=component,
+                            distribution="normal_0_1",
+                            lanes=lane,
+                            format_name=name,
+                        )
+                    ),
+                    key=lambda row: int(row["n"]),
+                )
+                axis.plot(
+                    [int(row["n"]) for row in current],
+                    [number(row, "median_time_ms") for row in current],
+                    color=color_by_format[name],
+                    marker=marker_by_format[name],
+                    linewidth=1.6,
+                    markersize=4.5,
+                    label=label(name),
+                )
+            axis.set_xscale("log", base=2)
+            axis.set_yscale("log")
+            lane_text = "unpacked x1" if lane == 1 else f"packed x{lane}"
+            axis.set_title(f"{component.upper()} — {lane_text}")
+            axis.set_xlabel("Reduction length N")
+            axis.set_ylabel("Complete kernel time (ms)")
+            format_axis_labels(axis)
+    handles, labels = axes[0, 0].get_legend_handles_labels()
+    fig.legend(
+        handles,
+        labels,
+        loc="upper center",
+        ncol=min(3, len(formats)),
+        frameon=False,
+        bbox_to_anchor=(0.5, 1.01),
+    )
+    fig.suptitle(
+        f"{storage_bits}-bit formats: complete kernel time versus N",
+        y=1.08,
+        fontsize=14,
+    )
+    fig.tight_layout(rect=(0, 0, 1, 0.94))
+    return save_figure(fig, path)
+
+
+def plot_accuracy_performance_tradeoff(
+    timing_rows: Sequence[dict[str, str]],
+    accuracy_rows: Sequence[dict[str, str]],
+    path: Path,
+) -> Path:
+    fig, axes = plt.subplots(1, 2, figsize=(13.5, 5.5))
+    for axis, component in zip(axes, ("dot", "gemv")):
+        performance = {
+            row["format"]: row
+            for row in max_size_rows(timing_rows, component=component)
+        }
+        candidates = [
+            row
+            for row in accuracy_rows
+            if row["kernel"] == component
+            and row["distribution"] == "normal_0_1"
+        ]
+        accuracy_n = max(int(row["n"]) for row in candidates)
+        accuracy = {
+            row["format"]: row
+            for row in candidates
+            if int(row["n"]) == accuracy_n
+        }
+        positive = [
+            number(row, "measured_rmse")
+            for row in accuracy.values()
+            if math.isfinite(number(row, "measured_rmse"))
+            and number(row, "measured_rmse") > 0.0
+        ]
+        floor = min(positive) / 5.0
+        for name in FORMAT_ORDER:
+            measured = number(accuracy[name], "measured_rmse")
+            if not math.isfinite(measured):
+                continue
+            exact_zero = measured == 0.0
+            x = number(performance[name], "median_time_ms")
+            y = floor if exact_zero else measured
+            axis.scatter(
+                x,
+                y,
+                s=58,
+                marker=BIT_MARKERS[int(performance[name]["storage_bits"])],
+                facecolors="none" if exact_zero else FAMILY_COLORS[format_family(name)],
+                edgecolors=FAMILY_COLORS[format_family(name)],
+                linewidth=1.2,
+                zorder=3,
+            )
+            if name in SELECTED_FORMATS:
+                axis.annotate(
+                    label(name),
+                    (x, y),
+                    xytext=LABEL_OFFSETS[name],
+                    textcoords="offset points",
+                    fontsize=7,
+                )
+        axis.set_xscale("log")
+        axis.set_yscale("log")
+        axis.set_title(
+            f"{component.upper()} — performance N={int(next(iter(performance.values()))['n']):,}; accuracy N={accuracy_n:,}"
+        )
+        axis.set_xlabel("Complete x4 kernel time (ms) — lower is better")
+        axis.set_ylabel("Measured storage RMSE — lower is better")
+        axis.text(
+            0.03,
+            0.04,
+            "Exact zero is shown at the plot floor",
+            transform=axis.transAxes,
+            fontsize=8,
+        )
+        format_axis_labels(axis)
+    add_family_legend(fig, y=1.02)
+    fig.suptitle("Performance–accuracy trade-off on N(0,1)", y=1.11, fontsize=14)
+    fig.tight_layout(rect=(0, 0, 1, 0.94))
     return save_figure(fig, path)
 
 
@@ -815,9 +995,20 @@ def plot_timing_stability(rows: Sequence[dict[str, str]], path: Path) -> Path:
 def navigation(current: str) -> str:
     links = []
     for filename, text in PAGES:
-        active = ' aria-current="page" class="active"' if filename == current else ""
+        is_active = filename == current or (
+            filename == "accuracy.html" and current.startswith("accuracy-")
+        )
+        active = ' aria-current="page" class="active"' if is_active else ""
         links.append(f'<a href="{filename}"{active}>{html.escape(text)}</a>')
     return "".join(links)
+
+
+def accuracy_navigation(current: str) -> str:
+    links = []
+    for filename, text in ACCURACY_PAGES:
+        active = ' aria-current="page" class="active"' if filename == current else ""
+        links.append(f'<a href="{filename}"{active}>{html.escape(text)}</a>')
+    return '<nav class="subnav" aria-label="Accuracy sections">' + "".join(links) + "</nav>"
 
 
 def page_document(
@@ -826,24 +1017,25 @@ def page_document(
     title: str,
     intro: str,
     body: str,
-    run_name: str,
+    performance_run_name: str,
+    accuracy_run_name: str,
 ) -> str:
     return f"""<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{html.escape(title)} — H200 storage performance</title>
+<title>{html.escape(title)} — H200 storage-format report</title>
 <link rel="stylesheet" href="report.css">
 </head>
 <body>
-<header><div class="shell"><a class="brand" href="index.html">H200 storage performance</a><nav aria-label="Report sections">{navigation(filename)}</nav></div></header>
+<header><div class="shell"><a class="brand" href="index.html">H200 storage-format report</a><nav aria-label="Report sections">{navigation(filename)}</nav></div></header>
 <main class="shell">
 <h1>{html.escape(title)}</h1>
 <p class="lead">{html.escape(intro)}</p>
 {body}
 </main>
-<footer><div class="shell">Source run: <code>{html.escape(run_name)}</code></div></footer>
+<footer><div class="shell">Performance: <code>{html.escape(performance_run_name)}</code> · Accuracy: <code>{html.escape(accuracy_run_name)}</code></div></footer>
 </body>
 </html>
 """
@@ -851,10 +1043,29 @@ def page_document(
 
 def graph_section(title: str, description: str, image: str, alt: str, caption: str = "") -> str:
     caption_html = f"<figcaption>{html.escape(caption)}</figcaption>" if caption else ""
+    source = image if image.startswith("../") else f"assets/{image}"
     return f"""<section class="graph-section">
 <h2>{html.escape(title)}</h2>
 <p>{html.escape(description)}</p>
-<figure><img src="assets/{html.escape(image)}" alt="{html.escape(alt)}">{caption_html}</figure>
+<figure><a href="{html.escape(source)}"><img src="{html.escape(source)}" alt="{html.escape(alt)}"></a>{caption_html}</figure>
+</section>"""
+
+
+def accuracy_figure_group(
+    title: str,
+    description: str,
+    figures: Sequence[tuple[str, str, str]],
+) -> str:
+    blocks = []
+    for subtitle, source, alt in figures:
+        blocks.append(
+            f'<h3>{html.escape(subtitle)}</h3><figure><a href="{html.escape(source)}">'
+            f'<img src="{html.escape(source)}" alt="{html.escape(alt)}"></a></figure>'
+        )
+    return f"""<section class="graph-section">
+<h2>{html.escape(title)}</h2>
+<p>{html.escape(description)}</p>
+{''.join(blocks)}
 </section>"""
 
 
@@ -867,23 +1078,55 @@ def fastest(rows: Sequence[dict[str, str]], component: str) -> tuple[str, float]
 def write_report(
     output_dir: Path,
     run_dir: Path,
+    accuracy_dir: Path,
+    accuracy_run_dir: Path,
     rows: Sequence[dict[str, str]],
     profile: Sequence[dict[str, str]],
+    accuracy_rows: Sequence[dict[str, str]],
 ) -> None:
     dot_name, dot_time = fastest(rows, "dot")
     gemv_name, gemv_time = fastest(rows, "gemv")
     bandwidth = memory_ceiling(profile)
-    raw_prefix = f"../{run_dir.name}"
+    raw_prefix = Path(os.path.relpath(run_dir, output_dir)).as_posix()
+    accuracy_asset_prefix = Path(
+        os.path.relpath(accuracy_dir, output_dir)
+    ).as_posix()
+    accuracy_raw_prefix = Path(
+        os.path.relpath(accuracy_run_dir, output_dir)
+    ).as_posix()
 
-    cards = "".join(
+    def accuracy_asset(name: str) -> str:
+        return f"{accuracy_asset_prefix}/{name}.svg"
+
+    comparable_accuracy = [
+        row
+        for row in accuracy_rows
+        if number(row, "predicted_mse") > 0.0
+        and math.isfinite(number(row, "measured_mse"))
+    ]
+    within_twenty_percent = sum(
+        0.8 <= number(row, "mse_ratio_measured_to_predicted") <= 1.2
+        for row in comparable_accuracy
+    )
+
+    performance_cards = "".join(
         f'<a class="report-link" href="{filename}"><strong>{html.escape(text)}</strong><span>{html.escape(description)}</span></a>'
         for filename, text, description in (
             ("total-performance.html", "Total performance", "Complete DOT/GEMV time and size scaling."),
+            ("same-bit-formats.html", "Same-bit formats", "8-, 16-, and 32-bit formats at x1, x2, and x4."),
             ("packing.html", "Packed vs unpacked", "x2 and x4 throughput benefit over x1."),
             ("roofline.html", "Roofline", "Useful work relative to the measured HBM ceiling."),
             ("conversion.html", "Conversion", "Register decode, streaming decode, and data dependence."),
             ("bottlenecks.html", "Bottlenecks", "Nsight resource pressure, registers, and occupancy."),
-            ("methodology.html", "Methodology", "Sampling, definitions, caveats, and raw data."),
+        )
+    )
+    accuracy_cards = "".join(
+        f'<a class="report-link" href="{filename}"><strong>{html.escape(text)}</strong><span>{html.escape(description)}</span></a>'
+        for filename, text, description in (
+            ("accuracy.html", "Accuracy overview", "Performance–accuracy trade-off and test scope."),
+            ("accuracy-dot.html", "DOT accuracy", "Measured RMSE versus the analytical model."),
+            ("accuracy-gemv.html", "GEMV accuracy", "Per-row RMSE across fixed M=1024."),
+            ("accuracy-scalar.html", "Scalar and arithmetic", "Encoding events and FP64 arithmetic error."),
         )
     )
     overview_body = f"""
@@ -892,7 +1135,8 @@ def write_report(
 <div><span>Fastest large GEMV</span><strong>{gemv_name}</strong><small>{gemv_time:.3f} ms</small></div>
 <div><span>Measured HBM ceiling</span><strong>{bandwidth / 1000:.2f} TB/s</strong><small>median memory-bound profiles</small></div>
 </div>
-<section><h2>Explore the report</h2><p>Each question has its own short page; the navigation remains available at the top.</p><div class="report-grid">{cards}</div></section>
+<section><h2>Performance</h2><p>Timing, packing, roofline, conversion, and hardware bottlenecks.</p><div class="report-grid">{performance_cards}</div></section>
+<section><h2>Accuracy</h2><p>H200 simulations compared with the analytical storage-error model.</p><div class="report-grid">{accuracy_cards}</div></section>
 """ + graph_section(
         "All-format overview",
         "This compares complete x4 kernel time at the largest tested N; lower bars are faster.",
@@ -903,7 +1147,7 @@ def write_report(
     pages: dict[str, tuple[str, str, str]] = {
         "index.html": (
             "Overview",
-            "A map of the H200 performance results and the shortest route to each question.",
+            "One entry point for the H200 performance measurements and accuracy validation.",
             overview_body,
         ),
         "total-performance.html": (
@@ -926,6 +1170,28 @@ def write_report(
                 "This shows when launch overhead stops hiding differences in load and conversion cost.",
                 "size-scaling.svg",
                 "Log-log kernel time versus reduction length for representative formats.",
+            ),
+        ),
+        "same-bit-formats.html": (
+            "Same-bit format comparison",
+            "Complete DOT and GEMV time versus N for formats with equal storage width, split into unpacked x1 and packed x2/x4 implementations.",
+            graph_section(
+                "8-bit formats",
+                "This compares the three custom E1/E2/E3 layouts with CUDA FP8 E4M3 and E5M2 at the same one-byte storage cost.",
+                "same-bit-8.svg",
+                "Complete DOT and GEMV time versus N for x1, x2, and x4 8-bit formats.",
+            )
+            + graph_section(
+                "16-bit formats",
+                "This directly compares E11M4, FP16, BF16, and the custom 16-bit layouts, including packed x2 and x4 variants.",
+                "same-bit-16.svg",
+                "Complete DOT and GEMV time versus N for x1, x2, and x4 16-bit formats.",
+            )
+            + graph_section(
+                "32-bit formats",
+                "This compares FP32 and E11M20 with the custom 32-bit layouts at x1, x2, and x4.",
+                "same-bit-32.svg",
+                "Complete DOT and GEMV time versus N for x1, x2, and x4 32-bit formats.",
             ),
         ),
         "packing.html": (
@@ -1005,9 +1271,149 @@ def write_report(
                 "Registers per thread versus achieved occupancy for x1 and x4 DOT and GEMV.",
             ),
         ),
+        "accuracy.html": (
+            "Accuracy overview",
+            "Measured H200 storage error, its analytical prediction, and the resulting performance–accuracy trade-off.",
+            accuracy_navigation("accuracy.html")
+            + graph_section(
+                "Performance–accuracy trade-off",
+                "This joins the large-kernel x4 timing with measured N(0,1) storage RMSE; points toward the lower-left are both faster and more accurate.",
+                "performance-accuracy-tradeoff.svg",
+                "DOT and GEMV kernel time versus measured storage RMSE for every format.",
+                "Performance and accuracy use their own largest tested N, shown in each panel title.",
+            )
+            + f"""<section class="text-section"><h2>Validation scope</h2>
+<p>The GPU run contains {len(accuracy_rows)} storage comparisons across DOT, GEMV, both distributions, all formats, and every tested N. {within_twenty_percent} of {len(comparable_accuracy)} finite nonzero cases have measured MSE within 20% of the analytical prediction.</p>
+<p>The DOT and GEMV pages separate the results by kernel, distribution, and storage width. The scalar page covers quantization events and the smaller FP64 arithmetic-only error.</p>
+<p><a href="{accuracy_asset_prefix}/accuracy_model_report.html">Open the original complete analytical report</a>.</p>
+</section>""",
+        ),
+        "accuracy-dot.html": (
+            "DOT accuracy",
+            "Measured storage RMSE versus the analytical model for every format and DOT length.",
+            accuracy_navigation("accuracy-dot.html")
+            + accuracy_figure_group(
+                "U(0,1) DOT",
+                "Each figure overlays H200 RMSE and its confidence interval on the analytical prediction.",
+                tuple(
+                    (
+                        group,
+                        accuracy_asset(f"gpu_uniform_0_1_dot_{suffix}"),
+                        f"Measured and analytical DOT RMSE for U(0,1), {group} formats.",
+                    )
+                    for group, suffix in (
+                        ("8-bit", "8bit"),
+                        ("16-bit", "16bit"),
+                        ("32/64-bit", "32_64bit"),
+                    )
+                ),
+            )
+            + accuracy_figure_group(
+                "N(0,1) DOT",
+                "This distribution also exposes exponent-range failures in narrow custom layouts.",
+                tuple(
+                    (
+                        group,
+                        accuracy_asset(f"gpu_normal_0_1_dot_{suffix}"),
+                        f"Measured and analytical DOT RMSE for N(0,1), {group} formats.",
+                    )
+                    for group, suffix in (
+                        ("8-bit", "8bit"),
+                        ("16-bit", "16bit"),
+                        ("32/64-bit", "32_64bit"),
+                    )
+                ),
+            ),
+        ),
+        "accuracy-gemv.html": (
+            "GEMV accuracy",
+            "Per-row storage RMSE at fixed M=1024, separated by distribution and storage width.",
+            accuracy_navigation("accuracy-gemv.html")
+            + accuracy_figure_group(
+                "U(0,1) GEMV",
+                "The same analytical row-error model is compared with 16 independently generated matrices and vectors.",
+                tuple(
+                    (
+                        group,
+                        accuracy_asset(f"gpu_uniform_0_1_gemv_{suffix}"),
+                        f"Measured and analytical GEMV row RMSE for U(0,1), {group} formats.",
+                    )
+                    for group, suffix in (
+                        ("8-bit", "8bit"),
+                        ("16-bit", "16bit"),
+                        ("32/64-bit", "32_64bit"),
+                    )
+                ),
+            )
+            + accuracy_figure_group(
+                "N(0,1) GEMV",
+                "Shared vectors reduce the number of independent rare-overflow events, so confidence is wider than for DOT.",
+                tuple(
+                    (
+                        group,
+                        accuracy_asset(f"gpu_normal_0_1_gemv_{suffix}"),
+                        f"Measured and analytical GEMV row RMSE for N(0,1), {group} formats.",
+                    )
+                    for group, suffix in (
+                        ("8-bit", "8bit"),
+                        ("16-bit", "16bit"),
+                        ("32/64-bit", "32_64bit"),
+                    )
+                ),
+            ),
+        ),
+        "accuracy-scalar.html": (
+            "Scalar and arithmetic accuracy",
+            "Scalar quantization behavior, non-finite outputs, and FP64 accumulation error are kept separate.",
+            accuracy_navigation("accuracy-scalar.html")
+            + accuracy_figure_group(
+                "Scalar quantization under U(0,1)",
+                "These analytical curves isolate one-value quantization before any kernel reduction.",
+                tuple(
+                    (
+                        group,
+                        accuracy_asset(f"uniform_0_1_scalar_{suffix}"),
+                        f"Scalar quantization metrics for U(0,1), {group} formats.",
+                    )
+                    for group, suffix in (
+                        ("8-bit", "8bit"),
+                        ("16-bit", "16bit"),
+                        ("32/64-bit", "32_64bit"),
+                    )
+                ),
+            )
+            + accuracy_figure_group(
+                "Scalar quantization under N(0,1)",
+                "Zero, overflow, and saturation probabilities explain several kernel-level failure cases.",
+                tuple(
+                    (
+                        group,
+                        accuracy_asset(f"normal_0_1_scalar_{suffix}"),
+                        f"Scalar quantization metrics for N(0,1), {group} formats.",
+                    )
+                    for group, suffix in (
+                        ("8-bit", "8bit"),
+                        ("16-bit", "16bit"),
+                        ("32/64-bit", "32_64bit"),
+                    )
+                ),
+            )
+            + graph_section(
+                "Non-finite outputs",
+                "This compares predicted and measured probabilities that a DOT or GEMV output becomes non-finite.",
+                accuracy_asset("gpu_normal_0_1_nonfinite_outputs"),
+                "Predicted and measured non-finite output probabilities.",
+            )
+            + graph_section(
+                "FP64 kernel arithmetic",
+                "This isolates rounding introduced by x1/x2/x4 kernel evaluation after storage values have already been decoded.",
+                accuracy_asset("gpu_fp64_arithmetic_validation"),
+                "Measured FP64 kernel arithmetic error relative to its structural bound.",
+            ),
+        ),
         "methodology.html": (
             "Methodology and data",
-            "How the timings and profiler measurements were collected, normalized, and kept separate.",
+            "How performance timing, profiler counters, analytical accuracy, and GPU simulation were collected and compared.",
             graph_section(
                 "Timing stability",
                 "This summarizes variability across all 2,142 cases after 10 warmups and interleaved sampling.",
@@ -1019,13 +1425,23 @@ def write_report(
 <p><strong>Packing speedup:</strong> logical throughput for equal decoded values or useful operations. Register decode is compared in decoded values/s, fixing the unequal-work x1/x2/x4 normalization.</p>
 <p><strong>Roofline bytes:</strong> unique encoded storage. GEMV counts its vector once because Nsight confirms cache reuse; requested bytes remain available in the raw table.</p>
 <p><strong>Profiler data:</strong> only hardware counters are used. Replay-contaminated Nsight durations never replace event timing.</p>
+<p><strong>Storage accuracy:</strong> GPU results are compared with a reference computed from the decoded storage values, isolating quantization from FP64 arithmetic order.</p>
+<p><strong>Accuracy sampling:</strong> DOT uses 8,192 independent outputs per case. GEMV fixes M=1024 and uses 16 independent matrix/vector replicates.</p>
 </section>
-<section class="text-section"><h2>Raw files</h2><ul>
+<section class="text-section"><h2>Performance data</h2><ul>
 <li><a href="{raw_prefix}/timing_samples.csv">Every timing sample</a></li>
 <li><a href="{raw_prefix}/timing_summary.csv">Timing summary</a></li>
 <li><a href="{raw_prefix}/packed_speedups.csv">Corrected packed comparisons</a></li>
 <li><a href="{raw_prefix}/profile_operations.csv">Operation-level Nsight metrics</a></li>
 <li><a href="{raw_prefix}/profile_kernels.csv">Per-kernel Nsight metrics</a></li>
+</ul></section>
+<section class="text-section"><h2>Accuracy data</h2><ul>
+<li><a href="{accuracy_raw_prefix}/simulation_summary.csv">GPU simulation summary</a></li>
+<li><a href="{accuracy_raw_prefix}/batch_estimates.csv">Independent batch estimates</a></li>
+<li><a href="{accuracy_raw_prefix}/convergence_report.csv">Convergence assessment</a></li>
+<li><a href="{accuracy_asset_prefix}/simulation_model_comparison.csv">Joined model and simulation results</a></li>
+<li><a href="{accuracy_asset_prefix}/kernel_predictions.csv">Analytical kernel predictions</a></li>
+<li><a href="{accuracy_asset_prefix}/scalar_predictions.csv">Analytical scalar predictions</a></li>
 </ul></section>""",
         ),
     }
@@ -1036,7 +1452,8 @@ def write_report(
             title=title,
             intro=intro,
             body=body,
-            run_name=run_dir.name,
+            performance_run_name=run_dir.name,
+            accuracy_run_name=accuracy_run_dir.name,
         )
         (output_dir / filename).write_text(document, encoding="utf-8")
 
@@ -1065,13 +1482,16 @@ nav { display: flex; gap: 5px; flex-wrap: wrap; }
 nav a { color: var(--muted); text-decoration: none; padding: 6px 9px; border-radius: 6px; }
 nav a:hover, nav a:focus-visible, nav a.active { color: var(--fg); background: var(--active); }
 main { padding-top: 30px; padding-bottom: 48px; }
-h1, h2, strong { font-weight: 500; }
+h1, h2, h3, strong { font-weight: 500; }
 h1 { margin: 0 0 8px; font-size: clamp(1.8rem, 4vw, 2.6rem); }
 h2 { margin: 0 0 6px; font-size: 1.28rem; }
+h3 { margin: 28px 0 8px; font-size: 1.05rem; }
 .lead { color: var(--muted); max-width: 850px; margin: 0 0 28px; }
+.subnav { border-bottom: 1px solid var(--border); margin: -10px 0 32px; padding-bottom: 12px; }
 .graph-section, .text-section { margin: 34px 0 48px; }
 .graph-section > p, .text-section > p { max-width: 900px; margin: 0 0 14px; }
 figure { margin: 0; }
+.graph-section figure + h3 { margin-top: 34px; }
 figure img { display: block; width: 100%; height: auto; border: 1px solid var(--border); }
 figcaption { color: var(--muted); margin-top: 8px; }
 .summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 26px 0 40px; }
@@ -1114,8 +1534,30 @@ def main() -> None:
     args = parse_args()
     results_root = args.results_root.resolve()
     run_dir = args.run_dir.resolve() if args.run_dir else newest_complete_run(results_root)
+    accuracy_dir = args.accuracy_dir.resolve()
+    accuracy_results_root = args.accuracy_results_root.resolve()
+    accuracy_run_dir = (
+        args.accuracy_run_dir.resolve()
+        if args.accuracy_run_dir
+        else newest_accuracy_run(accuracy_results_root)
+    )
     output_dir = args.output_dir.resolve()
     assets = output_dir / "assets"
+    required_accuracy_files = (
+        accuracy_dir / "simulation_model_comparison.csv",
+        accuracy_dir / "accuracy_model_report.html",
+        accuracy_run_dir / "simulation_summary.csv",
+    )
+    missing_accuracy_files = [
+        path for path in required_accuracy_files if not path.is_file()
+    ]
+    if missing_accuracy_files:
+        missing = ", ".join(str(path) for path in missing_accuracy_files)
+        raise SystemExit(
+            f"missing generated accuracy inputs: {missing}; "
+            "run scripts/build_accuracy_model.sh first"
+        )
+
     if output_dir.exists():
         shutil.rmtree(output_dir)
     assets.mkdir(parents=True)
@@ -1123,7 +1565,10 @@ def main() -> None:
     rows = read_csv(run_dir / "timing_summary.csv")
     packed = read_csv(run_dir / "packed_speedups.csv")
     profile = read_csv(run_dir / "profile_operations.csv")
+    accuracy_rows = read_csv(accuracy_dir / "simulation_model_comparison.csv")
     validate_inputs(rows, profile)
+    if {row["format"] for row in accuracy_rows} != set(FORMAT_ORDER):
+        raise SystemExit("accuracy data does not contain the expected 17 formats")
     required_packed_fields = {"comparison_metric", "scalar_throughput", "packed_throughput"}
     if not required_packed_fields.issubset(packed[0]):
         raise SystemExit(
@@ -1134,6 +1579,12 @@ def main() -> None:
     figures.append(plot_total_kernel_time(rows, assets / "total-kernel-time.svg"))
     figures.append(plot_relative_fp64(rows, assets / "relative-fp64.svg"))
     figures.append(plot_size_scaling(rows, assets / "size-scaling.svg"))
+    for storage_bits in BIT_FORMATS:
+        figures.append(
+            plot_same_bit_kernel_time(
+                rows, storage_bits, assets / f"same-bit-{storage_bits}.svg"
+            )
+        )
     figures.append(plot_packed_speedup(packed, assets / "packed-speedup.svg"))
     figures.append(plot_packing_by_size(rows, assets / "packing-by-size.svg"))
     figures.append(plot_roofline(rows, profile, assets / "algorithmic-roofline.svg"))
@@ -1145,20 +1596,50 @@ def main() -> None:
     figures.append(plot_resource_heatmap(profile, assets / "resource-heatmap.svg"))
     figures.append(plot_register_pressure(profile, assets / "register-pressure.svg"))
     figures.append(plot_timing_stability(rows, assets / "timing-stability.svg"))
+    figures.append(
+        plot_accuracy_performance_tradeoff(
+            rows, accuracy_rows, assets / "performance-accuracy-tradeoff.svg"
+        )
+    )
 
     (output_dir / "report.css").write_text(REPORT_CSS, encoding="utf-8")
-    write_report(output_dir, run_dir, rows, profile)
+    write_report(
+        output_dir,
+        run_dir,
+        accuracy_dir,
+        accuracy_run_dir,
+        rows,
+        profile,
+        accuracy_rows,
+    )
+    generated_pages = [
+        "index.html",
+        "total-performance.html",
+        "same-bit-formats.html",
+        "packing.html",
+        "roofline.html",
+        "conversion.html",
+        "bottlenecks.html",
+        *(filename for filename, _ in ACCURACY_PAGES),
+        "methodology.html",
+    ]
     manifest = [
-        f"source_run={run_dir.name}",
+        f"performance_run={run_dir.name}",
+        f"accuracy_run={accuracy_run_dir.name}",
+        f"accuracy_model={accuracy_dir.name}",
         f"timing_rows={len(rows)}",
         f"profile_operations={len(profile)}",
+        f"accuracy_comparisons={len(accuracy_rows)}",
         f"measured_hbm_gb_per_s={memory_ceiling(profile):.6f}",
         "packing_normalization=logical_throughput",
-        "pages=" + ",".join(filename for filename, _ in PAGES),
+        "pages=" + ",".join(generated_pages),
         "figures=" + ",".join(path.name for path in figures),
     ]
     (output_dir / "report_manifest.txt").write_text("\n".join(manifest) + "\n", encoding="utf-8")
-    print(f"Wrote {len(PAGES)} pages and {len(figures)} figures to {output_dir}")
+    print(
+        f"Wrote {len(generated_pages)} pages and {len(figures)} generated figures "
+        f"to {output_dir}"
+    )
     print(f"Open {output_dir / 'index.html'}")
 
 

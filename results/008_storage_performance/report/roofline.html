@@ -3,24 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Roofline — H200 storage performance</title>
+<title>Roofline — H200 storage-format report</title>
 <link rel="stylesheet" href="report.css">
 </head>
 <body>
-<header><div class="shell"><a class="brand" href="index.html">H200 storage performance</a><nav aria-label="Report sections"><a href="index.html">Overview</a><a href="total-performance.html">Total performance</a><a href="packing.html">Packed vs unpacked</a><a href="roofline.html" aria-current="page" class="active">Roofline</a><a href="conversion.html">Conversion</a><a href="bottlenecks.html">Bottlenecks</a><a href="methodology.html">Methodology</a></nav></div></header>
+<header><div class="shell"><a class="brand" href="index.html">H200 storage-format report</a><nav aria-label="Report sections"><a href="index.html">Overview</a><a href="total-performance.html">Total performance</a><a href="same-bit-formats.html">Same-bit formats</a><a href="packing.html">Packed vs unpacked</a><a href="roofline.html" aria-current="page" class="active">Roofline</a><a href="conversion.html">Conversion</a><a href="bottlenecks.html">Bottlenecks</a><a href="accuracy.html">Accuracy</a><a href="methodology.html">Methodology</a></nav></div></header>
 <main class="shell">
 <h1>Roofline</h1>
 <p class="lead">A compression-aware roofline using useful FP64 work, unique encoded bytes, event timing, and the measured HBM ceiling.</p>
 <section class="graph-section">
 <h2>Algorithmic roofline position</h2>
 <p>Each point moves right when its encoding stores more useful operands per byte; distance below the roof is implementation cost.</p>
-<figure><img src="assets/algorithmic-roofline.svg" alt="Compression-aware DOT and GEMV roofline positions for all formats."></figure>
+<figure><a href="assets/algorithmic-roofline.svg"><img src="assets/algorithmic-roofline.svg" alt="Compression-aware DOT and GEMV roofline positions for all formats."></a></figure>
 </section><section class="graph-section">
 <h2>Roof efficiency</h2>
 <p>This divides measured useful throughput by the roof available at that format&#x27;s arithmetic intensity.</p>
-<figure><img src="assets/roof-efficiency.svg" alt="Percentage of the compression-aware roof reached by each format."></figure>
+<figure><a href="assets/roof-efficiency.svg"><img src="assets/roof-efficiency.svg" alt="Percentage of the compression-aware roof reached by each format."></a></figure>
 </section>
 </main>
-<footer><div class="shell">Source run: <code>run_20260808T131626Z</code></div></footer>
+<footer><div class="shell">Performance: <code>run_20260808T131626Z</code> · Accuracy: <code>run_20260808T122054Z</code></div></footer>
 </body>
 </html>

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accuracy overview — H200 storage-format report</title>
+<link rel="stylesheet" href="report.css">
+</head>
+<body>
+<header><div class="shell"><a class="brand" href="index.html">H200 storage-format report</a><nav aria-label="Report sections"><a href="index.html">Overview</a><a href="total-performance.html">Total performance</a><a href="same-bit-formats.html">Same-bit formats</a><a href="packing.html">Packed vs unpacked</a><a href="roofline.html">Roofline</a><a href="conversion.html">Conversion</a><a href="bottlenecks.html">Bottlenecks</a><a href="accuracy.html" aria-current="page" class="active">Accuracy</a><a href="methodology.html">Methodology</a></nav></div></header>
+<main class="shell">
+<h1>Accuracy overview</h1>
+<p class="lead">Measured H200 storage error, its analytical prediction, and the resulting performance–accuracy trade-off.</p>
+<nav class="subnav" aria-label="Accuracy sections"><a href="accuracy.html" aria-current="page" class="active">Accuracy overview</a><a href="accuracy-dot.html">DOT accuracy</a><a href="accuracy-gemv.html">GEMV accuracy</a><a href="accuracy-scalar.html">Scalar and arithmetic</a></nav><section class="graph-section">
+<h2>Performance–accuracy trade-off</h2>
+<p>This joins the large-kernel x4 timing with measured N(0,1) storage RMSE; points toward the lower-left are both faster and more accurate.</p>
+<figure><a href="assets/performance-accuracy-tradeoff.svg"><img src="assets/performance-accuracy-tradeoff.svg" alt="DOT and GEMV kernel time versus measured storage RMSE for every format."></a><figcaption>Performance and accuracy use their own largest tested N, shown in each panel title.</figcaption></figure>
+</section><section class="text-section"><h2>Validation scope</h2>
+<p>The GPU run contains 306 storage comparisons across DOT, GEMV, both distributions, all formats, and every tested N. 261 of 279 finite nonzero cases have measured MSE within 20% of the analytical prediction.</p>
+<p>The DOT and GEMV pages separate the results by kernel, distribution, and storage width. The scalar page covers quantization events and the smaller FP64 arithmetic-only error.</p>
+<p><a href="../../006_accuracy_model/generated/accuracy_model_report.html">Open the original complete analytical report</a>.</p>
+</section>
+</main>
+<footer><div class="shell">Performance: <code>run_20260808T131626Z</code> · Accuracy: <code>run_20260808T122054Z</code></div></footer>
+</body>
+</html>

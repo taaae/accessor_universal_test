@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GEMV accuracy — H200 storage-format report</title>
+<link rel="stylesheet" href="report.css">
+</head>
+<body>
+<header><div class="shell"><a class="brand" href="index.html">H200 storage-format report</a><nav aria-label="Report sections"><a href="index.html">Overview</a><a href="total-performance.html">Total performance</a><a href="same-bit-formats.html">Same-bit formats</a><a href="packing.html">Packed vs unpacked</a><a href="roofline.html">Roofline</a><a href="conversion.html">Conversion</a><a href="bottlenecks.html">Bottlenecks</a><a href="accuracy.html" aria-current="page" class="active">Accuracy</a><a href="methodology.html">Methodology</a></nav></div></header>
+<main class="shell">
+<h1>GEMV accuracy</h1>
+<p class="lead">Per-row storage RMSE at fixed M=1024, separated by distribution and storage width.</p>
+<nav class="subnav" aria-label="Accuracy sections"><a href="accuracy.html">Accuracy overview</a><a href="accuracy-dot.html">DOT accuracy</a><a href="accuracy-gemv.html" aria-current="page" class="active">GEMV accuracy</a><a href="accuracy-scalar.html">Scalar and arithmetic</a></nav><section class="graph-section">
+<h2>U(0,1) GEMV</h2>
+<p>The same analytical row-error model is compared with 16 independently generated matrices and vectors.</p>
+<h3>8-bit</h3><figure><a href="../../006_accuracy_model/generated/gpu_uniform_0_1_gemv_8bit.svg"><img src="../../006_accuracy_model/generated/gpu_uniform_0_1_gemv_8bit.svg" alt="Measured and analytical GEMV row RMSE for U(0,1), 8-bit formats."></a></figure><h3>16-bit</h3><figure><a href="../../006_accuracy_model/generated/gpu_uniform_0_1_gemv_16bit.svg"><img src="../../006_accuracy_model/generated/gpu_uniform_0_1_gemv_16bit.svg" alt="Measured and analytical GEMV row RMSE for U(0,1), 16-bit formats."></a></figure><h3>32/64-bit</h3><figure><a href="../../006_accuracy_model/generated/gpu_uniform_0_1_gemv_32_64bit.svg"><img src="../../006_accuracy_model/generated/gpu_uniform_0_1_gemv_32_64bit.svg" alt="Measured and analytical GEMV row RMSE for U(0,1), 32/64-bit formats."></a></figure>
+</section><section class="graph-section">
+<h2>N(0,1) GEMV</h2>
+<p>Shared vectors reduce the number of independent rare-overflow events, so confidence is wider than for DOT.</p>
+<h3>8-bit</h3><figure><a href="../../006_accuracy_model/generated/gpu_normal_0_1_gemv_8bit.svg"><img src="../../006_accuracy_model/generated/gpu_normal_0_1_gemv_8bit.svg" alt="Measured and analytical GEMV row RMSE for N(0,1), 8-bit formats."></a></figure><h3>16-bit</h3><figure><a href="../../006_accuracy_model/generated/gpu_normal_0_1_gemv_16bit.svg"><img src="../../006_accuracy_model/generated/gpu_normal_0_1_gemv_16bit.svg" alt="Measured and analytical GEMV row RMSE for N(0,1), 16-bit formats."></a></figure><h3>32/64-bit</h3><figure><a href="../../006_accuracy_model/generated/gpu_normal_0_1_gemv_32_64bit.svg"><img src="../../006_accuracy_model/generated/gpu_normal_0_1_gemv_32_64bit.svg" alt="Measured and analytical GEMV row RMSE for N(0,1), 32/64-bit formats."></a></figure>
+</section>
+</main>
+<footer><div class="shell">Performance: <code>run_20260808T131626Z</code> · Accuracy: <code>run_20260808T122054Z</code></div></footer>
+</body>
+</html>

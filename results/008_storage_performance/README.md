@@ -38,6 +38,8 @@ The H200 report contains these figure groups:
   microbenchmarks are additive phases;
 - **packed speedup:** x2/x1 and x4/x1 time ratios versus N plus a plateau
   dumbbell plot for every format, separately for DOT and GEMV;
+- **same-bit comparisons:** complete x1, x2, and x4 DOT/GEMV time versus N for
+  all 8-, 16-, and 32-bit layouts;
 - **algorithmic roofline:** useful GFLOP/s from event timing against useful
   FLOPs per unique encoded byte, with memory and scalar-FP64 ceilings;
 - **hardware roofline:** executed FLOPs per measured DRAM byte from Nsight
@@ -49,10 +51,12 @@ The H200 report contains these figure groups:
 - **distribution sensitivity:** paired U(0,1)/N(0,1) ratios, mainly to expose
   decoder control-flow effects rather than numerical error.
 
-## Performance report
+## Unified performance and accuracy report
 
-The generated report is split into short, linked pages for total performance,
-packing, roofline position, conversion, bottlenecks, and methodology. Start at
+The generated report is split into linked pages for total performance, same-bit
+formats, packing, roofline position, conversion, bottlenecks, DOT accuracy,
+GEMV accuracy, scalar behavior, and methodology. It also joins performance and
+measured storage RMSE in a trade-off graph. Start at
 [`report/index.html`](report/index.html).
 
 Rebuild it from the newest committed run with:

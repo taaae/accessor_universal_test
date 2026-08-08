@@ -4,6 +4,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
+import tools.build_storage_performance_report as performance_report
 import tools.summarize_storage_performance as performance_summary
 
 IDENTITY = performance_summary.IDENTITY
@@ -72,6 +73,16 @@ def test_bottleneck_classification():
     assert bottleneck(20.0, 80.0, 70.0, 60.0) == "compute_or_conversion"
     assert bottleneck(60.0, 60.0, 70.0, 60.0) == "mixed_memory_compute"
     assert bottleneck(10.0, 10.0, 12.0, 10.0) == "parallelism_or_occupancy"
+
+
+def test_same_bit_groups_cover_every_non_fp64_format_once():
+    grouped = [
+        format_name
+        for formats in performance_report.BIT_FORMATS.values()
+        for format_name in formats
+    ]
+    assert len(grouped) == len(set(grouped))
+    assert set(grouped) == set(performance_report.FORMAT_ORDER) - {"fp64_e11m52"}
 
 
 def test_register_packing_uses_value_throughput(tmp_path):

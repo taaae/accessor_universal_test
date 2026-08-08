@@ -1,7 +1,10 @@
-source_run=run_20260808T131626Z
+performance_run=run_20260808T131626Z
+accuracy_run=run_20260808T122054Z
+accuracy_model=generated
 timing_rows=2142
 profile_operations=136
+accuracy_comparisons=306
 measured_hbm_gb_per_s=4603.989359
 packing_normalization=logical_throughput
-pages=index.html,total-performance.html,packing.html,roofline.html,conversion.html,bottlenecks.html,methodology.html
-figures=total-kernel-time.svg,relative-fp64.svg,size-scaling.svg,packed-speedup.svg,packing-by-size.svg,algorithmic-roofline.svg,roof-efficiency.svg,register-conversion.svg,stream-decode.svg,distribution-sensitivity.svg,bottleneck-map.svg,resource-heatmap.svg,register-pressure.svg,timing-stability.svg
+pages=index.html,total-performance.html,same-bit-formats.html,packing.html,roofline.html,conversion.html,bottlenecks.html,accuracy.html,accuracy-dot.html,accuracy-gemv.html,accuracy-scalar.html,methodology.html
+figures=total-kernel-time.svg,relative-fp64.svg,size-scaling.svg,same-bit-8.svg,same-bit-16.svg,same-bit-32.svg,packed-speedup.svg,packing-by-size.svg,algorithmic-roofline.svg,roof-efficiency.svg,register-conversion.svg,stream-decode.svg,distribution-sensitivity.svg,bottleneck-map.svg,resource-heatmap.svg,register-pressure.svg,timing-stability.svg,performance-accuracy-tradeoff.svg

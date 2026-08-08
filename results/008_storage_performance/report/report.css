@@ -22,13 +22,16 @@ nav { display: flex; gap: 5px; flex-wrap: wrap; }
 nav a { color: var(--muted); text-decoration: none; padding: 6px 9px; border-radius: 6px; }
 nav a:hover, nav a:focus-visible, nav a.active { color: var(--fg); background: var(--active); }
 main { padding-top: 30px; padding-bottom: 48px; }
-h1, h2, strong { font-weight: 500; }
+h1, h2, h3, strong { font-weight: 500; }
 h1 { margin: 0 0 8px; font-size: clamp(1.8rem, 4vw, 2.6rem); }
 h2 { margin: 0 0 6px; font-size: 1.28rem; }
+h3 { margin: 28px 0 8px; font-size: 1.05rem; }
 .lead { color: var(--muted); max-width: 850px; margin: 0 0 28px; }
+.subnav { border-bottom: 1px solid var(--border); margin: -10px 0 32px; padding-bottom: 12px; }
 .graph-section, .text-section { margin: 34px 0 48px; }
 .graph-section > p, .text-section > p { max-width: 900px; margin: 0 0 14px; }
 figure { margin: 0; }
+.graph-section figure + h3 { margin-top: 34px; }
 figure img { display: block; width: 100%; height: auto; border: 1px solid var(--border); }
 figcaption { color: var(--muted); margin-top: 8px; }
 .summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 26px 0 40px; }

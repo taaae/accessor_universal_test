@@ -3,28 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Total performance — H200 storage performance</title>
+<title>Total performance — H200 storage-format report</title>
 <link rel="stylesheet" href="report.css">
 </head>
 <body>
-<header><div class="shell"><a class="brand" href="index.html">H200 storage performance</a><nav aria-label="Report sections"><a href="index.html">Overview</a><a href="total-performance.html" aria-current="page" class="active">Total performance</a><a href="packing.html">Packed vs unpacked</a><a href="roofline.html">Roofline</a><a href="conversion.html">Conversion</a><a href="bottlenecks.html">Bottlenecks</a><a href="methodology.html">Methodology</a></nav></div></header>
+<header><div class="shell"><a class="brand" href="index.html">H200 storage-format report</a><nav aria-label="Report sections"><a href="index.html">Overview</a><a href="total-performance.html" aria-current="page" class="active">Total performance</a><a href="same-bit-formats.html">Same-bit formats</a><a href="packing.html">Packed vs unpacked</a><a href="roofline.html">Roofline</a><a href="conversion.html">Conversion</a><a href="bottlenecks.html">Bottlenecks</a><a href="accuracy.html">Accuracy</a><a href="methodology.html">Methodology</a></nav></div></header>
 <main class="shell">
 <h1>Total performance</h1>
 <p class="lead">Complete event-timed DOT and GEMV performance, including every kernel launch.</p>
 <section class="graph-section">
 <h2>Absolute kernel time</h2>
 <p>This is the end-to-end comparison at the largest tested N using x4 access and N(0,1) data.</p>
-<figure><img src="assets/total-kernel-time.svg" alt="Complete DOT and GEMV time in milliseconds for all formats."></figure>
+<figure><a href="assets/total-kernel-time.svg"><img src="assets/total-kernel-time.svg" alt="Complete DOT and GEMV time in milliseconds for all formats."></a></figure>
 </section><section class="graph-section">
 <h2>Speed relative to FP64</h2>
 <p>This makes the storage-bandwidth benefit easier to compare across DOT and GEMV; values above 1 are faster than FP64.</p>
-<figure><img src="assets/relative-fp64.svg" alt="DOT and GEMV speed relative to the FP64 baseline for all formats."></figure>
+<figure><a href="assets/relative-fp64.svg"><img src="assets/relative-fp64.svg" alt="DOT and GEMV speed relative to the FP64 baseline for all formats."></a></figure>
 </section><section class="graph-section">
 <h2>Size regimes</h2>
 <p>This shows when launch overhead stops hiding differences in load and conversion cost.</p>
-<figure><img src="assets/size-scaling.svg" alt="Log-log kernel time versus reduction length for representative formats."></figure>
+<figure><a href="assets/size-scaling.svg"><img src="assets/size-scaling.svg" alt="Log-log kernel time versus reduction length for representative formats."></a></figure>
 </section>
 </main>
-<footer><div class="shell">Source run: <code>run_20260808T131626Z</code></div></footer>
+<footer><div class="shell">Performance: <code>run_20260808T131626Z</code> · Accuracy: <code>run_20260808T122054Z</code></div></footer>
 </body>
 </html>

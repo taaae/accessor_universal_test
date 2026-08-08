@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scalar and arithmetic accuracy — H200 storage-format report</title>
+<link rel="stylesheet" href="report.css">
+</head>
+<body>
+<header><div class="shell"><a class="brand" href="index.html">H200 storage-format report</a><nav aria-label="Report sections"><a href="index.html">Overview</a><a href="total-performance.html">Total performance</a><a href="same-bit-formats.html">Same-bit formats</a><a href="packing.html">Packed vs unpacked</a><a href="roofline.html">Roofline</a><a href="conversion.html">Conversion</a><a href="bottlenecks.html">Bottlenecks</a><a href="accuracy.html" aria-current="page" class="active">Accuracy</a><a href="methodology.html">Methodology</a></nav></div></header>
+<main class="shell">
+<h1>Scalar and arithmetic accuracy</h1>
+<p class="lead">Scalar quantization behavior, non-finite outputs, and FP64 accumulation error are kept separate.</p>
+<nav class="subnav" aria-label="Accuracy sections"><a href="accuracy.html">Accuracy overview</a><a href="accuracy-dot.html">DOT accuracy</a><a href="accuracy-gemv.html">GEMV accuracy</a><a href="accuracy-scalar.html" aria-current="page" class="active">Scalar and arithmetic</a></nav><section class="graph-section">
+<h2>Scalar quantization under U(0,1)</h2>
+<p>These analytical curves isolate one-value quantization before any kernel reduction.</p>
+<h3>8-bit</h3><figure><a href="../../006_accuracy_model/generated/uniform_0_1_scalar_8bit.svg"><img src="../../006_accuracy_model/generated/uniform_0_1_scalar_8bit.svg" alt="Scalar quantization metrics for U(0,1), 8-bit formats."></a></figure><h3>16-bit</h3><figure><a href="../../006_accuracy_model/generated/uniform_0_1_scalar_16bit.svg"><img src="../../006_accuracy_model/generated/uniform_0_1_scalar_16bit.svg" alt="Scalar quantization metrics for U(0,1), 16-bit formats."></a></figure><h3>32/64-bit</h3><figure><a href="../../006_accuracy_model/generated/uniform_0_1_scalar_32_64bit.svg"><img src="../../006_accuracy_model/generated/uniform_0_1_scalar_32_64bit.svg" alt="Scalar quantization metrics for U(0,1), 32/64-bit formats."></a></figure>
+</section><section class="graph-section">
+<h2>Scalar quantization under N(0,1)</h2>
+<p>Zero, overflow, and saturation probabilities explain several kernel-level failure cases.</p>
+<h3>8-bit</h3><figure><a href="../../006_accuracy_model/generated/normal_0_1_scalar_8bit.svg"><img src="../../006_accuracy_model/generated/normal_0_1_scalar_8bit.svg" alt="Scalar quantization metrics for N(0,1), 8-bit formats."></a></figure><h3>16-bit</h3><figure><a href="../../006_accuracy_model/generated/normal_0_1_scalar_16bit.svg"><img src="../../006_accuracy_model/generated/normal_0_1_scalar_16bit.svg" alt="Scalar quantization metrics for N(0,1), 16-bit formats."></a></figure><h3>32/64-bit</h3><figure><a href="../../006_accuracy_model/generated/normal_0_1_scalar_32_64bit.svg"><img src="../../006_accuracy_model/generated/normal_0_1_scalar_32_64bit.svg" alt="Scalar quantization metrics for N(0,1), 32/64-bit formats."></a></figure>
+</section><section class="graph-section">
+<h2>Non-finite outputs</h2>
+<p>This compares predicted and measured probabilities that a DOT or GEMV output becomes non-finite.</p>
+<figure><a href="../../006_accuracy_model/generated/gpu_normal_0_1_nonfinite_outputs.svg"><img src="../../006_accuracy_model/generated/gpu_normal_0_1_nonfinite_outputs.svg" alt="Predicted and measured non-finite output probabilities."></a></figure>
+</section><section class="graph-section">
+<h2>FP64 kernel arithmetic</h2>
+<p>This isolates rounding introduced by x1/x2/x4 kernel evaluation after storage values have already been decoded.</p>
+<figure><a href="../../006_accuracy_model/generated/gpu_fp64_arithmetic_validation.svg"><img src="../../006_accuracy_model/generated/gpu_fp64_arithmetic_validation.svg" alt="Measured FP64 kernel arithmetic error relative to its structural bound."></a></figure>
+</section>
+</main>
+<footer><div class="shell">Performance: <code>run_20260808T131626Z</code> · Accuracy: <code>run_20260808T122054Z</code></div></footer>
+</body>
+</html>

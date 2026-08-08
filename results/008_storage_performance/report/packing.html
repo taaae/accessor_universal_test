@@ -3,24 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Packed vs unpacked — H200 storage performance</title>
+<title>Packed vs unpacked — H200 storage-format report</title>
 <link rel="stylesheet" href="report.css">
 </head>
 <body>
-<header><div class="shell"><a class="brand" href="index.html">H200 storage performance</a><nav aria-label="Report sections"><a href="index.html">Overview</a><a href="total-performance.html">Total performance</a><a href="packing.html" aria-current="page" class="active">Packed vs unpacked</a><a href="roofline.html">Roofline</a><a href="conversion.html">Conversion</a><a href="bottlenecks.html">Bottlenecks</a><a href="methodology.html">Methodology</a></nav></div></header>
+<header><div class="shell"><a class="brand" href="index.html">H200 storage-format report</a><nav aria-label="Report sections"><a href="index.html">Overview</a><a href="total-performance.html">Total performance</a><a href="same-bit-formats.html">Same-bit formats</a><a href="packing.html" aria-current="page" class="active">Packed vs unpacked</a><a href="roofline.html">Roofline</a><a href="conversion.html">Conversion</a><a href="bottlenecks.html">Bottlenecks</a><a href="accuracy.html">Accuracy</a><a href="methodology.html">Methodology</a></nav></div></header>
 <main class="shell">
 <h1>Packed vs unpacked</h1>
 <p class="lead">Direct x2/x4 versus x1 comparisons using equal logical work, so packed lanes are normalized correctly.</p>
 <section class="graph-section">
 <h2>Large-problem packing benefit</h2>
 <p>This compares throughput at the largest tested N; 1 means packing made no difference.</p>
-<figure><img src="assets/packed-speedup.svg" alt="x2 and x4 kernel throughput divided by x1 throughput for all formats."></figure>
+<figure><a href="assets/packed-speedup.svg"><img src="assets/packed-speedup.svg" alt="x2 and x4 kernel throughput divided by x1 throughput for all formats."></a></figure>
 </section><section class="graph-section">
 <h2>Packing benefit by N</h2>
 <p>This reveals whether a format needs a large problem before fewer load instructions repay unpacking overhead.</p>
-<figure><img src="assets/packing-by-size.svg" alt="x4 versus x1 time speedup by reduction length for representative formats."></figure>
+<figure><a href="assets/packing-by-size.svg"><img src="assets/packing-by-size.svg" alt="x4 versus x1 time speedup by reduction length for representative formats."></a></figure>
 </section>
 </main>
-<footer><div class="shell">Source run: <code>run_20260808T131626Z</code></div></footer>
+<footer><div class="shell">Performance: <code>run_20260808T131626Z</code> · Accuracy: <code>run_20260808T122054Z</code></div></footer>
 </body>
 </html>
