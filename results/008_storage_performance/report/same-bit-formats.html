@@ -10,19 +10,38 @@
 <header><div class="shell"><a class="brand" href="index.html">H200 storage-format report</a><nav aria-label="Report sections"><a href="index.html">Overview</a><a href="total-performance.html">Total performance</a><a href="same-bit-formats.html" aria-current="page" class="active">Same-bit formats</a><a href="packing.html">Packed vs unpacked</a><a href="roofline.html">Roofline</a><a href="conversion.html">Conversion</a><a href="bottlenecks.html">Bottlenecks</a><a href="accuracy.html">Accuracy</a><a href="methodology.html">Methodology</a></nav></div></header>
 <main class="shell">
 <h1>Same-bit format comparison</h1>
-<p class="lead">Complete DOT and GEMV time versus N for formats with equal storage width, split into unpacked x1 and packed x2/x4 implementations.</p>
+<p class="lead">High-resolution performance and accuracy comparisons for formats with equal storage width.</p>
 <section class="graph-section">
-<h2>8-bit formats</h2>
-<p>This compares the three custom E1/E2/E3 layouts with CUDA FP8 E4M3 and E5M2 at the same one-byte storage cost.</p>
-<figure><a href="assets/same-bit-8.svg"><img src="assets/same-bit-8.svg" alt="Complete DOT and GEMV time versus N for x1, x2, and x4 8-bit formats."></a></figure>
+<h2>8-bit performance</h2>
+<p>All five 8-bit formats and all x1/x2/x4 access widths share the same axes. Color and marker identify the format; line style identifies packing.</p>
+<figure><a href="assets/same-bit-8.svg"><img src="assets/same-bit-8.svg" alt="High-resolution complete DOT and GEMV time versus N with every 8-bit format and x1, x2, and x4 access overlaid."></a><figcaption>SVG is vector resolution; select the figure to open it directly.</figcaption></figure>
 </section><section class="graph-section">
-<h2>16-bit formats</h2>
-<p>This directly compares E11M4, FP16, BF16, and the custom 16-bit layouts, including packed x2 and x4 variants.</p>
-<figure><a href="assets/same-bit-16.svg"><img src="assets/same-bit-16.svg" alt="Complete DOT and GEMV time versus N for x1, x2, and x4 16-bit formats."></a></figure>
+<h2>8-bit accuracy</h2>
+<p>DOT uses normalized RMS error; GEMV uses relative L2 error. Curves are total x4 GPU error versus the original FP64 source for both distributions.</p>
+<figure><a href="assets/same-bit-accuracy-8.svg"><img src="assets/same-bit-accuracy-8.svg" alt="High-resolution DOT normalized RMS and GEMV relative L2 error versus N for every 8-bit format and both distributions."></a><figcaption>Packing variants are omitted here because they encode identical values; reduction-order differences are discussed below.</figcaption></figure>
 </section><section class="graph-section">
-<h2>32-bit formats</h2>
-<p>This compares FP32 and E11M20 with the custom 32-bit layouts at x1, x2, and x4.</p>
-<figure><a href="assets/same-bit-32.svg"><img src="assets/same-bit-32.svg" alt="Complete DOT and GEMV time versus N for x1, x2, and x4 32-bit formats."></a></figure>
+<h2>16-bit performance</h2>
+<p>E11M4, FP16, BF16, and all custom 16-bit layouts are overlaid with their x1/x2/x4 access widths.</p>
+<figure><a href="assets/same-bit-16.svg"><img src="assets/same-bit-16.svg" alt="High-resolution complete DOT and GEMV time versus N with every 16-bit format and x1, x2, and x4 access overlaid."></a><figcaption>SVG is vector resolution; select the figure to open it directly.</figcaption></figure>
+</section><section class="graph-section">
+<h2>16-bit accuracy</h2>
+<p>The same primary DOT and GEMV metrics compare every 16-bit format on U(0,1) and N(0,1).</p>
+<figure><a href="assets/same-bit-accuracy-16.svg"><img src="assets/same-bit-accuracy-16.svg" alt="High-resolution DOT normalized RMS and GEMV relative L2 error versus N for every 16-bit format and both distributions."></a><figcaption>Packing variants are omitted because their storage quantization is identical.</figcaption></figure>
+</section><section class="graph-section">
+<h2>32-bit performance</h2>
+<p>FP32, E11M20, and all custom 32-bit layouts are overlaid with x1/x2/x4 access.</p>
+<figure><a href="assets/same-bit-32.svg"><img src="assets/same-bit-32.svg" alt="High-resolution complete DOT and GEMV time versus N with every 32-bit format and x1, x2, and x4 access overlaid."></a><figcaption>SVG is vector resolution; select the figure to open it directly.</figcaption></figure>
+</section><section class="graph-section">
+<h2>32-bit accuracy</h2>
+<p>The same primary DOT and GEMV metrics compare every 32-bit format on U(0,1) and N(0,1).</p>
+<figure><a href="assets/same-bit-accuracy-32.svg"><img src="assets/same-bit-accuracy-32.svg" alt="High-resolution DOT normalized RMS and GEMV relative L2 error versus N for every 32-bit format and both distributions."></a><figcaption>Packing variants are omitted because their storage quantization is identical.</figcaption></figure>
+</section><section class="graph-section">
+<h2>All-format accuracy</h2>
+<p>This puts every 8-, 16-, 32-, and 64-bit format on the same log axes. A line ending early indicates non-finite outputs at larger N.</p>
+<figure><a href="assets/all-format-accuracy.svg"><img src="assets/all-format-accuracy.svg" alt="Large high-resolution comparison of DOT normalized RMS and GEMV relative L2 error versus N for all 17 formats and both distributions."></a><figcaption>Curves use the x4 GPU result versus the original FP64 source. FP64 exact-zero reference points, when present, are placed at the labeled plot floor.</figcaption></figure>
+</section><section class="text-section">
+<h2>Packing and accuracy</h2>
+<p>x1, x2, and x4 are literally identical at the storage-quantization level: they read the same encoded values. Their complete GPU results are not guaranteed bit-for-bit identical because lane grouping changes the FP64 reduction order. For 8-, 16-, and 32-bit storage that arithmetic difference is far below the quantization error, so these format-comparison plots show the x4 result once. The separate scalar and arithmetic page retains the x1/x2/x4 kernel-only validation. FP64 is the special case where reduction rounding is the remaining error.</p>
 </section>
 </main>
 <footer><div class="shell">Performance: <code>run_20260808T131626Z</code> · Accuracy: <code>run_20260808T122054Z</code></div></footer>

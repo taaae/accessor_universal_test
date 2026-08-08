@@ -20,7 +20,9 @@
 <p><strong>Packing speedup:</strong> logical throughput for equal decoded values or useful operations. Register decode is compared in decoded values/s, fixing the unequal-work x1/x2/x4 normalization.</p>
 <p><strong>Roofline bytes:</strong> unique encoded storage. GEMV counts its vector once because Nsight confirms cache reuse; requested bytes remain available in the raw table.</p>
 <p><strong>Profiler data:</strong> only hardware counters are used. Replay-contaminated Nsight durations never replace event timing.</p>
-<p><strong>Storage accuracy:</strong> GPU results are compared with a reference computed from the decoded storage values, isolating quantization from FP64 arithmetic order.</p>
+<p><strong>DOT primary accuracy:</strong> normalized RMS error, using the per-output absolute-product sum as the cancellation-safe normalization.</p>
+<p><strong>GEMV primary accuracy:</strong> relative L2 error over the M=1024 output vector.</p>
+<p><strong>Error separation:</strong> decoded storage versus FP64 source isolates quantization; GPU versus decoded storage isolates arithmetic order; GPU versus source is total error. The same-bit and all-format curves use total x4 error.</p>
 <p><strong>Accuracy sampling:</strong> DOT uses 8,192 independent outputs per case. GEMV fixes M=1024 and uses 16 independent matrix/vector replicates.</p>
 </section>
 <section class="text-section"><h2>Performance data</h2><ul>

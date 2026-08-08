@@ -84,6 +84,42 @@ def test_same_bit_groups_cover_every_non_fp64_format_once():
     assert len(grouped) == len(set(grouped))
     assert set(grouped) == set(performance_report.FORMAT_ORDER) - {"fp64_e11m52"}
 
+    all_grouped = [
+        format_name
+        for formats in performance_report.ALL_BIT_FORMATS.values()
+        for format_name in formats
+    ]
+    assert len(all_grouped) == len(set(all_grouped))
+    assert set(all_grouped) == set(performance_report.FORMAT_ORDER)
+
+
+def test_primary_accuracy_metrics_and_x4_selection():
+    assert performance_report.ACCURACY_METRICS["dot"][0] == "rms_normalized_error"
+    assert performance_report.ACCURACY_METRICS["gemv"][0] == "relative_l2"
+
+    rows = [
+        {
+            "kernel": "dot",
+            "distribution": "normal_0_1",
+            "comparison": comparison,
+            "format": "fp32_e8m23",
+            "n": n,
+        }
+        for comparison, n in (
+            ("total_x4", "4096"),
+            ("total_x1", "1024"),
+            ("total_x4", "1024"),
+        )
+    ]
+    selected = performance_report._accuracy_rows(
+        rows,
+        component="dot",
+        distribution="normal_0_1",
+        format_name="fp32_e8m23",
+    )
+    assert [row["n"] for row in selected] == ["1024", "4096"]
+    assert {row["comparison"] for row in selected} == {"total_x4"}
+
 
 def test_register_packing_uses_value_throughput(tmp_path):
     performance_summary.EXPECTED_FORMATS = {"fp32_e8m23"}

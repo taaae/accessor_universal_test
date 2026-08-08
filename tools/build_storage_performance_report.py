@@ -88,6 +88,7 @@ FAMILY_COLORS = {
 }
 
 LANE_COLORS = {1: "#6c757d", 2: "#0072B2", 4: "#D55E00"}
+LANE_STYLES = {1: ":", 2: "--", 4: "-"}
 BIT_MARKERS = {8: "o", 16: "s", 32: "^", 64: "D"}
 FORMAT_MARKERS = ("o", "s", "^", "D", "P", "X")
 SAME_BIT_COLORS = ("#0072B2", "#D55E00", "#009E73", "#CC79A7", "#E69F00", "#56B4E9")
@@ -96,6 +97,15 @@ BIT_FORMATS = {
     16: ("e1m14", "e2m13", "e3m12", "fp16_e5m10", "bf16_e8m7", "e11m4"),
     32: ("e1m30", "e2m29", "e3m28", "fp32_e8m23", "e11m20"),
 }
+ALL_BIT_FORMATS = {**BIT_FORMATS, 64: ("fp64_e11m52",)}
+ACCURACY_METRICS = {
+    "dot": ("rms_normalized_error", "Normalized RMS error"),
+    "gemv": ("relative_l2", "Relative L2 error"),
+}
+ACCURACY_DISTRIBUTIONS = (
+    ("uniform_0_1", "U(0,1)"),
+    ("normal_0_1", "N(0,1)"),
+)
 SELECTED_FORMATS = (
     "e1m6",
     "e2m29",
@@ -412,10 +422,9 @@ def plot_same_bit_kernel_time(
     formats = BIT_FORMATS[storage_bits]
     color_by_format = dict(zip(formats, SAME_BIT_COLORS))
     marker_by_format = dict(zip(formats, FORMAT_MARKERS))
-    fig, axes = plt.subplots(3, 2, figsize=(13.5, 11.2), sharey="col")
-    for row_index, lane in enumerate((1, 2, 4)):
-        for column_index, component in enumerate(("dot", "gemv")):
-            axis = axes[row_index, column_index]
+    fig, axes = plt.subplots(1, 2, figsize=(18.5, 7.8))
+    for axis, component in zip(axes, ("dot", "gemv")):
+        for lane in (1, 2, 4):
             for name in formats:
                 current = sorted(
                     (
@@ -436,32 +445,268 @@ def plot_same_bit_kernel_time(
                     [number(row, "median_time_ms") for row in current],
                     color=color_by_format[name],
                     marker=marker_by_format[name],
-                    linewidth=1.6,
-                    markersize=4.5,
-                    label=label(name),
+                    linestyle=LANE_STYLES[lane],
+                    linewidth=2.0 if lane == 4 else 1.65,
+                    markersize=5.0,
+                    markerfacecolor=(color_by_format[name] if lane == 4 else "white"),
+                    markevery=1,
                 )
-            axis.set_xscale("log", base=2)
-            axis.set_yscale("log")
-            lane_text = "unpacked x1" if lane == 1 else f"packed x{lane}"
-            axis.set_title(f"{component.upper()} — {lane_text}")
-            axis.set_xlabel("Reduction length N")
-            axis.set_ylabel("Complete kernel time (ms)")
-            format_axis_labels(axis)
-    handles, labels = axes[0, 0].get_legend_handles_labels()
+        axis.set_xscale("log", base=2)
+        axis.set_yscale("log")
+        axis.set_title(component.upper(), fontsize=13)
+        axis.set_xlabel("Reduction length N")
+        axis.set_ylabel("Complete kernel time (ms)")
+        format_axis_labels(axis)
+    format_handles = [
+        Line2D(
+            [0],
+            [0],
+            color=color_by_format[name],
+            marker=marker_by_format[name],
+            linewidth=2.0,
+            label=label(name),
+        )
+        for name in formats
+    ]
+    lane_handles = [
+        Line2D(
+            [0],
+            [0],
+            color="#4c5661",
+            linestyle=LANE_STYLES[lane],
+            marker="o",
+            markerfacecolor=("#4c5661" if lane == 4 else "white"),
+            linewidth=2.0 if lane == 4 else 1.65,
+            label="unpacked x1" if lane == 1 else f"packed x{lane}",
+        )
+        for lane in (1, 2, 4)
+    ]
     fig.legend(
-        handles,
-        labels,
+        handles=format_handles,
         loc="upper center",
-        ncol=min(3, len(formats)),
+        ncol=len(formats),
         frameon=False,
-        bbox_to_anchor=(0.5, 1.01),
+        bbox_to_anchor=(0.5, 1.025),
+        title="Storage format (color and marker)",
+    )
+    fig.legend(
+        handles=lane_handles,
+        loc="upper center",
+        ncol=3,
+        frameon=False,
+        bbox_to_anchor=(0.5, 0.94),
+        title="Access width (line style)",
     )
     fig.suptitle(
         f"{storage_bits}-bit formats: complete kernel time versus N",
-        y=1.08,
-        fontsize=14,
+        y=1.14,
+        fontsize=16,
     )
-    fig.tight_layout(rect=(0, 0, 1, 0.94))
+    fig.tight_layout(rect=(0, 0, 1, 0.82))
+    return save_figure(fig, path)
+
+
+def _accuracy_rows(
+    rows: Sequence[dict[str, str]],
+    *,
+    component: str,
+    distribution: str,
+    format_name: str,
+) -> list[dict[str, str]]:
+    return sorted(
+        (
+            row
+            for row in rows
+            if row["kernel"] == component
+            and row["distribution"] == distribution
+            and row["comparison"] == "total_x4"
+            and row["format"] == format_name
+        ),
+        key=lambda row: int(row["n"]),
+    )
+
+
+def _accuracy_floor(
+    rows: Sequence[dict[str, str]],
+    formats: Sequence[str],
+    component: str,
+    distribution: str,
+) -> float:
+    metric, _ = ACCURACY_METRICS[component]
+    positive = [
+        number(row, metric)
+        for name in formats
+        for row in _accuracy_rows(
+            rows,
+            component=component,
+            distribution=distribution,
+            format_name=name,
+        )
+        if math.isfinite(number(row, metric)) and number(row, metric) > 0.0
+    ]
+    if not positive:
+        raise ValueError(f"no finite positive {component} accuracy values")
+    return min(positive) / 3.0
+
+
+def _plot_accuracy_lines(
+    axis: plt.Axes,
+    rows: Sequence[dict[str, str]],
+    formats: Sequence[str],
+    *,
+    component: str,
+    distribution: str,
+    colors: dict[str, object],
+    markers: dict[str, str],
+) -> None:
+    metric, y_label = ACCURACY_METRICS[component]
+    floor = _accuracy_floor(rows, formats, component, distribution)
+    showed_zero = False
+    for name in formats:
+        current = _accuracy_rows(
+            rows,
+            component=component,
+            distribution=distribution,
+            format_name=name,
+        )
+        if not current:
+            raise ValueError(f"missing total_x4 accuracy rows for {component} {name}")
+        raw_values = [number(row, metric) for row in current]
+        showed_zero = showed_zero or any(value == 0.0 for value in raw_values)
+        values = [
+            floor if value == 0.0 else value if math.isfinite(value) else math.nan
+            for value in raw_values
+        ]
+        axis.plot(
+            [int(row["n"]) for row in current],
+            values,
+            color=colors[name],
+            marker=markers[name],
+            linewidth=1.9,
+            markersize=5.2,
+            label=label(name),
+        )
+    axis.set_xscale("log", base=2)
+    axis.set_yscale("log")
+    distribution_label = dict(ACCURACY_DISTRIBUTIONS)[distribution]
+    axis.set_title(
+        f"{component.upper()} — {distribution_label}",
+        fontsize=13,
+    )
+    axis.set_xlabel("Reduction length N")
+    axis.set_ylabel(y_label)
+    if showed_zero:
+        axis.axhline(floor, color="#8b939c", linewidth=0.8, linestyle=":")
+        axis.text(
+            0.01,
+            0.015,
+            "Exact zero shown at plot floor",
+            transform=axis.transAxes,
+            fontsize=8.5,
+            color="#59636e",
+            va="bottom",
+        )
+    format_axis_labels(axis)
+
+
+def plot_same_bit_accuracy(
+    rows: Sequence[dict[str, str]], storage_bits: int, path: Path
+) -> Path:
+    formats = BIT_FORMATS[storage_bits]
+    colors = dict(zip(formats, SAME_BIT_COLORS))
+    markers = dict(zip(formats, FORMAT_MARKERS))
+    fig, axes = plt.subplots(2, 2, figsize=(18.5, 12.5))
+    for row_index, (distribution, _) in enumerate(ACCURACY_DISTRIBUTIONS):
+        for column_index, component in enumerate(("dot", "gemv")):
+            _plot_accuracy_lines(
+                axes[row_index, column_index],
+                rows,
+                formats,
+                component=component,
+                distribution=distribution,
+                colors=colors,
+                markers=markers,
+            )
+    handles = [
+        Line2D(
+            [0],
+            [0],
+            color=colors[name],
+            marker=markers[name],
+            linewidth=2.0,
+            label=label(name),
+        )
+        for name in formats
+    ]
+    fig.legend(
+        handles,
+        [label(name) for name in formats],
+        loc="upper center",
+        ncol=len(formats),
+        frameon=False,
+        bbox_to_anchor=(0.5, 0.98),
+    )
+    fig.suptitle(
+        f"{storage_bits}-bit formats: x4 GPU result versus source reference",
+        y=1.02,
+        fontsize=16,
+    )
+    fig.tight_layout(rect=(0, 0, 1, 0.93))
+    return save_figure(fig, path)
+
+
+def plot_all_format_accuracy(
+    rows: Sequence[dict[str, str]], path: Path
+) -> Path:
+    palette = plt.get_cmap("tab20")
+    colors = {name: palette(index) for index, name in enumerate(FORMAT_ORDER)}
+    markers = {
+        name: BIT_MARKERS[bits]
+        for bits, formats in ALL_BIT_FORMATS.items()
+        for name in formats
+    }
+    storage_bits_by_format = {
+        name: bits
+        for bits, formats in ALL_BIT_FORMATS.items()
+        for name in formats
+    }
+    fig, axes = plt.subplots(2, 2, figsize=(21.0, 13.5))
+    for row_index, (distribution, _) in enumerate(ACCURACY_DISTRIBUTIONS):
+        for column_index, component in enumerate(("dot", "gemv")):
+            _plot_accuracy_lines(
+                axes[row_index, column_index],
+                rows,
+                FORMAT_ORDER,
+                component=component,
+                distribution=distribution,
+                colors=colors,
+                markers=markers,
+            )
+    handles = [
+        Line2D(
+            [0],
+            [0],
+            color=colors[name],
+            marker=markers[name],
+            linewidth=2.0,
+            label=f"{label(name)} ({storage_bits_by_format[name]}b)",
+        )
+        for name in FORMAT_ORDER
+    ]
+    fig.legend(
+        handles=handles,
+        loc="upper center",
+        ncol=5,
+        frameon=False,
+        bbox_to_anchor=(0.5, 0.985),
+        title="Storage format; marker shape also identifies storage width",
+    )
+    fig.suptitle(
+        "All storage formats: x4 GPU accuracy versus N",
+        y=1.045,
+        fontsize=17,
+    )
+    fig.tight_layout(rect=(0, 0, 1, 0.84))
     return save_figure(fig, path)
 
 
@@ -1113,7 +1358,7 @@ def write_report(
         f'<a class="report-link" href="{filename}"><strong>{html.escape(text)}</strong><span>{html.escape(description)}</span></a>'
         for filename, text, description in (
             ("total-performance.html", "Total performance", "Complete DOT/GEMV time and size scaling."),
-            ("same-bit-formats.html", "Same-bit formats", "8-, 16-, and 32-bit formats at x1, x2, and x4."),
+            ("same-bit-formats.html", "Same-bit formats", "Overlaid x1/x2/x4 performance plus same-bit and all-format accuracy."),
             ("packing.html", "Packed vs unpacked", "x2 and x4 throughput benefit over x1."),
             ("roofline.html", "Roofline", "Useful work relative to the measured HBM ceiling."),
             ("conversion.html", "Conversion", "Register decode, streaming decode, and data dependence."),
@@ -1174,25 +1419,60 @@ def write_report(
         ),
         "same-bit-formats.html": (
             "Same-bit format comparison",
-            "Complete DOT and GEMV time versus N for formats with equal storage width, split into unpacked x1 and packed x2/x4 implementations.",
+            "High-resolution performance and accuracy comparisons for formats with equal storage width.",
             graph_section(
-                "8-bit formats",
-                "This compares the three custom E1/E2/E3 layouts with CUDA FP8 E4M3 and E5M2 at the same one-byte storage cost.",
+                "8-bit performance",
+                "All five 8-bit formats and all x1/x2/x4 access widths share the same axes. Color and marker identify the format; line style identifies packing.",
                 "same-bit-8.svg",
-                "Complete DOT and GEMV time versus N for x1, x2, and x4 8-bit formats.",
+                "High-resolution complete DOT and GEMV time versus N with every 8-bit format and x1, x2, and x4 access overlaid.",
+                "SVG is vector resolution; select the figure to open it directly.",
             )
             + graph_section(
-                "16-bit formats",
-                "This directly compares E11M4, FP16, BF16, and the custom 16-bit layouts, including packed x2 and x4 variants.",
+                "8-bit accuracy",
+                "DOT uses normalized RMS error; GEMV uses relative L2 error. Curves are total x4 GPU error versus the original FP64 source for both distributions.",
+                "same-bit-accuracy-8.svg",
+                "High-resolution DOT normalized RMS and GEMV relative L2 error versus N for every 8-bit format and both distributions.",
+                "Packing variants are omitted here because they encode identical values; reduction-order differences are discussed below.",
+            )
+            + graph_section(
+                "16-bit performance",
+                "E11M4, FP16, BF16, and all custom 16-bit layouts are overlaid with their x1/x2/x4 access widths.",
                 "same-bit-16.svg",
-                "Complete DOT and GEMV time versus N for x1, x2, and x4 16-bit formats.",
+                "High-resolution complete DOT and GEMV time versus N with every 16-bit format and x1, x2, and x4 access overlaid.",
+                "SVG is vector resolution; select the figure to open it directly.",
             )
             + graph_section(
-                "32-bit formats",
-                "This compares FP32 and E11M20 with the custom 32-bit layouts at x1, x2, and x4.",
+                "16-bit accuracy",
+                "The same primary DOT and GEMV metrics compare every 16-bit format on U(0,1) and N(0,1).",
+                "same-bit-accuracy-16.svg",
+                "High-resolution DOT normalized RMS and GEMV relative L2 error versus N for every 16-bit format and both distributions.",
+                "Packing variants are omitted because their storage quantization is identical.",
+            )
+            + graph_section(
+                "32-bit performance",
+                "FP32, E11M20, and all custom 32-bit layouts are overlaid with x1/x2/x4 access.",
                 "same-bit-32.svg",
-                "Complete DOT and GEMV time versus N for x1, x2, and x4 32-bit formats.",
-            ),
+                "High-resolution complete DOT and GEMV time versus N with every 32-bit format and x1, x2, and x4 access overlaid.",
+                "SVG is vector resolution; select the figure to open it directly.",
+            )
+            + graph_section(
+                "32-bit accuracy",
+                "The same primary DOT and GEMV metrics compare every 32-bit format on U(0,1) and N(0,1).",
+                "same-bit-accuracy-32.svg",
+                "High-resolution DOT normalized RMS and GEMV relative L2 error versus N for every 32-bit format and both distributions.",
+                "Packing variants are omitted because their storage quantization is identical.",
+            )
+            + graph_section(
+                "All-format accuracy",
+                "This puts every 8-, 16-, 32-, and 64-bit format on the same log axes. A line ending early indicates non-finite outputs at larger N.",
+                "all-format-accuracy.svg",
+                "Large high-resolution comparison of DOT normalized RMS and GEMV relative L2 error versus N for all 17 formats and both distributions.",
+                "Curves use the x4 GPU result versus the original FP64 source. FP64 exact-zero reference points, when present, are placed at the labeled plot floor.",
+            )
+            + """<section class="text-section">
+<h2>Packing and accuracy</h2>
+<p>x1, x2, and x4 are literally identical at the storage-quantization level: they read the same encoded values. Their complete GPU results are not guaranteed bit-for-bit identical because lane grouping changes the FP64 reduction order. For 8-, 16-, and 32-bit storage that arithmetic difference is far below the quantization error, so these format-comparison plots show the x4 result once. The separate scalar and arithmetic page retains the x1/x2/x4 kernel-only validation. FP64 is the special case where reduction rounding is the remaining error.</p>
+</section>""",
         ),
         "packing.html": (
             "Packed vs unpacked",
@@ -1425,7 +1705,9 @@ def write_report(
 <p><strong>Packing speedup:</strong> logical throughput for equal decoded values or useful operations. Register decode is compared in decoded values/s, fixing the unequal-work x1/x2/x4 normalization.</p>
 <p><strong>Roofline bytes:</strong> unique encoded storage. GEMV counts its vector once because Nsight confirms cache reuse; requested bytes remain available in the raw table.</p>
 <p><strong>Profiler data:</strong> only hardware counters are used. Replay-contaminated Nsight durations never replace event timing.</p>
-<p><strong>Storage accuracy:</strong> GPU results are compared with a reference computed from the decoded storage values, isolating quantization from FP64 arithmetic order.</p>
+<p><strong>DOT primary accuracy:</strong> normalized RMS error, using the per-output absolute-product sum as the cancellation-safe normalization.</p>
+<p><strong>GEMV primary accuracy:</strong> relative L2 error over the M=1024 output vector.</p>
+<p><strong>Error separation:</strong> decoded storage versus FP64 source isolates quantization; GPU versus decoded storage isolates arithmetic order; GPU versus source is total error. The same-bit and all-format curves use total x4 error.</p>
 <p><strong>Accuracy sampling:</strong> DOT uses 8,192 independent outputs per case. GEMV fixes M=1024 and uses 16 independent matrix/vector replicates.</p>
 </section>
 <section class="text-section"><h2>Performance data</h2><ul>
@@ -1530,6 +1812,18 @@ def validate_inputs(rows: Sequence[dict[str, str]], profile: Sequence[dict[str, 
         raise SystemExit("timing component coverage is incomplete")
 
 
+def validate_accuracy_summary(rows: Sequence[dict[str, str]]) -> None:
+    total_x4 = [row for row in rows if row["comparison"] == "total_x4"]
+    if {row["format"] for row in total_x4} != set(FORMAT_ORDER):
+        raise SystemExit("total_x4 accuracy data does not contain the expected 17 formats")
+    if {row["kernel"] for row in total_x4} != {"dot", "gemv"}:
+        raise SystemExit("total_x4 accuracy data is missing DOT or GEMV")
+    if {row["distribution"] for row in total_x4} != {
+        distribution for distribution, _ in ACCURACY_DISTRIBUTIONS
+    }:
+        raise SystemExit("total_x4 accuracy data is missing a distribution")
+
+
 def main() -> None:
     args = parse_args()
     results_root = args.results_root.resolve()
@@ -1566,7 +1860,9 @@ def main() -> None:
     packed = read_csv(run_dir / "packed_speedups.csv")
     profile = read_csv(run_dir / "profile_operations.csv")
     accuracy_rows = read_csv(accuracy_dir / "simulation_model_comparison.csv")
+    accuracy_summary_rows = read_csv(accuracy_run_dir / "simulation_summary.csv")
     validate_inputs(rows, profile)
+    validate_accuracy_summary(accuracy_summary_rows)
     if {row["format"] for row in accuracy_rows} != set(FORMAT_ORDER):
         raise SystemExit("accuracy data does not contain the expected 17 formats")
     required_packed_fields = {"comparison_metric", "scalar_throughput", "packed_throughput"}
@@ -1585,6 +1881,18 @@ def main() -> None:
                 rows, storage_bits, assets / f"same-bit-{storage_bits}.svg"
             )
         )
+        figures.append(
+            plot_same_bit_accuracy(
+                accuracy_summary_rows,
+                storage_bits,
+                assets / f"same-bit-accuracy-{storage_bits}.svg",
+            )
+        )
+    figures.append(
+        plot_all_format_accuracy(
+            accuracy_summary_rows, assets / "all-format-accuracy.svg"
+        )
+    )
     figures.append(plot_packed_speedup(packed, assets / "packed-speedup.svg"))
     figures.append(plot_packing_by_size(rows, assets / "packing-by-size.svg"))
     figures.append(plot_roofline(rows, profile, assets / "algorithmic-roofline.svg"))
@@ -1630,6 +1938,7 @@ def main() -> None:
         f"timing_rows={len(rows)}",
         f"profile_operations={len(profile)}",
         f"accuracy_comparisons={len(accuracy_rows)}",
+        f"accuracy_summary_rows={len(accuracy_summary_rows)}",
         f"measured_hbm_gb_per_s={memory_ceiling(profile):.6f}",
         "packing_normalization=logical_throughput",
         "pages=" + ",".join(generated_pages),
