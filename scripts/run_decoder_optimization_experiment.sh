@@ -83,10 +83,23 @@ python3 "${repo_dir}/tools/summarize_decoder_optimization.py" \
     | tee "${run_dir}/timing_validation.txt"
 
 if command -v cuobjdump >/dev/null 2>&1; then
-    cuobjdump --dump-resource-usage "${benchmark}" \
-        >"${run_dir}/cuda_resource_usage.txt"
-    cuobjdump --demangle --dump-sass "${benchmark}" \
-        >"${run_dir}/sass.txt"
+    diagnostics_status="${run_dir}/compiler_diagnostics_status.txt"
+    if cuobjdump --dump-resource-usage "${benchmark}" \
+        >"${run_dir}/cuda_resource_usage.txt"; then
+        echo "resource_usage=complete" >>"${diagnostics_status}"
+    else
+        echo "warning: cuobjdump resource-usage export failed" >&2
+        echo "resource_usage=failed_nonfatal" >>"${diagnostics_status}"
+    fi
+    if cuobjdump --dump-sass "${benchmark}" >"${run_dir}/sass.txt"; then
+        echo "sass=complete" >>"${diagnostics_status}"
+    else
+        echo "warning: cuobjdump SASS export failed" >&2
+        echo "sass=failed_nonfatal" >>"${diagnostics_status}"
+    fi
+else
+    echo "cuobjdump=unavailable" \
+        >"${run_dir}/compiler_diagnostics_status.txt"
 fi
 
 finished_epoch="$(date +%s)"
