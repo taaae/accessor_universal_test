@@ -1,0 +1,10 @@
+dot_count=262147
+gemv_rows=257
+gemv_columns=1027
+distributions=uniform_-1_1,normal_0_1
+load_lanes=1,2,4
+arithmetic=fp64
+cuda_arch=90
+dump_sass=1
+finished_utc=2026-08-08T10:44:11Z
+wall_time_seconds=1

@@ -1,0 +1,18 @@
+experiment=005_storage_kernels
+started_utc=2026-08-08T10:44:10Z
+git_commit=86bf7854af430f594dccffbb56ac028d8a629c1b
+git_status_begin
+?? results/005_storage_kernels/run_20260808T104410Z/
+?? results/005_storage_kernels/slurm-442133.out
+git_status_end
+
+nvidia_smi
+name, uuid, pci.bus_id, driver_version, memory.total [MiB]
+NVIDIA H200 NVL, GPU-3bb7dc49-ebaf-ab26-a2e4-426c8b73245c, 00000000:00:10.0, 610.43.02, 143771 MiB
+
+nvcc_version
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Tue_Dec_16_07:23:41_PM_PST_2025
+Cuda compilation tools, release 13.1, V13.1.115
+Build cuda_13.1.r13.1/compiler.37061995_0

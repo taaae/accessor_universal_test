@@ -1,0 +1,41 @@
+storage DOT/GEMV CUDA validation
+GPU: NVIDIA H200 NVL (sm_90)
+DOT logical values: 262147
+GEMV: 257 x 1027 (row padding to x4 alignment)
+e1m6           uniform_-1_1  failed_tests=0 dot_reference_class=finite
+e2m5           uniform_-1_1  failed_tests=0 dot_reference_class=finite
+e3m4           uniform_-1_1  failed_tests=0 dot_reference_class=finite
+fp8_e4m3       uniform_-1_1  failed_tests=0 dot_reference_class=finite
+fp8_e5m2       uniform_-1_1  failed_tests=0 dot_reference_class=finite
+e1m14          uniform_-1_1  failed_tests=0 dot_reference_class=finite
+e2m13          uniform_-1_1  failed_tests=0 dot_reference_class=finite
+e3m12          uniform_-1_1  failed_tests=0 dot_reference_class=finite
+fp16_e5m10     uniform_-1_1  failed_tests=0 dot_reference_class=finite
+bf16_e8m7      uniform_-1_1  failed_tests=0 dot_reference_class=finite
+e11m4          uniform_-1_1  failed_tests=0 dot_reference_class=finite
+e1m30          uniform_-1_1  failed_tests=0 dot_reference_class=finite
+e2m29          uniform_-1_1  failed_tests=0 dot_reference_class=finite
+e3m28          uniform_-1_1  failed_tests=0 dot_reference_class=finite
+fp32_e8m23     uniform_-1_1  failed_tests=0 dot_reference_class=finite
+e11m20         uniform_-1_1  failed_tests=0 dot_reference_class=finite
+fp64_e11m52    uniform_-1_1  failed_tests=0 dot_reference_class=finite
+e1m6           normal_0_1    failed_tests=0 dot_reference_class=finite
+e2m5           normal_0_1    failed_tests=0 dot_reference_class=nan
+e3m4           normal_0_1    failed_tests=0 dot_reference_class=finite
+fp8_e4m3       normal_0_1    failed_tests=0 dot_reference_class=finite
+fp8_e5m2       normal_0_1    failed_tests=0 dot_reference_class=finite
+e1m14          normal_0_1    failed_tests=0 dot_reference_class=finite
+e2m13          normal_0_1    failed_tests=0 dot_reference_class=nan
+e3m12          normal_0_1    failed_tests=0 dot_reference_class=finite
+fp16_e5m10     normal_0_1    failed_tests=0 dot_reference_class=finite
+bf16_e8m7      normal_0_1    failed_tests=0 dot_reference_class=finite
+e11m4          normal_0_1    failed_tests=0 dot_reference_class=finite
+e1m30          normal_0_1    failed_tests=0 dot_reference_class=finite
+e2m29          normal_0_1    failed_tests=0 dot_reference_class=nan
+e3m28          normal_0_1    failed_tests=0 dot_reference_class=finite
+fp32_e8m23     normal_0_1    failed_tests=0 dot_reference_class=finite
+e11m20         normal_0_1    failed_tests=0 dot_reference_class=finite
+fp64_e11m52    normal_0_1    failed_tests=0 dot_reference_class=finite
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/005_storage_kernels/run_20260808T104410Z/dot_validation.csv
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/005_storage_kernels/run_20260808T104410Z/gemv_validation.csv
+All scalar, x2, and x4 DOT/GEMV validations passed.
