@@ -121,6 +121,38 @@ def test_primary_accuracy_metrics_and_x4_selection():
     assert {row["comparison"] for row in selected} == {"total_x4"}
 
 
+def test_interactive_performance_chart_filters(tmp_path):
+    svg = tmp_path / "chart.svg"
+    groups = "".join(
+        f'<g id="{performance_report.series_gid(component, "e1m6", lanes)}"></g>'
+        for component in ("dot", "gemv")
+        for lanes in (1, 2, 4)
+    )
+    svg.write_text(
+        f'<svg xmlns="http://www.w3.org/2000/svg">{groups}</svg>',
+        encoding="utf-8",
+    )
+
+    document = performance_report.interactive_chart_document(
+        svg,
+        title="Test chart",
+        description="Test description",
+        formats=("e1m6",),
+        colors={"e1m6": "#0072B2"},
+        include_bit_filters=True,
+    )
+
+    assert document.count('data-series="true"') == 6
+    assert document.count('data-filter="lanes"') == 3
+    assert document.count('data-filter="format"') == 1
+    assert document.count('data-filter="bits"') == 4
+    assert 'data-format="e1m6"' in document
+    assert 'data-bits="8"' in document
+    assert "filterEnabled('lanes', group.dataset.lanes)" in document
+    assert "filterEnabled('format', group.dataset.format)" in document
+    assert "filterEnabled('bits', group.dataset.bits)" in document
+
+
 def test_register_packing_uses_value_throughput(tmp_path):
     performance_summary.EXPECTED_FORMATS = {"fp32_e8m23"}
     performance_summary.EXPECTED_DISTRIBUTIONS = {"normal_0_1"}

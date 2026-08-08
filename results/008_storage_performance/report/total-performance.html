@@ -12,6 +12,13 @@
 <h1>Total performance</h1>
 <p class="lead">Complete event-timed DOT and GEMV performance, including every kernel launch.</p>
 <section class="graph-section">
+<h2>All formats and access widths</h2>
+<p>Every format and x1/x2/x4 implementation is plotted against N. Use access-width, storage-width, and format controls to isolate any subset.</p>
+<figure class="interactive-figure">
+<iframe class="interactive-chart-frame" data-performance-chart src="interactive/all-format-performance.html" title="Interactive high-resolution DOT and GEMV timing chart for all storage formats and access widths"></iframe>
+<figcaption>All lines use N(0,1) inputs; lower time is faster. <a href="interactive/all-format-performance.html">Open the chart full size</a>.</figcaption>
+</figure>
+</section><section class="graph-section">
 <h2>Absolute kernel time</h2>
 <p>This is the end-to-end comparison at the largest tested N using x4 access and N(0,1) data.</p>
 <figure><a href="assets/total-kernel-time.svg"><img src="assets/total-kernel-time.svg" alt="Complete DOT and GEMV time in milliseconds for all formats."></a></figure>
@@ -26,5 +33,20 @@
 </section>
 </main>
 <footer><div class="shell">Performance: <code>run_20260808T131626Z</code> · Accuracy: <code>run_20260808T122054Z</code></div></footer>
+<script>
+window.addEventListener('message', event => {
+  if (event.data?.type !== 'performance-chart-height') return;
+  const frame = [...document.querySelectorAll('iframe[data-performance-chart]')]
+    .find(candidate => candidate.contentWindow === event.source);
+  if (!frame) return;
+  const height = Math.max(520, Math.min(2200, Number(event.data.height) + 4));
+  if (Number.isFinite(height)) frame.style.height = `${height}px`;
+});
+for (const frame of document.querySelectorAll('iframe[data-performance-chart]')) {
+  frame.addEventListener('load', () => {
+    frame.contentWindow?.postMessage({ type: 'request-performance-chart-height' }, '*');
+  });
+}
+</script>
 </body>
 </html>

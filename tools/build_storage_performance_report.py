@@ -8,6 +8,7 @@ import csv
 import html
 import math
 import os
+import re
 import shutil
 import statistics
 from pathlib import Path
@@ -422,7 +423,34 @@ def plot_same_bit_kernel_time(
     formats = BIT_FORMATS[storage_bits]
     color_by_format = dict(zip(formats, SAME_BIT_COLORS))
     marker_by_format = dict(zip(formats, FORMAT_MARKERS))
-    fig, axes = plt.subplots(1, 2, figsize=(18.5, 7.8))
+    return plot_kernel_time_overlay(
+        rows,
+        formats,
+        path,
+        title=f"{storage_bits}-bit formats: complete kernel time versus N",
+        colors=color_by_format,
+        markers=marker_by_format,
+        figsize=(18.5, 7.8),
+        include_legends=True,
+    )
+
+
+def series_gid(component: str, format_name: str, lanes: int) -> str:
+    return f"series--{component}--{format_name}--x{lanes}"
+
+
+def plot_kernel_time_overlay(
+    rows: Sequence[dict[str, str]],
+    formats: Sequence[str],
+    path: Path,
+    *,
+    title: str,
+    colors: dict[str, object],
+    markers: dict[str, str],
+    figsize: tuple[float, float],
+    include_legends: bool,
+) -> Path:
+    fig, axes = plt.subplots(1, 2, figsize=figsize)
     for axis, component in zip(axes, ("dot", "gemv")):
         for lane in (1, 2, 4):
             for name in formats:
@@ -440,70 +468,330 @@ def plot_same_bit_kernel_time(
                     ),
                     key=lambda row: int(row["n"]),
                 )
-                axis.plot(
+                line = axis.plot(
                     [int(row["n"]) for row in current],
                     [number(row, "median_time_ms") for row in current],
-                    color=color_by_format[name],
-                    marker=marker_by_format[name],
+                    color=colors[name],
+                    marker=markers[name],
                     linestyle=LANE_STYLES[lane],
                     linewidth=2.0 if lane == 4 else 1.65,
                     markersize=5.0,
-                    markerfacecolor=(color_by_format[name] if lane == 4 else "white"),
+                    markerfacecolor=(colors[name] if lane == 4 else "white"),
                     markevery=1,
-                )
+                )[0]
+                line.set_gid(series_gid(component, name, lane))
         axis.set_xscale("log", base=2)
         axis.set_yscale("log")
         axis.set_title(component.upper(), fontsize=13)
         axis.set_xlabel("Reduction length N")
         axis.set_ylabel("Complete kernel time (ms)")
         format_axis_labels(axis)
-    format_handles = [
-        Line2D(
-            [0],
-            [0],
-            color=color_by_format[name],
-            marker=marker_by_format[name],
-            linewidth=2.0,
-            label=label(name),
+    if include_legends:
+        format_handles = [
+            Line2D(
+                [0],
+                [0],
+                color=colors[name],
+                marker=markers[name],
+                linewidth=2.0,
+                label=label(name),
+            )
+            for name in formats
+        ]
+        lane_handles = [
+            Line2D(
+                [0],
+                [0],
+                color="#4c5661",
+                linestyle=LANE_STYLES[lane],
+                marker="o",
+                markerfacecolor=("#4c5661" if lane == 4 else "white"),
+                linewidth=2.0 if lane == 4 else 1.65,
+                label="unpacked x1" if lane == 1 else f"packed x{lane}",
+            )
+            for lane in (1, 2, 4)
+        ]
+        fig.legend(
+            handles=format_handles,
+            loc="upper center",
+            ncol=len(formats),
+            frameon=False,
+            bbox_to_anchor=(0.5, 1.025),
+            title="Storage format (color and marker)",
         )
-        for name in formats
-    ]
-    lane_handles = [
-        Line2D(
-            [0],
-            [0],
-            color="#4c5661",
-            linestyle=LANE_STYLES[lane],
-            marker="o",
-            markerfacecolor=("#4c5661" if lane == 4 else "white"),
-            linewidth=2.0 if lane == 4 else 1.65,
-            label="unpacked x1" if lane == 1 else f"packed x{lane}",
+        fig.legend(
+            handles=lane_handles,
+            loc="upper center",
+            ncol=3,
+            frameon=False,
+            bbox_to_anchor=(0.5, 0.94),
+            title="Access width (line style)",
         )
-        for lane in (1, 2, 4)
-    ]
-    fig.legend(
-        handles=format_handles,
-        loc="upper center",
-        ncol=len(formats),
-        frameon=False,
-        bbox_to_anchor=(0.5, 1.025),
-        title="Storage format (color and marker)",
-    )
-    fig.legend(
-        handles=lane_handles,
-        loc="upper center",
-        ncol=3,
-        frameon=False,
-        bbox_to_anchor=(0.5, 0.94),
-        title="Access width (line style)",
-    )
-    fig.suptitle(
-        f"{storage_bits}-bit formats: complete kernel time versus N",
-        y=1.14,
-        fontsize=16,
-    )
-    fig.tight_layout(rect=(0, 0, 1, 0.82))
+        fig.suptitle(title, y=1.14, fontsize=16)
+        fig.tight_layout(rect=(0, 0, 1, 0.82))
+    else:
+        fig.suptitle(title, y=0.995, fontsize=17)
+        fig.tight_layout(rect=(0, 0, 1, 0.94))
     return save_figure(fig, path)
+
+
+def all_format_colors() -> dict[str, object]:
+    palette = plt.get_cmap("tab20")
+    return {name: palette(index) for index, name in enumerate(FORMAT_ORDER)}
+
+
+def all_format_markers() -> dict[str, str]:
+    return {
+        name: BIT_MARKERS[bits]
+        for bits, formats in ALL_BIT_FORMATS.items()
+        for name in formats
+    }
+
+
+def plot_interactive_same_bit_kernel_time(
+    rows: Sequence[dict[str, str]], storage_bits: int, path: Path
+) -> Path:
+    formats = BIT_FORMATS[storage_bits]
+    return plot_kernel_time_overlay(
+        rows,
+        formats,
+        path,
+        title=f"{storage_bits}-bit formats: complete kernel time versus N",
+        colors=dict(zip(formats, SAME_BIT_COLORS)),
+        markers=dict(zip(formats, FORMAT_MARKERS)),
+        figsize=(21.0, 8.2),
+        include_legends=False,
+    )
+
+
+def plot_all_format_kernel_time(
+    rows: Sequence[dict[str, str]], path: Path
+) -> Path:
+    return plot_kernel_time_overlay(
+        rows,
+        FORMAT_ORDER,
+        path,
+        title="All storage formats and access widths: complete kernel time versus N",
+        colors=all_format_colors(),
+        markers=all_format_markers(),
+        figsize=(24.0, 9.2),
+        include_legends=False,
+    )
+
+
+def format_storage_bits() -> dict[str, int]:
+    return {
+        name: bits
+        for bits, formats in ALL_BIT_FORMATS.items()
+        for name in formats
+    }
+
+
+def interactive_chart_document(
+    svg_path: Path,
+    *,
+    title: str,
+    description: str,
+    formats: Sequence[str],
+    colors: dict[str, object],
+    include_bit_filters: bool,
+) -> str:
+    svg = svg_path.read_text(encoding="utf-8")
+    svg = svg[svg.index("<svg ") :]
+    svg = svg.replace(
+        "<svg ",
+        '<svg class="performance-chart" role="img" '
+        'aria-labelledby="performance-chart-title performance-chart-description" ',
+        1,
+    )
+    svg = svg.replace(
+        ">",
+        f'><title id="performance-chart-title">{html.escape(title)}</title>'
+        f'<desc id="performance-chart-description">{html.escape(description)}</desc>',
+        1,
+    )
+    bits_by_format = format_storage_bits()
+    pattern = re.compile(
+        r'<g id="series--(?P<component>dot|gemv)--'
+        r'(?P<format>[a-z0-9_]+)--x(?P<lanes>[124])">'
+    )
+
+    def series_attributes(match: re.Match[str]) -> str:
+        component = match.group("component")
+        format_name = match.group("format")
+        lanes = match.group("lanes")
+        bits = bits_by_format[format_name]
+        series_title = f"{component.upper()}: {label(format_name)}, x{lanes}"
+        group_id = series_gid(component, format_name, int(lanes))
+        return (
+            f'<g id="{group_id}" data-series="true" '
+            f'data-component="{component}" data-format="{format_name}" '
+            f'data-lanes="{lanes}" data-bits="{bits}">'
+            f"<title>{html.escape(series_title)}</title>"
+        )
+
+    svg, series_count = pattern.subn(series_attributes, svg)
+    expected_series = 2 * 3 * len(formats)
+    if series_count != expected_series:
+        raise ValueError(
+            f"expected {expected_series} interactive series in {svg_path}, "
+            f"found {series_count}"
+        )
+
+    lane_options = "".join(
+        f"""<label class="filter-option lane-x{lane}">
+<input type="checkbox" data-filter="lanes" value="{lane}" checked>
+<span class="lane-sample" aria-hidden="true"></span>
+<span>{'unpacked x1' if lane == 1 else f'packed x{lane}'}</span>
+</label>"""
+        for lane in (1, 2, 4)
+    )
+    format_options = "".join(
+        f"""<label class="filter-option">
+<input type="checkbox" data-filter="format" value="{html.escape(name)}" checked>
+<span class="format-swatch" style="--series-color: {matplotlib.colors.to_hex(colors[name])}" aria-hidden="true"></span>
+<span>{html.escape(label(name))}</span>
+</label>"""
+        for name in formats
+    )
+    bit_fieldset = ""
+    if include_bit_filters:
+        bit_options = "".join(
+            f"""<label class="filter-option">
+<input type="checkbox" data-filter="bits" value="{bits}" checked>
+<span class="bit-marker bit-{bits}" aria-hidden="true"></span>
+<span>{bits}-bit</span>
+</label>"""
+            for bits in ALL_BIT_FORMATS
+        )
+        bit_fieldset = f"""<fieldset>
+<legend>Storage width</legend>
+<div class="filter-options">{bit_options}</div>
+</fieldset>"""
+
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{html.escape(title)}</title>
+<style>
+:root {{ color-scheme: light; --fg: #1f252b; --muted: #5d6872; --border: #d8dee4; --focus: #075f9a; }}
+* {{ box-sizing: border-box; }}
+body {{ margin: 0; background: #fff; color: var(--fg); font: 15px/1.4 system-ui, sans-serif; }}
+.chart-root {{ padding: 14px 16px 2px; }}
+.filters {{ display: grid; gap: 10px; margin-bottom: 8px; }}
+fieldset {{ border: 0; margin: 0; padding: 0; }}
+legend {{ color: var(--muted); font-size: 0.86rem; font-weight: 500; margin-bottom: 4px; }}
+.filter-options {{ display: flex; flex-wrap: wrap; gap: 5px 14px; }}
+.filter-option {{ align-items: center; cursor: pointer; display: inline-flex; gap: 6px; min-height: 28px; white-space: nowrap; }}
+.filter-option input {{ accent-color: var(--focus); height: 16px; margin: 0; width: 16px; }}
+.filter-option:has(input:focus-visible) {{ outline: 2px solid var(--focus); outline-offset: 2px; }}
+.format-swatch {{ background: var(--series-color); border-radius: 50%; height: 9px; width: 18px; }}
+.lane-sample {{ border-top: 2px solid #4c5661; height: 0; width: 22px; }}
+.lane-x1 .lane-sample {{ border-top-style: dotted; }}
+.lane-x2 .lane-sample {{ border-top-style: dashed; }}
+.lane-x4 .lane-sample {{ border-top-style: solid; }}
+.bit-marker {{ background: #4c5661; display: inline-block; height: 9px; width: 9px; }}
+.bit-8 {{ border-radius: 50%; }}
+.bit-16 {{ border-radius: 1px; }}
+.bit-32 {{ clip-path: polygon(50% 0, 100% 100%, 0 100%); }}
+.bit-64 {{ transform: rotate(45deg); }}
+.visible-status {{ color: var(--muted); margin: 2px 0 4px; }}
+.chart-wrap {{ width: 100%; }}
+.performance-chart {{ display: block; height: auto; max-width: none; width: 100%; }}
+.performance-chart [data-series] {{ transition: opacity 120ms ease; }}
+.performance-chart .series-hidden {{ display: none; }}
+@media (prefers-reduced-motion: reduce) {{ .performance-chart [data-series] {{ transition: none; }} }}
+@media (max-width: 620px) {{ .chart-root {{ padding-inline: 8px; }} .filter-options {{ column-gap: 10px; }} }}
+</style>
+</head>
+<body>
+<main id="interactive-performance-chart" class="chart-root">
+<section class="filters" aria-label="Chart filters">
+<fieldset>
+<legend>Access width</legend>
+<div class="filter-options">{lane_options}</div>
+</fieldset>
+{bit_fieldset}
+<fieldset>
+<legend>Storage format</legend>
+<div class="filter-options">{format_options}</div>
+</fieldset>
+</section>
+<p id="visible-status" class="visible-status" aria-live="polite"></p>
+<div class="chart-wrap">{svg}</div>
+</main>
+<script>
+const root = document.getElementById('interactive-performance-chart');
+const status = document.getElementById('visible-status');
+const controls = [...root.querySelectorAll('input[data-filter]')];
+const series = [...root.querySelectorAll('[data-series]')];
+
+function filterEnabled(kind, value) {{
+  const input = controls.find(control => control.dataset.filter === kind && control.value === value);
+  return input ? input.checked : true;
+}}
+
+function reportHeight() {{
+  if (window.parent !== window) {{
+    const height = Math.ceil(root.getBoundingClientRect().bottom + 2);
+    window.parent.postMessage({{ type: 'performance-chart-height', height }}, '*');
+  }}
+}}
+
+function updateSeries() {{
+  let visible = 0;
+  for (const group of series) {{
+    const show = filterEnabled('lanes', group.dataset.lanes)
+      && filterEnabled('format', group.dataset.format)
+      && filterEnabled('bits', group.dataset.bits);
+    group.classList.toggle('series-hidden', !show);
+    group.setAttribute('aria-hidden', String(!show));
+    if (show) visible += 1;
+  }}
+  const kernels = new Set(series.map(group => group.dataset.component)).size;
+  status.textContent = `${{visible / kernels}} of ${{series.length / kernels}} lines visible per kernel · lower is faster`;
+  requestAnimationFrame(reportHeight);
+}}
+
+root.addEventListener('change', event => {{
+  if (event.target.matches('input[data-filter]')) updateSeries();
+}});
+window.addEventListener('message', event => {{
+  if (event.data?.type === 'request-performance-chart-height') reportHeight();
+}});
+window.addEventListener('load', updateSeries);
+if ('ResizeObserver' in window) new ResizeObserver(reportHeight).observe(root);
+</script>
+</body>
+</html>
+"""
+
+
+def write_interactive_chart(
+    svg_path: Path,
+    output_path: Path,
+    *,
+    title: str,
+    description: str,
+    formats: Sequence[str],
+    colors: dict[str, object],
+    include_bit_filters: bool,
+) -> Path:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(
+        interactive_chart_document(
+            svg_path,
+            title=title,
+            description=description,
+            formats=formats,
+            colors=colors,
+            include_bit_filters=include_bit_filters,
+        ),
+        encoding="utf-8",
+    )
+    return output_path
 
 
 def _accuracy_rows(
@@ -1265,6 +1553,24 @@ def page_document(
     performance_run_name: str,
     accuracy_run_name: str,
 ) -> str:
+    performance_frame_script = ""
+    if "data-performance-chart" in body:
+        performance_frame_script = """
+<script>
+window.addEventListener('message', event => {
+  if (event.data?.type !== 'performance-chart-height') return;
+  const frame = [...document.querySelectorAll('iframe[data-performance-chart]')]
+    .find(candidate => candidate.contentWindow === event.source);
+  if (!frame) return;
+  const height = Math.max(520, Math.min(2200, Number(event.data.height) + 4));
+  if (Number.isFinite(height)) frame.style.height = `${height}px`;
+});
+for (const frame of document.querySelectorAll('iframe[data-performance-chart]')) {
+  frame.addEventListener('load', () => {
+    frame.contentWindow?.postMessage({ type: 'request-performance-chart-height' }, '*');
+  });
+}
+</script>"""
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -1280,7 +1586,7 @@ def page_document(
 <p class="lead">{html.escape(intro)}</p>
 {body}
 </main>
-<footer><div class="shell">Performance: <code>{html.escape(performance_run_name)}</code> · Accuracy: <code>{html.escape(accuracy_run_name)}</code></div></footer>
+<footer><div class="shell">Performance: <code>{html.escape(performance_run_name)}</code> · Accuracy: <code>{html.escape(accuracy_run_name)}</code></div></footer>{performance_frame_script}
 </body>
 </html>
 """
@@ -1293,6 +1599,23 @@ def graph_section(title: str, description: str, image: str, alt: str, caption: s
 <h2>{html.escape(title)}</h2>
 <p>{html.escape(description)}</p>
 <figure><a href="{html.escape(source)}"><img src="{html.escape(source)}" alt="{html.escape(alt)}"></a>{caption_html}</figure>
+</section>"""
+
+
+def interactive_graph_section(
+    title: str,
+    description: str,
+    source: str,
+    accessible_title: str,
+    caption: str,
+) -> str:
+    return f"""<section class="graph-section">
+<h2>{html.escape(title)}</h2>
+<p>{html.escape(description)}</p>
+<figure class="interactive-figure">
+<iframe class="interactive-chart-frame" data-performance-chart src="{html.escape(source)}" title="{html.escape(accessible_title)}"></iframe>
+<figcaption>{html.escape(caption)} <a href="{html.escape(source)}">Open the chart full size</a>.</figcaption>
+</figure>
 </section>"""
 
 
@@ -1357,8 +1680,8 @@ def write_report(
     performance_cards = "".join(
         f'<a class="report-link" href="{filename}"><strong>{html.escape(text)}</strong><span>{html.escape(description)}</span></a>'
         for filename, text, description in (
-            ("total-performance.html", "Total performance", "Complete DOT/GEMV time and size scaling."),
-            ("same-bit-formats.html", "Same-bit formats", "Overlaid x1/x2/x4 performance plus same-bit and all-format accuracy."),
+            ("total-performance.html", "Total performance", "Interactive all-format x1/x2/x4 timing and size scaling."),
+            ("same-bit-formats.html", "Same-bit formats", "Interactive x1/x2/x4 timing plus same-bit and all-format accuracy."),
             ("packing.html", "Packed vs unpacked", "x2 and x4 throughput benefit over x1."),
             ("roofline.html", "Roofline", "Useful work relative to the measured HBM ceiling."),
             ("conversion.html", "Conversion", "Register decode, streaming decode, and data dependence."),
@@ -1398,7 +1721,14 @@ def write_report(
         "total-performance.html": (
             "Total performance",
             "Complete event-timed DOT and GEMV performance, including every kernel launch.",
-            graph_section(
+            interactive_graph_section(
+                "All formats and access widths",
+                "Every format and x1/x2/x4 implementation is plotted against N. Use access-width, storage-width, and format controls to isolate any subset.",
+                "interactive/all-format-performance.html",
+                "Interactive high-resolution DOT and GEMV timing chart for all storage formats and access widths",
+                "All lines use N(0,1) inputs; lower time is faster.",
+            )
+            + graph_section(
                 "Absolute kernel time",
                 "This is the end-to-end comparison at the largest tested N using x4 access and N(0,1) data.",
                 "total-kernel-time.svg",
@@ -1420,12 +1750,12 @@ def write_report(
         "same-bit-formats.html": (
             "Same-bit format comparison",
             "High-resolution performance and accuracy comparisons for formats with equal storage width.",
-            graph_section(
+            interactive_graph_section(
                 "8-bit performance",
-                "All five 8-bit formats and all x1/x2/x4 access widths share the same axes. Color and marker identify the format; line style identifies packing.",
-                "same-bit-8.svg",
-                "High-resolution complete DOT and GEMV time versus N with every 8-bit format and x1, x2, and x4 access overlaid.",
-                "SVG is vector resolution; select the figure to open it directly.",
+                "All five formats and all x1/x2/x4 access widths share the same axes. Toggle an access width to affect every format, or toggle one format to affect all three access widths.",
+                "interactive/same-bit-8.html",
+                "Interactive high-resolution DOT and GEMV timing chart for every 8-bit format and access width",
+                "The chart remains vector-resolution at every zoom level.",
             )
             + graph_section(
                 "8-bit accuracy",
@@ -1434,12 +1764,12 @@ def write_report(
                 "High-resolution DOT normalized RMS and GEMV relative L2 error versus N for every 8-bit format and both distributions.",
                 "Packing variants are omitted here because they encode identical values; reduction-order differences are discussed below.",
             )
-            + graph_section(
+            + interactive_graph_section(
                 "16-bit performance",
-                "E11M4, FP16, BF16, and all custom 16-bit layouts are overlaid with their x1/x2/x4 access widths.",
-                "same-bit-16.svg",
-                "High-resolution complete DOT and GEMV time versus N with every 16-bit format and x1, x2, and x4 access overlaid.",
-                "SVG is vector resolution; select the figure to open it directly.",
+                "E11M4, FP16, BF16, and all custom layouts are overlaid. Access-width and format toggles apply to both DOT and GEMV together.",
+                "interactive/same-bit-16.html",
+                "Interactive high-resolution DOT and GEMV timing chart for every 16-bit format and access width",
+                "The chart remains vector-resolution at every zoom level.",
             )
             + graph_section(
                 "16-bit accuracy",
@@ -1448,12 +1778,12 @@ def write_report(
                 "High-resolution DOT normalized RMS and GEMV relative L2 error versus N for every 16-bit format and both distributions.",
                 "Packing variants are omitted because their storage quantization is identical.",
             )
-            + graph_section(
+            + interactive_graph_section(
                 "32-bit performance",
-                "FP32, E11M20, and all custom 32-bit layouts are overlaid with x1/x2/x4 access.",
-                "same-bit-32.svg",
-                "High-resolution complete DOT and GEMV time versus N with every 32-bit format and x1, x2, and x4 access overlaid.",
-                "SVG is vector resolution; select the figure to open it directly.",
+                "FP32, E11M20, and all custom layouts are overlaid. Access-width and format toggles apply to both DOT and GEMV together.",
+                "interactive/same-bit-32.html",
+                "Interactive high-resolution DOT and GEMV timing chart for every 32-bit format and access width",
+                "The chart remains vector-resolution at every zoom level.",
             )
             + graph_section(
                 "32-bit accuracy",
@@ -1775,6 +2105,7 @@ h3 { margin: 28px 0 8px; font-size: 1.05rem; }
 figure { margin: 0; }
 .graph-section figure + h3 { margin-top: 34px; }
 figure img { display: block; width: 100%; height: auto; border: 1px solid var(--border); }
+.interactive-chart-frame { background: white; border: 1px solid var(--border); display: block; height: 900px; width: 100%; }
 figcaption { color: var(--muted); margin-top: 8px; }
 .summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 26px 0 40px; }
 .summary-grid > div { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; display: grid; gap: 4px; }
@@ -1837,6 +2168,7 @@ def main() -> None:
     )
     output_dir = args.output_dir.resolve()
     assets = output_dir / "assets"
+    interactive_dir = output_dir / "interactive"
     required_accuracy_files = (
         accuracy_dir / "simulation_model_comparison.csv",
         accuracy_dir / "accuracy_model_report.html",
@@ -1872,13 +2204,35 @@ def main() -> None:
         )
 
     figures: list[Path] = []
+    interactive_pages: list[Path] = []
     figures.append(plot_total_kernel_time(rows, assets / "total-kernel-time.svg"))
     figures.append(plot_relative_fp64(rows, assets / "relative-fp64.svg"))
     figures.append(plot_size_scaling(rows, assets / "size-scaling.svg"))
     for storage_bits in BIT_FORMATS:
+        formats = BIT_FORMATS[storage_bits]
         figures.append(
             plot_same_bit_kernel_time(
                 rows, storage_bits, assets / f"same-bit-{storage_bits}.svg"
+            )
+        )
+        interactive_svg = plot_interactive_same_bit_kernel_time(
+            rows,
+            storage_bits,
+            assets / f"interactive-same-bit-{storage_bits}.svg",
+        )
+        figures.append(interactive_svg)
+        interactive_pages.append(
+            write_interactive_chart(
+                interactive_svg,
+                interactive_dir / f"same-bit-{storage_bits}.html",
+                title=f"{storage_bits}-bit DOT and GEMV performance",
+                description=(
+                    f"Complete kernel time versus N for all {storage_bits}-bit "
+                    "formats and x1, x2, and x4 access widths. Lower is faster."
+                ),
+                formats=formats,
+                colors=dict(zip(formats, SAME_BIT_COLORS)),
+                include_bit_filters=False,
             )
         )
         figures.append(
@@ -1888,6 +2242,24 @@ def main() -> None:
                 assets / f"same-bit-accuracy-{storage_bits}.svg",
             )
         )
+    all_performance_svg = plot_all_format_kernel_time(
+        rows, assets / "interactive-all-format-performance.svg"
+    )
+    figures.append(all_performance_svg)
+    interactive_pages.append(
+        write_interactive_chart(
+            all_performance_svg,
+            interactive_dir / "all-format-performance.html",
+            title="All-format DOT and GEMV performance",
+            description=(
+                "Complete kernel time versus N for all 17 storage formats and "
+                "x1, x2, and x4 access widths. Lower is faster."
+            ),
+            formats=FORMAT_ORDER,
+            colors=all_format_colors(),
+            include_bit_filters=True,
+        )
+    )
     figures.append(
         plot_all_format_accuracy(
             accuracy_summary_rows, assets / "all-format-accuracy.svg"
@@ -1943,6 +2315,7 @@ def main() -> None:
         "packing_normalization=logical_throughput",
         "pages=" + ",".join(generated_pages),
         "figures=" + ",".join(path.name for path in figures),
+        "interactive_pages=" + ",".join(path.name for path in interactive_pages),
     ]
     (output_dir / "report_manifest.txt").write_text("\n".join(manifest) + "\n", encoding="utf-8")
     print(

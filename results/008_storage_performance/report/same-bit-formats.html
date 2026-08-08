@@ -13,24 +13,33 @@
 <p class="lead">High-resolution performance and accuracy comparisons for formats with equal storage width.</p>
 <section class="graph-section">
 <h2>8-bit performance</h2>
-<p>All five 8-bit formats and all x1/x2/x4 access widths share the same axes. Color and marker identify the format; line style identifies packing.</p>
-<figure><a href="assets/same-bit-8.svg"><img src="assets/same-bit-8.svg" alt="High-resolution complete DOT and GEMV time versus N with every 8-bit format and x1, x2, and x4 access overlaid."></a><figcaption>SVG is vector resolution; select the figure to open it directly.</figcaption></figure>
+<p>All five formats and all x1/x2/x4 access widths share the same axes. Toggle an access width to affect every format, or toggle one format to affect all three access widths.</p>
+<figure class="interactive-figure">
+<iframe class="interactive-chart-frame" data-performance-chart src="interactive/same-bit-8.html" title="Interactive high-resolution DOT and GEMV timing chart for every 8-bit format and access width"></iframe>
+<figcaption>The chart remains vector-resolution at every zoom level. <a href="interactive/same-bit-8.html">Open the chart full size</a>.</figcaption>
+</figure>
 </section><section class="graph-section">
 <h2>8-bit accuracy</h2>
 <p>DOT uses normalized RMS error; GEMV uses relative L2 error. Curves are total x4 GPU error versus the original FP64 source for both distributions.</p>
 <figure><a href="assets/same-bit-accuracy-8.svg"><img src="assets/same-bit-accuracy-8.svg" alt="High-resolution DOT normalized RMS and GEMV relative L2 error versus N for every 8-bit format and both distributions."></a><figcaption>Packing variants are omitted here because they encode identical values; reduction-order differences are discussed below.</figcaption></figure>
 </section><section class="graph-section">
 <h2>16-bit performance</h2>
-<p>E11M4, FP16, BF16, and all custom 16-bit layouts are overlaid with their x1/x2/x4 access widths.</p>
-<figure><a href="assets/same-bit-16.svg"><img src="assets/same-bit-16.svg" alt="High-resolution complete DOT and GEMV time versus N with every 16-bit format and x1, x2, and x4 access overlaid."></a><figcaption>SVG is vector resolution; select the figure to open it directly.</figcaption></figure>
+<p>E11M4, FP16, BF16, and all custom layouts are overlaid. Access-width and format toggles apply to both DOT and GEMV together.</p>
+<figure class="interactive-figure">
+<iframe class="interactive-chart-frame" data-performance-chart src="interactive/same-bit-16.html" title="Interactive high-resolution DOT and GEMV timing chart for every 16-bit format and access width"></iframe>
+<figcaption>The chart remains vector-resolution at every zoom level. <a href="interactive/same-bit-16.html">Open the chart full size</a>.</figcaption>
+</figure>
 </section><section class="graph-section">
 <h2>16-bit accuracy</h2>
 <p>The same primary DOT and GEMV metrics compare every 16-bit format on U(0,1) and N(0,1).</p>
 <figure><a href="assets/same-bit-accuracy-16.svg"><img src="assets/same-bit-accuracy-16.svg" alt="High-resolution DOT normalized RMS and GEMV relative L2 error versus N for every 16-bit format and both distributions."></a><figcaption>Packing variants are omitted because their storage quantization is identical.</figcaption></figure>
 </section><section class="graph-section">
 <h2>32-bit performance</h2>
-<p>FP32, E11M20, and all custom 32-bit layouts are overlaid with x1/x2/x4 access.</p>
-<figure><a href="assets/same-bit-32.svg"><img src="assets/same-bit-32.svg" alt="High-resolution complete DOT and GEMV time versus N with every 32-bit format and x1, x2, and x4 access overlaid."></a><figcaption>SVG is vector resolution; select the figure to open it directly.</figcaption></figure>
+<p>FP32, E11M20, and all custom layouts are overlaid. Access-width and format toggles apply to both DOT and GEMV together.</p>
+<figure class="interactive-figure">
+<iframe class="interactive-chart-frame" data-performance-chart src="interactive/same-bit-32.html" title="Interactive high-resolution DOT and GEMV timing chart for every 32-bit format and access width"></iframe>
+<figcaption>The chart remains vector-resolution at every zoom level. <a href="interactive/same-bit-32.html">Open the chart full size</a>.</figcaption>
+</figure>
 </section><section class="graph-section">
 <h2>32-bit accuracy</h2>
 <p>The same primary DOT and GEMV metrics compare every 32-bit format on U(0,1) and N(0,1).</p>
@@ -45,5 +54,20 @@
 </section>
 </main>
 <footer><div class="shell">Performance: <code>run_20260808T131626Z</code> · Accuracy: <code>run_20260808T122054Z</code></div></footer>
+<script>
+window.addEventListener('message', event => {
+  if (event.data?.type !== 'performance-chart-height') return;
+  const frame = [...document.querySelectorAll('iframe[data-performance-chart]')]
+    .find(candidate => candidate.contentWindow === event.source);
+  if (!frame) return;
+  const height = Math.max(520, Math.min(2200, Number(event.data.height) + 4));
+  if (Number.isFinite(height)) frame.style.height = `${height}px`;
+});
+for (const frame of document.querySelectorAll('iframe[data-performance-chart]')) {
+  frame.addEventListener('load', () => {
+    frame.contentWindow?.postMessage({ type: 'request-performance-chart-height' }, '*');
+  });
+}
+</script>
 </body>
 </html>

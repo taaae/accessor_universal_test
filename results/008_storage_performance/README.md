@@ -39,8 +39,12 @@ The H200 report contains these figure groups:
 - **packed speedup:** x2/x1 and x4/x1 time ratios versus N plus a plateau
   dumbbell plot for every format, separately for DOT and GEMV;
 - **same-bit comparisons:** high-resolution overlaid x1, x2, and x4 DOT/GEMV
-  time versus N for every 8-, 16-, and 32-bit layout, followed by the primary
-  DOT/GEMV accuracy metrics for each bit width and one all-format accuracy plot;
+  time versus N for every 8-, 16-, and 32-bit layout, with interactive
+  access-width and format filters, followed by the primary DOT/GEMV accuracy
+  metrics for each bit width and one all-format accuracy plot;
+- **all-format performance:** every 8-, 16-, 32-, and 64-bit x1/x2/x4 timing
+  curve in one vector chart with access-width, storage-width, and per-format
+  filters;
 - **algorithmic roofline:** useful GFLOP/s from event timing against useful
   FLOPs per unique encoded byte, with memory and scalar-FP64 ceilings;
 - **hardware roofline:** executed FLOPs per measured DRAM byte from Nsight
