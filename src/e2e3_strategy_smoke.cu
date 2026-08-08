@@ -372,10 +372,10 @@ void for_each_strategy(Callback &&callback) {
 template <typename Format, typename Strategy>
 void validate_decoder(const std::uint8_t *codes, decoder::table_bundle tables,
                       double *device_output, std::ofstream &output) {
+  constexpr auto shared_bytes = decoder::shared_table_bytes_v<Format, Strategy>;
   decoder::decode_all_codes<Format, Strategy>
-      <<<1, decoder::block_threads,
-         decoder::shared_table_bytes_v<Format, Strategy>>>>(codes, tables,
-                                                            device_output);
+      <<<1, decoder::block_threads, shared_bytes>>>(codes, tables,
+                                                    device_output);
   CUDA_CHECK(cudaGetLastError());
   std::array<double, 256> actual{};
   CUDA_CHECK(cudaMemcpy(actual.data(), device_output, sizeof(actual),
@@ -656,13 +656,13 @@ void run_dot_strategy(const options &settings, const device_info &device,
                       double *result, csv_outputs &output, event_timer &timer) {
   const auto blocks =
       work_blocks(count, Strategy::lanes, device.multiprocessors);
+  constexpr auto shared_bytes = decoder::shared_table_bytes_v<Format, Strategy>;
   const auto *left = data.dot_left.get();
   const auto *right = data.dot_right.get();
   const auto launch = [=] {
     decoder::dot_map_reduce<Format, Strategy>
-        <<<blocks, decoder::block_threads,
-           decoder::shared_table_bytes_v<Format, Strategy>>>>(
-            left, right, count, tables, partials);
+        <<<blocks, decoder::block_threads, shared_bytes>>>(left, right, count,
+                                                           tables, partials);
     kernels::storage_dot_finalize<<<1, kernels::reduction_block_threads>>>(
         partials, static_cast<std::size_t>(blocks), result);
   };
@@ -686,12 +686,12 @@ void run_gemv_strategy(const options &settings, distribution kind,
                        const std::vector<scalar_reference> &reference,
                        double *result, csv_outputs &output,
                        event_timer &timer) {
+  constexpr auto shared_bytes = decoder::shared_table_bytes_v<Format, Strategy>;
   const auto *matrix = data.matrix.get();
   const auto *vector = data.vector.get();
   const auto launch = [=] {
     decoder::gemv<Format, Strategy>
-        <<<static_cast<unsigned>(rows), decoder::block_threads,
-           decoder::shared_table_bytes_v<Format, Strategy>>>>(
+        <<<static_cast<unsigned>(rows), decoder::block_threads, shared_bytes>>>(
             matrix, vector, rows, columns, columns, tables, result);
   };
   launch();

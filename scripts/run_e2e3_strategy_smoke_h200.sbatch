@@ -8,6 +8,7 @@
 #SBATCH --gres=gpu:nvidia:1
 #SBATCH --time=00:30:00
 #SBATCH --output=results/010_e2e3_strategy_smoke/slurm-%j.out
+#SBATCH --export=ALL,TMPDIR=/tmp
 
 set -euo pipefail
 
