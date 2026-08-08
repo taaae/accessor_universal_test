@@ -47,6 +47,17 @@ calculation before the experiment starts. The run saves:
 These compact tables contain everything needed for the planned error graphs;
 raw multi-gigabyte element arrays are deterministic and are not stored.
 
+The analytical report generator reads the newest completed run by default and
+adds measured-versus-predicted figures to experiment 006:
+
+```bash
+./scripts/build_accuracy_model.sh
+```
+
+Because GEMV rows share a vector, the default 16 replicates provide only 16
+independent vector samples. The report therefore displays cluster uncertainty
+and treats comparisons above the convergence threshold as provisional.
+
 ## H200 command
 
 Submit from the repository root and select the node at submission time:

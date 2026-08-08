@@ -78,3 +78,10 @@ def test_e2m5_normal_reports_nonzero_overflow() -> None:
     assert 1e-5 < moments.overflow_probability < 1e-3
     prediction = dot_prediction(moments, 1 << 16)
     assert prediction["any_nonfinite_input_probability"] > 0.99
+
+
+def test_gemv_distinguishes_row_and_operation_failure_probability() -> None:
+    moments = scalar_moments(format_by_name("e2m5"), Distribution.NORMAL_01)
+    prediction = gemv_prediction(moments, n=256, m=1024)
+    assert 0.01 < prediction["row_nonfinite_input_probability"] < 0.1
+    assert prediction["any_nonfinite_input_probability"] > 0.99

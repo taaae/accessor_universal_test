@@ -13,7 +13,8 @@ The complete derivation and exact/approximate classification are in
 [`docs/accuracy_model.md`](../../docs/accuracy_model.md).
 
 Generate the deterministic CSV files, SVG figures, and HTML report from the
-repository root:
+repository root. When experiment 007 results are present, the newest run is
+joined to the model and model-versus-H200 figures are added automatically:
 
 ```bash
 ./scripts/build_accuracy_model.sh
@@ -29,4 +30,5 @@ Custom size ranges can be selected without editing code:
 ```
 
 Outputs are written to `results/006_accuracy_model/generated/`. This stage is
-CPU-only and does not contain measured kernel results.
+CPU-only; it reads already-recorded GPU results without running CUDA. Select a
+specific run with `--simulation-dir PATH`.

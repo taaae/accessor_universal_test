@@ -552,6 +552,16 @@ def gemv_prediction(
             l2_rms / reference_l2_rms if reference_l2_rms else 0.0
         ),
         "typical_row_condition_proxy": row["typical_condition_proxy"],
+        # Marginal probability for one output row.  This is the quantity that
+        # can be compared with the fraction of non-finite simulated outputs.
+        "row_nonfinite_input_probability": _stable_any_probability(
+            moments.overflow_probability, 2 * n
+        ),
+        "row_saturated_input_probability": _stable_any_probability(
+            moments.saturation_probability, 2 * n
+        ),
+        # Probability that at least one value anywhere in the complete GEMV
+        # input is exceptional.  This is an operation-level diagnostic.
         "any_nonfinite_input_probability": _stable_any_probability(
             moments.overflow_probability, n * (m + 1)
         ),

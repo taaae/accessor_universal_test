@@ -343,6 +343,20 @@ P(any nonfinite input) = 1 - p_finite^(M*N + N)
 P(any saturated input) = 1 - (1-p_sat)^(M*N + N)
 ```
 
+For comparison with the fraction of non-finite output rows, the marginal
+per-row probability instead uses the `N` matrix values in that row and the `N`
+shared-vector values:
+
+```text
+P(nonfinite inputs for one row) = 1 - p_finite^(2N)
+
+P(saturated inputs for one row) = 1 - (1-p_sat)^(2N)
+```
+
+The row events are correlated because all `M` rows share the same vector.
+Consequently, estimating these probabilities requires enough independently
+generated vectors, not merely many output rows from one matrix/vector pair.
+
 These are input-failure probabilities. Exact output NaN/Inf probability can be
 smaller in special cases such as multiplication by zero, but should normally
 be very close once any operand becomes infinite.
