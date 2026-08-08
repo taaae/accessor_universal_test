@@ -1,0 +1,41 @@
+==PROF== Connected to process 1679518 (/storage/home/timofeirusanov/accessor_universal_test/build-h200/bin/storage_performance_bench)
+==PROF== Profiling "storage_gemv" - 0: 0%....50%....100% - 14 passes
+==PROF== Profiling "storage_gemv" - 1: 0%....50%....100% - 14 passes
+==PROF== Profiling "storage_gemv" - 2: 0%....50%....100% - 14 passes
+==PROF== Profiling "storage_gemv" - 3: 0%....50%....100% - 14 passes
+==PROF== Profiling "storage_gemv" - 4: 0%....50%....100% - 14 passes
+==PROF== Profiling "storage_gemv" - 5: 0%....50%....100% - 14 passes
+==PROF== Profiling "storage_gemv" - 6: 0%....50%....100% - 14 passes
+==PROF== Profiling "storage_gemv" - 7: 0%....50%....100% - 14 passes
+==PROF== Profiling "storage_gemv" - 8: 0%....50%....100% - 14 passes
+==PROF== Profiling "storage_gemv" - 9: 0%....50%....100% - 14 passes
+==PROF== Profiling "storage_gemv" - 10: 0%....50%....100% - 14 passes
+==PROF== Profiling "storage_gemv" - 11: 0%....50%....100% - 14 passes
+==PROF== Profiling "storage_gemv" - 12: 0%....50%....100% - 14 passes
+==PROF== Profiling "storage_gemv" - 13: 0%....50%....100% - 14 passes
+==PROF== Profiling "storage_gemv" - 14: 0%....50%....100% - 14 passes
+==PROF== Profiling "storage_gemv" - 15: 0%....50%....100% - 14 passes
+==PROF== Profiling "storage_gemv" - 16: 0%....50%....100% - 14 passes
+Storage performance benchmark
+GPU: NVIDIA H200 NVL (sm_90)
+Mode: profile
+  profiled e1m6
+  profiled e2m5
+  profiled e3m4
+  profiled fp8_e4m3
+  profiled fp8_e5m2
+  profiled e1m14
+  profiled e2m13
+  profiled e3m12
+  profiled fp16_e5m10
+  profiled bf16_e8m7
+  profiled e11m4
+  profiled e1m30
+  profiled e2m29
+  profiled e3m28
+  profiled fp32_e8m23
+  profiled e11m20
+  profiled fp64_e11m52
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/008_storage_performance/run_20260808T131626Z/profile/gemv_x1/gemv_x1_20260808T131626Z_metadata.csv
+==PROF== Disconnected from process 1679518
+==PROF== Report: /storage/home/timofeirusanov/accessor_universal_test/results/008_storage_performance/run_20260808T131626Z/profile/gemv_x1/gemv_x1_20260808T131626Z.ncu-rep

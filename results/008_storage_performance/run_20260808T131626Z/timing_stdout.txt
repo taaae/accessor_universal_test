@@ -1,0 +1,40 @@
+Storage performance benchmark
+GPU: NVIDIA H200 NVL (sm_90)
+Mode: sweep
+uniform_0_1
+  e1m6           complete
+  e2m5           complete
+  e3m4           complete
+  fp8_e4m3       complete
+  fp8_e5m2       complete
+  e1m14          complete
+  e2m13          complete
+  e3m12          complete
+  fp16_e5m10     complete
+  bf16_e8m7      complete
+  e11m4          complete
+  e1m30          complete
+  e2m29          complete
+  e3m28          complete
+  fp32_e8m23     complete
+  e11m20         complete
+  fp64_e11m52    complete
+normal_0_1
+  e1m6           complete
+  e2m5           complete
+  e3m4           complete
+  fp8_e4m3       complete
+  fp8_e5m2       complete
+  e1m14          complete
+  e2m13          complete
+  e3m12          complete
+  fp16_e5m10     complete
+  bf16_e8m7      complete
+  e11m4          complete
+  e1m30          complete
+  e2m29          complete
+  e3m28          complete
+  fp32_e8m23     complete
+  e11m20         complete
+  fp64_e11m52    complete
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/008_storage_performance/run_20260808T131626Z/timing_samples.csv

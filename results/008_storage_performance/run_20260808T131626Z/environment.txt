@@ -1,0 +1,23 @@
+experiment=008_storage_performance
+started_utc=2026-08-08T13:16:26Z
+git_commit=d7f1ae8d7012d80dd97efed5be296285ada2a124
+git_status_begin
+?? results/008_storage_performance/run_20260808T131626Z/
+?? results/008_storage_performance/slurm-442175.out
+git_status_end
+
+nvidia_smi
+name, uuid, pci.bus_id, driver_version, memory.total [MiB], ecc.mode.current, clocks.max.sm [MHz], clocks.max.memory [MHz], power.limit [W]
+NVIDIA H200 NVL, GPU-3bb7dc49-ebaf-ab26-a2e4-426c8b73245c, 00000000:00:10.0, 610.43.02, 143771 MiB, Enabled, 1785 MHz, 3201 MHz, 600.00 W
+
+nvcc_version
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Tue_Dec_16_07:23:41_PM_PST_2025
+Cuda compilation tools, release 13.1, V13.1.115
+Build cuda_13.1.r13.1/compiler.37061995_0
+
+ncu_version
+NVIDIA (R) Nsight Compute Command Line Profiler
+Copyright (c) 2018-2025 NVIDIA Corporation
+Version 2025.4.1.0 (build 37053803) (public-release)
