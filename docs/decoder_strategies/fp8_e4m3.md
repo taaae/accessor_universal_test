@@ -15,6 +15,7 @@ Implemented candidates:
 - complete 256-entry high-word LUT from global or shared memory;
 - 8-entry subnormal high-word LUT hybrid;
 - 65,536-entry pair LUT in global/L2, returning two high words per lookup;
+- byte-permute unpacking and duplicated/bank-swizzled shared full tables;
 - x1/x2/x4/x8 aligned packet loads.
 
 The full scalar table is 1 KiB, the subnormal table is 32 B, and the pair table

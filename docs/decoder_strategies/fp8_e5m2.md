@@ -16,6 +16,7 @@ Implemented candidates:
 - complete 256-entry high-word LUT in global or shared memory;
 - four-entry subnormal high-word LUT control;
 - 65,536-entry global/L2 pair LUT;
+- byte-permute unpacking and duplicated/bank-swizzled shared full tables;
 - x1/x2/x4/x8 aligned packet loads.
 
 The exhaustive local reference distinguishes infinity from NaN and verifies

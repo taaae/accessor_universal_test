@@ -4,9 +4,10 @@ This cumulative experiment exhaustively or statistically validates every
 promising exact FP64 decoder strategy added after the E2M5/E3M4 study. Each
 format commit extends the same executable and CSV inventory.
 
-The smoke run checks decoder correctness and packed lane order. Its timings, if
-any, are not performance conclusions; full DOT/GEMV benchmarking follows after
-the strategy inventory is stable.
+The smoke run checks decoder correctness, packed lane order, and launches a
+small fused DOT and GEMV for every registered strategy. Its timings, if any,
+are not performance conclusions; full DOT/GEMV benchmarking follows after the
+strategy inventory is stable.
 
 Submit from the repository root while choosing the GPU node explicitly:
 

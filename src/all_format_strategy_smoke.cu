@@ -207,6 +207,9 @@ template <typename Format> struct sampled_smoke_context {
         1u << 31,    0xffffffffu, 0x7fffffffu,
     };
     std::size_t index{};
+    for (std::uint32_t raw = 0; raw < 64; ++raw) {
+      codes[index++] = host_storage_from_raw<Format>(raw);
+    }
     for (const auto raw : edges) {
       codes[index++] = host_storage_from_raw<Format>(raw);
     }
@@ -252,6 +255,16 @@ void run_strategy(Context &context, const char *format_name,
                    cudaFuncAttributeMaxDynamicSharedMemorySize,
                    static_cast<int>(shared_bytes)),
                "set dynamic shared-memory size");
+    check_cuda(cudaFuncSetAttribute(
+                   fs::dot_map_reduce<Format, Strategy>,
+                   cudaFuncAttributeMaxDynamicSharedMemorySize,
+                   static_cast<int>(shared_bytes)),
+               "set DOT dynamic shared-memory size");
+    check_cuda(cudaFuncSetAttribute(
+                   fs::gemv<Format, Strategy>,
+                   cudaFuncAttributeMaxDynamicSharedMemorySize,
+                   static_cast<int>(shared_bytes)),
+               "set GEMV dynamic shared-memory size");
   }
   fs::decode_codes<Format, Strategy>
       <<<blocks, 256, shared_bytes>>>(
@@ -280,6 +293,34 @@ void run_strategy(Context &context, const char *format_name,
     throw std::runtime_error(std::string(format_name) + '/' + strategy_name +
                              " mismatches=" + std::to_string(mismatches));
   }
+
+
+  constexpr std::size_t kernel_count = 64;
+  fs::dot_map_reduce<Format, Strategy><<<1, 256, shared_bytes>>>(
+      context.device_codes.data, context.device_codes.data, kernel_count,
+      context.tables(), context.device_output.data);
+  check_cuda(cudaGetLastError(), "DOT strategy smoke launch");
+  double dot_result{};
+  check_cuda(cudaMemcpy(&dot_result, context.device_output.data, sizeof(double),
+                        cudaMemcpyDeviceToHost),
+             "copy DOT smoke result");
+  if (!std::isfinite(dot_result)) {
+    throw std::runtime_error(std::string(format_name) + '/' + strategy_name +
+                             " produced non-finite DOT smoke result");
+  }
+
+  fs::gemv<Format, Strategy><<<1, 256, shared_bytes>>>(
+      context.device_codes.data, context.device_codes.data, 1, kernel_count,
+      kernel_count, context.tables(), context.device_output.data);
+  check_cuda(cudaGetLastError(), "GEMV strategy smoke launch");
+  double gemv_result{};
+  check_cuda(cudaMemcpy(&gemv_result, context.device_output.data,
+                        sizeof(double), cudaMemcpyDeviceToHost),
+             "copy GEMV smoke result");
+  if (!std::isfinite(gemv_result)) {
+    throw std::runtime_error(std::string(format_name) + '/' + strategy_name +
+                             " produced non-finite GEMV smoke result");
+  }
   std::cout << "  " << strategy_name << " passed\n";
 }
 
@@ -287,10 +328,18 @@ template <fs::decode_kind Kind, int Lanes,
           fs::table_location Location = fs::table_location::global_read_only>
 using s = fs::strategy<Kind, Lanes, Location>;
 
+template <fs::decode_kind Kind, int Lanes, fs::table_location Location,
+          fs::unpack_kind Unpack>
+using sp = fs::strategy<Kind, Lanes, Location, Unpack>;
+
 #define RUN(format, context, kind, lanes, location, name)                     \
   run_strategy<storage::format,                                               \
                s<fs::decode_kind::kind, lanes, fs::table_location::location>>( \
       context, #format, name, csv)
+#define RUNP(format, context, kind, lanes, location, unpack, name)             \
+  run_strategy<storage::format,                                                \
+               sp<fs::decode_kind::kind, lanes, fs::table_location::location, \
+                  fs::unpack_kind::unpack>>(context, #format, name, csv)
 
 void run_e1m6_suite(std::ofstream *csv) {
   std::cout << "E1M6 exhaustive strategy validation\n";
@@ -330,6 +379,14 @@ void run_e1m6_suite(std::ofstream *csv) {
       "subnormal_shared_x8");
   RUN(e1m6, context, pair_high_lut, 4, global_read_only, "pair_l2_x4");
   RUN(e1m6, context, pair_high_lut, 8, global_read_only, "pair_l2_x8");
+  RUNP(e1m6, context, direct_words_branchy, 4, global_read_only,
+       byte_permute, "word_branchy_prmt_x4");
+  RUNP(e1m6, context, direct_words_branchy, 8, global_read_only,
+       byte_permute, "word_branchy_prmt_x8");
+  RUN(e1m6, context, full_high_lut_swizzled, 4, shared,
+      "full_high_swizzled_x4");
+  RUN(e1m6, context, full_high_lut_swizzled, 8, shared,
+      "full_high_swizzled_x8");
 }
 
 void run_fp8_e4m3_suite(std::ofstream *csv) {
@@ -381,6 +438,14 @@ void run_fp8_e4m3_suite(std::ofstream *csv) {
       "subnormal_shared_x8");
   RUN(fp8_e4m3, context, pair_high_lut, 4, global_read_only, "pair_l2_x4");
   RUN(fp8_e4m3, context, pair_high_lut, 8, global_read_only, "pair_l2_x8");
+  RUNP(fp8_e4m3, context, direct_words_branchy, 4, global_read_only,
+       byte_permute, "word_branchy_prmt_x4");
+  RUNP(fp8_e4m3, context, direct_words_branchy, 8, global_read_only,
+       byte_permute, "word_branchy_prmt_x8");
+  RUN(fp8_e4m3, context, full_high_lut_swizzled, 4, shared,
+      "full_high_swizzled_x4");
+  RUN(fp8_e4m3, context, full_high_lut_swizzled, 8, shared,
+      "full_high_swizzled_x8");
 }
 
 void run_fp8_e5m2_suite(std::ofstream *csv) {
@@ -432,6 +497,14 @@ void run_fp8_e5m2_suite(std::ofstream *csv) {
       "subnormal_shared_x8");
   RUN(fp8_e5m2, context, pair_high_lut, 4, global_read_only, "pair_l2_x4");
   RUN(fp8_e5m2, context, pair_high_lut, 8, global_read_only, "pair_l2_x8");
+  RUNP(fp8_e5m2, context, direct_words_branchy, 4, global_read_only,
+       byte_permute, "word_branchy_prmt_x4");
+  RUNP(fp8_e5m2, context, direct_words_branchy, 8, global_read_only,
+       byte_permute, "word_branchy_prmt_x8");
+  RUN(fp8_e5m2, context, full_high_lut_swizzled, 4, shared,
+      "full_high_swizzled_x4");
+  RUN(fp8_e5m2, context, full_high_lut_swizzled, 8, shared,
+      "full_high_swizzled_x8");
 }
 
 void run_e1m14_suite(std::ofstream *csv) {
@@ -824,6 +897,7 @@ void run_e11m20_suite(std::ofstream *csv) {
 }
 
 #undef RUN
+#undef RUNP
 
 } // namespace
 
