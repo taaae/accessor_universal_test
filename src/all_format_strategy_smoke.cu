@@ -15,6 +15,7 @@
 
 namespace fs = aut::format_strategies;
 namespace storage = aut::storage;
+namespace decoder = aut::decoder;
 
 namespace {
 
@@ -174,8 +175,66 @@ template <typename Format> struct smoke_context {
   }
 };
 
-template <typename Format, typename Strategy>
-void run_strategy(smoke_context<Format> &context, const char *format_name,
+template <typename Format> struct sampled_smoke_context {
+  using storage_type = storage::storage_type_t<Format>;
+  using layout = fs::format_layout_t<Format>;
+  static constexpr std::size_t sample_count = 65536;
+  static constexpr auto prefix_count =
+      std::size_t{1} << (layout::exponent_bits + 1);
+
+  std::vector<storage_type> codes;
+  std::vector<double> expected;
+  std::vector<std::uint32_t> prefix_high;
+  device_buffer<storage_type> device_codes;
+  device_buffer<double> device_output;
+  device_buffer<std::uint32_t> device_prefix_high;
+
+  sampled_smoke_context()
+      : codes(sample_count), expected(sample_count), prefix_high(prefix_count),
+        device_codes(codes.size()), device_output(codes.size()),
+        device_prefix_high(prefix_high.size()) {
+    static_assert(layout::total_bits == 32);
+    const std::uint32_t edges[] = {
+        0u,          1u,          decoder::fraction_mask<layout>(),
+        1u << layout::fraction_bits,
+        decoder::raw_mask<layout>() >> 1,
+        1u << 31,    0xffffffffu, 0x7fffffffu,
+    };
+    std::size_t index{};
+    for (const auto raw : edges) {
+      codes[index++] = host_storage_from_raw<Format>(raw);
+    }
+    std::uint32_t raw = 0x9e3779b9u;
+    while (index < codes.size()) {
+      raw = raw * 1664525u + 1013904223u;
+      codes[index++] = host_storage_from_raw<Format>(raw);
+    }
+    for (std::size_t i = 0; i < codes.size(); ++i) {
+      expected[i] = storage::decode<Format>(codes[i]);
+    }
+    for (std::uint32_t prefix = 0; prefix < prefix_count; ++prefix) {
+      const auto prefix_raw = prefix << layout::fraction_bits;
+      const auto value =
+          storage::decode<Format>(host_storage_from_raw<Format>(prefix_raw));
+      prefix_high[prefix] = static_cast<std::uint32_t>(bits(value) >> 32);
+    }
+    check_cuda(cudaMemcpy(device_codes.data, codes.data(),
+                          codes.size() * sizeof(codes[0]),
+                          cudaMemcpyHostToDevice),
+               "copy sampled codes");
+    check_cuda(cudaMemcpy(device_prefix_high.data, prefix_high.data(),
+                          prefix_high.size() * sizeof(prefix_high[0]),
+                          cudaMemcpyHostToDevice),
+               "copy sampled prefix table");
+  }
+
+  fs::table_bundle tables() const {
+    return {nullptr, nullptr, device_prefix_high.data, nullptr};
+  }
+};
+
+template <typename Format, typename Strategy, typename Context>
+void run_strategy(Context &context, const char *format_name,
                   const char *strategy_name, std::ofstream *csv) {
   constexpr auto lanes = Strategy::lanes;
   const auto packs = (context.codes.size() + lanes - 1) / lanes;
@@ -606,6 +665,41 @@ void run_e11m4_suite(std::ofstream *csv) {
       "full_high_l2_x8");
 }
 
+void run_e1m30_suite(std::ofstream *csv) {
+  std::cout << "E1M30 sampled strategy validation\n";
+  sampled_smoke_context<storage::e1m30> context;
+  RUN(e1m30, context, generic, 1, global_read_only, "generic_x1");
+  RUN(e1m30, context, generic, 2, global_read_only, "generic_x2");
+  RUN(e1m30, context, generic, 4, global_read_only, "generic_x4");
+  RUN(e1m30, context, generic, 8, global_read_only, "generic_x8");
+  RUN(e1m30, context, e1_integer, 1, global_read_only, "e1_integer_x1");
+  RUN(e1m30, context, e1_integer, 2, global_read_only, "e1_integer_x2");
+  RUN(e1m30, context, e1_integer, 4, global_read_only, "e1_integer_x4");
+  RUN(e1m30, context, e1_integer, 8, global_read_only, "e1_integer_x8");
+  RUN(e1m30, context, direct_words_branchy, 1, global_read_only,
+      "word_branchy_x1");
+  RUN(e1m30, context, direct_words_branchy, 2, global_read_only,
+      "word_branchy_x2");
+  RUN(e1m30, context, direct_words_branchy, 4, global_read_only,
+      "word_branchy_x4");
+  RUN(e1m30, context, direct_words_branchy, 8, global_read_only,
+      "word_branchy_x8");
+  RUN(e1m30, context, direct_words_masked, 1, global_read_only,
+      "word_masked_x1");
+  RUN(e1m30, context, direct_words_masked, 2, global_read_only,
+      "word_masked_x2");
+  RUN(e1m30, context, direct_words_masked, 4, global_read_only,
+      "word_masked_x4");
+  RUN(e1m30, context, direct_words_masked, 8, global_read_only,
+      "word_masked_x8");
+  RUN(e1m30, context, prefix_high_lut, 4, global_read_only,
+      "prefix_global_x4");
+  RUN(e1m30, context, prefix_high_lut, 8, global_read_only,
+      "prefix_global_x8");
+  RUN(e1m30, context, prefix_high_lut, 4, shared, "prefix_shared_x4");
+  RUN(e1m30, context, prefix_high_lut, 8, shared, "prefix_shared_x8");
+}
+
 #undef RUN
 
 } // namespace
@@ -647,6 +741,7 @@ int main(int argc, char **argv) {
     run_fp16_suite(csv_ptr);
     run_bf16_suite(csv_ptr);
     run_e11m4_suite(csv_ptr);
+    run_e1m30_suite(csv_ptr);
     std::cout << "All registered strategies passed.\n";
   } catch (const std::exception &error) {
     std::cerr << "error: " << error.what() << '\n';
