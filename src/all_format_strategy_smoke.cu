@@ -36,7 +36,9 @@ template <typename T> struct device_buffer {
   std::size_t count{};
 
   explicit device_buffer(std::size_t count_) : count(count_) {
-    check_cuda(cudaMalloc(&data, count * sizeof(T)), "cudaMalloc");
+    if (count != 0) {
+      check_cuda(cudaMalloc(&data, count * sizeof(T)), "cudaMalloc");
+    }
   }
   ~device_buffer() {
     if (data != nullptr) {
@@ -75,6 +77,8 @@ template <typename Format> struct smoke_context {
   static constexpr auto code_count = std::size_t{1} << layout::total_bits;
   static constexpr auto subnormal_count =
       std::size_t{1} << layout::fraction_bits;
+  static constexpr auto pair_count =
+      layout::total_bits == 8 ? (std::size_t{1} << 16) : std::size_t{0};
 
   std::vector<storage_type> codes;
   std::vector<double> expected;
@@ -89,13 +93,13 @@ template <typename Format> struct smoke_context {
 
   smoke_context()
       : codes(code_count), expected(code_count), full_high(code_count),
-        subnormal_high(subnormal_count), pair_high(std::size_t{1} << 16),
+        subnormal_high(subnormal_count), pair_high(pair_count),
         device_codes(codes.size()), device_output(codes.size()),
         device_full_high(full_high.size()),
         device_subnormal_high(subnormal_high.size()),
         device_pair_high(pair_high.size()) {
-    static_assert(layout::total_bits == 8,
-                  "the exhaustive smoke context currently covers 8-bit codes");
+    static_assert(layout::total_bits == 8 || layout::total_bits == 16,
+                  "the exhaustive smoke context covers 8- and 16-bit codes");
     for (std::uint32_t raw = 0; raw < code_count; ++raw) {
       codes[raw] = host_storage_from_raw<Format>(raw);
       expected[raw] = storage::decode<Format>(codes[raw]);
@@ -107,9 +111,11 @@ template <typename Format> struct smoke_context {
       subnormal_high[fraction] =
           static_cast<std::uint32_t>(bits(value) >> 32);
     }
-    for (std::uint32_t high = 0; high < 256; ++high) {
-      for (std::uint32_t low = 0; low < 256; ++low) {
-        pair_high[low + (high << 8)] = {full_high[low], full_high[high]};
+    if constexpr (layout::total_bits == 8) {
+      for (std::uint32_t high = 0; high < 256; ++high) {
+        for (std::uint32_t low = 0; low < 256; ++low) {
+          pair_high[low + (high << 8)] = {full_high[low], full_high[high]};
+        }
       }
     }
     check_cuda(cudaMemcpy(device_codes.data, codes.data(),
@@ -124,10 +130,12 @@ template <typename Format> struct smoke_context {
                           subnormal_high.size() * sizeof(subnormal_high[0]),
                           cudaMemcpyHostToDevice),
                "copy subnormal table");
-    check_cuda(cudaMemcpy(device_pair_high.data, pair_high.data(),
-                          pair_high.size() * sizeof(pair_high[0]),
-                          cudaMemcpyHostToDevice),
-               "copy pair table");
+    if constexpr (layout::total_bits == 8) {
+      check_cuda(cudaMemcpy(device_pair_high.data, pair_high.data(),
+                            pair_high.size() * sizeof(pair_high[0]),
+                            cudaMemcpyHostToDevice),
+                 "copy pair table");
+    }
   }
 
   fs::table_bundle tables() const {
@@ -142,8 +150,16 @@ void run_strategy(smoke_context<Format> &context, const char *format_name,
   constexpr auto lanes = Strategy::lanes;
   const auto packs = (context.codes.size() + lanes - 1) / lanes;
   const auto blocks = static_cast<unsigned>((packs + 255) / 256);
+  constexpr auto shared_bytes = fs::shared_table_bytes_v<Format, Strategy>;
+  if constexpr (shared_bytes > 48 * 1024) {
+    check_cuda(cudaFuncSetAttribute(
+                   fs::decode_codes<Format, Strategy>,
+                   cudaFuncAttributeMaxDynamicSharedMemorySize,
+                   static_cast<int>(shared_bytes)),
+               "set dynamic shared-memory size");
+  }
   fs::decode_codes<Format, Strategy>
-      <<<blocks, 256, fs::shared_table_bytes_v<Format, Strategy>>>>(
+      <<<blocks, 256, shared_bytes>>>(
           context.device_codes.data, context.codes.size(), context.tables(),
           context.device_output.data);
   check_cuda(cudaGetLastError(), strategy_name);
@@ -323,6 +339,46 @@ void run_fp8_e5m2_suite(std::ofstream *csv) {
   RUN(fp8_e5m2, context, pair_high_lut, 8, global_read_only, "pair_l2_x8");
 }
 
+void run_e1m14_suite(std::ofstream *csv) {
+  std::cout << "E1M14 exhaustive strategy validation\n";
+  smoke_context<storage::e1m14> context;
+  RUN(e1m14, context, generic, 1, global_read_only, "generic_x1");
+  RUN(e1m14, context, generic, 4, global_read_only, "generic_x4");
+  RUN(e1m14, context, generic, 8, global_read_only, "generic_x8");
+  RUN(e1m14, context, e1_integer, 1, global_read_only, "e1_integer_x1");
+  RUN(e1m14, context, e1_integer, 4, global_read_only, "e1_integer_x4");
+  RUN(e1m14, context, e1_integer, 8, global_read_only, "e1_integer_x8");
+  RUN(e1m14, context, direct_words_branchy, 1, global_read_only,
+      "word_branchy_x1");
+  RUN(e1m14, context, direct_words_branchy, 4, global_read_only,
+      "word_branchy_x4");
+  RUN(e1m14, context, direct_words_branchy, 8, global_read_only,
+      "word_branchy_x8");
+  RUN(e1m14, context, direct_words_masked, 1, global_read_only,
+      "word_masked_x1");
+  RUN(e1m14, context, direct_words_masked, 4, global_read_only,
+      "word_masked_x4");
+  RUN(e1m14, context, direct_words_masked, 8, global_read_only,
+      "word_masked_x8");
+  RUN(e1m14, context, fp32_bits, 1, global_read_only, "fp32_bits_x1");
+  RUN(e1m14, context, fp32_bits, 4, global_read_only, "fp32_bits_x4");
+  RUN(e1m14, context, fp32_bits, 8, global_read_only, "fp32_bits_x8");
+  RUN(e1m14, context, full_high_lut, 1, global_read_only,
+      "full_high_l2_x1");
+  RUN(e1m14, context, full_high_lut, 4, global_read_only,
+      "full_high_l2_x4");
+  RUN(e1m14, context, full_high_lut, 8, global_read_only,
+      "full_high_l2_x8");
+  RUN(e1m14, context, subnormal_high_lut, 4, global_read_only,
+      "subnormal_global_x4");
+  RUN(e1m14, context, subnormal_high_lut, 8, global_read_only,
+      "subnormal_global_x8");
+  RUN(e1m14, context, subnormal_high_lut, 4, shared,
+      "subnormal_shared_x4");
+  RUN(e1m14, context, subnormal_high_lut, 8, shared,
+      "subnormal_shared_x8");
+}
+
 #undef RUN
 
 } // namespace
@@ -358,6 +414,7 @@ int main(int argc, char **argv) {
     run_e1m6_suite(csv_ptr);
     run_fp8_e4m3_suite(csv_ptr);
     run_fp8_e5m2_suite(csv_ptr);
+    run_e1m14_suite(csv_ptr);
     std::cout << "All registered strategies passed.\n";
   } catch (const std::exception &error) {
     std::cerr << "error: " << error.what() << '\n';

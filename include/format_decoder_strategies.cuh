@@ -49,6 +49,9 @@ template <> struct format_layout<storage::fp8_e4m3> {
 template <> struct format_layout<storage::fp8_e5m2> {
   using type = decoder::fp8_e5m2_layout;
 };
+template <> struct format_layout<storage::e1m14> {
+  using type = decoder::e1m14_layout;
+};
 template <typename Format>
 using format_layout_t = typename format_layout<Format>::type;
 

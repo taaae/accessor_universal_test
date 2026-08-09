@@ -114,11 +114,30 @@ void test_fp8_e5m2() {
   }
 }
 
+void test_e1m14() {
+  using layout = aut::decoder::e1m14_layout;
+  for (std::uint32_t raw = 0; raw < 65536; ++raw) {
+    const auto expected = aut::storage::decode<aut::storage::e1m14>(
+        static_cast<std::uint16_t>(raw));
+    const auto branchy = aut::decoder::words_to_double(
+        aut::decoder::decode_words_branchy<layout>(raw));
+    const auto masked = aut::decoder::words_to_double(
+        aut::decoder::decode_words_masked<layout>(raw));
+    const auto fp32 = aut::decoder::decode_via_fp32<layout>(raw);
+    const auto integer = aut::decoder::decode_e1_integer<layout>(raw);
+    assert(bits(branchy) == bits(expected));
+    assert(bits(masked) == bits(expected));
+    assert(bits(fp32) == bits(expected));
+    assert(bits(integer) == bits(expected));
+  }
+}
+
 } // namespace
 
 int main() {
   test_e1m6();
   test_fp8_e4m3();
   test_fp8_e5m2();
+  test_e1m14();
   std::cout << "decoder strategy core tests passed\n";
 }
