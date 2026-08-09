@@ -52,6 +52,9 @@ template <> struct format_layout<storage::fp8_e5m2> {
 template <> struct format_layout<storage::e1m14> {
   using type = decoder::e1m14_layout;
 };
+template <> struct format_layout<storage::e2m13> {
+  using type = decoder::e2m13_layout;
+};
 template <typename Format>
 using format_layout_t = typename format_layout<Format>::type;
 
@@ -294,9 +297,17 @@ __device__ __forceinline__ double decode_raw(std::uint32_t raw,
   } else {
     static_assert(Strategy::kind == decode_kind::prefix_high_lut,
                   "native decoders are specialized per format");
+    raw &= decoder::raw_mask<layout>();
+    const auto exponent =
+        (raw >> layout::fraction_bits) & decoder::exponent_mask<layout>();
+    const auto fraction = raw & decoder::fraction_mask<layout>();
+    if (exponent == 0) {
+      auto words = decoder::subnormal_magnitude_words<layout>(fraction);
+      words.high |= (raw >> (layout::total_bits - 1)) << 31;
+      return decoder::words_to_double(words);
+    }
     const auto prefix = raw >> layout::fraction_bits;
     auto high = lookup_high<Strategy>(tables.prefix_high, prefix);
-    const auto fraction = raw & decoder::fraction_mask<layout>();
     if constexpr (layout::fraction_bits <= 20) {
       high |= fraction << (20 - layout::fraction_bits);
       return decoder::words_to_double({high, 0});

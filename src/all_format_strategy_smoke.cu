@@ -79,24 +79,30 @@ template <typename Format> struct smoke_context {
       std::size_t{1} << layout::fraction_bits;
   static constexpr auto pair_count =
       layout::total_bits == 8 ? (std::size_t{1} << 16) : std::size_t{0};
+  static constexpr auto prefix_count =
+      std::size_t{1} << (layout::exponent_bits + 1);
 
   std::vector<storage_type> codes;
   std::vector<double> expected;
   std::vector<std::uint32_t> full_high;
   std::vector<std::uint32_t> subnormal_high;
+  std::vector<std::uint32_t> prefix_high;
   std::vector<uint2> pair_high;
   device_buffer<storage_type> device_codes;
   device_buffer<double> device_output;
   device_buffer<std::uint32_t> device_full_high;
   device_buffer<std::uint32_t> device_subnormal_high;
+  device_buffer<std::uint32_t> device_prefix_high;
   device_buffer<uint2> device_pair_high;
 
   smoke_context()
       : codes(code_count), expected(code_count), full_high(code_count),
-        subnormal_high(subnormal_count), pair_high(pair_count),
+        subnormal_high(subnormal_count), prefix_high(prefix_count),
+        pair_high(pair_count),
         device_codes(codes.size()), device_output(codes.size()),
         device_full_high(full_high.size()),
         device_subnormal_high(subnormal_high.size()),
+        device_prefix_high(prefix_high.size()),
         device_pair_high(pair_high.size()) {
     static_assert(layout::total_bits == 8 || layout::total_bits == 16,
                   "the exhaustive smoke context covers 8- and 16-bit codes");
@@ -110,6 +116,12 @@ template <typename Format> struct smoke_context {
           storage::decode<Format>(host_storage_from_raw<Format>(fraction));
       subnormal_high[fraction] =
           static_cast<std::uint32_t>(bits(value) >> 32);
+    }
+    for (std::uint32_t prefix = 0; prefix < prefix_count; ++prefix) {
+      const auto raw = prefix << layout::fraction_bits;
+      const auto value =
+          storage::decode<Format>(host_storage_from_raw<Format>(raw));
+      prefix_high[prefix] = static_cast<std::uint32_t>(bits(value) >> 32);
     }
     if constexpr (layout::total_bits == 8) {
       for (std::uint32_t high = 0; high < 256; ++high) {
@@ -130,6 +142,10 @@ template <typename Format> struct smoke_context {
                           subnormal_high.size() * sizeof(subnormal_high[0]),
                           cudaMemcpyHostToDevice),
                "copy subnormal table");
+    check_cuda(cudaMemcpy(device_prefix_high.data, prefix_high.data(),
+                          prefix_high.size() * sizeof(prefix_high[0]),
+                          cudaMemcpyHostToDevice),
+               "copy prefix table");
     if constexpr (layout::total_bits == 8) {
       check_cuda(cudaMemcpy(device_pair_high.data, pair_high.data(),
                             pair_high.size() * sizeof(pair_high[0]),
@@ -139,7 +155,8 @@ template <typename Format> struct smoke_context {
   }
 
   fs::table_bundle tables() const {
-    return {device_full_high.data, device_subnormal_high.data, nullptr,
+    return {device_full_high.data, device_subnormal_high.data,
+            device_prefix_high.data,
             device_pair_high.data};
   }
 };
@@ -379,6 +396,49 @@ void run_e1m14_suite(std::ofstream *csv) {
       "subnormal_shared_x8");
 }
 
+void run_e2m13_suite(std::ofstream *csv) {
+  std::cout << "E2M13 exhaustive strategy validation\n";
+  smoke_context<storage::e2m13> context;
+  RUN(e2m13, context, generic, 1, global_read_only, "generic_x1");
+  RUN(e2m13, context, generic, 4, global_read_only, "generic_x4");
+  RUN(e2m13, context, generic, 8, global_read_only, "generic_x8");
+  RUN(e2m13, context, direct_words_branchy, 1, global_read_only,
+      "word_branchy_x1");
+  RUN(e2m13, context, direct_words_branchy, 4, global_read_only,
+      "word_branchy_x4");
+  RUN(e2m13, context, direct_words_branchy, 8, global_read_only,
+      "word_branchy_x8");
+  RUN(e2m13, context, direct_words_masked, 1, global_read_only,
+      "word_masked_x1");
+  RUN(e2m13, context, direct_words_masked, 4, global_read_only,
+      "word_masked_x4");
+  RUN(e2m13, context, direct_words_masked, 8, global_read_only,
+      "word_masked_x8");
+  RUN(e2m13, context, fp32_bits, 1, global_read_only, "fp32_bits_x1");
+  RUN(e2m13, context, fp32_bits, 4, global_read_only, "fp32_bits_x4");
+  RUN(e2m13, context, fp32_bits, 8, global_read_only, "fp32_bits_x8");
+  RUN(e2m13, context, full_high_lut, 1, global_read_only,
+      "full_high_l2_x1");
+  RUN(e2m13, context, full_high_lut, 4, global_read_only,
+      "full_high_l2_x4");
+  RUN(e2m13, context, full_high_lut, 8, global_read_only,
+      "full_high_l2_x8");
+  RUN(e2m13, context, subnormal_high_lut, 4, global_read_only,
+      "subnormal_global_x4");
+  RUN(e2m13, context, subnormal_high_lut, 8, global_read_only,
+      "subnormal_global_x8");
+  RUN(e2m13, context, subnormal_high_lut, 4, shared,
+      "subnormal_shared_x4");
+  RUN(e2m13, context, subnormal_high_lut, 8, shared,
+      "subnormal_shared_x8");
+  RUN(e2m13, context, prefix_high_lut, 4, global_read_only,
+      "prefix_global_x4");
+  RUN(e2m13, context, prefix_high_lut, 8, global_read_only,
+      "prefix_global_x8");
+  RUN(e2m13, context, prefix_high_lut, 4, shared, "prefix_shared_x4");
+  RUN(e2m13, context, prefix_high_lut, 8, shared, "prefix_shared_x8");
+}
+
 #undef RUN
 
 } // namespace
@@ -415,6 +475,7 @@ int main(int argc, char **argv) {
     run_fp8_e4m3_suite(csv_ptr);
     run_fp8_e5m2_suite(csv_ptr);
     run_e1m14_suite(csv_ptr);
+    run_e2m13_suite(csv_ptr);
     std::cout << "All registered strategies passed.\n";
   } catch (const std::exception &error) {
     std::cerr << "error: " << error.what() << '\n';
