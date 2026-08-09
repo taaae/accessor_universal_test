@@ -4,6 +4,8 @@ set -euo pipefail
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 build_dir="${BUILD_DIR:-${repo_dir}/build-h200}"
 results_root="${RESULTS_ROOT:-${repo_dir}/results/011_e2e3_strategy_performance}"
+experiment_id="${EXPERIMENT_ID:-011_e2e3_strategy_performance}"
+experiment_purpose="${EXPERIMENT_PURPOSE:-full DOT and GEMV timing sweep for every E2M5/E3M4 decoder strategy}"
 build_jobs="${BUILD_JOBS:-4}"
 cuda_arch="${CUDA_ARCH:-90}"
 timestamp="$(date -u +%Y%m%dT%H%M%SZ)"
@@ -14,8 +16,8 @@ started_epoch="$(date +%s)"
 mkdir -p "${run_dir}" "${validation_dir}"
 
 {
-    echo "experiment=011_e2e3_strategy_performance"
-    echo "purpose=full DOT and GEMV timing sweep for every E2M5/E3M4 decoder strategy"
+    echo "experiment=${experiment_id}"
+    echo "purpose=${experiment_purpose}"
     echo "started_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
     echo "git_commit=$(git -C "${repo_dir}" rev-parse HEAD)"
     echo "git_status_begin"
@@ -99,6 +101,9 @@ samples_csv="${run_dir}/timing_samples.csv"
 python3 "${repo_dir}/tools/summarize_e2e3_strategy_benchmark.py" \
     --samples "${samples_csv}" \
     --output-dir "${run_dir}" \
+    --expected-dot-powers "${DOT_POWERS:-12,16,20,24,27}" \
+    --expected-gemv-powers "${GEMV_POWERS:-8,10,12,14,16}" \
+    --expected-gemv-rows "${GEMV_ROWS:-1024}" \
     | tee "${run_dir}/timing_validation.txt"
 
 if command -v cuobjdump >/dev/null 2>&1; then

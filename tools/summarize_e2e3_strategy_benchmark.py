@@ -85,6 +85,44 @@ def read_rows(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(stream))
 
 
+def parse_powers(text: str) -> set[int]:
+    try:
+        powers = {int(token) for token in text.split(",")}
+    except ValueError as error:
+        raise SystemExit(f"error: invalid power list: {text}") from error
+    require(
+        bool(powers) and all(0 <= power < 63 for power in powers),
+        f"invalid power list: {text}",
+    )
+    return {1 << power for power in powers}
+
+
+def validate_size_grid(
+    rows: list[dict[str, str]],
+    dot_sizes: set[int],
+    gemv_sizes: set[int],
+    gemv_rows: int,
+) -> None:
+    actual = {
+        (row["distribution"], row["component"], int(row["n"]), int(row["m"]))
+        for row in rows
+    }
+    expected = {
+        (distribution, "dot", size, 1)
+        for distribution in ("uniform_0_1", "normal_0_1")
+        for size in dot_sizes
+    } | {
+        (distribution, "gemv", size, gemv_rows)
+        for distribution in ("uniform_0_1", "normal_0_1")
+        for size in gemv_sizes
+    }
+    require(
+        actual == expected,
+        "size-grid mismatch: "
+        f"missing={sorted(expected - actual)}, extra={sorted(actual - expected)}",
+    )
+
+
 def validate_coverage(rows: list[dict[str, str]]) -> None:
     require({row["distribution"] for row in rows} == {"uniform_0_1", "normal_0_1"},
             "expected both input distributions")
@@ -128,11 +166,32 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--samples", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--expected-dot-powers")
+    parser.add_argument("--expected-gemv-powers")
+    parser.add_argument("--expected-gemv-rows", type=int)
     args = parser.parse_args()
 
     rows = read_rows(args.samples)
     require(bool(rows), "timing sample CSV is empty")
     validate_coverage(rows)
+    expected_grid_options = (
+        args.expected_dot_powers,
+        args.expected_gemv_powers,
+        args.expected_gemv_rows,
+    )
+    require(
+        all(option is None for option in expected_grid_options)
+        or all(option is not None for option in expected_grid_options),
+        "expected size-grid options must be provided together",
+    )
+    if args.expected_dot_powers is not None:
+        require(args.expected_gemv_rows > 0, "expected GEMV rows must be positive")
+        validate_size_grid(
+            rows,
+            parse_powers(args.expected_dot_powers),
+            parse_powers(args.expected_gemv_powers),
+            args.expected_gemv_rows,
+        )
 
     grouped: dict[tuple[str, ...], list[dict[str, str]]] = defaultdict(list)
     for row in rows:

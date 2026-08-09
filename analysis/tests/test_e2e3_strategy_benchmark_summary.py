@@ -80,7 +80,19 @@ def test_full_inventory_and_fp64_speedup(tmp_path, monkeypatch):
     monkeypatch.setattr(
         sys,
         "argv",
-        ["summary", "--samples", str(samples), "--output-dir", str(tmp_path)],
+        [
+            "summary",
+            "--samples",
+            str(samples),
+            "--output-dir",
+            str(tmp_path),
+            "--expected-dot-powers",
+            "10",
+            "--expected-gemv-powers",
+            "8",
+            "--expected-gemv-rows",
+            "1024",
+        ],
     )
     summary.main()
 
