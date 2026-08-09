@@ -42,6 +42,10 @@ figcaption { color: var(--muted); margin-top: 8px; }
 .report-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 .report-link { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--fg); padding: 15px; text-decoration: none; display: grid; gap: 4px; }
 .report-link:hover, .report-link:focus-visible { border-color: var(--link); }
+.table-wrap { overflow-x: auto; }
+.strategy-table { border-collapse: collapse; width: min(100%, 980px); }
+.strategy-table th, .strategy-table td { border-bottom: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
+.strategy-table th { white-space: nowrap; width: 120px; }
 a { color: var(--link); }
 li { margin: 5px 0; }
 footer { border-top: 1px solid var(--border); color: var(--muted); }

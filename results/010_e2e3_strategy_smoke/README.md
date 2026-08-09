@@ -5,7 +5,7 @@ correct and does not contain an obviously pathological DOT or GEMV
 implementation. Its short timing samples are useful for screening only; they
 are not the final performance benchmark.
 
-Each format has 27 strategies:
+Each format now has 42 strategies. The original set contains:
 
 - generic FP64, branchless FP32, FP32 LUT, FP64 LUT, and FP64-prefix LUT at
   x1, x2, x4, and x8 source-load widths;
@@ -13,6 +13,15 @@ Each format has 27 strategies:
 - a decomposed sign/exponent-prefix decoder at x4;
 - shared-memory FP32, FP64, and prefix LUTs at x4;
 - explicitly software-pipelined global FP32 and prefix LUTs at x4.
+
+The new set adds:
+
+- strict 32-bit x4/x8 packet extraction;
+- branchy and masked split-word FP64 construction at x4/x8;
+- global and shared subnormal-only high-word LUTs at x4/x8;
+- global and shared complete FP64-high-word LUTs at x4/x8;
+- four-copy bank-swizzled shared high-word LUTs at x4/x8;
+- the compact shared prefix LUT at x8.
 
 The E3M4 prefix table contains 256 16-bit E11M4 prefixes. E2M5 needs five
 fraction bits, so its exact prefix table stores 17-bit E11M5 prefixes in

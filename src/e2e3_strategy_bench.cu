@@ -338,6 +338,8 @@ template <typename Format> struct host_tables {
   std::array<std::uint16_t, 256> prefix16{};
   std::array<std::uint32_t, 256> prefix32{};
   std::array<std::uint64_t, 16> exponent_prefix{};
+  std::array<std::uint32_t, 256> high_word{};
+  std::array<std::uint32_t, 32> subnormal_high_word{};
 
   host_tables() {
     for (std::size_t code = 0; code < 256; ++code) {
@@ -347,11 +349,20 @@ template <typename Format> struct host_tables {
       std::memcpy(&bits, &value, sizeof(bits));
       fp32[code] = static_cast<float>(value);
       fp64[code] = value;
+      high_word[code] = static_cast<std::uint32_t>(bits >> 32);
       if constexpr (Format::fraction_bits == 4) {
         prefix16[code] = static_cast<std::uint16_t>(bits >> 48);
       } else {
         prefix32[code] = static_cast<std::uint32_t>(bits >> 47);
       }
+    }
+    constexpr auto subnormal_count = std::size_t{1} << Format::fraction_bits;
+    for (std::size_t fraction = 0; fraction < subnormal_count; ++fraction) {
+      const auto value =
+          storage::decode<Format>(static_cast<std::uint8_t>(fraction));
+      std::uint64_t bits{};
+      std::memcpy(&bits, &value, sizeof(bits));
+      subnormal_high_word[fraction] = static_cast<std::uint32_t>(bits >> 32);
     }
     constexpr auto count = std::size_t{1} << (1 + Format::exponent_bits);
     for (std::size_t upper = 0; upper < count; ++upper) {
@@ -373,16 +384,23 @@ template <typename Format> class device_tables {
 public:
   explicit device_tables(const host_tables<Format> &host)
       : fp32_{256}, fp64_{256}, prefix16_{256}, prefix32_{256},
-        exponent_prefix_{16} {
+        exponent_prefix_{16}, high_word_{256}, subnormal_high_word_{32} {
     upload(fp32_, host.fp32);
     upload(fp64_, host.fp64);
     upload(prefix16_, host.prefix16);
     upload(prefix32_, host.prefix32);
     upload(exponent_prefix_, host.exponent_prefix);
+    upload(high_word_, host.high_word);
+    upload(subnormal_high_word_, host.subnormal_high_word);
   }
   decoder::table_bundle bundle() const {
-    return {fp32_.get(), fp64_.get(), prefix16_.get(), prefix32_.get(),
-            exponent_prefix_.get()};
+    return {fp32_.get(),
+            fp64_.get(),
+            prefix16_.get(),
+            prefix32_.get(),
+            exponent_prefix_.get(),
+            high_word_.get(),
+            subnormal_high_word_.get()};
   }
 
 private:
@@ -391,6 +409,8 @@ private:
   device_buffer<std::uint16_t> prefix16_;
   device_buffer<std::uint32_t> prefix32_;
   device_buffer<std::uint64_t> exponent_prefix_;
+  device_buffer<std::uint32_t> high_word_;
+  device_buffer<std::uint32_t> subnormal_high_word_;
 };
 
 const char *kind_name(decoder::decode_kind kind) {
@@ -409,6 +429,16 @@ const char *kind_name(decoder::decode_kind kind) {
     return "direct_fp64_bits";
   case decoder::decode_kind::decomposed_bits:
     return "decomposed_bits";
+  case decoder::decode_kind::direct_fp64_words_branchy:
+    return "direct_fp64_words_branchy";
+  case decoder::decode_kind::direct_fp64_words_masked:
+    return "direct_fp64_words_masked";
+  case decoder::decode_kind::lut_subnormal:
+    return "lut_subnormal";
+  case decoder::decode_kind::lut_high_word:
+    return "lut_high_word";
+  case decoder::decode_kind::lut_high_word_swizzled:
+    return "lut_high_word_swizzled";
   }
   return "unknown";
 }
@@ -417,7 +447,11 @@ template <typename Strategy> std::string strategy_name() {
   std::string result{kind_name(Strategy::kind)};
   if constexpr (Strategy::kind == decoder::decode_kind::lut_fp32 ||
                 Strategy::kind == decoder::decode_kind::lut_fp64 ||
-                Strategy::kind == decoder::decode_kind::lut_prefix) {
+                Strategy::kind == decoder::decode_kind::lut_prefix ||
+                Strategy::kind == decoder::decode_kind::lut_subnormal ||
+                Strategy::kind == decoder::decode_kind::lut_high_word ||
+                Strategy::kind ==
+                    decoder::decode_kind::lut_high_word_swizzled) {
     result += Strategy::location == decoder::table_location::shared ? "_shared"
                                                                     : "_global";
   }
@@ -431,7 +465,11 @@ template <typename Strategy> std::string strategy_name() {
 template <typename Strategy> const char *table_location_name() {
   if constexpr (Strategy::kind == decoder::decode_kind::lut_fp32 ||
                 Strategy::kind == decoder::decode_kind::lut_fp64 ||
-                Strategy::kind == decoder::decode_kind::lut_prefix) {
+                Strategy::kind == decoder::decode_kind::lut_prefix ||
+                Strategy::kind == decoder::decode_kind::lut_subnormal ||
+                Strategy::kind == decoder::decode_kind::lut_high_word ||
+                Strategy::kind ==
+                    decoder::decode_kind::lut_high_word_swizzled) {
     return Strategy::location == decoder::table_location::shared ? "shared"
                                                                  : "global";
   }
@@ -445,6 +483,22 @@ void for_core_width(Callback &&callback) {
   callback(decoder::strategy<decoder::decode_kind::lut_fp32, Lanes>{});
   callback(decoder::strategy<decoder::decode_kind::lut_fp64, Lanes>{});
   callback(decoder::strategy<decoder::decode_kind::lut_prefix, Lanes>{});
+}
+
+template <int Lanes, typename Callback>
+void for_new_width(Callback &&callback) {
+  callback(decoder::strategy<decoder::decode_kind::direct_fp64_words_branchy,
+                             Lanes>{});
+  callback(decoder::strategy<decoder::decode_kind::direct_fp64_words_masked,
+                             Lanes>{});
+  callback(decoder::strategy<decoder::decode_kind::lut_subnormal, Lanes>{});
+  callback(decoder::strategy<decoder::decode_kind::lut_subnormal, Lanes,
+                             decoder::table_location::shared>{});
+  callback(decoder::strategy<decoder::decode_kind::lut_high_word, Lanes>{});
+  callback(decoder::strategy<decoder::decode_kind::lut_high_word, Lanes,
+                             decoder::table_location::shared>{});
+  callback(decoder::strategy<decoder::decode_kind::lut_high_word_swizzled,
+                             Lanes, decoder::table_location::shared>{});
 }
 
 template <typename Format, typename Callback>
@@ -461,12 +515,16 @@ void for_each_strategy(Callback &&callback) {
                              decoder::table_location::shared>{});
   callback(decoder::strategy<decoder::decode_kind::lut_prefix, 4,
                              decoder::table_location::shared>{});
+  callback(decoder::strategy<decoder::decode_kind::lut_prefix, 8,
+                             decoder::table_location::shared>{});
   callback(
       decoder::strategy<decoder::decode_kind::lut_fp32, 4,
                         decoder::table_location::global_read_only, true>{});
   callback(
       decoder::strategy<decoder::decode_kind::lut_prefix, 4,
                         decoder::table_location::global_read_only, true>{});
+  for_new_width<4>(callback);
+  for_new_width<8>(callback);
 }
 
 struct work_model {
@@ -646,8 +704,8 @@ void measure_variants(std::vector<timed_variant> &variants,
                       const options &settings, distribution kind,
                       std::uint64_t order_seed, sample_output &output,
                       event_timer &timer) {
-  if (variants.size() != 55) {
-    throw benchmark_error("internal error: expected 55 timed variants");
+  if (variants.size() != 85) {
+    throw benchmark_error("internal error: expected 85 timed variants");
   }
   for (auto &variant : variants) {
     for (int warmup = 0; warmup < settings.warmup; ++warmup) {
@@ -787,7 +845,7 @@ int main(int argc, char **argv) try {
     for (const auto power : settings.dot_powers) {
       const auto count = size_from_power(power);
       std::vector<timed_variant> variants;
-      variants.reserve(55);
+      variants.reserve(85);
       variants.push_back(make_raw_dot_variant(
           source_dot_left.get(), source_dot_right.get(), count, partials.get(),
           result.get(), device.multiprocessors));
@@ -807,7 +865,7 @@ int main(int argc, char **argv) try {
     for (const auto power : settings.gemv_powers) {
       const auto columns = size_from_power(power);
       std::vector<timed_variant> variants;
-      variants.reserve(55);
+      variants.reserve(85);
       variants.push_back(
           make_raw_gemv_variant(source_matrix.get(), source_vector.get(),
                                 settings.gemv_rows, columns, result.get()));

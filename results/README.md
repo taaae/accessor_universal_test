@@ -4,6 +4,8 @@ Results are grouped by experiment rather than by file type or execution date.
 Each directory contains a short README describing what was tested and how its
 artifacts should be interpreted.
 
+The evolving multi-experiment HTML report is at [`report/index.html`](report/index.html).
+
 | ID | Experiment | Purpose |
 |---:|---|---|
 | 001 | `001_cublas_baseline` | Establish cuBLAS DOT performance and accuracy baselines. |
@@ -17,6 +19,7 @@ artifacts should be interpreted.
 | 009 | `009_e2e3_decoder_optimization` | Compare the initial E2M5/E3M4 scalar and packed branchless/LUT decoders. |
 | 010 | `010_e2e3_strategy_smoke` | Validate the expanded E2M5/E3M4 decoder strategy inventory and screen preliminary kernel timings. |
 | 011 | `011_e2e3_strategy_performance` | Compare complete DOT/GEMV time for all E2M5/E3M4 decoder strategies against raw FP64. |
+| 012 | `012_e2e3_strategy_expansion_smoke` | Exhaustively validate the selected direct-word, compact-LUT, x8, and bank-swizzled E2M5/E3M4 strategies. |
 
 Timestamped repetitions of an unchanged experiment belong in the existing
 directory. Create the next numbered directory when changing the kernel,

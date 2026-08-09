@@ -62,7 +62,9 @@ The generated report is split into linked pages for total performance, same-bit
 performance and accuracy, packing, roofline position, conversion, bottlenecks,
 DOT accuracy, GEMV accuracy, scalar behavior, and methodology. It also joins
 performance and measured storage RMSE in a trade-off graph. Start at
-[`report/index.html`](report/index.html).
+The evolving cross-experiment report now lives at
+[`../report/index.html`](../report/index.html), rather than inside experiment
+008. It currently combines experiments 006, 007, 008, and 011.
 
 Rebuild it from the newest committed run with:
 

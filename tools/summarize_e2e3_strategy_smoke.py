@@ -47,7 +47,7 @@ def main() -> None:
     strategies = {(row["format"], row["strategy"]) for row in decoder}
     for format_name in ("e2m5", "e3m4"):
         count = sum(fmt == format_name for fmt, _ in strategies)
-        require(count == 27, f"expected 27 {format_name} strategies, found {count}")
+        require(count == 42, f"expected 42 {format_name} strategies, found {count}")
 
     key_fields = [
         "gpu",

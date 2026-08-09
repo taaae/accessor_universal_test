@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="report.css">
 </head>
 <body>
-<header><div class="shell"><a class="brand" href="index.html">H200 storage-format report</a><nav aria-label="Report sections"><a href="index.html">Overview</a><a href="total-performance.html">Total performance</a><a href="same-bit-formats.html">Same-bit formats</a><a href="packing.html">Packed vs unpacked</a><a href="roofline.html">Roofline</a><a href="conversion.html">Conversion</a><a href="bottlenecks.html">Bottlenecks</a><a href="accuracy.html" aria-current="page" class="active">Accuracy</a><a href="methodology.html">Methodology</a></nav></div></header>
+<header><div class="shell"><a class="brand" href="index.html">H200 storage-format report</a><nav aria-label="Report sections"><a href="index.html">Overview</a><a href="total-performance.html">Total performance</a><a href="same-bit-formats.html">Same-bit formats</a><a href="packing.html">Packed vs unpacked</a><a href="roofline.html">Roofline</a><a href="conversion.html">Conversion</a><a href="bottlenecks.html">Bottlenecks</a><a href="accuracy.html" aria-current="page" class="active">Accuracy</a><a href="methodology.html">Methodology</a><a href="e2e3-strategies.html">E2M5, E3M4 strategies</a></nav></div></header>
 <main class="shell">
 <h1>Accuracy overview</h1>
 <p class="lead">Measured H200 storage error, its analytical prediction, and the resulting performance–accuracy trade-off.</p>
@@ -18,9 +18,9 @@
 </section><section class="text-section"><h2>Validation scope</h2>
 <p>The GPU run contains 306 storage comparisons across DOT, GEMV, both distributions, all formats, and every tested N. 261 of 279 finite nonzero cases have measured MSE within 20% of the analytical prediction.</p>
 <p>The DOT and GEMV pages separate the results by kernel, distribution, and storage width. The scalar page covers quantization events and the smaller FP64 arithmetic-only error.</p>
-<p><a href="../../006_accuracy_model/generated/accuracy_model_report.html">Open the original complete analytical report</a>.</p>
+<p><a href="../006_accuracy_model/generated/accuracy_model_report.html">Open the original complete analytical report</a>.</p>
 </section>
 </main>
-<footer><div class="shell">Performance: <code>run_20260808T131626Z</code> · Accuracy: <code>run_20260808T122054Z</code></div></footer>
+<footer><div class="shell">Performance: <code>run_20260808T131626Z</code> · Accuracy: <code>run_20260808T122054Z</code> · E2/E3 strategies: <code>run_20260808T181150Z</code></div></footer>
 </body>
 </html>

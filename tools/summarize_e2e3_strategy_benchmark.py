@@ -25,8 +25,16 @@ EXPECTED_STRATEGIES = {
     "lut_fp32_shared_x4",
     "lut_fp64_shared_x4",
     "lut_prefix_shared_x4",
+    "lut_prefix_shared_x8",
     "lut_fp32_global_pipelined_x4",
     "lut_prefix_global_pipelined_x4",
+    *(f"direct_fp64_words_branchy_x{lanes}" for lanes in (4, 8)),
+    *(f"direct_fp64_words_masked_x{lanes}" for lanes in (4, 8)),
+    *(f"lut_subnormal_{location}_x{lanes}"
+      for lanes in (4, 8) for location in ("global", "shared")),
+    *(f"lut_high_word_{location}_x{lanes}"
+      for lanes in (4, 8) for location in ("global", "shared")),
+    *(f"lut_high_word_swizzled_shared_x{lanes}" for lanes in (4, 8)),
 }
 
 IDENTITY = [
@@ -111,7 +119,8 @@ def validate_coverage(rows: list[dict[str, str]]) -> None:
     for case, variants in by_case.items():
         require(
             variants == expected_variants,
-            f"case {case} has {len(variants)} variants, expected 55",
+            f"case {case} has {len(variants)} variants, "
+            f"expected {len(expected_variants)}",
         )
 
 
@@ -240,7 +249,8 @@ def main() -> None:
 
     print(
         f"Validated {len(rows)} samples in {len(grouped)} groups: "
-        f"55 variants per case, {sample_counts.pop()} samples per variant"
+        f"{1 + 2 * len(EXPECTED_STRATEGIES)} variants per case, "
+        f"{sample_counts.pop()} samples per variant"
     )
     print(f"Wrote {summary_path}")
     print(f"Wrote {inventory_path}")

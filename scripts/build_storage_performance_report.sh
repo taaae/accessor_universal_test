@@ -28,4 +28,4 @@ uv run python tools/summarize_storage_performance.py \
 
 uv run python tools/build_storage_performance_report.py \
     --run-dir "${run_dir}" \
-    --output-dir results/008_storage_performance/report
+    --output-dir results/report

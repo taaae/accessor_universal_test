@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overview — H200 storage-format report</title>
+<link rel="stylesheet" href="report.css">
+</head>
+<body>
+<header><div class="shell"><a class="brand" href="index.html">H200 storage-format report</a><nav aria-label="Report sections"><a href="index.html" aria-current="page" class="active">Overview</a><a href="total-performance.html">Total performance</a><a href="same-bit-formats.html">Same-bit formats</a><a href="packing.html">Packed vs unpacked</a><a href="roofline.html">Roofline</a><a href="conversion.html">Conversion</a><a href="bottlenecks.html">Bottlenecks</a><a href="accuracy.html">Accuracy</a><a href="methodology.html">Methodology</a><a href="e2e3-strategies.html">E2M5, E3M4 strategies</a></nav></div></header>
+<main class="shell">
+<h1>Overview</h1>
+<p class="lead">One entry point for the H200 performance measurements and accuracy validation.</p>
+
+<div class="summary-grid">
+<div><span>Fastest large DOT</span><strong>FP8 E4M3</strong><small>0.109 ms</small></div>
+<div><span>Fastest large GEMV</span><strong>E11M4</strong><small>0.046 ms</small></div>
+<div><span>Measured HBM ceiling</span><strong>4.60 TB/s</strong><small>median memory-bound profiles</small></div>
+</div>
+<section><h2>Performance</h2><p>Timing, packing, roofline, conversion, and hardware bottlenecks.</p><div class="report-grid"><a class="report-link" href="total-performance.html"><strong>Total performance</strong><span>Interactive all-format x1/x2/x4 timing and size scaling.</span></a><a class="report-link" href="same-bit-formats.html"><strong>Same-bit formats</strong><span>Interactive x1/x2/x4 timing plus same-bit and all-format accuracy.</span></a><a class="report-link" href="packing.html"><strong>Packed vs unpacked</strong><span>x2 and x4 throughput benefit over x1.</span></a><a class="report-link" href="roofline.html"><strong>Roofline</strong><span>Useful work relative to the measured HBM ceiling.</span></a><a class="report-link" href="conversion.html"><strong>Conversion</strong><span>Register decode, streaming decode, and data dependence.</span></a><a class="report-link" href="bottlenecks.html"><strong>Bottlenecks</strong><span>Nsight resource pressure, registers, and occupancy.</span></a><a class="report-link" href="e2e3-strategies.html"><strong>E2M5, E3M4 strategies</strong><span>Every decoder strategy and raw FP64 versus N.</span></a></div></section>
+<section><h2>Accuracy</h2><p>H200 simulations compared with the analytical storage-error model.</p><div class="report-grid"><a class="report-link" href="accuracy.html"><strong>Accuracy overview</strong><span>Performance–accuracy trade-off and test scope.</span></a><a class="report-link" href="accuracy-dot.html"><strong>DOT accuracy</strong><span>Measured RMSE versus the analytical model.</span></a><a class="report-link" href="accuracy-gemv.html"><strong>GEMV accuracy</strong><span>Per-row RMSE across fixed M=1024.</span></a><a class="report-link" href="accuracy-scalar.html"><strong>Scalar and arithmetic</strong><span>Encoding events and FP64 arithmetic error.</span></a></div></section>
+<section class="graph-section">
+<h2>All-format overview</h2>
+<p>This compares complete x4 kernel time at the largest tested N; lower bars are faster.</p>
+<figure><a href="assets/total-kernel-time.svg"><img src="assets/total-kernel-time.svg" alt="Horizontal bars comparing complete DOT and GEMV time for all storage formats."></a></figure>
+</section>
+</main>
+<footer><div class="shell">Performance: <code>run_20260808T131626Z</code> · Accuracy: <code>run_20260808T122054Z</code> · E2/E3 strategies: <code>run_20260808T181150Z</code></div></footer>
+</body>
+</html>

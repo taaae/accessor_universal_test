@@ -3,7 +3,7 @@ set -euo pipefail
 
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 build_dir="${BUILD_DIR:-${repo_dir}/build-h200}"
-results_root="${RESULTS_ROOT:-${repo_dir}/results/010_e2e3_strategy_smoke}"
+results_root="${RESULTS_ROOT:-${repo_dir}/results/012_e2e3_strategy_expansion_smoke}"
 build_jobs="${BUILD_JOBS:-4}"
 cuda_arch="${CUDA_ARCH:-90}"
 timestamp="$(date -u +%Y%m%dT%H%M%SZ)"
@@ -13,8 +13,8 @@ started_epoch="$(date +%s)"
 mkdir -p "${run_dir}"
 
 {
-    echo "experiment=010_e2e3_strategy_smoke"
-    echo "purpose=preliminary correctness and pathology screening"
+    echo "experiment=012_e2e3_strategy_expansion_smoke"
+    echo "purpose=exhaustive decoder and small DOT/GEMV validation"
     echo "started_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
     echo "git_commit=$(git -C "${repo_dir}" rev-parse HEAD)"
     echo "git_status_begin"
@@ -31,18 +31,19 @@ mkdir -p "${run_dir}"
 } >"${run_dir}/environment.txt"
 
 {
-    echo "dot_powers=${DOT_POWERS:-16,22}"
-    echo "gemv_powers=${GEMV_POWERS:-10,12}"
+    echo "dot_powers=${DOT_POWERS:-16}"
+    echo "gemv_powers=${GEMV_POWERS:-10}"
     echo "gemv_rows=${GEMV_ROWS:-256}"
     echo "distributions=uniform_0_1,normal_0_1"
     echo "formats=e2m5,e3m4"
     echo "strategies_per_format=42"
+    echo "new_strategies_per_format=15"
     echo "load_widths=x1,x2,x4,x8"
-    echo "warmup=${WARMUP:-3}"
-    echo "samples=${SAMPLES:-3}"
-    echo "target_sample_ms=${TARGET_SAMPLE_MS:-2}"
+    echo "warmup=${WARMUP:-2}"
+    echo "samples=${SAMPLES:-2}"
+    echo "target_sample_ms=${TARGET_SAMPLE_MS:-1}"
     echo "base_seed=${BASE_SEED:-2611923443488327891}"
-    echo "timing=preliminary_only_not_for_final_performance_conclusions"
+    echo "timing=smoke_only_not_for_performance_conclusions"
 } >"${run_dir}/run_manifest.txt"
 
 cmake -S "${repo_dir}" -B "${build_dir}" \
@@ -60,12 +61,12 @@ decoder_validation_csv="${run_dir}/decoder_validation.csv"
 kernel_validation_csv="${run_dir}/kernel_validation.csv"
 
 "${benchmark}" \
-    --dot-powers "${DOT_POWERS:-16,22}" \
-    --gemv-powers "${GEMV_POWERS:-10,12}" \
+    --dot-powers "${DOT_POWERS:-16}" \
+    --gemv-powers "${GEMV_POWERS:-10}" \
     --gemv-rows "${GEMV_ROWS:-256}" \
-    --warmup "${WARMUP:-3}" \
-    --samples "${SAMPLES:-3}" \
-    --target-sample-ms "${TARGET_SAMPLE_MS:-2}" \
+    --warmup "${WARMUP:-2}" \
+    --samples "${SAMPLES:-2}" \
+    --target-sample-ms "${TARGET_SAMPLE_MS:-1}" \
     --base-seed "${BASE_SEED:-2611923443488327891}" \
     --output "${samples_csv}" \
     --decoder-validation-output "${decoder_validation_csv}" \
@@ -100,7 +101,7 @@ finished_epoch="$(date +%s)"
 } >>"${run_dir}/run_manifest.txt"
 
 echo
-echo "E2/E3 strategy smoke experiment complete:"
+echo "E2/E3 expanded-strategy smoke experiment complete:"
 echo "  ${run_dir}"
 echo "  ${run_dir}/decoder_validation.csv"
 echo "  ${run_dir}/kernel_validation.csv"

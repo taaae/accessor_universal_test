@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="report.css">
 </head>
 <body>
-<header><div class="shell"><a class="brand" href="index.html">H200 storage-format report</a><nav aria-label="Report sections"><a href="index.html">Overview</a><a href="total-performance.html">Total performance</a><a href="same-bit-formats.html">Same-bit formats</a><a href="packing.html">Packed vs unpacked</a><a href="roofline.html">Roofline</a><a href="conversion.html">Conversion</a><a href="bottlenecks.html">Bottlenecks</a><a href="accuracy.html">Accuracy</a><a href="methodology.html" aria-current="page" class="active">Methodology</a></nav></div></header>
+<header><div class="shell"><a class="brand" href="index.html">H200 storage-format report</a><nav aria-label="Report sections"><a href="index.html">Overview</a><a href="total-performance.html">Total performance</a><a href="same-bit-formats.html">Same-bit formats</a><a href="packing.html">Packed vs unpacked</a><a href="roofline.html">Roofline</a><a href="conversion.html">Conversion</a><a href="bottlenecks.html">Bottlenecks</a><a href="accuracy.html">Accuracy</a><a href="methodology.html" aria-current="page" class="active">Methodology</a><a href="e2e3-strategies.html">E2M5, E3M4 strategies</a></nav></div></header>
 <main class="shell">
 <h1>Methodology and data</h1>
 <p class="lead">How performance timing, profiler counters, analytical accuracy, and GPU simulation were collected and compared.</p>
@@ -26,21 +26,21 @@
 <p><strong>Accuracy sampling:</strong> DOT uses 8,192 independent outputs per case. GEMV fixes M=1024 and uses 16 independent matrix/vector replicates.</p>
 </section>
 <section class="text-section"><h2>Performance data</h2><ul>
-<li><a href="../run_20260808T131626Z/timing_samples.csv">Every timing sample</a></li>
-<li><a href="../run_20260808T131626Z/timing_summary.csv">Timing summary</a></li>
-<li><a href="../run_20260808T131626Z/packed_speedups.csv">Corrected packed comparisons</a></li>
-<li><a href="../run_20260808T131626Z/profile_operations.csv">Operation-level Nsight metrics</a></li>
-<li><a href="../run_20260808T131626Z/profile_kernels.csv">Per-kernel Nsight metrics</a></li>
+<li><a href="../008_storage_performance/run_20260808T131626Z/timing_samples.csv">Every timing sample</a></li>
+<li><a href="../008_storage_performance/run_20260808T131626Z/timing_summary.csv">Timing summary</a></li>
+<li><a href="../008_storage_performance/run_20260808T131626Z/packed_speedups.csv">Corrected packed comparisons</a></li>
+<li><a href="../008_storage_performance/run_20260808T131626Z/profile_operations.csv">Operation-level Nsight metrics</a></li>
+<li><a href="../008_storage_performance/run_20260808T131626Z/profile_kernels.csv">Per-kernel Nsight metrics</a></li>
 </ul></section>
 <section class="text-section"><h2>Accuracy data</h2><ul>
-<li><a href="../../007_gpu_accuracy_simulation/run_20260808T122054Z/simulation_summary.csv">GPU simulation summary</a></li>
-<li><a href="../../007_gpu_accuracy_simulation/run_20260808T122054Z/batch_estimates.csv">Independent batch estimates</a></li>
-<li><a href="../../007_gpu_accuracy_simulation/run_20260808T122054Z/convergence_report.csv">Convergence assessment</a></li>
-<li><a href="../../006_accuracy_model/generated/simulation_model_comparison.csv">Joined model and simulation results</a></li>
-<li><a href="../../006_accuracy_model/generated/kernel_predictions.csv">Analytical kernel predictions</a></li>
-<li><a href="../../006_accuracy_model/generated/scalar_predictions.csv">Analytical scalar predictions</a></li>
+<li><a href="../007_gpu_accuracy_simulation/run_20260808T122054Z/simulation_summary.csv">GPU simulation summary</a></li>
+<li><a href="../007_gpu_accuracy_simulation/run_20260808T122054Z/batch_estimates.csv">Independent batch estimates</a></li>
+<li><a href="../007_gpu_accuracy_simulation/run_20260808T122054Z/convergence_report.csv">Convergence assessment</a></li>
+<li><a href="../006_accuracy_model/generated/simulation_model_comparison.csv">Joined model and simulation results</a></li>
+<li><a href="../006_accuracy_model/generated/kernel_predictions.csv">Analytical kernel predictions</a></li>
+<li><a href="../006_accuracy_model/generated/scalar_predictions.csv">Analytical scalar predictions</a></li>
 </ul></section>
 </main>
-<footer><div class="shell">Performance: <code>run_20260808T131626Z</code> · Accuracy: <code>run_20260808T122054Z</code></div></footer>
+<footer><div class="shell">Performance: <code>run_20260808T131626Z</code> · Accuracy: <code>run_20260808T122054Z</code> · E2/E3 strategies: <code>run_20260808T181150Z</code></div></footer>
 </body>
 </html>

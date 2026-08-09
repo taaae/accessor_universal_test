@@ -153,6 +153,49 @@ def test_interactive_performance_chart_filters(tmp_path):
     assert "filterEnabled('bits', group.dataset.bits)" in document
 
 
+def test_strategy_chart_filters_and_fp64_baseline(tmp_path):
+    svg = tmp_path / "strategies.svg"
+    strategies = ("branchless_fp32_x4", "raw_pointer_x1")
+    groups = "".join(
+        f'<g id="{performance_report.strategy_series_gid("e2m5", distribution, component, strategy)}"></g>'
+        for distribution in ("uniform_0_1", "normal_0_1")
+        for component in ("dot", "gemv")
+        for strategy in strategies
+    )
+    svg.write_text(
+        f'<svg xmlns="http://www.w3.org/2000/svg">{groups}</svg>',
+        encoding="utf-8",
+    )
+
+    document = performance_report.strategy_interactive_document(
+        svg,
+        format_name="e2m5",
+        strategies=strategies,
+    )
+
+    assert document.count('data-series="true"') == 8
+    assert 'data-strategy="raw_pointer_x1"' in document
+    assert '>F64<' in document
+    assert 'data-filter="lanes" value="8"' in document
+    assert 'data-filter="family" value="branchless"' in document
+    assert 'data-filter="strategy" value="branchless_fp32_x4"' in document
+    assert "group.dataset.lanes === 'baseline'" in document
+
+
+def test_strategy_abbreviations_are_compositional():
+    assert performance_report.strategy_abbreviation("raw_pointer_x1") == "F64"
+    assert (
+        performance_report.strategy_abbreviation("lut_prefix_shared_x4")
+        == "LP-S ×4"
+    )
+    assert (
+        performance_report.strategy_abbreviation(
+            "lut_fp32_global_pipelined_x4"
+        )
+        == "L32-G-P ×4"
+    )
+
+
 def test_register_packing_uses_value_throughput(tmp_path):
     performance_summary.EXPECTED_FORMATS = {"fp32_e8m23"}
     performance_summary.EXPECTED_DISTRIBUTIONS = {"normal_0_1"}

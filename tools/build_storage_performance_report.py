@@ -11,6 +11,7 @@ import os
 import re
 import shutil
 import statistics
+from collections import defaultdict
 from pathlib import Path
 from typing import Sequence
 
@@ -90,6 +91,38 @@ FAMILY_COLORS = {
 
 LANE_COLORS = {1: "#6c757d", 2: "#0072B2", 4: "#D55E00"}
 LANE_STYLES = {1: ":", 2: "--", 4: "-"}
+STRATEGY_LANE_STYLES = {1: ":", 2: "--", 4: "-", 8: "-."}
+STRATEGY_LANE_ORDER = (4, 8, 2, 1)
+STRATEGY_FAMILY_ORDER = (
+    "lut_prefix",
+    "lut_fp32",
+    "lut_fp64",
+    "branchless",
+    "baseline",
+    "decomposed",
+    "direct_bits",
+    "generic",
+)
+STRATEGY_FAMILY_LABELS = {
+    "generic": "Generic codec",
+    "branchless": "Branchless FP32",
+    "lut_fp32": "FP32 lookup",
+    "lut_fp64": "FP64 lookup",
+    "lut_prefix": "Prefix lookup",
+    "direct_bits": "Direct FP64 bits",
+    "decomposed": "Decomposed bits",
+    "baseline": "Raw FP64",
+}
+STRATEGY_FAMILY_COLORS = {
+    "generic": "#6C757D",
+    "branchless": "#0072B2",
+    "lut_fp32": "#D55E00",
+    "lut_fp64": "#CC79A7",
+    "lut_prefix": "#009E73",
+    "direct_bits": "#E69F00",
+    "decomposed": "#56B4E9",
+    "baseline": "#20252A",
+}
 BIT_MARKERS = {8: "o", 16: "s", 32: "^", 64: "D"}
 FORMAT_MARKERS = ("o", "s", "^", "D", "P", "X")
 SAME_BIT_COLORS = ("#0072B2", "#D55E00", "#009E73", "#CC79A7", "#E69F00", "#56B4E9")
@@ -137,6 +170,7 @@ PAGES = (
     ("bottlenecks.html", "Bottlenecks"),
     ("accuracy.html", "Accuracy"),
     ("methodology.html", "Methodology"),
+    ("e2e3-strategies.html", "E2M5, E3M4 strategies"),
 )
 
 ACCURACY_PAGES = (
@@ -162,7 +196,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=Path("results/008_storage_performance/report"),
+        default=Path("results/report"),
     )
     parser.add_argument(
         "--accuracy-dir",
@@ -179,6 +213,16 @@ def parse_args() -> argparse.Namespace:
         "--accuracy-results-root",
         type=Path,
         default=Path("results/007_gpu_accuracy_simulation"),
+    )
+    parser.add_argument(
+        "--strategy-run-dir",
+        type=Path,
+        help="E2M5/E3M4 strategy run; default: newest complete run",
+    )
+    parser.add_argument(
+        "--strategy-results-root",
+        type=Path,
+        default=Path("results/011_e2e3_strategy_performance"),
     )
     return parser.parse_args()
 
@@ -216,6 +260,18 @@ def newest_accuracy_run(root: Path) -> Path:
     return candidates[-1]
 
 
+def newest_strategy_run(root: Path) -> Path:
+    candidates = sorted(
+        path
+        for path in root.glob("run_*")
+        if (path / "timing_summary.csv").is_file()
+        and (path / "strategy_inventory.csv").is_file()
+    )
+    if not candidates:
+        raise SystemExit(f"no complete E2M5/E3M4 strategy run below {root}")
+    return candidates[-1]
+
+
 def format_family(name: str) -> str:
     if name == "fp64_e11m52":
         return "baseline"
@@ -228,6 +284,69 @@ def format_family(name: str) -> str:
 
 def label(name: str) -> str:
     return FORMAT_LABELS[name]
+
+
+def strategy_family(name: str) -> str:
+    if name == "raw_pointer_x1":
+        return "baseline"
+    if name.startswith("generic_fp64"):
+        return "generic"
+    if name.startswith("branchless_fp32"):
+        return "branchless"
+    if name.startswith("lut_fp32"):
+        return "lut_fp32"
+    if name.startswith("lut_fp64"):
+        return "lut_fp64"
+    if name.startswith("lut_prefix"):
+        return "lut_prefix"
+    if name.startswith("direct_fp64_bits"):
+        return "direct_bits"
+    if name.startswith("decomposed_bits"):
+        return "decomposed"
+    raise ValueError(f"unknown E2M5/E3M4 strategy: {name}")
+
+
+def strategy_abbreviation(name: str) -> str:
+    if name == "raw_pointer_x1":
+        return "F64"
+    lanes = name.rsplit("_x", 1)[-1]
+    if name.startswith("generic_fp64"):
+        base = "GEN"
+    elif name.startswith("branchless_fp32"):
+        base = "BR32"
+    elif name.startswith("lut_fp32_shared"):
+        base = "L32-S"
+    elif name.startswith("lut_fp32_global_pipelined"):
+        base = "L32-G-P"
+    elif name.startswith("lut_fp32_global"):
+        base = "L32-G"
+    elif name.startswith("lut_fp64_shared"):
+        base = "L64-S"
+    elif name.startswith("lut_fp64_global"):
+        base = "L64-G"
+    elif name.startswith("lut_prefix_shared"):
+        base = "LP-S"
+    elif name.startswith("lut_prefix_global_pipelined"):
+        base = "LP-G-P"
+    elif name.startswith("lut_prefix_global"):
+        base = "LP-G"
+    elif name.startswith("direct_fp64_bits"):
+        base = "DB64"
+    elif name.startswith("decomposed_bits"):
+        base = "DEC"
+    else:
+        raise ValueError(f"unknown E2M5/E3M4 strategy: {name}")
+    return f"{base} ×{lanes}"
+
+
+def strategy_sort_key(name: str) -> tuple[int, int, str]:
+    family = strategy_family(name)
+    lane_rank = (
+        -1
+        if family == "baseline"
+        else STRATEGY_LANE_ORDER.index(int(name.rsplit("_x", 1)[-1]))
+    )
+    return STRATEGY_FAMILY_ORDER.index(family), lane_rank, name
 
 
 def is_row(
@@ -297,6 +416,18 @@ def save_figure(fig: plt.Figure, path: Path) -> Path:
         metadata={"Date": None, "Creator": "accessor_universal_test"},
     )
     plt.close(fig)
+    return path
+
+
+def strip_trailing_whitespace(path: Path) -> Path:
+    """Normalize Matplotlib SVG whitespace for stable generated diffs."""
+    text = path.read_text(encoding="utf-8")
+    trailing_newline = "\n" if text.endswith("\n") else ""
+    path.write_text(
+        "\n".join(line.rstrip() for line in text.splitlines())
+        + trailing_newline,
+        encoding="utf-8",
+    )
     return path
 
 
@@ -792,6 +923,382 @@ def write_interactive_chart(
         encoding="utf-8",
     )
     return output_path
+
+
+def strategy_series_gid(
+    format_name: str,
+    distribution: str,
+    component: str,
+    strategy: str,
+) -> str:
+    return (
+        f"strategy-series--{format_name}--{distribution}--"
+        f"{component}--{strategy}"
+    )
+
+
+def plot_e2e3_strategy_kernel_time(
+    rows: Sequence[dict[str, str]], format_name: str, path: Path
+) -> Path:
+    format_strategies = sorted(
+        {row["strategy"] for row in rows if row["format"] == format_name},
+        key=strategy_sort_key,
+    )
+    if len(format_strategies) != 27:
+        raise ValueError(
+            f"expected 27 {format_name} strategies, found {len(format_strategies)}"
+        )
+    strategies = (*format_strategies, "raw_pointer_x1")
+    fig, axes = plt.subplots(1, 2, figsize=(21.0, 8.4))
+    for axis, component in zip(axes, ("dot", "gemv")):
+        for distribution in ("uniform_0_1", "normal_0_1"):
+            for strategy in strategies:
+                source_format = "fp64" if strategy == "raw_pointer_x1" else format_name
+                current = sorted(
+                    (
+                        row
+                        for row in rows
+                        if row["format"] == source_format
+                        and row["strategy"] == strategy
+                        and row["component"] == component
+                        and row["distribution"] == distribution
+                    ),
+                    key=lambda row: int(row["n"]),
+                )
+                if len(current) != 5:
+                    raise ValueError(
+                        f"incomplete {format_name}/{strategy}/{component}/"
+                        f"{distribution} series"
+                    )
+                family = strategy_family(strategy)
+                is_baseline = family == "baseline"
+                lanes = 1 if is_baseline else int(current[0]["lanes"])
+                if is_baseline:
+                    marker = "D"
+                elif current[0]["table_location"] == "shared":
+                    marker = "s"
+                elif current[0]["pipelined"] == "1":
+                    marker = "^"
+                elif family == "direct_bits":
+                    marker = "P"
+                elif family == "decomposed":
+                    marker = "X"
+                else:
+                    marker = "o"
+                line = axis.plot(
+                    [int(row["n"]) for row in current],
+                    [number(row, "median_time_ms") for row in current],
+                    color=STRATEGY_FAMILY_COLORS[family],
+                    linestyle="-" if is_baseline else STRATEGY_LANE_STYLES[lanes],
+                    linewidth=2.4 if is_baseline else 1.45,
+                    marker=marker,
+                    markersize=4.4 if is_baseline else 3.6,
+                    markerfacecolor=(
+                        STRATEGY_FAMILY_COLORS[family]
+                        if is_baseline or current[0]["table_location"] == "shared"
+                        else "white"
+                    ),
+                    alpha=1.0 if is_baseline else 0.82,
+                )[0]
+                line.set_gid(
+                    strategy_series_gid(
+                        format_name, distribution, component, strategy
+                    )
+                )
+        axis.set_xscale("log", base=2)
+        axis.set_yscale("log")
+        axis.set_title(component.upper(), fontsize=13)
+        axis.set_xlabel("Reduction length N")
+        axis.set_ylabel("Complete kernel time (ms)")
+        format_axis_labels(axis)
+    fig.suptitle(
+        f"{label(format_name)} decoder strategies and raw FP64", y=0.995, fontsize=17
+    )
+    fig.tight_layout(rect=(0, 0, 1, 0.94))
+    return save_figure(fig, path)
+
+
+def strategy_interactive_document(
+    svg_path: Path,
+    *,
+    format_name: str,
+    strategies: Sequence[str],
+) -> str:
+    svg = svg_path.read_text(encoding="utf-8")
+    svg = svg[svg.index("<svg ") :]
+    chart_title = f"{label(format_name)} strategy performance"
+    chart_description = (
+        f"Complete DOT and GEMV time versus N for all {label(format_name)} "
+        "decoder strategies and a raw FP64 baseline. Lower is faster."
+    )
+    svg = svg.replace(
+        "<svg ",
+        '<svg class="strategy-chart" role="img" '
+        'aria-labelledby="strategy-chart-title strategy-chart-description" ',
+        1,
+    )
+    svg = svg.replace(
+        ">",
+        f'><title id="strategy-chart-title">{html.escape(chart_title)}</title>'
+        f'<desc id="strategy-chart-description">'
+        f"{html.escape(chart_description)}</desc>",
+        1,
+    )
+    pattern = re.compile(
+        rf'<g id="strategy-series--{format_name}--'
+        r'(?P<distribution>uniform_0_1|normal_0_1)--'
+        r'(?P<component>dot|gemv)--(?P<strategy>[a-z0-9_]+)">'
+    )
+
+    def series_attributes(match: re.Match[str]) -> str:
+        strategy = match.group("strategy")
+        family = strategy_family(strategy)
+        lanes = "baseline" if family == "baseline" else strategy.rsplit("_x", 1)[-1]
+        full_label = f"{match.group('component').upper()}: {strategy_abbreviation(strategy)}"
+        return (
+            f'<g id="{match.group(0).split(chr(34))[1]}" data-series="true" '
+            f'data-distribution="{match.group("distribution")}" '
+            f'data-component="{match.group("component")}" '
+            f'data-strategy="{strategy}" data-family="{family}" '
+            f'data-lanes="{lanes}"><title>{html.escape(full_label)}</title>'
+        )
+
+    svg, series_count = pattern.subn(series_attributes, svg)
+    expected_series = 2 * 2 * len(strategies)
+    if series_count != expected_series:
+        raise ValueError(
+            f"expected {expected_series} strategy series in {svg_path}, "
+            f"found {series_count}"
+        )
+
+    distribution_options = "".join(
+        f"""<label class="filter-option">
+<input type="radio" name="distribution" value="{distribution}" {'checked' if distribution == 'normal_0_1' else ''}>
+<span>{text}</span>
+</label>"""
+        for distribution, text in ACCURACY_DISTRIBUTIONS
+    )
+    lane_options = "".join(
+        f"""<label class="filter-option lane-x{lane}">
+<input type="checkbox" data-filter="lanes" value="{lane}" checked>
+<span class="lane-sample" aria-hidden="true"></span><span>×{lane}</span>
+</label>"""
+        for lane in STRATEGY_LANE_ORDER
+    )
+    family_options = "".join(
+        f"""<label class="filter-option">
+<input type="checkbox" data-filter="family" value="{family}" checked>
+<span class="family-swatch" style="--series-color: {STRATEGY_FAMILY_COLORS[family]}" aria-hidden="true"></span>
+<span>{html.escape(STRATEGY_FAMILY_LABELS[family])}</span>
+</label>"""
+        for family in STRATEGY_FAMILY_ORDER
+    )
+    strategy_options = "".join(
+        f"""<label class="filter-option strategy-option">
+<input type="checkbox" data-filter="strategy" value="{strategy}" checked>
+<span class="family-swatch" style="--series-color: {STRATEGY_FAMILY_COLORS[strategy_family(strategy)]}" aria-hidden="true"></span>
+<code>{html.escape(strategy_abbreviation(strategy))}</code>
+</label>"""
+        for strategy in strategies
+    )
+
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{html.escape(chart_title)}</title>
+<style>
+:root {{ color-scheme: light; --fg: #1f252b; --muted: #5d6872; --focus: #075f9a; --border: #d8dee4; }}
+* {{ box-sizing: border-box; }}
+body {{ margin: 0; background: #fff; color: var(--fg); font: 15px/1.4 system-ui, sans-serif; }}
+.chart-root {{ padding: 14px 16px 2px; }}
+.filters {{ display: grid; gap: 10px; margin-bottom: 8px; }}
+fieldset {{ border: 0; margin: 0; padding: 0; }}
+legend {{ color: var(--muted); font-size: 0.86rem; font-weight: 500; margin-bottom: 4px; }}
+.filter-options {{ display: flex; flex-wrap: wrap; gap: 5px 14px; }}
+.filter-option {{ align-items: center; cursor: pointer; display: inline-flex; gap: 6px; min-height: 28px; white-space: nowrap; }}
+.filter-option input {{ accent-color: var(--focus); height: 16px; margin: 0; width: 16px; }}
+.filter-option:has(input:focus-visible) {{ outline: 2px solid var(--focus); outline-offset: 2px; }}
+.family-swatch {{ background: var(--series-color); border-radius: 50%; height: 9px; width: 18px; }}
+.lane-sample {{ border-top: 2px solid #4c5661; height: 0; width: 22px; }}
+.lane-x1 .lane-sample {{ border-top-style: dotted; }}
+.lane-x2 .lane-sample {{ border-top-style: dashed; }}
+.lane-x4 .lane-sample {{ border-top-style: solid; }}
+.lane-x8 .lane-sample {{ border-top-style: double; border-top-width: 3px; }}
+details {{ border-top: 1px solid var(--border); padding-top: 7px; }}
+summary {{ cursor: pointer; color: var(--muted); }}
+.strategy-option code {{ font-size: 0.88rem; }}
+.visible-status {{ color: var(--muted); margin: 2px 0 4px; }}
+.chart-wrap {{ width: 100%; }}
+.strategy-chart {{ display: block; height: auto; max-width: none; width: 100%; }}
+.strategy-chart [data-series] {{ transition: opacity 120ms ease; }}
+.strategy-chart .series-hidden {{ display: none; }}
+@media (prefers-reduced-motion: reduce) {{ .strategy-chart [data-series] {{ transition: none; }} }}
+@media (max-width: 620px) {{ .chart-root {{ padding-inline: 8px; }} .filter-options {{ column-gap: 10px; }} }}
+</style>
+</head>
+<body>
+<main id="interactive-{format_name}-strategies" class="chart-root">
+<section class="filters" aria-label="Chart filters">
+<fieldset><legend>Input distribution</legend><div class="filter-options">{distribution_options}</div></fieldset>
+<fieldset><legend>Packed load width — fastest first on large problems</legend><div class="filter-options">{lane_options}</div></fieldset>
+<fieldset><legend>Decoder family / reference — fastest first on large problems</legend><div class="filter-options">{family_options}</div></fieldset>
+<details><summary>Individual strategy toggles</summary><div class="filter-options">{strategy_options}</div></details>
+</section>
+<p id="visible-status" class="visible-status" aria-live="polite"></p>
+<div class="chart-wrap">{svg}</div>
+</main>
+<script>
+const root = document.getElementById('interactive-{format_name}-strategies');
+const status = root.querySelector('#visible-status');
+const controls = [...root.querySelectorAll('input')];
+const series = [...root.querySelectorAll('[data-series]')];
+
+function checked(kind, value) {{
+  const input = controls.find(control => control.dataset.filter === kind && control.value === value);
+  return input ? input.checked : true;
+}}
+
+function reportHeight() {{
+  if (window.parent !== window) {{
+    const height = Math.ceil(root.getBoundingClientRect().bottom + 2);
+    window.parent.postMessage({{ type: 'performance-chart-height', height }}, '*');
+  }}
+}}
+
+function updateSeries() {{
+  const distribution = root.querySelector('input[name="distribution"]:checked').value;
+  let visible = 0;
+  for (const group of series) {{
+    const widthEnabled = group.dataset.lanes === 'baseline' || checked('lanes', group.dataset.lanes);
+    const show = group.dataset.distribution === distribution
+      && widthEnabled
+      && checked('family', group.dataset.family)
+      && checked('strategy', group.dataset.strategy);
+    group.classList.toggle('series-hidden', !show);
+    group.setAttribute('aria-hidden', String(!show));
+    if (show) visible += 1;
+  }}
+  status.textContent = `${{visible / 2}} of ${{series.length / 4}} lines visible per kernel · lower is faster`;
+  requestAnimationFrame(reportHeight);
+}}
+
+root.addEventListener('change', updateSeries);
+window.addEventListener('message', event => {{
+  if (event.data?.type === 'request-performance-chart-height') reportHeight();
+}});
+window.addEventListener('load', updateSeries);
+if ('ResizeObserver' in window) new ResizeObserver(reportHeight).observe(root);
+</script>
+</body>
+</html>
+"""
+
+
+def write_strategy_interactive_chart(
+    svg_path: Path,
+    output_path: Path,
+    *,
+    format_name: str,
+    strategies: Sequence[str],
+) -> Path:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(
+        strategy_interactive_document(
+            svg_path,
+            format_name=format_name,
+            strategies=strategies,
+        ),
+        encoding="utf-8",
+    )
+    return output_path
+
+
+def strategy_top_picks(rows: Sequence[dict[str, str]]) -> str:
+    body = []
+    for format_name in ("e2m5", "e3m4"):
+        for component in ("dot", "gemv"):
+            case_rows = [
+                row
+                for row in rows
+                if row["format"] == format_name
+                and row["component"] == component
+                and row["strategy"] != "raw_pointer_x1"
+            ]
+            sizes = sorted({int(row["n"]) for row in case_rows})
+            large_sizes = set(sizes[-2:])
+            speedups: dict[str, list[float]] = defaultdict(list)
+            for row in case_rows:
+                if int(row["n"]) in large_sizes:
+                    speedups[row["strategy"]].append(number(row, "speedup_vs_fp64"))
+            aggregate_strategy, aggregate_speedup = max(
+                (
+                    strategy,
+                    math.exp(sum(math.log(value) for value in values) / len(values)),
+                )
+                for strategy, values in speedups.items()
+            )
+
+            largest_normal_rows = [
+                row
+                for row in case_rows
+                if row["distribution"] == "normal_0_1"
+                and int(row["n"]) == sizes[-1]
+            ]
+            largest_normal = max(
+                largest_normal_rows,
+                key=lambda row: number(row, "speedup_vs_fp64"),
+            )
+            normal_strategy = largest_normal["strategy"]
+            normal_label = strategy_abbreviation(normal_strategy)
+            if normal_strategy == aggregate_strategy:
+                normal_label += " (same)"
+
+            body.append(
+                "<tr>"
+                f"<th>{format_name.upper()}</th>"
+                f"<td>{component.upper()}</td>"
+                f"<td><code>{html.escape(strategy_abbreviation(aggregate_strategy))}</code></td>"
+                f"<td>{aggregate_speedup:.2f}×</td>"
+                f"<td><code>{html.escape(normal_label)}</code></td>"
+                "</tr>"
+            )
+
+    return f"""<section class="text-section">
+<h2>Measured top picks</h2>
+<p>The aggregate pick maximizes geometric-mean speedup over raw FP64 across both distributions and the two largest measured N values. The final column shows whether the winner changes for the single largest N(0,1) case.</p>
+<div class="table-wrap"><table class="strategy-table"><thead><tr><th>Format</th><th>Kernel</th><th>Aggregate pick</th><th>Speedup vs F64</th><th>Largest N(0,1) pick</th></tr></thead><tbody>{''.join(body)}</tbody></table></div>
+</section>"""
+
+
+def strategy_glossary() -> str:
+    rows = (
+        ("F64", "Raw double pointers; no storage decoding."),
+        ("GEN", "Generic bitfield codec producing FP64 directly."),
+        ("BR32", "Branch-free bit/arithmetic decode to FP32, then FP32 → FP64 conversion."),
+        ("L32-G", "Global/read-only 2^8-entry FP32 table lookup, then FP32 → FP64 conversion."),
+        ("L32-S", "The same FP32 table staged once per block in shared memory."),
+        ("L32-G-P", "Global FP32 lookup with explicit next-packet software prefetching."),
+        ("L64-G", "Global/read-only 2^8-entry FP64 table lookup; no numeric conversion."),
+        ("L64-S", "The same FP64 table staged once per block in shared memory."),
+        ("LP-G", "Global exact FP64-prefix lookup, followed by a shift into the FP64 bit layout."),
+        ("LP-S", "The same exact prefix table staged once per block in shared memory."),
+        ("LP-G-P", "Global prefix lookup with explicit next-packet software prefetching."),
+        ("DB64", "Construct sign, exponent, and fraction directly in the FP64 bit layout; no table."),
+        ("DEC", "Lookup a sign/exponent FP64 prefix, then insert fraction bits and handle subnormals."),
+        ("×1/×2/×4/×8", "Number of adjacent 8-bit codes read and decoded per packed source load."),
+    )
+    body = "".join(
+        f"<tr><th><code>{html.escape(abbreviation)}</code></th>"
+        f"<td>{html.escape(description)}</td></tr>"
+        for abbreviation, description in rows
+    )
+    return f"""<section class="text-section">
+<h2>Strategy abbreviations</h2>
+<p>G means global/read-only lookup, S means shared-memory lookup, and P means explicit software pipelining. E3M4 prefix entries are exact 16-bit E11M4 prefixes; E2M5 needs 17 meaningful E11M5 prefix bits and stores each in 32 bits.</p>
+<div class="table-wrap"><table class="strategy-table"><tbody>{body}</tbody></table></div>
+</section>"""
 
 
 def _accuracy_rows(
@@ -1552,6 +2059,7 @@ def page_document(
     body: str,
     performance_run_name: str,
     accuracy_run_name: str,
+    strategy_run_name: str,
 ) -> str:
     performance_frame_script = ""
     if "data-performance-chart" in body:
@@ -1586,7 +2094,7 @@ for (const frame of document.querySelectorAll('iframe[data-performance-chart]'))
 <p class="lead">{html.escape(intro)}</p>
 {body}
 </main>
-<footer><div class="shell">Performance: <code>{html.escape(performance_run_name)}</code> · Accuracy: <code>{html.escape(accuracy_run_name)}</code></div></footer>{performance_frame_script}
+<footer><div class="shell">Performance: <code>{html.escape(performance_run_name)}</code> · Accuracy: <code>{html.escape(accuracy_run_name)}</code> · E2/E3 strategies: <code>{html.escape(strategy_run_name)}</code></div></footer>{performance_frame_script}
 </body>
 </html>
 """
@@ -1648,9 +2156,11 @@ def write_report(
     run_dir: Path,
     accuracy_dir: Path,
     accuracy_run_dir: Path,
+    strategy_run_dir: Path,
     rows: Sequence[dict[str, str]],
     profile: Sequence[dict[str, str]],
     accuracy_rows: Sequence[dict[str, str]],
+    strategy_rows: Sequence[dict[str, str]],
 ) -> None:
     dot_name, dot_time = fastest(rows, "dot")
     gemv_name, gemv_time = fastest(rows, "gemv")
@@ -1661,6 +2171,9 @@ def write_report(
     ).as_posix()
     accuracy_raw_prefix = Path(
         os.path.relpath(accuracy_run_dir, output_dir)
+    ).as_posix()
+    strategy_raw_prefix = Path(
+        os.path.relpath(strategy_run_dir, output_dir)
     ).as_posix()
 
     def accuracy_asset(name: str) -> str:
@@ -1686,6 +2199,7 @@ def write_report(
             ("roofline.html", "Roofline", "Useful work relative to the measured HBM ceiling."),
             ("conversion.html", "Conversion", "Register decode, streaming decode, and data dependence."),
             ("bottlenecks.html", "Bottlenecks", "Nsight resource pressure, registers, and occupancy."),
+            ("e2e3-strategies.html", "E2M5, E3M4 strategies", "Every decoder strategy and raw FP64 versus N."),
         )
     )
     accuracy_cards = "".join(
@@ -2056,6 +2570,31 @@ def write_report(
 <li><a href="{accuracy_asset_prefix}/scalar_predictions.csv">Analytical scalar predictions</a></li>
 </ul></section>""",
         ),
+        "e2e3-strategies.html": (
+            "E2M5, E3M4 strategies",
+            "Complete DOT and GEMV time for every decoder strategy, with a raw FP64 reference in both charts.",
+            strategy_top_picks(strategy_rows)
+            + strategy_glossary()
+            + interactive_graph_section(
+                "E2M5 strategies",
+                "All 27 E2M5 decoder strategies and raw FP64 are plotted against N. Distribution, packed width, family, and individual strategy controls apply to DOT and GEMV together.",
+                "interactive/e2m5-strategies.html",
+                "Interactive E2M5 and raw FP64 DOT and GEMV timing chart",
+                "N(0,1) is selected initially; switch to U(0,1) to expose data-dependent lookup behavior.",
+            )
+            + interactive_graph_section(
+                "E3M4 strategies",
+                "All 27 E3M4 decoder strategies and raw FP64 use the same axes and controls.",
+                "interactive/e3m4-strategies.html",
+                "Interactive E3M4 and raw FP64 DOT and GEMV timing chart",
+                "The F64 line is the same raw-pointer FP64 baseline used for the E2M5 chart.",
+            )
+            + f"""<section class="text-section"><h2>Raw data</h2><ul>
+<li><a href="{strategy_raw_prefix}/timing_samples.csv">Every strategy timing sample</a></li>
+<li><a href="{strategy_raw_prefix}/timing_summary.csv">Strategy timing summary</a></li>
+<li><a href="{strategy_raw_prefix}/case_winners.csv">Fastest strategy in each case</a></li>
+</ul></section>""",
+        ),
     }
 
     for filename, (title, intro, body) in pages.items():
@@ -2066,6 +2605,7 @@ def write_report(
             body=body,
             performance_run_name=run_dir.name,
             accuracy_run_name=accuracy_run_dir.name,
+            strategy_run_name=strategy_run_dir.name,
         )
         (output_dir / filename).write_text(document, encoding="utf-8")
 
@@ -2114,6 +2654,10 @@ figcaption { color: var(--muted); margin-top: 8px; }
 .report-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 .report-link { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--fg); padding: 15px; text-decoration: none; display: grid; gap: 4px; }
 .report-link:hover, .report-link:focus-visible { border-color: var(--link); }
+.table-wrap { overflow-x: auto; }
+.strategy-table { border-collapse: collapse; width: min(100%, 980px); }
+.strategy-table th, .strategy-table td { border-bottom: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
+.strategy-table th { white-space: nowrap; width: 120px; }
 a { color: var(--link); }
 li { margin: 5px 0; }
 footer { border-top: 1px solid var(--border); color: var(--muted); }
@@ -2155,6 +2699,30 @@ def validate_accuracy_summary(rows: Sequence[dict[str, str]]) -> None:
         raise SystemExit("total_x4 accuracy data is missing a distribution")
 
 
+def validate_strategy_summary(rows: Sequence[dict[str, str]]) -> None:
+    if {row["format"] for row in rows} != {"fp64", "e2m5", "e3m4"}:
+        raise SystemExit("strategy timing data is missing fp64, e2m5, or e3m4")
+    if {row["component"] for row in rows} != {"dot", "gemv"}:
+        raise SystemExit("strategy timing data is missing DOT or GEMV")
+    if {row["distribution"] for row in rows} != {
+        distribution for distribution, _ in ACCURACY_DISTRIBUTIONS
+    }:
+        raise SystemExit("strategy timing data is missing a distribution")
+    if {row["strategy"] for row in rows if row["format"] == "fp64"} != {
+        "raw_pointer_x1"
+    }:
+        raise SystemExit("strategy timing data has an invalid FP64 baseline")
+    for format_name in ("e2m5", "e3m4"):
+        strategies = {row["strategy"] for row in rows if row["format"] == format_name}
+        if len(strategies) != 27:
+            raise SystemExit(
+                f"strategy timing data contains {len(strategies)} "
+                f"{format_name} strategies instead of 27"
+            )
+        for strategy in strategies:
+            strategy_abbreviation(strategy)
+
+
 def main() -> None:
     args = parse_args()
     results_root = args.results_root.resolve()
@@ -2165,6 +2733,12 @@ def main() -> None:
         args.accuracy_run_dir.resolve()
         if args.accuracy_run_dir
         else newest_accuracy_run(accuracy_results_root)
+    )
+    strategy_results_root = args.strategy_results_root.resolve()
+    strategy_run_dir = (
+        args.strategy_run_dir.resolve()
+        if args.strategy_run_dir
+        else newest_strategy_run(strategy_results_root)
     )
     output_dir = args.output_dir.resolve()
     assets = output_dir / "assets"
@@ -2193,8 +2767,10 @@ def main() -> None:
     profile = read_csv(run_dir / "profile_operations.csv")
     accuracy_rows = read_csv(accuracy_dir / "simulation_model_comparison.csv")
     accuracy_summary_rows = read_csv(accuracy_run_dir / "simulation_summary.csv")
+    strategy_rows = read_csv(strategy_run_dir / "timing_summary.csv")
     validate_inputs(rows, profile)
     validate_accuracy_summary(accuracy_summary_rows)
+    validate_strategy_summary(strategy_rows)
     if {row["format"] for row in accuracy_rows} != set(FORMAT_ORDER):
         raise SystemExit("accuracy data does not contain the expected 17 formats")
     required_packed_fields = {"comparison_metric", "scalar_throughput", "packed_throughput"}
@@ -2260,6 +2836,37 @@ def main() -> None:
             include_bit_filters=True,
         )
     )
+    strategy_names = {
+        format_name: tuple(
+            sorted(
+                {
+                    row["strategy"]
+                    for row in strategy_rows
+                    if row["format"] == format_name
+                },
+                key=strategy_sort_key,
+            )
+        )
+        + ("raw_pointer_x1",)
+        for format_name in ("e2m5", "e3m4")
+    }
+    for format_name in ("e2m5", "e3m4"):
+        strategy_svg = strip_trailing_whitespace(
+            plot_e2e3_strategy_kernel_time(
+                strategy_rows,
+                format_name,
+                assets / f"{format_name}-strategies.svg",
+            )
+        )
+        figures.append(strategy_svg)
+        interactive_pages.append(
+            write_strategy_interactive_chart(
+                strategy_svg,
+                interactive_dir / f"{format_name}-strategies.html",
+                format_name=format_name,
+                strategies=strategy_names[format_name],
+            )
+        )
     figures.append(
         plot_all_format_accuracy(
             accuracy_summary_rows, assets / "all-format-accuracy.svg"
@@ -2288,9 +2895,11 @@ def main() -> None:
         run_dir,
         accuracy_dir,
         accuracy_run_dir,
+        strategy_run_dir,
         rows,
         profile,
         accuracy_rows,
+        strategy_rows,
     )
     generated_pages = [
         "index.html",
@@ -2302,15 +2911,18 @@ def main() -> None:
         "bottlenecks.html",
         *(filename for filename, _ in ACCURACY_PAGES),
         "methodology.html",
+        "e2e3-strategies.html",
     ]
     manifest = [
         f"performance_run={run_dir.name}",
         f"accuracy_run={accuracy_run_dir.name}",
+        f"strategy_run={strategy_run_dir.name}",
         f"accuracy_model={accuracy_dir.name}",
         f"timing_rows={len(rows)}",
         f"profile_operations={len(profile)}",
         f"accuracy_comparisons={len(accuracy_rows)}",
         f"accuracy_summary_rows={len(accuracy_summary_rows)}",
+        f"strategy_timing_rows={len(strategy_rows)}",
         f"measured_hbm_gb_per_s={memory_ceiling(profile):.6f}",
         "packing_normalization=logical_throughput",
         "pages=" + ",".join(generated_pages),

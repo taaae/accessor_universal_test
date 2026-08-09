@@ -1,8 +1,9 @@
 # 011: E2M5/E3M4 decoder strategy performance
 
 This experiment measures complete FP64-arithmetic DOT and GEMV kernel time for
-every decoder strategy introduced in experiment 010. Every case includes 55
-variants: raw FP64 storage, 27 E2M5 strategies, and 27 E3M4 strategies.
+every decoder strategy introduced in experiment 010. The expanded benchmark
+contains 85 variants per case: raw FP64 storage, 42 E2M5 strategies, and 42
+E3M4 strategies.
 
 The default sweep uses deterministic U(0,1) and N(0,1) inputs:
 
