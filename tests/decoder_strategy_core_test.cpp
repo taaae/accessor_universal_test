@@ -154,6 +154,28 @@ void test_e2m13() {
   }
 }
 
+void test_e3m12() {
+  using layout = aut::decoder::e3m12_layout;
+  for (std::uint32_t raw = 0; raw < 65536; ++raw) {
+    const auto expected = aut::storage::decode<aut::storage::e3m12>(
+        static_cast<std::uint16_t>(raw));
+    const auto branchy = aut::decoder::words_to_double(
+        aut::decoder::decode_words_branchy<layout>(raw));
+    const auto masked = aut::decoder::words_to_double(
+        aut::decoder::decode_words_masked<layout>(raw));
+    const auto fp32 = aut::decoder::decode_via_fp32<layout>(raw);
+    if (std::isnan(expected)) {
+      assert(std::isnan(branchy));
+      assert(std::isnan(masked));
+      assert(std::isnan(fp32));
+    } else {
+      assert(bits(branchy) == bits(expected));
+      assert(bits(masked) == bits(expected));
+      assert(bits(fp32) == bits(expected));
+    }
+  }
+}
+
 } // namespace
 
 int main() {
@@ -162,5 +184,6 @@ int main() {
   test_fp8_e5m2();
   test_e1m14();
   test_e2m13();
+  test_e3m12();
   std::cout << "decoder strategy core tests passed\n";
 }

@@ -439,6 +439,49 @@ void run_e2m13_suite(std::ofstream *csv) {
   RUN(e2m13, context, prefix_high_lut, 8, shared, "prefix_shared_x8");
 }
 
+void run_e3m12_suite(std::ofstream *csv) {
+  std::cout << "E3M12 exhaustive strategy validation\n";
+  smoke_context<storage::e3m12> context;
+  RUN(e3m12, context, generic, 1, global_read_only, "generic_x1");
+  RUN(e3m12, context, generic, 4, global_read_only, "generic_x4");
+  RUN(e3m12, context, generic, 8, global_read_only, "generic_x8");
+  RUN(e3m12, context, direct_words_branchy, 1, global_read_only,
+      "word_branchy_x1");
+  RUN(e3m12, context, direct_words_branchy, 4, global_read_only,
+      "word_branchy_x4");
+  RUN(e3m12, context, direct_words_branchy, 8, global_read_only,
+      "word_branchy_x8");
+  RUN(e3m12, context, direct_words_masked, 1, global_read_only,
+      "word_masked_x1");
+  RUN(e3m12, context, direct_words_masked, 4, global_read_only,
+      "word_masked_x4");
+  RUN(e3m12, context, direct_words_masked, 8, global_read_only,
+      "word_masked_x8");
+  RUN(e3m12, context, fp32_bits, 1, global_read_only, "fp32_bits_x1");
+  RUN(e3m12, context, fp32_bits, 4, global_read_only, "fp32_bits_x4");
+  RUN(e3m12, context, fp32_bits, 8, global_read_only, "fp32_bits_x8");
+  RUN(e3m12, context, full_high_lut, 1, global_read_only,
+      "full_high_l2_x1");
+  RUN(e3m12, context, full_high_lut, 4, global_read_only,
+      "full_high_l2_x4");
+  RUN(e3m12, context, full_high_lut, 8, global_read_only,
+      "full_high_l2_x8");
+  RUN(e3m12, context, subnormal_high_lut, 4, global_read_only,
+      "subnormal_global_x4");
+  RUN(e3m12, context, subnormal_high_lut, 8, global_read_only,
+      "subnormal_global_x8");
+  RUN(e3m12, context, subnormal_high_lut, 4, shared,
+      "subnormal_shared_x4");
+  RUN(e3m12, context, subnormal_high_lut, 8, shared,
+      "subnormal_shared_x8");
+  RUN(e3m12, context, prefix_high_lut, 4, global_read_only,
+      "prefix_global_x4");
+  RUN(e3m12, context, prefix_high_lut, 8, global_read_only,
+      "prefix_global_x8");
+  RUN(e3m12, context, prefix_high_lut, 4, shared, "prefix_shared_x4");
+  RUN(e3m12, context, prefix_high_lut, 8, shared, "prefix_shared_x8");
+}
+
 #undef RUN
 
 } // namespace
@@ -476,6 +519,7 @@ int main(int argc, char **argv) {
     run_fp8_e5m2_suite(csv_ptr);
     run_e1m14_suite(csv_ptr);
     run_e2m13_suite(csv_ptr);
+    run_e3m12_suite(csv_ptr);
     std::cout << "All registered strategies passed.\n";
   } catch (const std::exception &error) {
     std::cerr << "error: " << error.what() << '\n';
