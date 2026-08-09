@@ -1,0 +1,16 @@
+E2M5/E3M4 decoder strategy smoke test
+GPU: NVIDIA H200 NVL (sm_90)
+All 256 encodings passed every decoder strategy.
+uniform_0_1
+  e2m5 DOT N=2^16 complete
+  e2m5 GEMV N=2^10 complete
+  e3m4 DOT N=2^16 complete
+  e3m4 GEMV N=2^10 complete
+normal_0_1
+  e2m5 DOT N=2^16 complete
+  e2m5 GEMV N=2^10 complete
+  e3m4 DOT N=2^16 complete
+  e3m4 GEMV N=2^10 complete
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/012_e2e3_strategy_expansion_smoke/run_20260809T110454Z/decoder_validation.csv
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/012_e2e3_strategy_expansion_smoke/run_20260809T110454Z/kernel_validation.csv
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/012_e2e3_strategy_expansion_smoke/run_20260809T110454Z/strategy_smoke_samples.csv

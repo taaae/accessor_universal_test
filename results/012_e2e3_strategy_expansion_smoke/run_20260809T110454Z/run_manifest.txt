@@ -1,0 +1,15 @@
+dot_powers=16
+gemv_powers=10
+gemv_rows=256
+distributions=uniform_0_1,normal_0_1
+formats=e2m5,e3m4
+strategies_per_format=42
+new_strategies_per_format=15
+load_widths=x1,x2,x4,x8
+warmup=2
+samples=2
+target_sample_ms=1
+base_seed=2611923443488327891
+timing=smoke_only_not_for_performance_conclusions
+finished_utc=2026-08-09T11:05:16Z
+wall_time_seconds=22
