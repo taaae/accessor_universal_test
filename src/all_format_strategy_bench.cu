@@ -327,7 +327,8 @@ __global__ void encode_values_kernel(const double *source,
   if constexpr (Format::total_bits < 8) {
     constexpr auto values_per_byte = 8 / Format::total_bits;
     constexpr auto raw_mask = (1u << Format::total_bits) - 1u;
-    const auto byte_count = fs::packed_storage_count<Format>(count);
+    const auto byte_count =
+        (count * static_cast<std::size_t>(Format::total_bits) + 7) / 8;
     for (auto byte = first; byte < byte_count; byte += stride) {
       std::uint8_t packed{};
 #pragma unroll
