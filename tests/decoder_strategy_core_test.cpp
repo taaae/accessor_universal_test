@@ -176,6 +176,48 @@ void test_e3m12() {
   }
 }
 
+double reference_fp16(std::uint32_t raw) {
+  const auto sign = raw >> 15;
+  const auto exponent = (raw >> 10) & 0x1fu;
+  const auto fraction = raw & 0x3ffu;
+  if (exponent == 0x1fu) {
+    if (fraction == 0) {
+      return sign != 0 ? -std::numeric_limits<double>::infinity()
+                       : std::numeric_limits<double>::infinity();
+    }
+    return std::nan("");
+  }
+  double magnitude{};
+  if (exponent == 0) {
+    magnitude = std::ldexp(static_cast<double>(fraction), -24);
+  } else {
+    magnitude = std::ldexp(1.0 + static_cast<double>(fraction) / 1024.0,
+                           static_cast<int>(exponent) - 15);
+  }
+  return sign != 0 ? -magnitude : magnitude;
+}
+
+void test_fp16() {
+  using layout = aut::decoder::fp16_e5m10_layout;
+  for (std::uint32_t raw = 0; raw < 65536; ++raw) {
+    const auto expected = reference_fp16(raw);
+    const auto branchy = aut::decoder::words_to_double(
+        aut::decoder::decode_words_branchy<layout>(raw));
+    const auto masked = aut::decoder::words_to_double(
+        aut::decoder::decode_words_masked<layout>(raw));
+    const auto fp32 = aut::decoder::decode_via_fp32<layout>(raw);
+    if (std::isnan(expected)) {
+      assert(std::isnan(branchy));
+      assert(std::isnan(masked));
+      assert(std::isnan(fp32));
+    } else {
+      assert(bits(branchy) == bits(expected));
+      assert(bits(masked) == bits(expected));
+      assert(bits(fp32) == bits(expected));
+    }
+  }
+}
+
 } // namespace
 
 int main() {
@@ -185,5 +227,6 @@ int main() {
   test_e1m14();
   test_e2m13();
   test_e3m12();
+  test_fp16();
   std::cout << "decoder strategy core tests passed\n";
 }
