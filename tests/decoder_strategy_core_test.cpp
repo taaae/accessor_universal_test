@@ -218,6 +218,28 @@ void test_fp16() {
   }
 }
 
+void test_bf16() {
+  using layout = aut::decoder::bf16_e8m7_layout;
+  for (std::uint32_t raw = 0; raw < 65536; ++raw) {
+    const auto float_value = aut::decoder::bits_to_float(raw << 16);
+    const auto expected = static_cast<double>(float_value);
+    const auto branchy = aut::decoder::words_to_double(
+        aut::decoder::decode_words_branchy<layout>(raw));
+    const auto masked = aut::decoder::words_to_double(
+        aut::decoder::decode_words_masked<layout>(raw));
+    const auto fp32 = aut::decoder::decode_via_fp32<layout>(raw);
+    if (std::isnan(expected)) {
+      assert(std::isnan(branchy));
+      assert(std::isnan(masked));
+      assert(std::isnan(fp32));
+    } else {
+      assert(bits(branchy) == bits(expected));
+      assert(bits(masked) == bits(expected));
+      assert(bits(fp32) == bits(expected));
+    }
+  }
+}
+
 } // namespace
 
 int main() {
@@ -228,5 +250,6 @@ int main() {
   test_e2m13();
   test_e3m12();
   test_fp16();
+  test_bf16();
   std::cout << "decoder strategy core tests passed\n";
 }
