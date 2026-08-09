@@ -1,0 +1,19 @@
+experiment=013_e2e3_expanded_strategy_performance
+purpose=full scaling benchmark for the expanded E2M5/E3M4 strategy inventory
+started_utc=2026-08-09T11:24:17Z
+git_commit=a38855057d6cfcb47f993aec95a8ae57e634fe50
+git_status_begin
+?? results/013_e2e3_expanded_strategy_performance/run_20260809T112417Z/
+?? results/013_e2e3_expanded_strategy_performance/slurm-442368.out
+git_status_end
+
+nvidia_smi
+name, uuid, pci.bus_id, driver_version, memory.total [MiB], ecc.mode.current, clocks.max.sm [MHz], clocks.max.memory [MHz], power.limit [W]
+NVIDIA H200 NVL, GPU-3bb7dc49-ebaf-ab26-a2e4-426c8b73245c, 00000000:00:10.0, 610.43.02, 143771 MiB, Enabled, 1785 MHz, 3201 MHz, 600.00 W
+
+nvcc_version
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Tue_Dec_16_07:23:41_PM_PST_2025
+Cuda compilation tools, release 13.1, V13.1.115
+Build cuda_13.1.r13.1/compiler.37061995_0

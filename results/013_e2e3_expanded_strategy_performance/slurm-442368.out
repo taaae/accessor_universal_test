@@ -1,0 +1,942 @@
+-- Configuring done (0.1s)
+-- Generating done (0.4s)
+-- Build files have been written to: /storage/home/timofeirusanov/accessor_universal_test/build-h200
+[ 50%] Building CUDA object CMakeFiles/e2e3_strategy_bench.dir/src/e2e3_strategy_bench.cu.o
+ptxas info    : 29 bytes gmem
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__31f5fee1_22_e2e3_strategy_bench_cu_af2961a120encode_values_kernelIN3aut7storage4e3m4EEEvPKdPhm' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__31f5fee1_22_e2e3_strategy_bench_cu_af2961a120encode_values_kernelIN3aut7storage4e3m4EEEvPKdPhm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 0 barriers
+ptxas info    : Compile time = 4.733 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__31f5fee1_22_e2e3_strategy_bench_cu_af2961a120encode_values_kernelIN3aut7storage4e2m5EEEvPKdPhm' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__31f5fee1_22_e2e3_strategy_bench_cu_af2961a120encode_values_kernelIN3aut7storage4e2m5EEEvPKdPhm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 0 barriers
+ptxas info    : Compile time = 3.799 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__31f5fee1_22_e2e3_strategy_bench_cu_af2961a113raw_fp64_gemvEPKdS1_mmmPd' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__31f5fee1_22_e2e3_strategy_bench_cu_af2961a113raw_fp64_gemvEPKdS1_mmmPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 3.476 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__31f5fee1_22_e2e3_strategy_bench_cu_af2961a123raw_fp64_dot_map_reduceEPKdS1_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__31f5fee1_22_e2e3_strategy_bench_cu_af2961a123raw_fp64_dot_map_reduceEPKdS1_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 3.301 ms
+ptxas info    : Compiling entry function '_ZN3aut7kernels20storage_dot_finalizeEPKdmPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut7kernels20storage_dot_finalizeEPKdmPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 2.811 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE11ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE11ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 48 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.935 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE10ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE10ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 37 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.176 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE10ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE10ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 34 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.518 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE9ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE9ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 12.105 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE9ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE9ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 48 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 10.964 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE8ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE8ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 56 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 15.144 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE7ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE7ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 48 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 12.932 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE11ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE11ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.568 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE10ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE10ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.213 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE10ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE10ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.381 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE9ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE9ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 8.483 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE9ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE9ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 7.856 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE8ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE8ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 31 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 9.656 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE7ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE7ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 9.008 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.251 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.044 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.353 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 29 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.478 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 31 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.164 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.240 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE6ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE6ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 9.583 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE5ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE5ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 31 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 10.413 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.821 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.283 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.527 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 39 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 10.549 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 60 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 17.686 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.511 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.268 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.348 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 31 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 7.627 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 37 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 11.366 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.823 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.738 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.723 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 27 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.147 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 27 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 8.422 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.216 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.226 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.147 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.216 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 7.012 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE11ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE11ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 48 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.795 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE10ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE10ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 37 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.192 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE10ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE10ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 34 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.541 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE9ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE9ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 12.205 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE9ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE9ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 48 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 11.094 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE8ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE8ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 54 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 15.440 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE7ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE7ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 48 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 12.899 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE11ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE11ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.563 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE10ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE10ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.216 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE10ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE10ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.342 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE9ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE9ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 8.507 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE9ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE9ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 7.918 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE8ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE8ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 9.823 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE7ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE7ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 8.996 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.268 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.999 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.345 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 29 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.350 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 31 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.173 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.218 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE6ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE6ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 9.563 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE5ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE5ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 31 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 10.432 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.810 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.305 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.525 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 39 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 10.543 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 60 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 17.672 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.579 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.286 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.351 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 31 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 7.642 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 37 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 11.358 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.825 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.734 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.721 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 27 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.164 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 27 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 8.415 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.207 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.208 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.157 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.217 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies4gemvINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mmmNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.991 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE11ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE11ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 44 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.582 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE10ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE10ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 46 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.159 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE10ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE10ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 44 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.610 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE9ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE9ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 46 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 11.862 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE9ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE9ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 48 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 10.868 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE8ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE8ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 60 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 14.678 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE7ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE7ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 48 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 12.845 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE11ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE11ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 38 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.509 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE10ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE10ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 36 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.238 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE10ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE10ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.338 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE9ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE9ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 8.322 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE9ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE9ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 7.624 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE8ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE8ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 34 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 9.397 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE7ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE7ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 8.844 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.973 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.832 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 39 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.377 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.366 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.002 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.226 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE6ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE6ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 9.303 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE5ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE5ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 9.973 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.850 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.166 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.587 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 39 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 10.441 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 62 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 17.301 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.480 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.173 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.330 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 7.467 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 11.182 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.750 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 27 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.510 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.664 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.913 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 8.278 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE4ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.166 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE3ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 3.970 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE2ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.065 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE1ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.019 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e3m4ENS0_8strategyILNS0_11decode_kindE0ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.778 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE11ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE11ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 44 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.643 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE10ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE10ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 46 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.147 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE10ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE10ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 44 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.571 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE9ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE9ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 46 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 11.805 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE9ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE9ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 48 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 10.893 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE8ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE8ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 56 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 15.164 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE7ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE7ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 48 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 12.806 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE11ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE11ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 38 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.529 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE10ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE10ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 36 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.226 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE10ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE10ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.347 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE9ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE9ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 8.343 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE9ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE9ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 7.694 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE8ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE8ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 34 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 9.456 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE7ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE7ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 8.765 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.968 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb1EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.815 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi8ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 39 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.355 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.378 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.000 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE1ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.225 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE6ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE6ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 9.416 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE5ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE5ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 9.978 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.824 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.128 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.583 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 39 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 10.550 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi8ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 62 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 17.408 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.494 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.149 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.351 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 7.485 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi4ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 11.204 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.731 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 27 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.504 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.638 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.919 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi2ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 8.320 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE4ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.139 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE3ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 3.971 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE2ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 4.066 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE1ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 5.021 ms
+ptxas info    : Compiling entry function '_ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut15e2e3_strategies14dot_map_reduceINS_7storage4e2m5ENS0_8strategyILNS0_11decode_kindE0ELi1ELNS0_14table_locationE0ELb0EEEEEvPKhS9_mNS0_12table_bundleEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 80 bytes smem
+ptxas info    : Compile time = 6.831 ms
+[100%] Linking CUDA executable bin/e2e3_strategy_bench
+[100%] Built target e2e3_strategy_bench
+[100%] Built target e2e3_strategy_smoke
+[100%] Built target memory_accessor_test
+[100%] Built target storage_formats_test
+[100%] Built target accuracy_statistics_test
+Internal ctest changing into directory: /storage/home/timofeirusanov/accessor_universal_test/build-h200
+Test project /storage/home/timofeirusanov/accessor_universal_test/build-h200
+    Start 1: memory_accessor_test
+1/3 Test #1: memory_accessor_test .............   Passed    0.00 sec
+    Start 2: storage_formats_test
+2/3 Test #2: storage_formats_test .............   Passed    0.00 sec
+    Start 3: accuracy_statistics_test
+3/3 Test #3: accuracy_statistics_test .........   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 3
+
+Total Test time (real) =   0.01 sec
+E2M5/E3M4 decoder strategy smoke test
+GPU: NVIDIA H200 NVL (sm_90)
+All 256 encodings passed every decoder strategy.
+uniform_0_1
+  e2m5 DOT N=2^16 complete
+  e2m5 GEMV N=2^10 complete
+  e3m4 DOT N=2^16 complete
+  e3m4 GEMV N=2^10 complete
+normal_0_1
+  e2m5 DOT N=2^16 complete
+  e2m5 GEMV N=2^10 complete
+  e3m4 DOT N=2^16 complete
+  e3m4 GEMV N=2^10 complete
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/013_e2e3_expanded_strategy_performance/run_20260809T112417Z/validation/decoder_validation.csv
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/013_e2e3_expanded_strategy_performance/run_20260809T112417Z/validation/kernel_validation.csv
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/013_e2e3_expanded_strategy_performance/run_20260809T112417Z/validation/timing_samples.csv
+Validated 84 decoder rows, 336 kernel rows, and 336 timing samples in 336 groups
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/013_e2e3_expanded_strategy_performance/run_20260809T112417Z/validation/timing_summary.csv
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/013_e2e3_expanded_strategy_performance/run_20260809T112417Z/validation/strategy_inventory.csv
+E2M5/E3M4 full strategy benchmark
+GPU: NVIDIA H200 NVL (sm_90)
+uniform_0_1
+  DOT N=2^12 complete
+  DOT N=2^16 complete
+  DOT N=2^20 complete
+  DOT N=2^24 complete
+  DOT N=2^27 complete
+  GEMV M=1024, N=2^8 complete
+  GEMV M=1024, N=2^10 complete
+  GEMV M=1024, N=2^12 complete
+  GEMV M=1024, N=2^14 complete
+  GEMV M=1024, N=2^16 complete
+normal_0_1
+  DOT N=2^12 complete
+  DOT N=2^16 complete
+  DOT N=2^20 complete
+  DOT N=2^24 complete
+  DOT N=2^27 complete
+  GEMV M=1024, N=2^8 complete
+  GEMV M=1024, N=2^10 complete
+  GEMV M=1024, N=2^12 complete
+  GEMV M=1024, N=2^14 complete
+  GEMV M=1024, N=2^16 complete
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/013_e2e3_expanded_strategy_performance/run_20260809T112417Z/timing_samples.csv
+Validated 25500 samples in 1700 groups: 85 variants per case, 15 samples per variant
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/013_e2e3_expanded_strategy_performance/run_20260809T112417Z/timing_summary.csv
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/013_e2e3_expanded_strategy_performance/run_20260809T112417Z/strategy_inventory.csv
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/013_e2e3_expanded_strategy_performance/run_20260809T112417Z/case_winners.csv
+
+E2/E3 full strategy benchmark complete:
+  /storage/home/timofeirusanov/accessor_universal_test/results/013_e2e3_expanded_strategy_performance/run_20260809T112417Z
+  /storage/home/timofeirusanov/accessor_universal_test/results/013_e2e3_expanded_strategy_performance/run_20260809T112417Z/timing_samples.csv
+  /storage/home/timofeirusanov/accessor_universal_test/results/013_e2e3_expanded_strategy_performance/run_20260809T112417Z/timing_summary.csv
+  /storage/home/timofeirusanov/accessor_universal_test/results/013_e2e3_expanded_strategy_performance/run_20260809T112417Z/case_winners.csv
