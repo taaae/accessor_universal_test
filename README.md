@@ -192,6 +192,15 @@ sbatch --wait --nodelist=gpu-nvidia-h200-2 \
 Results are written below `results/004_storage_formats/`. This experiment only
 validates encoding and decoding; DOT/GEMV performance integration comes next.
 
+## Decoder strategy research map
+
+The implementation plan for selecting a fair, fastest exact FP64 decoder for
+every 8-, 16-, and 32-bit format is in
+[`docs/decoder_strategy_research.md`](docs/decoder_strategy_research.md). Its
+machine-readable per-format priorities, LUT sizes, packet widths, and excluded
+paths are in
+[`analysis/decoder_strategy_matrix.csv`](analysis/decoder_strategy_matrix.csv).
+
 ## Storage-format DOT and GEMV
 
 Experiment 005 integrates every storage codec into FP64-arithmetic DOT and
