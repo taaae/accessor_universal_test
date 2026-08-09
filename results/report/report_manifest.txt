@@ -1,12 +1,12 @@
 performance_run=run_20260808T131626Z
 accuracy_run=run_20260808T122054Z
-strategy_run=run_20260808T181150Z
+strategy_run=run_20260809T112417Z
 accuracy_model=generated
 timing_rows=2142
 profile_operations=136
 accuracy_comparisons=306
 accuracy_summary_rows=2142
-strategy_timing_rows=1100
+strategy_timing_rows=1700
 measured_hbm_gb_per_s=4603.989359
 packing_normalization=logical_throughput
 pages=index.html,total-performance.html,same-bit-formats.html,packing.html,roofline.html,conversion.html,bottlenecks.html,accuracy.html,accuracy-dot.html,accuracy-gemv.html,accuracy-scalar.html,methodology.html,e2e3-strategies.html

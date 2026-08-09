@@ -93,14 +93,17 @@ LANE_COLORS = {1: "#6c757d", 2: "#0072B2", 4: "#D55E00"}
 LANE_STYLES = {1: ":", 2: "--", 4: "-"}
 STRATEGY_LANE_STYLES = {1: ":", 2: "--", 4: "-", 8: "-."}
 STRATEGY_LANE_ORDER = (4, 8, 2, 1)
+EXPECTED_STRATEGY_COUNT = 42
 STRATEGY_FAMILY_ORDER = (
     "lut_prefix",
+    "lut_high_word",
     "lut_fp32",
     "lut_fp64",
+    "lut_subnormal",
     "branchless",
+    "direct_bits",
     "baseline",
     "decomposed",
-    "direct_bits",
     "generic",
 )
 STRATEGY_FAMILY_LABELS = {
@@ -109,7 +112,9 @@ STRATEGY_FAMILY_LABELS = {
     "lut_fp32": "FP32 lookup",
     "lut_fp64": "FP64 lookup",
     "lut_prefix": "Prefix lookup",
-    "direct_bits": "Direct FP64 bits",
+    "lut_high_word": "FP64 high-word lookup",
+    "lut_subnormal": "Subnormal-only lookup",
+    "direct_bits": "Direct FP64 construction",
     "decomposed": "Decomposed bits",
     "baseline": "Raw FP64",
 }
@@ -119,6 +124,8 @@ STRATEGY_FAMILY_COLORS = {
     "lut_fp32": "#D55E00",
     "lut_fp64": "#CC79A7",
     "lut_prefix": "#009E73",
+    "lut_high_word": "#7E57C2",
+    "lut_subnormal": "#8C564B",
     "direct_bits": "#E69F00",
     "decomposed": "#56B4E9",
     "baseline": "#20252A",
@@ -222,7 +229,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--strategy-results-root",
         type=Path,
-        default=Path("results/011_e2e3_strategy_performance"),
+        default=Path("results/013_e2e3_expanded_strategy_performance"),
     )
     return parser.parse_args()
 
@@ -299,7 +306,11 @@ def strategy_family(name: str) -> str:
         return "lut_fp64"
     if name.startswith("lut_prefix"):
         return "lut_prefix"
-    if name.startswith("direct_fp64_bits"):
+    if name.startswith("lut_high_word"):
+        return "lut_high_word"
+    if name.startswith("lut_subnormal"):
+        return "lut_subnormal"
+    if name.startswith(("direct_fp64_bits", "direct_fp64_words")):
         return "direct_bits"
     if name.startswith("decomposed_bits"):
         return "decomposed"
@@ -330,6 +341,20 @@ def strategy_abbreviation(name: str) -> str:
         base = "LP-G-P"
     elif name.startswith("lut_prefix_global"):
         base = "LP-G"
+    elif name.startswith("lut_high_word_swizzled_shared"):
+        base = "LHW-SW"
+    elif name.startswith("lut_high_word_shared"):
+        base = "LHW-S"
+    elif name.startswith("lut_high_word_global"):
+        base = "LHW-G"
+    elif name.startswith("lut_subnormal_shared"):
+        base = "SN-S"
+    elif name.startswith("lut_subnormal_global"):
+        base = "SN-G"
+    elif name.startswith("direct_fp64_words_branchy"):
+        base = "DW-B"
+    elif name.startswith("direct_fp64_words_masked"):
+        base = "DW-M"
     elif name.startswith("direct_fp64_bits"):
         base = "DB64"
     elif name.startswith("decomposed_bits"):
@@ -944,9 +969,10 @@ def plot_e2e3_strategy_kernel_time(
         {row["strategy"] for row in rows if row["format"] == format_name},
         key=strategy_sort_key,
     )
-    if len(format_strategies) != 27:
+    if len(format_strategies) != EXPECTED_STRATEGY_COUNT:
         raise ValueError(
-            f"expected 27 {format_name} strategies, found {len(format_strategies)}"
+            f"expected {EXPECTED_STRATEGY_COUNT} {format_name} strategies, "
+            f"found {len(format_strategies)}"
         )
     strategies = (*format_strategies, "raw_pointer_x1")
     fig, axes = plt.subplots(1, 2, figsize=(21.0, 8.4))
@@ -1232,10 +1258,10 @@ def strategy_top_picks(rows: Sequence[dict[str, str]]) -> str:
             for row in case_rows:
                 if int(row["n"]) in large_sizes:
                     speedups[row["strategy"]].append(number(row, "speedup_vs_fp64"))
-            aggregate_strategy, aggregate_speedup = max(
+            aggregate_speedup, aggregate_strategy = max(
                 (
-                    strategy,
                     math.exp(sum(math.log(value) for value in values) / len(values)),
+                    strategy,
                 )
                 for strategy, values in speedups.items()
             )
@@ -1285,7 +1311,14 @@ def strategy_glossary() -> str:
         ("LP-G", "Global exact FP64-prefix lookup, followed by a shift into the FP64 bit layout."),
         ("LP-S", "The same exact prefix table staged once per block in shared memory."),
         ("LP-G-P", "Global prefix lookup with explicit next-packet software prefetching."),
+        ("LHW-G", "Global/read-only 2^8-entry lookup of FP64's nonzero 32-bit high word."),
+        ("LHW-S", "The 1 KiB FP64-high-word table staged once per block in shared memory."),
+        ("LHW-SW", "Four padded shared high-word tables, selected by eight-lane warp groups."),
+        ("SN-G", "Direct normal/special construction with a global subnormal-only high-word table."),
+        ("SN-S", "The 128-byte E2M5 or 64-byte E3M4 subnormal table staged in shared memory."),
         ("DB64", "Construct sign, exponent, and fraction directly in the FP64 bit layout; no table."),
+        ("DW-B", "Construct FP64's high word with explicit zero/subnormal/normal/special branches."),
+        ("DW-M", "Construct FP64's high word with masks instead of the outer case branch."),
         ("DEC", "Lookup a sign/exponent FP64 prefix, then insert fraction bits and handle subnormals."),
         ("×1/×2/×4/×8", "Number of adjacent 8-bit codes read and decoded per packed source load."),
     )
@@ -2577,14 +2610,14 @@ def write_report(
             + strategy_glossary()
             + interactive_graph_section(
                 "E2M5 strategies",
-                "All 27 E2M5 decoder strategies and raw FP64 are plotted against N. Distribution, packed width, family, and individual strategy controls apply to DOT and GEMV together.",
+                "All 42 E2M5 decoder strategies and raw FP64 are plotted against N. Distribution, packed width, family, and individual strategy controls apply to DOT and GEMV together.",
                 "interactive/e2m5-strategies.html",
                 "Interactive E2M5 and raw FP64 DOT and GEMV timing chart",
                 "N(0,1) is selected initially; switch to U(0,1) to expose data-dependent lookup behavior.",
             )
             + interactive_graph_section(
                 "E3M4 strategies",
-                "All 27 E3M4 decoder strategies and raw FP64 use the same axes and controls.",
+                "All 42 E3M4 decoder strategies and raw FP64 use the same axes and controls.",
                 "interactive/e3m4-strategies.html",
                 "Interactive E3M4 and raw FP64 DOT and GEMV timing chart",
                 "The F64 line is the same raw-pointer FP64 baseline used for the E2M5 chart.",
@@ -2714,10 +2747,10 @@ def validate_strategy_summary(rows: Sequence[dict[str, str]]) -> None:
         raise SystemExit("strategy timing data has an invalid FP64 baseline")
     for format_name in ("e2m5", "e3m4"):
         strategies = {row["strategy"] for row in rows if row["format"] == format_name}
-        if len(strategies) != 27:
+        if len(strategies) != EXPECTED_STRATEGY_COUNT:
             raise SystemExit(
                 f"strategy timing data contains {len(strategies)} "
-                f"{format_name} strategies instead of 27"
+                f"{format_name} strategies instead of {EXPECTED_STRATEGY_COUNT}"
             )
         for strategy in strategies:
             strategy_abbreviation(strategy)

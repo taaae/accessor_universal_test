@@ -194,6 +194,51 @@ def test_strategy_abbreviations_are_compositional():
         )
         == "L32-G-P ×4"
     )
+    assert (
+        performance_report.strategy_abbreviation(
+            "lut_high_word_swizzled_shared_x8"
+        )
+        == "LHW-SW ×8"
+    )
+    assert (
+        performance_report.strategy_abbreviation(
+            "direct_fp64_words_masked_x4"
+        )
+        == "DW-M ×4"
+    )
+
+
+def test_strategy_top_picks_rank_by_speedup_not_strategy_name():
+    rows = []
+    for format_name in ("e2m5", "e3m4"):
+        for component in ("dot", "gemv"):
+            for distribution in ("uniform_0_1", "normal_0_1"):
+                for n in ("1024", "4096"):
+                    rows.extend(
+                        (
+                            {
+                                "format": format_name,
+                                "component": component,
+                                "distribution": distribution,
+                                "strategy": "branchless_fp32_x4",
+                                "n": n,
+                                "speedup_vs_fp64": "3.0",
+                            },
+                            {
+                                "format": format_name,
+                                "component": component,
+                                "distribution": distribution,
+                                "strategy": "lut_subnormal_shared_x8",
+                                "n": n,
+                                "speedup_vs_fp64": "1.5",
+                            },
+                        )
+                    )
+
+    table = performance_report.strategy_top_picks(rows)
+    assert table.count("BR32 ×4") == 8
+    assert "3.00×" in table
+    assert "SN-S ×8" not in table
 
 
 def test_register_packing_uses_value_throughput(tmp_path):
