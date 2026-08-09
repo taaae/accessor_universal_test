@@ -64,6 +64,15 @@ target_include_directories(
 target_compile_options(storage_formats_test PRIVATE -O3)
 add_test(NAME storage_formats_test COMMAND storage_formats_test)
 
+add_executable(decoder_strategy_core_test tests/decoder_strategy_core_test.cpp)
+target_include_directories(
+    decoder_strategy_core_test
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+target_compile_options(decoder_strategy_core_test PRIVATE -O3)
+add_test(NAME decoder_strategy_core_test COMMAND decoder_strategy_core_test)
+
 add_executable(accuracy_statistics_test tests/accuracy_statistics_test.cpp)
 target_include_directories(
     accuracy_statistics_test
@@ -169,6 +178,20 @@ target_compile_options(
         "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v>"
 )
 
+add_executable(all_format_strategy_smoke src/all_format_strategy_smoke.cu)
+target_link_libraries(all_format_strategy_smoke PRIVATE CUDA::cudart_static)
+target_include_directories(
+    all_format_strategy_smoke
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+target_compile_options(
+    all_format_strategy_smoke
+    PRIVATE
+        "$<$<COMPILE_LANGUAGE:CXX>:-O3>"
+        "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v>"
+)
+
 set_target_properties(
     dot_bench
     PROPERTIES
@@ -197,6 +220,12 @@ set_target_properties(
 
 set_target_properties(
     storage_formats_test
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
+set_target_properties(
+    decoder_strategy_core_test
     PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )
@@ -260,6 +289,14 @@ set_target_properties(
 
 set_target_properties(
     e2e3_strategy_bench
+    PROPERTIES
+        CUDA_RUNTIME_LIBRARY Static
+        CUDA_SEPARABLE_COMPILATION OFF
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
+set_target_properties(
+    all_format_strategy_smoke
     PROPERTIES
         CUDA_RUNTIME_LIBRARY Static
         CUDA_SEPARABLE_COMPILATION OFF
