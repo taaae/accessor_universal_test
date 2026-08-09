@@ -119,11 +119,30 @@ const char *name(distribution value) {
   return value == distribution::uniform_0_1 ? "uniform_0_1" : "normal_0_1";
 }
 
+#if defined(AUT_EXPANDED_FORMAT_BENCH)
+#if AUT_EXPANDED_BENCH_BITS == 2
+const std::vector<std::string> supported_formats{"e0m1", "e1m0"};
+#elif AUT_EXPANDED_BENCH_BITS == 4
+const std::vector<std::string> supported_formats{"e0m3", "e1m2", "fp4_e2m1",
+                                                 "e3m0"};
+#elif AUT_EXPANDED_BENCH_BITS == 8
+const std::vector<std::string> supported_formats{"e0m7", "e6m1", "e7m0"};
+#elif AUT_EXPANDED_BENCH_BITS == 16
+const std::vector<std::string> supported_formats{"e0m15", "e4m11", "e6m9",
+                                                 "e7m8",  "e9m6",  "e10m5"};
+#elif AUT_EXPANDED_BENCH_BITS == 32
+const std::vector<std::string> supported_formats{
+    "e0m31", "e4m27", "e5m26", "e6m25", "e7m24", "e9m22", "e10m21"};
+#else
+#error "AUT_EXPANDED_BENCH_BITS must be 2, 4, 8, 16, or 32"
+#endif
+#else
 const std::vector<std::string> supported_formats{
     "e1m6",  "fp8_e4m3",   "fp8_e5m2",   "e1m14",  "e2m13",
     "e3m12", "fp16_e5m10", "bf16_e8m7",  "e11m4",  "e1m30",
     "e2m29", "e3m28",      "fp32_e8m23", "e11m20",
 };
+#endif
 
 struct options {
   std::vector<int> dot_powers{12, 16, 20, 24, 27};
@@ -300,21 +319,41 @@ private:
 
 template <typename Format>
 __global__ void encode_values_kernel(const double *source,
-                                     storage::storage_type_t<Format> *encoded,
+                                     fs::device_storage_t<Format> *encoded,
                                      std::size_t count) {
   const auto first =
       static_cast<std::size_t>(blockIdx.x) * blockDim.x + threadIdx.x;
   const auto stride = static_cast<std::size_t>(gridDim.x) * blockDim.x;
-  for (auto index = first; index < count; index += stride) {
-    encoded[index] = storage::encode<Format>(source[index]);
+  if constexpr (Format::total_bits < 8) {
+    constexpr auto values_per_byte = 8 / Format::total_bits;
+    constexpr auto raw_mask = (1u << Format::total_bits) - 1u;
+    const auto byte_count = fs::packed_storage_count<Format>(count);
+    for (auto byte = first; byte < byte_count; byte += stride) {
+      std::uint8_t packed{};
+#pragma unroll
+      for (int lane = 0; lane < values_per_byte; ++lane) {
+        const auto index = byte * values_per_byte + lane;
+        if (index < count) {
+          const auto raw = static_cast<std::uint32_t>(
+              storage::encode<Format>(source[index]));
+          packed |= static_cast<std::uint8_t>((raw & raw_mask)
+                                              << (lane * Format::total_bits));
+        }
+      }
+      encoded[byte] = packed;
+    }
+  } else {
+    for (auto index = first; index < count; index += stride) {
+      encoded[index] = storage::encode<Format>(source[index]);
+    }
   }
 }
 
 template <typename Format>
-void encode_values(const double *source,
-                   storage::storage_type_t<Format> *encoded, std::size_t count,
-                   int multiprocessors) {
-  const auto wanted = (count + 255) / 256;
+void encode_values(const double *source, fs::device_storage_t<Format> *encoded,
+                   std::size_t count, int multiprocessors) {
+  const auto physical_count = fs::packed_storage_count<Format>(count);
+  const auto wanted = (physical_count + 255) / 256;
   const auto blocks = static_cast<unsigned>(std::max<std::size_t>(
       1, std::min<std::size_t>(wanted, multiprocessors * 16ULL)));
   encode_values_kernel<Format><<<blocks, 256>>>(source, encoded, count);
@@ -420,14 +459,21 @@ public:
       layout::total_bits <= 16 ? (std::size_t{1} << layout::fraction_bits) : 0;
   static constexpr auto prefix_count = std::size_t{1}
                                        << (layout::exponent_bits + 1);
-  static constexpr auto pair_count =
-      layout::total_bits == 8 ? (std::size_t{1} << 16) : 0;
+  static constexpr auto pair_count = [] {
+    if constexpr (layout::total_bits <= 8) {
+      return std::size_t{1} << (2 * layout::total_bits);
+    } else {
+      return std::size_t{0};
+    }
+  }();
+  static constexpr auto quad_count =
+      layout::total_bits == 2 ? std::size_t{256} : 0;
 
   format_tables()
       : full_(full_count), subnormal_(subnormal_count), prefix_(prefix_count),
-        pair_(pair_count), device_full_(full_count),
+        pair_(pair_count), quad_(quad_count), device_full_(full_count),
         device_subnormal_(subnormal_count), device_prefix_(prefix_count),
-        device_pair_(pair_count) {
+        device_pair_(pair_count), device_quad_(quad_count) {
     for (std::uint32_t raw = 0; raw < full_count; ++raw) {
       const auto value =
           storage::decode<Format>(host_storage_from_raw<Format>(raw));
@@ -444,22 +490,30 @@ public:
           storage::decode<Format>(host_storage_from_raw<Format>(raw));
       prefix_[prefix] = static_cast<std::uint32_t>(bits(value) >> 32);
     }
-    if constexpr (layout::total_bits == 8) {
-      for (std::uint32_t high = 0; high < 256; ++high) {
-        for (std::uint32_t low = 0; low < 256; ++low) {
-          pair_[low + (high << 8)] = {full_[low], full_[high]};
+    if constexpr (layout::total_bits <= 8) {
+      constexpr auto code_count = std::uint32_t{1} << layout::total_bits;
+      for (std::uint32_t high = 0; high < code_count; ++high) {
+        for (std::uint32_t low = 0; low < code_count; ++low) {
+          pair_[low + (high << layout::total_bits)] = {full_[low], full_[high]};
         }
+      }
+    }
+    if constexpr (layout::total_bits == 2) {
+      for (std::uint32_t packed = 0; packed < 256; ++packed) {
+        quad_[packed] = {full_[packed & 3u], full_[(packed >> 2) & 3u],
+                         full_[(packed >> 4) & 3u], full_[(packed >> 6) & 3u]};
       }
     }
     upload(device_full_, full_);
     upload(device_subnormal_, subnormal_);
     upload(device_prefix_, prefix_);
     upload(device_pair_, pair_);
+    upload(device_quad_, quad_);
   }
 
   fs::table_bundle bundle() const {
     return {device_full_.get(), device_subnormal_.get(), device_prefix_.get(),
-            device_pair_.get()};
+            device_pair_.get(), device_quad_.get()};
   }
 
 private:
@@ -475,10 +529,12 @@ private:
   std::vector<std::uint32_t> subnormal_;
   std::vector<std::uint32_t> prefix_;
   std::vector<uint2> pair_;
+  std::vector<uint4> quad_;
   device_buffer<std::uint32_t> device_full_;
   device_buffer<std::uint32_t> device_subnormal_;
   device_buffer<std::uint32_t> device_prefix_;
   device_buffer<uint2> device_pair_;
+  device_buffer<uint4> device_quad_;
 };
 
 const char *kind_name(fs::decode_kind kind) {
@@ -491,8 +547,12 @@ const char *kind_name(fs::decode_kind kind) {
     return "direct_words_masked";
   case fs::decode_kind::fp32_bits:
     return "fp32_bits";
+  case fs::decode_kind::fixed_integer:
+    return "fixed_integer";
   case fs::decode_kind::e1_integer:
     return "e1_integer";
+  case fs::decode_kind::exponent_only:
+    return "exponent_only";
   case fs::decode_kind::prefix_word:
     return "prefix_word";
   case fs::decode_kind::full_high_lut:
@@ -511,6 +571,10 @@ const char *kind_name(fs::decode_kind kind) {
     return "native_half2";
   case fs::decode_kind::pair_high_lut:
     return "pair_high_lut";
+  case fs::decode_kind::quad_high_lut:
+    return "quad_high_lut";
+  case fs::decode_kind::warp_high_lut:
+    return "warp_high_lut";
   case fs::decode_kind::full_high_lut_swizzled:
     return "full_high_lut_swizzled";
   }
@@ -519,8 +583,12 @@ const char *kind_name(fs::decode_kind kind) {
 
 template <typename Strategy> const char *table_location_name() {
   if constexpr (fs::uses_table_v<Strategy>) {
-    return Strategy::location == fs::table_location::shared ? "shared"
-                                                            : "global";
+    if constexpr (Strategy::kind == fs::decode_kind::warp_high_lut) {
+      return "warp_register";
+    } else {
+      return Strategy::location == fs::table_location::shared ? "shared"
+                                                              : "global";
+    }
   }
   return "none";
 }
@@ -532,7 +600,9 @@ template <typename Strategy> const char *unpack_name() {
 
 template <typename Format, typename Strategy>
 constexpr std::size_t lookup_entry_bytes() {
-  if constexpr (Strategy::kind == fs::decode_kind::pair_high_lut) {
+  if constexpr (Strategy::kind == fs::decode_kind::quad_high_lut) {
+    return sizeof(uint4);
+  } else if constexpr (Strategy::kind == fs::decode_kind::pair_high_lut) {
     return sizeof(uint2);
   } else if constexpr (fs::uses_table_v<Strategy>) {
     return sizeof(std::uint32_t);
@@ -627,6 +697,143 @@ template <typename Callback> void add_pair_and_prmt(Callback &callback) {
   add<fs::decode_kind::direct_words_branchy, 8,
       fs::table_location::global_read_only, fs::unpack_kind::byte_permute>(
       callback, "word_branchy_prmt_x8");
+}
+
+template <fs::decode_kind Kind,
+          fs::table_location Location = fs::table_location::global_read_only,
+          typename Callback>
+void add_all_widths(Callback &callback, const char *base) {
+  const auto add_width = [&](auto width) {
+    constexpr auto lanes = decltype(width)::value;
+    const auto name = std::string{base} + "_x" + std::to_string(lanes);
+    add<Kind, lanes, Location>(callback, name.c_str());
+  };
+  add_width(std::integral_constant<int, 1>{});
+  add_width(std::integral_constant<int, 2>{});
+  add_width(std::integral_constant<int, 4>{});
+  add_width(std::integral_constant<int, 8>{});
+}
+
+template <fs::decode_kind Kind,
+          fs::table_location Location = fs::table_location::global_read_only,
+          typename Callback>
+void add_packed_widths(Callback &callback, const char *base) {
+  const auto add_width = [&](auto width) {
+    constexpr auto lanes = decltype(width)::value;
+    const auto name = std::string{base} + "_x" + std::to_string(lanes);
+    add<Kind, lanes, Location>(callback, name.c_str());
+  };
+  add_width(std::integral_constant<int, 2>{});
+  add_width(std::integral_constant<int, 4>{});
+  add_width(std::integral_constant<int, 8>{});
+}
+
+template <typename Format, typename Callback>
+void strategies_expanded_subbyte(Callback &callback) {
+  add_all_widths<fs::decode_kind::generic>(callback, "generic");
+  add_all_widths<fs::decode_kind::direct_words_branchy>(callback,
+                                                        "word_branchy");
+  add_all_widths<fs::decode_kind::direct_words_masked>(callback, "word_masked");
+  add_all_widths<fs::decode_kind::fp32_bits>(callback, "fp32_bits");
+  if constexpr (Format::exponent_bits == 0) {
+    add_all_widths<fs::decode_kind::fixed_integer>(callback, "fixed_integer");
+  }
+  if constexpr (Format::exponent_bits == 1 && Format::finite) {
+    add_all_widths<fs::decode_kind::e1_integer>(callback, "e1_integer");
+  }
+  if constexpr (Format::fraction_bits == 0) {
+    add_all_widths<fs::decode_kind::exponent_only>(callback, "exponent_only");
+  }
+  add_all_widths<fs::decode_kind::full_high_lut>(callback, "full_high_global");
+  add_all_widths<fs::decode_kind::full_high_lut, fs::table_location::shared>(
+      callback, "full_high_shared");
+  add_all_widths<fs::decode_kind::warp_high_lut>(callback, "full_high_warp");
+  add_packed_widths<fs::decode_kind::pair_high_lut>(callback, "pair_l2");
+  add_packed_widths<fs::decode_kind::pair_high_lut, fs::table_location::shared>(
+      callback, "pair_shared");
+  if constexpr (Format::total_bits == 2) {
+    add<fs::decode_kind::quad_high_lut, 4>(callback, "byte_quad_l2_x4");
+    add<fs::decode_kind::quad_high_lut, 8>(callback, "byte_quad_l2_x8");
+    add<fs::decode_kind::quad_high_lut, 4, fs::table_location::shared>(
+        callback, "byte_quad_shared_x4");
+    add<fs::decode_kind::quad_high_lut, 8, fs::table_location::shared>(
+        callback, "byte_quad_shared_x8");
+  }
+  if constexpr (std::is_same_v<Format, storage::fp4_e2m1>) {
+    add<fs::decode_kind::native_direct, 1>(callback, "native_half_x1");
+    add_packed_widths<fs::decode_kind::native_packed>(callback, "native_half2");
+  }
+}
+
+template <typename Format, typename Callback>
+void strategies_expanded_8bit(Callback &callback) {
+  add_all_widths<fs::decode_kind::generic>(callback, "generic");
+  add_all_widths<fs::decode_kind::direct_words_branchy>(callback,
+                                                        "word_branchy");
+  add_all_widths<fs::decode_kind::direct_words_masked>(callback, "word_masked");
+  add_all_widths<fs::decode_kind::fp32_bits>(callback, "fp32_bits");
+  if constexpr (Format::exponent_bits == 0) {
+    add_all_widths<fs::decode_kind::fixed_integer>(callback, "fixed_integer");
+  }
+  if constexpr (Format::fraction_bits == 0) {
+    add_all_widths<fs::decode_kind::exponent_only>(callback, "exponent_only");
+  }
+  add_all_widths<fs::decode_kind::full_high_lut>(callback, "full_high_global");
+  add_all_widths<fs::decode_kind::full_high_lut, fs::table_location::shared>(
+      callback, "full_high_shared");
+  add_packed_widths<fs::decode_kind::pair_high_lut>(callback, "pair_l2");
+  if constexpr (Format::exponent_bits > 0 && Format::fraction_bits > 0) {
+    add_all_widths<fs::decode_kind::subnormal_high_lut>(callback,
+                                                        "subnormal_global");
+    add_all_widths<fs::decode_kind::subnormal_high_lut,
+                   fs::table_location::shared>(callback, "subnormal_shared");
+    add_all_widths<fs::decode_kind::prefix_high_lut>(callback, "prefix_global");
+    add_all_widths<fs::decode_kind::prefix_high_lut,
+                   fs::table_location::shared>(callback, "prefix_shared");
+  }
+  add<fs::decode_kind::full_high_lut_swizzled, 4, fs::table_location::shared>(
+      callback, "full_high_swizzled_x4");
+  add<fs::decode_kind::full_high_lut_swizzled, 8, fs::table_location::shared>(
+      callback, "full_high_swizzled_x8");
+}
+
+template <typename Format, typename Callback>
+void strategies_expanded_16bit(Callback &callback) {
+  add_all_widths<fs::decode_kind::generic>(callback, "generic");
+  add_all_widths<fs::decode_kind::direct_words_branchy>(callback,
+                                                        "word_branchy");
+  add_all_widths<fs::decode_kind::direct_words_masked>(callback, "word_masked");
+  if constexpr (Format::exponent_bits <= 8) {
+    add_all_widths<fs::decode_kind::fp32_bits>(callback, "fp32_bits");
+  }
+  if constexpr (Format::exponent_bits == 0) {
+    add_all_widths<fs::decode_kind::fixed_integer>(callback, "fixed_integer");
+  }
+  add_all_widths<fs::decode_kind::full_high_lut>(callback, "full_high_l2");
+  if constexpr (Format::exponent_bits > 0) {
+    add_all_widths<fs::decode_kind::subnormal_high_lut>(callback,
+                                                        "subnormal_global");
+    add_all_widths<fs::decode_kind::subnormal_high_lut,
+                   fs::table_location::shared>(callback, "subnormal_shared");
+    add_all_widths<fs::decode_kind::prefix_high_lut>(callback, "prefix_global");
+    add_all_widths<fs::decode_kind::prefix_high_lut,
+                   fs::table_location::shared>(callback, "prefix_shared");
+  }
+}
+
+template <typename Format, typename Callback>
+void strategies_expanded_32bit(Callback &callback) {
+  add_all_widths<fs::decode_kind::generic>(callback, "generic");
+  add_all_widths<fs::decode_kind::direct_words_branchy>(callback,
+                                                        "word_branchy");
+  add_all_widths<fs::decode_kind::direct_words_masked>(callback, "word_masked");
+  if constexpr (Format::exponent_bits == 0) {
+    add_all_widths<fs::decode_kind::fixed_integer>(callback, "fixed_integer");
+  } else {
+    add_all_widths<fs::decode_kind::prefix_high_lut>(callback, "prefix_global");
+    add_all_widths<fs::decode_kind::prefix_high_lut,
+                   fs::table_location::shared>(callback, "prefix_shared");
+  }
 }
 
 template <typename Callback> void strategies_e1m6(Callback &callback) {
@@ -773,7 +980,28 @@ template <typename Callback> void strategies_e11m20(Callback &callback) {
 
 template <typename Format, typename Callback>
 void for_each_strategy(Callback &callback) {
-  if constexpr (std::is_same_v<Format, storage::e1m6>) {
+  if constexpr (Format::total_bits < 8) {
+    strategies_expanded_subbyte<Format>(callback);
+  } else if constexpr (std::is_same_v<Format, storage::e0m7> ||
+                       std::is_same_v<Format, storage::e6m1> ||
+                       std::is_same_v<Format, storage::e7m0>) {
+    strategies_expanded_8bit<Format>(callback);
+  } else if constexpr (std::is_same_v<Format, storage::e0m15> ||
+                       std::is_same_v<Format, storage::e4m11> ||
+                       std::is_same_v<Format, storage::e6m9> ||
+                       std::is_same_v<Format, storage::e7m8> ||
+                       std::is_same_v<Format, storage::e9m6> ||
+                       std::is_same_v<Format, storage::e10m5>) {
+    strategies_expanded_16bit<Format>(callback);
+  } else if constexpr (std::is_same_v<Format, storage::e0m31> ||
+                       std::is_same_v<Format, storage::e4m27> ||
+                       std::is_same_v<Format, storage::e5m26> ||
+                       std::is_same_v<Format, storage::e6m25> ||
+                       std::is_same_v<Format, storage::e7m24> ||
+                       std::is_same_v<Format, storage::e9m22> ||
+                       std::is_same_v<Format, storage::e10m21>) {
+    strategies_expanded_32bit<Format>(callback);
+  } else if constexpr (std::is_same_v<Format, storage::e1m6>) {
     strategies_e1m6(callback);
   } else if constexpr (std::is_same_v<Format, storage::fp8_e4m3> ||
                        std::is_same_v<Format, storage::fp8_e5m2>) {
@@ -880,7 +1108,7 @@ private:
 template <typename Format, typename Strategy>
 work_model strategy_model(const char *strategy_name, const char *component,
                           std::size_t n, std::size_t m, int blocks) {
-  const auto storage_bytes = sizeof(storage::storage_type_t<Format>);
+  const auto storage_bytes = Format::total_bits / 8.0;
   const auto unique = component == std::string{"dot"}
                           ? 2.0 * n * storage_bytes +
                                 2.0 * blocks * sizeof(double) + sizeof(double)
@@ -951,8 +1179,8 @@ void configure_dynamic_shared_memory() {
 
 template <typename Format, typename Strategy>
 timed_variant make_dot_variant(const char *strategy_name,
-                               const storage::storage_type_t<Format> *left,
-                               const storage::storage_type_t<Format> *right,
+                               const fs::device_storage_t<Format> *left,
+                               const fs::device_storage_t<Format> *right,
                                std::size_t count, fs::table_bundle tables,
                                double *partials, double *result,
                                int multiprocessors) {
@@ -985,8 +1213,8 @@ timed_variant make_raw_dot_variant(const char *benchmark_format,
 
 template <typename Format, typename Strategy>
 timed_variant make_gemv_variant(const char *strategy_name,
-                                const storage::storage_type_t<Format> *matrix,
-                                const storage::storage_type_t<Format> *vector,
+                                const fs::device_storage_t<Format> *matrix,
+                                const fs::device_storage_t<Format> *vector,
                                 std::size_t rows, std::size_t columns,
                                 fs::table_bundle tables, double *result) {
   configure_dynamic_shared_memory<Format, Strategy>();
@@ -1078,11 +1306,15 @@ void run_format(const options &settings, const device_info &device,
                 source_buffers &source, random_generator &random,
                 sample_output &output, event_timer &timer, std::size_t max_dot,
                 std::size_t max_columns, std::size_t max_matrix) {
-  using storage_type = storage::storage_type_t<Format>;
-  device_buffer<storage_type> dot_left{max_dot};
-  device_buffer<storage_type> dot_right{max_dot};
-  device_buffer<storage_type> matrix{max_matrix};
-  device_buffer<storage_type> vector{max_columns};
+  using device_storage_type = fs::device_storage_t<Format>;
+  device_buffer<device_storage_type> dot_left{
+      fs::packed_storage_count<Format>(max_dot)};
+  device_buffer<device_storage_type> dot_right{
+      fs::packed_storage_count<Format>(max_dot)};
+  device_buffer<device_storage_type> matrix{
+      fs::packed_storage_count<Format>(max_matrix)};
+  device_buffer<device_storage_type> vector{
+      fs::packed_storage_count<Format>(max_columns)};
   format_tables<Format> tables;
 
   std::size_t strategy_count{};
@@ -1167,6 +1399,36 @@ void dispatch_format(const std::string &name, Callback &callback) {
     callback(storage::format{});                                               \
     return;                                                                    \
   }
+#if defined(AUT_EXPANDED_FORMAT_BENCH)
+#if AUT_EXPANDED_BENCH_BITS == 2
+  DISPATCH(e0m1)
+  DISPATCH(e1m0)
+#elif AUT_EXPANDED_BENCH_BITS == 4
+  DISPATCH(e0m3)
+  DISPATCH(e1m2)
+  DISPATCH(fp4_e2m1)
+  DISPATCH(e3m0)
+#elif AUT_EXPANDED_BENCH_BITS == 8
+  DISPATCH(e0m7)
+  DISPATCH(e6m1)
+  DISPATCH(e7m0)
+#elif AUT_EXPANDED_BENCH_BITS == 16
+  DISPATCH(e0m15)
+  DISPATCH(e4m11)
+  DISPATCH(e6m9)
+  DISPATCH(e7m8)
+  DISPATCH(e9m6)
+  DISPATCH(e10m5)
+#elif AUT_EXPANDED_BENCH_BITS == 32
+  DISPATCH(e0m31)
+  DISPATCH(e4m27)
+  DISPATCH(e5m26)
+  DISPATCH(e6m25)
+  DISPATCH(e7m24)
+  DISPATCH(e9m22)
+  DISPATCH(e10m21)
+#endif
+#else
   DISPATCH(e1m6)
   DISPATCH(fp8_e4m3)
   DISPATCH(fp8_e5m2)
@@ -1181,6 +1443,7 @@ void dispatch_format(const std::string &name, Callback &callback) {
   DISPATCH(e3m28)
   DISPATCH(fp32_e8m23)
   DISPATCH(e11m20)
+#endif
 #undef DISPATCH
   throw benchmark_error("internal format dispatch failure: " + name);
 }

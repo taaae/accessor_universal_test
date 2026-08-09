@@ -3,8 +3,8 @@
 Every 2-, 4-, 8-, 16-, and 32-bit storage format now has a format-specific decision
 note, exact portable decoder core coverage, registered CUDA packet strategies,
 and cumulative decoder/DOT/GEMV smoke instantiations. These are candidate
-implementations, not performance winners; experiment 015 measures the complete
-kernel scaling needed to select the winners.
+implementations, not performance winners; experiments 015 and 017 measure the
+complete kernel scaling needed to select the winners.
 
 | Bits | Format | Decision note |
 |---:|---|---|
@@ -44,4 +44,5 @@ Shared implementation files:
   sub-byte representation, per-format candidate rationale, and deliberate
   exclusions.
 - [`all_format_strategy_bench.cu`](../../src/all_format_strategy_bench.cu):
-  complete DOT/GEMV timing for the non-E2M5/E3M4 strategy families.
+  complete DOT/GEMV timing for the original and expanded strategy families,
+  compiled in bit-width-specific partitions where needed.

@@ -213,6 +213,13 @@ Its split H200 compilation/correctness gate is experiment 016:
 sbatch --wait scripts/run_expanded_format_strategy_smoke_h200.sbatch
 ```
 
+Experiment 017 applies the same full DOT/GEMV timing methodology as experiment
+015 to all 22 expanded formats and every strategy that passed experiment 016:
+
+```bash
+sbatch --wait scripts/run_expanded_format_strategy_benchmark_h200.sbatch
+```
+
 ## Storage-format DOT and GEMV
 
 Experiment 005 integrates every storage codec into FP64-arithmetic DOT and

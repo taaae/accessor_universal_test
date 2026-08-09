@@ -23,6 +23,8 @@ The evolving multi-experiment HTML report is at [`report/index.html`](report/ind
 | 013 | `013_e2e3_expanded_strategy_performance` | Measure the complete DOT/GEMV scaling of all 42 expanded strategies per E2M5/E3M4 format against raw FP64. |
 | 014 | `014_all_format_strategy_smoke` | Exhaustively/statistically validate all new format decoder strategies and launch their fused DOT/GEMV paths. |
 | 015 | `015_all_format_strategy_performance` | Measure complete DOT/GEMV scaling for every registered strategy of the remaining 8-, 16-, and 32-bit formats against locally remeasured raw FP64. |
+| 016 | `016_expanded_format_strategy_smoke` | Validate all strategies for the 22 additional formats that complete the 2-/4-/8-/16-/32-bit E/M inventory. |
+| 017 | `017_expanded_format_strategy_performance` | Measure complete DOT/GEMV scaling for every strategy validated by experiment 016 against locally remeasured raw FP64. |
 
 Timestamped repetitions of an unchanged experiment belong in the existing
 directory. Create the next numbered directory when changing the kernel,

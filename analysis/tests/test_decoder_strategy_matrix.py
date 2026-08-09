@@ -112,14 +112,25 @@ def test_every_nonbaseline_format_is_registered_for_cuda_smoke():
         assert f"storage::{name}" in smoke
 
 
-def test_every_non_e2e3_format_is_dispatched_by_the_full_benchmark():
+def test_every_expanded_format_is_dispatched_by_the_full_benchmark():
     benchmark = (ROOT / "src" / "all_format_strategy_bench.cu").read_text()
-    # Experiment 015 predates the expanded candidates. Experiment 016 is their
-    # compilation/correctness gate; a later timing experiment will extend this.
-    expected = {
-        "e1m6", "e3m4", "fp8_e4m3", "fp8_e5m2", "e1m14", "e2m13",
-        "e3m12", "fp16_e5m10", "bf16_e8m7", "e11m4", "e1m30", "e2m29",
-        "e3m28", "fp32_e8m23", "e11m20",
-    } - {"e2m5", "e3m4"}
+    expected = set(EXPECTED_FORMATS) - {
+        "fp64_e11m52",
+        "e1m6", "e2m5", "e3m4", "fp8_e4m3", "fp8_e5m2",
+        "e1m14", "e2m13", "e3m12", "fp16_e5m10", "bf16_e8m7",
+        "e11m4", "e1m30", "e2m29", "e3m28", "fp32_e8m23", "e11m20",
+    }
     for name in expected:
         assert f"DISPATCH({name})" in benchmark
+
+
+def test_expanded_benchmark_uses_dense_subbyte_storage_and_all_partitions():
+    benchmark = (ROOT / "src" / "all_format_strategy_bench.cu").read_text()
+    runner = (
+        ROOT / "scripts" / "run_expanded_format_strategy_benchmark.sh"
+    ).read_text()
+    assert "fs::packed_storage_count<Format>" in benchmark
+    assert "Format::total_bits / 8.0" in benchmark
+    for bits in (2, 4, 8, 16, 32):
+        assert f"AUT_EXPANDED_BENCH_BITS == {bits}" in benchmark
+        assert f'formats_{bits}="' in runner
