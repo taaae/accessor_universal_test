@@ -806,6 +806,23 @@ void run_fp32_suite(std::ofstream *csv) {
       "prefix_shared_x8");
 }
 
+void run_e11m20_suite(std::ofstream *csv) {
+  std::cout << "E11M20 sampled strategy validation\n";
+  sampled_smoke_context<storage::e11m20> context;
+  RUN(e11m20, context, generic, 1, global_read_only, "generic_x1");
+  RUN(e11m20, context, generic, 2, global_read_only, "generic_x2");
+  RUN(e11m20, context, generic, 4, global_read_only, "generic_x4");
+  RUN(e11m20, context, generic, 8, global_read_only, "generic_x8");
+  RUN(e11m20, context, prefix_word, 1, global_read_only,
+      "prefix_word_x1");
+  RUN(e11m20, context, prefix_word, 2, global_read_only,
+      "prefix_word_x2");
+  RUN(e11m20, context, prefix_word, 4, global_read_only,
+      "prefix_word_x4");
+  RUN(e11m20, context, prefix_word, 8, global_read_only,
+      "prefix_word_x8");
+}
+
 #undef RUN
 
 } // namespace
@@ -851,6 +868,7 @@ int main(int argc, char **argv) {
     run_e2m29_suite(csv_ptr);
     run_e3m28_suite(csv_ptr);
     run_fp32_suite(csv_ptr);
+    run_e11m20_suite(csv_ptr);
     std::cout << "All registered strategies passed.\n";
   } catch (const std::exception &error) {
     std::cerr << "error: " << error.what() << '\n';

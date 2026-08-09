@@ -359,6 +359,17 @@ void test_fp32() {
   }
 }
 
+void test_e11m20() {
+  std::uint32_t raw = 0x082efa98u;
+  for (std::size_t sample = 0; sample < 200000; ++sample) {
+    raw = raw * 1664525u + 1013904223u;
+    const auto expected = aut::storage::decode<aut::storage::e11m20>(raw);
+    const auto direct = aut::decoder::words_to_double(
+        aut::decoder::decode_prefix_words<20>(raw));
+    assert(bits(direct) == bits(expected));
+  }
+}
+
 } // namespace
 
 int main() {
@@ -375,5 +386,6 @@ int main() {
   test_e2m29();
   test_e3m28();
   test_fp32();
+  test_e11m20();
   std::cout << "decoder strategy core tests passed\n";
 }
