@@ -606,8 +606,13 @@ decode_pair_packet(const source_packet<Lanes> &packet, table_bundle tables) {
   decoded_packet<Lanes> result{};
 #pragma unroll
   for (int pair = 0; pair < Lanes / 2; ++pair) {
-    const auto low = raw_lane<Format, 2 * pair>(packet);
-    const auto high = raw_lane<Format, 2 * pair + 1>(packet);
+    // Each source word contains two adjacent little-endian code pairs. Keep
+    // this extraction runtime-indexed so the unrolled loop does not misuse its
+    // loop variable as a non-type template argument.
+    const auto pair_word =
+        (packet.words[pair / 2] >> (16 * (pair % 2))) & 0xffffu;
+    const auto low = pair_word & 0xffu;
+    const auto high = pair_word >> 8;
     const auto words = __ldg(tables.pair_high + low + (high << 8));
     result.values[2 * pair] = decoder::words_to_double({words.x, 0});
     result.values[2 * pair + 1] = decoder::words_to_double({words.y, 0});
