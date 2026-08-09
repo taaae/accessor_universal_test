@@ -306,6 +306,35 @@ void test_e2m29() {
   }
 }
 
+void test_e3m28() {
+  using layout = aut::decoder::e3m28_layout;
+  std::uint32_t raw = 0xa4093822u;
+  for (std::size_t sample = 0; sample < 200000; ++sample) {
+    raw = raw * 1664525u + 1013904223u;
+    const auto expected = aut::storage::decode<aut::storage::e3m28>(raw);
+    const auto branchy = aut::decoder::words_to_double(
+        aut::decoder::decode_words_branchy<layout>(raw));
+    const auto masked = aut::decoder::words_to_double(
+        aut::decoder::decode_words_masked<layout>(raw));
+    if (std::isnan(expected)) {
+      assert(std::isnan(branchy));
+      assert(std::isnan(masked));
+    } else {
+      assert(bits(branchy) == bits(expected));
+      assert(bits(masked) == bits(expected));
+    }
+  }
+  for (const auto edge : {0u, 1u, 0x0fffffffu, 0x10000000u,
+                          0x6fffffffu, 0x70000000u, 0x7fffffffu,
+                          0x80000000u, 0xffffffffu}) {
+    const auto expected = aut::storage::decode<aut::storage::e3m28>(edge);
+    const auto actual = aut::decoder::words_to_double(
+        aut::decoder::decode_words_branchy<layout>(edge));
+    assert(std::isnan(expected) ? std::isnan(actual)
+                                : bits(actual) == bits(expected));
+  }
+}
+
 } // namespace
 
 int main() {
@@ -320,5 +349,6 @@ int main() {
   test_e11m4();
   test_e1m30();
   test_e2m29();
+  test_e3m28();
   std::cout << "decoder strategy core tests passed\n";
 }
