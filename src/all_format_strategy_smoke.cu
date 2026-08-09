@@ -85,6 +85,12 @@ host_storage_from_raw<storage::bf16_e8m7>(std::uint32_t raw) {
       __nv_bfloat16_raw{static_cast<unsigned short>(raw)}};
 }
 
+template <>
+storage::storage_type_t<storage::fp32_e8m23>
+host_storage_from_raw<storage::fp32_e8m23>(std::uint32_t raw) {
+  return decoder::bits_to_float(raw);
+}
+
 template <typename Format> struct smoke_context {
   using storage_type = storage::storage_type_t<Format>;
   using layout = fs::format_layout_t<Format>;
@@ -762,6 +768,44 @@ void run_e3m28_suite(std::ofstream *csv) {
   RUN(e3m28, context, prefix_high_lut, 8, shared, "prefix_shared_x8");
 }
 
+void run_fp32_suite(std::ofstream *csv) {
+  std::cout << "FP32 E8M23 sampled strategy validation\n";
+  sampled_smoke_context<storage::fp32_e8m23> context;
+  RUN(fp32_e8m23, context, generic, 1, global_read_only, "generic_x1");
+  RUN(fp32_e8m23, context, native_direct, 1, global_read_only,
+      "native_f64_x1");
+  RUN(fp32_e8m23, context, native_packed, 2, global_read_only,
+      "native_float2_x2");
+  RUN(fp32_e8m23, context, native_packed, 4, global_read_only,
+      "native_float4_x4");
+  RUN(fp32_e8m23, context, native_packed, 8, global_read_only,
+      "native_float4_x8");
+  RUN(fp32_e8m23, context, direct_words_branchy, 1, global_read_only,
+      "word_branchy_x1");
+  RUN(fp32_e8m23, context, direct_words_branchy, 2, global_read_only,
+      "word_branchy_x2");
+  RUN(fp32_e8m23, context, direct_words_branchy, 4, global_read_only,
+      "word_branchy_x4");
+  RUN(fp32_e8m23, context, direct_words_branchy, 8, global_read_only,
+      "word_branchy_x8");
+  RUN(fp32_e8m23, context, direct_words_masked, 1, global_read_only,
+      "word_masked_x1");
+  RUN(fp32_e8m23, context, direct_words_masked, 2, global_read_only,
+      "word_masked_x2");
+  RUN(fp32_e8m23, context, direct_words_masked, 4, global_read_only,
+      "word_masked_x4");
+  RUN(fp32_e8m23, context, direct_words_masked, 8, global_read_only,
+      "word_masked_x8");
+  RUN(fp32_e8m23, context, prefix_high_lut, 4, global_read_only,
+      "prefix_global_x4");
+  RUN(fp32_e8m23, context, prefix_high_lut, 8, global_read_only,
+      "prefix_global_x8");
+  RUN(fp32_e8m23, context, prefix_high_lut, 4, shared,
+      "prefix_shared_x4");
+  RUN(fp32_e8m23, context, prefix_high_lut, 8, shared,
+      "prefix_shared_x8");
+}
+
 #undef RUN
 
 } // namespace
@@ -806,6 +850,7 @@ int main(int argc, char **argv) {
     run_e1m30_suite(csv_ptr);
     run_e2m29_suite(csv_ptr);
     run_e3m28_suite(csv_ptr);
+    run_fp32_suite(csv_ptr);
     std::cout << "All registered strategies passed.\n";
   } catch (const std::exception &error) {
     std::cerr << "error: " << error.what() << '\n';

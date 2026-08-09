@@ -335,6 +335,30 @@ void test_e3m28() {
   }
 }
 
+void test_fp32() {
+  using layout = aut::decoder::fp32_e8m23_layout;
+  std::uint32_t raw = 0x299f31d0u;
+  for (std::size_t sample = 0; sample < 200000; ++sample) {
+    raw = raw * 1664525u + 1013904223u;
+    const auto expected =
+        static_cast<double>(aut::decoder::bits_to_float(raw));
+    const auto branchy = aut::decoder::words_to_double(
+        aut::decoder::decode_words_branchy<layout>(raw));
+    const auto masked = aut::decoder::words_to_double(
+        aut::decoder::decode_words_masked<layout>(raw));
+    const auto native = aut::decoder::decode_via_fp32<layout>(raw);
+    if (std::isnan(expected)) {
+      assert(std::isnan(branchy));
+      assert(std::isnan(masked));
+      assert(std::isnan(native));
+    } else {
+      assert(bits(branchy) == bits(expected));
+      assert(bits(masked) == bits(expected));
+      assert(bits(native) == bits(expected));
+    }
+  }
+}
+
 } // namespace
 
 int main() {
@@ -350,5 +374,6 @@ int main() {
   test_e1m30();
   test_e2m29();
   test_e3m28();
+  test_fp32();
   std::cout << "decoder strategy core tests passed\n";
 }
