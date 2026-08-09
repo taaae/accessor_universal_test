@@ -1,0 +1,14 @@
+experiment=014_all_format_strategy_smoke
+started_utc=2026-08-09T13:45:41Z
+git_commit=9d1cc7e8448c362db13ca2ccecb42483ba06a8e2
+git_status_begin
+?? results/014_all_format_strategy_smoke/run_20260809T134541Z/
+?? results/014_all_format_strategy_smoke/slurm-442434.out
+git_status_end
+name, uuid, driver_version, memory.total [MiB]
+NVIDIA H200 NVL, GPU-3bb7dc49-ebaf-ab26-a2e4-426c8b73245c, 610.43.02, 143771 MiB
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Tue_Dec_16_07:23:41_PM_PST_2025
+Cuda compilation tools, release 13.1, V13.1.115
+Build cuda_13.1.r13.1/compiler.37061995_0
