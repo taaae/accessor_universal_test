@@ -1,0 +1,19 @@
+experiment=017_expanded_format_strategy_performance
+purpose=complete DOT and GEMV timing sweep for the 22 expanded formats
+started_utc=2026-08-09T18:49:19Z
+git_commit=c77ed7ecc67b30257e62cd50bbcd2523d43a316e
+git_status_begin
+?? results/017_expanded_format_strategy_performance/run_20260809T184919Z/
+?? results/017_expanded_format_strategy_performance/slurm-442506.out
+git_status_end
+
+nvidia_smi
+name, uuid, pci.bus_id, driver_version, memory.total [MiB], ecc.mode.current, clocks.max.sm [MHz], clocks.max.memory [MHz], power.limit [W]
+NVIDIA H200 NVL, GPU-3bb7dc49-ebaf-ab26-a2e4-426c8b73245c, 00000000:00:10.0, 610.43.02, 143771 MiB, Enabled, 1785 MHz, 3201 MHz, 600.00 W
+
+nvcc_version
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Tue_Dec_16_07:23:41_PM_PST_2025
+Cuda compilation tools, release 13.1, V13.1.115
+Build cuda_13.1.r13.1/compiler.37061995_0
