@@ -404,6 +404,21 @@ void run_e2m5_additions(std::ofstream *csv) {
        byte_permute, "word_branchy_prmt_x8");
 }
 
+void run_e3m4_additions(std::ofstream *csv) {
+  std::cout << "E3M4 additional packet strategy validation\n";
+  smoke_context<storage::e3m4> context;
+  RUN(e3m4, context, pair_high_lut, 4, global_read_only, "pair_l2_x4");
+  RUN(e3m4, context, pair_high_lut, 8, global_read_only, "pair_l2_x8");
+  RUN(e3m4, context, direct_words_branchy, 4, global_read_only,
+      "word_branchy_shift_x4");
+  RUN(e3m4, context, direct_words_branchy, 8, global_read_only,
+      "word_branchy_shift_x8");
+  RUNP(e3m4, context, direct_words_branchy, 4, global_read_only,
+       byte_permute, "word_branchy_prmt_x4");
+  RUNP(e3m4, context, direct_words_branchy, 8, global_read_only,
+       byte_permute, "word_branchy_prmt_x8");
+}
+
 void run_fp8_e4m3_suite(std::ofstream *csv) {
   std::cout << "FP8 E4M3 exhaustive strategy validation\n";
   smoke_context<storage::fp8_e4m3> context;
@@ -946,6 +961,7 @@ int main(int argc, char **argv) {
     auto *csv_ptr = output.empty() ? nullptr : &csv;
     run_e1m6_suite(csv_ptr);
     run_e2m5_additions(csv_ptr);
+    run_e3m4_additions(csv_ptr);
     run_fp8_e4m3_suite(csv_ptr);
     run_fp8_e5m2_suite(csv_ptr);
     run_e1m14_suite(csv_ptr);
