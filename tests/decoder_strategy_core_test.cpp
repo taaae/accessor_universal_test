@@ -414,24 +414,92 @@ void test_e11m20() {
   }
 }
 
+template <typename Format, typename Layout, bool ViaFp32 = false,
+          bool FixedInteger = false, bool ExponentOnly = false>
+void test_added_format() {
+  constexpr auto exhaustive = Format::total_bits <= 16;
+  const std::uint64_t count =
+      exhaustive ? (std::uint64_t{1} << Format::total_bits) : 200000;
+  std::uint32_t raw = 0x6a09e667u;
+  for (std::uint64_t sample = 0; sample < count; ++sample) {
+    if constexpr (exhaustive) {
+      raw = static_cast<std::uint32_t>(sample);
+    } else {
+      raw = raw * 1664525u + 1013904223u;
+    }
+    const auto expected = aut::storage::decode<Format>(
+        static_cast<aut::storage::storage_type_t<Format>>(raw));
+    const auto branchy = aut::decoder::words_to_double(
+        aut::decoder::decode_words_branchy<Layout>(raw));
+    const auto masked = aut::decoder::words_to_double(
+        aut::decoder::decode_words_masked<Layout>(raw));
+    const auto match = [expected](double actual) {
+      return std::isnan(expected) ? std::isnan(actual)
+                                  : bits(actual) == bits(expected);
+    };
+    assert(match(branchy));
+    assert(match(masked));
+    if constexpr (ViaFp32) {
+      assert(match(aut::decoder::decode_via_fp32<Layout>(raw)));
+    }
+    if constexpr (FixedInteger) {
+      assert(match(aut::decoder::decode_fixed_integer<Layout>(raw)));
+    }
+    if constexpr (ExponentOnly) {
+      assert(match(aut::decoder::decode_exponent_only<Layout>(raw)));
+    }
+  }
+}
+
 } // namespace
 
 int main() {
+  test_added_format<aut::storage::e0m1, aut::decoder::e0m1_layout, true,
+                    true>();
+  test_added_format<aut::storage::e1m0, aut::decoder::e1m0_layout, true,
+                    false, true>();
+  test_added_format<aut::storage::e0m3, aut::decoder::e0m3_layout, true,
+                    true>();
+  test_added_format<aut::storage::e1m2, aut::decoder::e1m2_layout, true>();
+  test_added_format<aut::storage::fp4_e2m1,
+                    aut::decoder::fp4_e2m1_layout, true>();
+  test_added_format<aut::storage::e3m0, aut::decoder::e3m0_layout, true,
+                    false, true>();
+  test_added_format<aut::storage::e0m7, aut::decoder::e0m7_layout, true,
+                    true>();
   test_e1m6();
   test_e2m5();
   test_e3m4();
   test_fp8_e4m3();
   test_fp8_e5m2();
+  test_added_format<aut::storage::e6m1, aut::decoder::e6m1_layout, true>();
+  test_added_format<aut::storage::e7m0, aut::decoder::e7m0_layout, true,
+                    false, true>();
+  test_added_format<aut::storage::e0m15, aut::decoder::e0m15_layout, true,
+                    true>();
   test_e1m14();
   test_e2m13();
   test_e3m12();
+  test_added_format<aut::storage::e4m11, aut::decoder::e4m11_layout, true>();
   test_fp16();
+  test_added_format<aut::storage::e6m9, aut::decoder::e6m9_layout, true>();
+  test_added_format<aut::storage::e7m8, aut::decoder::e7m8_layout, true>();
   test_bf16();
+  test_added_format<aut::storage::e9m6, aut::decoder::e9m6_layout>();
+  test_added_format<aut::storage::e10m5, aut::decoder::e10m5_layout>();
   test_e11m4();
+  test_added_format<aut::storage::e0m31, aut::decoder::e0m31_layout, false,
+                    true>();
   test_e1m30();
   test_e2m29();
   test_e3m28();
+  test_added_format<aut::storage::e4m27, aut::decoder::e4m27_layout>();
+  test_added_format<aut::storage::e5m26, aut::decoder::e5m26_layout>();
+  test_added_format<aut::storage::e6m25, aut::decoder::e6m25_layout>();
+  test_added_format<aut::storage::e7m24, aut::decoder::e7m24_layout>();
   test_fp32();
+  test_added_format<aut::storage::e9m22, aut::decoder::e9m22_layout>();
+  test_added_format<aut::storage::e10m21, aut::decoder::e10m21_layout>();
   test_e11m20();
   std::cout << "decoder strategy core tests passed\n";
 }

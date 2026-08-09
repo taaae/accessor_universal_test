@@ -15,32 +15,55 @@
 
 namespace aut::decoder {
 
-enum class special_policy { ieee, finite_all, e4m3fn, fp64_prefix };
+enum class special_policy { ieee, finite_all, fixed_e0, e4m3fn, fp64_prefix };
 
 template <int TotalBits, int ExponentBits, special_policy Policy>
 struct binary_layout {
   static constexpr int total_bits = TotalBits;
   static constexpr int exponent_bits = ExponentBits;
   static constexpr int fraction_bits = TotalBits - ExponentBits - 1;
-  static constexpr int exponent_bias = (1 << (ExponentBits - 1)) - 1;
+  static constexpr int exponent_bias =
+      ExponentBits == 0 ? 0 : (1 << (ExponentBits - 1)) - 1;
   static constexpr special_policy policy = Policy;
 };
 
+using e0m1_layout = binary_layout<2, 0, special_policy::fixed_e0>;
+using e1m0_layout = binary_layout<2, 1, special_policy::ieee>;
+using e0m3_layout = binary_layout<4, 0, special_policy::fixed_e0>;
+using e1m2_layout = binary_layout<4, 1, special_policy::finite_all>;
+using fp4_e2m1_layout = binary_layout<4, 2, special_policy::finite_all>;
+using e3m0_layout = binary_layout<4, 3, special_policy::ieee>;
+using e0m7_layout = binary_layout<8, 0, special_policy::fixed_e0>;
 using e1m6_layout = binary_layout<8, 1, special_policy::finite_all>;
 using e2m5_layout = binary_layout<8, 2, special_policy::ieee>;
 using e3m4_layout = binary_layout<8, 3, special_policy::ieee>;
 using fp8_e4m3_layout = binary_layout<8, 4, special_policy::e4m3fn>;
 using fp8_e5m2_layout = binary_layout<8, 5, special_policy::ieee>;
+using e6m1_layout = binary_layout<8, 6, special_policy::ieee>;
+using e7m0_layout = binary_layout<8, 7, special_policy::ieee>;
+using e0m15_layout = binary_layout<16, 0, special_policy::fixed_e0>;
 using e1m14_layout = binary_layout<16, 1, special_policy::finite_all>;
 using e2m13_layout = binary_layout<16, 2, special_policy::ieee>;
 using e3m12_layout = binary_layout<16, 3, special_policy::ieee>;
+using e4m11_layout = binary_layout<16, 4, special_policy::ieee>;
 using fp16_e5m10_layout = binary_layout<16, 5, special_policy::ieee>;
+using e6m9_layout = binary_layout<16, 6, special_policy::ieee>;
+using e7m8_layout = binary_layout<16, 7, special_policy::ieee>;
 using bf16_e8m7_layout = binary_layout<16, 8, special_policy::ieee>;
+using e9m6_layout = binary_layout<16, 9, special_policy::ieee>;
+using e10m5_layout = binary_layout<16, 10, special_policy::ieee>;
 using e11m4_layout = binary_layout<16, 11, special_policy::fp64_prefix>;
+using e0m31_layout = binary_layout<32, 0, special_policy::fixed_e0>;
 using e1m30_layout = binary_layout<32, 1, special_policy::finite_all>;
 using e2m29_layout = binary_layout<32, 2, special_policy::ieee>;
 using e3m28_layout = binary_layout<32, 3, special_policy::ieee>;
+using e4m27_layout = binary_layout<32, 4, special_policy::ieee>;
+using e5m26_layout = binary_layout<32, 5, special_policy::ieee>;
+using e6m25_layout = binary_layout<32, 6, special_policy::ieee>;
+using e7m24_layout = binary_layout<32, 7, special_policy::ieee>;
 using fp32_e8m23_layout = binary_layout<32, 8, special_policy::ieee>;
+using e9m22_layout = binary_layout<32, 9, special_policy::ieee>;
+using e10m21_layout = binary_layout<32, 10, special_policy::ieee>;
 using e11m20_layout = binary_layout<32, 11, special_policy::fp64_prefix>;
 
 struct fp64_words {
@@ -59,12 +82,22 @@ AUT_DECODER_HD AUT_DECODER_INLINE constexpr std::uint32_t raw_mask() {
 
 template <typename Layout>
 AUT_DECODER_HD AUT_DECODER_INLINE constexpr std::uint32_t exponent_mask() {
-  return (std::uint32_t{1} << Layout::exponent_bits) - 1;
+  if constexpr (Layout::exponent_bits == 0) {
+    return 0;
+  } else {
+    return (std::uint32_t{1} << Layout::exponent_bits) - 1;
+  }
 }
 
 template <typename Layout>
 AUT_DECODER_HD AUT_DECODER_INLINE constexpr std::uint32_t fraction_mask() {
-  return (std::uint32_t{1} << Layout::fraction_bits) - 1;
+  if constexpr (Layout::fraction_bits == 0) {
+    return 0;
+  } else if constexpr (Layout::fraction_bits == 32) {
+    return 0xffffffffu;
+  } else {
+    return (std::uint32_t{1} << Layout::fraction_bits) - 1;
+  }
 }
 
 AUT_DECODER_HD AUT_DECODER_INLINE int highest_set_bit(std::uint32_t value) {
@@ -110,6 +143,7 @@ special_magnitude_words(std::uint32_t fraction) {
 template <typename Layout>
 AUT_DECODER_HD AUT_DECODER_INLINE fp64_words
 subnormal_magnitude_words(std::uint32_t fraction) {
+  static_assert(Layout::fraction_bits > 0);
   const auto safe_fraction = fraction | 1u;
   const auto leading = highest_set_bit(safe_fraction);
   const auto unbiased =
@@ -119,6 +153,23 @@ subnormal_magnitude_words(std::uint32_t fraction) {
   auto result = place_fraction(exponent64 << 20, remainder, leading);
   const auto nonzero_mask =
       0u - static_cast<std::uint32_t>(fraction != 0);
+  result.high &= nonzero_mask;
+  result.low &= nonzero_mask;
+  return result;
+}
+
+template <typename Layout>
+AUT_DECODER_HD AUT_DECODER_INLINE fp64_words
+fixed_magnitude_words(std::uint32_t magnitude) {
+  static_assert(Layout::policy == special_policy::fixed_e0);
+  const auto safe_magnitude = magnitude | 1u;
+  const auto leading = highest_set_bit(safe_magnitude);
+  const auto exponent64 = static_cast<std::uint32_t>(
+      leading - Layout::fraction_bits + 1023);
+  const auto remainder = magnitude - (std::uint32_t{1} << leading);
+  auto result = place_fraction(exponent64 << 20, remainder, leading);
+  const auto nonzero_mask =
+      0u - static_cast<std::uint32_t>(magnitude != 0);
   result.high &= nonzero_mask;
   result.low &= nonzero_mask;
   return result;
@@ -143,13 +194,23 @@ decode_words_branchy(std::uint32_t raw) {
   static_assert(Layout::policy != special_policy::fp64_prefix);
   raw &= raw_mask<Layout>();
   const auto sign = raw >> (Layout::total_bits - 1);
+  if constexpr (Layout::policy == special_policy::fixed_e0) {
+    auto result = fixed_magnitude_words<Layout>(
+        raw & fraction_mask<Layout>());
+    result.high |= sign << 31;
+    return result;
+  }
   const auto exponent =
       (raw >> Layout::fraction_bits) & exponent_mask<Layout>();
   const auto fraction = raw & fraction_mask<Layout>();
 
   fp64_words result{};
   if (exponent == 0) {
-    result = subnormal_magnitude_words<Layout>(fraction);
+    if constexpr (Layout::fraction_bits == 0) {
+      result = {};
+    } else {
+      result = subnormal_magnitude_words<Layout>(fraction);
+    }
   } else if (is_special<Layout>(exponent, fraction)) {
     if constexpr (Layout::policy == special_policy::e4m3fn) {
       result = {0x7ff80000u, 0};
@@ -167,13 +228,22 @@ template <typename Layout>
 AUT_DECODER_HD AUT_DECODER_INLINE fp64_words
 decode_words_masked(std::uint32_t raw) {
   static_assert(Layout::policy != special_policy::fp64_prefix);
+  if constexpr (Layout::policy == special_policy::fixed_e0) {
+    return decode_words_branchy<Layout>(raw);
+  }
   raw &= raw_mask<Layout>();
   const auto sign = raw >> (Layout::total_bits - 1);
   const auto exponent =
       (raw >> Layout::fraction_bits) & exponent_mask<Layout>();
   const auto fraction = raw & fraction_mask<Layout>();
 
-  const auto subnormal = subnormal_magnitude_words<Layout>(fraction);
+  const auto subnormal = [](std::uint32_t value) {
+    if constexpr (Layout::fraction_bits == 0) {
+      return fp64_words{};
+    } else {
+      return subnormal_magnitude_words<Layout>(value);
+    }
+  }(fraction);
   const auto normal = normal_magnitude_words<Layout>(exponent, fraction);
   auto special = special_magnitude_words<Layout>(fraction);
   if constexpr (Layout::policy == special_policy::e4m3fn) {
@@ -232,6 +302,20 @@ decode_fp32_bits(std::uint32_t raw) {
   static_assert(Layout::fraction_bits <= 23);
   raw &= raw_mask<Layout>();
 
+  if constexpr (Layout::policy == special_policy::fixed_e0) {
+    const auto sign = raw >> (Layout::total_bits - 1);
+    const auto magnitude = raw & fraction_mask<Layout>();
+    if (magnitude == 0) {
+      return sign << 31;
+    }
+    const auto leading = highest_set_bit(magnitude);
+    const auto exponent32 = static_cast<std::uint32_t>(
+        leading - Layout::fraction_bits + 127);
+    const auto remainder = magnitude - (std::uint32_t{1} << leading);
+    return (sign << 31) | (exponent32 << 23) |
+           (remainder << (23 - leading));
+  }
+
   if constexpr (Layout::exponent_bits == 8 &&
                 Layout::policy == special_policy::ieee) {
     return raw << (32 - Layout::total_bits);
@@ -245,13 +329,15 @@ decode_fp32_bits(std::uint32_t raw) {
     if (fraction == 0) {
       return sign << 31;
     }
-    const auto leading = highest_set_bit(fraction);
-    const auto unbiased =
-        leading + 1 - Layout::exponent_bias - Layout::fraction_bits;
-    const auto exponent32 = static_cast<std::uint32_t>(unbiased + 127);
-    const auto remainder = fraction - (std::uint32_t{1} << leading);
-    return (sign << 31) | (exponent32 << 23) |
-           (remainder << (23 - leading));
+    if constexpr (Layout::fraction_bits > 0) {
+      const auto leading = highest_set_bit(fraction);
+      const auto unbiased =
+          leading + 1 - Layout::exponent_bias - Layout::fraction_bits;
+      const auto exponent32 = static_cast<std::uint32_t>(unbiased + 127);
+      const auto remainder = fraction - (std::uint32_t{1} << leading);
+      return (sign << 31) | (exponent32 << 23) |
+             (remainder << (23 - leading));
+    }
   }
   if (is_special<Layout>(exponent, fraction)) {
     if constexpr (Layout::policy == special_policy::e4m3fn) {
@@ -283,6 +369,39 @@ AUT_DECODER_HD AUT_DECODER_INLINE double decode_e1_integer(std::uint32_t raw) {
       {static_cast<std::uint32_t>(scale_exponent) << 20, 0});
   const auto value = static_cast<double>(magnitude) * scale;
   return sign != 0 ? -value : value;
+}
+
+template <typename Layout>
+AUT_DECODER_HD AUT_DECODER_INLINE double
+decode_fixed_integer(std::uint32_t raw) {
+  static_assert(Layout::policy == special_policy::fixed_e0);
+  static_assert(Layout::fraction_bits <= 31);
+  raw &= raw_mask<Layout>();
+  const auto sign = raw >> (Layout::total_bits - 1);
+  const auto magnitude = raw & fraction_mask<Layout>();
+  const auto scale = words_to_double(
+      {static_cast<std::uint32_t>(1023 - Layout::fraction_bits) << 20, 0});
+  const auto value = static_cast<double>(magnitude) * scale;
+  return sign != 0 ? -value : value;
+}
+
+template <typename Layout>
+AUT_DECODER_HD AUT_DECODER_INLINE double
+decode_exponent_only(std::uint32_t raw) {
+  static_assert(Layout::fraction_bits == 0);
+  static_assert(Layout::policy == special_policy::ieee);
+  raw &= raw_mask<Layout>();
+  const auto sign = raw >> (Layout::total_bits - 1);
+  const auto exponent = raw & exponent_mask<Layout>();
+  if (exponent == 0) {
+    return words_to_double({sign << 31, 0});
+  }
+  if (exponent == exponent_mask<Layout>()) {
+    return words_to_double({(sign << 31) | 0x7ff00000u, 0});
+  }
+  const auto exponent64 = static_cast<std::uint32_t>(
+      static_cast<int>(exponent) - Layout::exponent_bias + 1023);
+  return words_to_double({(sign << 31) | (exponent64 << 20), 0});
 }
 
 } // namespace aut::decoder

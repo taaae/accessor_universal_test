@@ -4,6 +4,7 @@
 #include "storage_formats.hpp"
 
 #include <cuda_bf16.h>
+#include <cuda_fp4.h>
 #include <cuda_fp16.h>
 #include <cuda_fp8.h>
 #include <vector_types.h>
@@ -14,26 +15,44 @@ namespace aut::storage {
 
 struct fp8_e4m3 {
   static constexpr int total_bits = 8;
+  static constexpr int exponent_bits = 4;
+  static constexpr int fraction_bits = 3;
+  static constexpr bool finite = true;
   static constexpr const char *name = "fp8_e4m3";
 };
 struct fp8_e5m2 {
   static constexpr int total_bits = 8;
+  static constexpr int exponent_bits = 5;
+  static constexpr int fraction_bits = 2;
+  static constexpr bool finite = false;
   static constexpr const char *name = "fp8_e5m2";
 };
 struct fp16_e5m10 {
   static constexpr int total_bits = 16;
+  static constexpr int exponent_bits = 5;
+  static constexpr int fraction_bits = 10;
+  static constexpr bool finite = false;
   static constexpr const char *name = "fp16_e5m10";
 };
 struct bf16_e8m7 {
   static constexpr int total_bits = 16;
+  static constexpr int exponent_bits = 8;
+  static constexpr int fraction_bits = 7;
+  static constexpr bool finite = false;
   static constexpr const char *name = "bf16_e8m7";
 };
 struct fp32_e8m23 {
   static constexpr int total_bits = 32;
+  static constexpr int exponent_bits = 8;
+  static constexpr int fraction_bits = 23;
+  static constexpr bool finite = false;
   static constexpr const char *name = "fp32_e8m23";
 };
 struct fp64_e11m52 {
   static constexpr int total_bits = 64;
+  static constexpr int exponent_bits = 11;
+  static constexpr int fraction_bits = 52;
+  static constexpr bool finite = false;
   static constexpr const char *name = "fp64_e11m52";
 };
 

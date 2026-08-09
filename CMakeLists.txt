@@ -192,6 +192,36 @@ target_compile_options(
         "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v>"
 )
 
+foreach(expanded_bits IN ITEMS 2 4 8 16 32)
+    set(expanded_target "expanded_format_strategy_smoke_${expanded_bits}")
+    add_executable(${expanded_target} src/all_format_strategy_smoke.cu)
+    target_link_libraries(${expanded_target} PRIVATE CUDA::cudart_static)
+    target_include_directories(
+        ${expanded_target}
+        PRIVATE
+            "${CMAKE_CURRENT_SOURCE_DIR}/include"
+    )
+    target_compile_definitions(
+        ${expanded_target}
+        PRIVATE
+            AUT_EXPANDED_FORMAT_SMOKE=1
+            AUT_EXPANDED_SMOKE_BITS=${expanded_bits}
+    )
+    target_compile_options(
+        ${expanded_target}
+        PRIVATE
+            "$<$<COMPILE_LANGUAGE:CXX>:-O3>"
+            "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v>"
+    )
+    set_target_properties(
+        ${expanded_target}
+        PROPERTIES
+            CUDA_RUNTIME_LIBRARY Static
+            CUDA_SEPARABLE_COMPILATION OFF
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+    )
+endforeach()
+
 add_executable(all_format_strategy_bench src/all_format_strategy_bench.cu)
 target_link_libraries(all_format_strategy_bench PRIVATE CUDA::curand_static)
 target_include_directories(

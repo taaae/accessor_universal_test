@@ -194,14 +194,24 @@ validates encoding and decoding; DOT/GEMV performance integration comes next.
 
 ## Decoder strategy research map
 
-The implementation plan for selecting a fair, fastest exact FP64 decoder for
-every 8-, 16-, and 32-bit format is in
+The original implementation plan for selecting a fair, fastest exact FP64
+decoder for the shortlisted 8-, 16-, and 32-bit formats is in
 [`docs/decoder_strategy_research.md`](docs/decoder_strategy_research.md). Its
 machine-readable per-format priorities, LUT sizes, packet widths, and excluded
 paths are in
 [`analysis/decoder_strategy_matrix.csv`](analysis/decoder_strategy_matrix.csv).
 The completed candidate-implementation index is in
 [`docs/decoder_strategies/README.md`](docs/decoder_strategies/README.md).
+
+The expanded implementation fills every E/M split at 2, 4, 8, 16, and 32
+total bits subject to `E <= 11`, including the E=0 fixed-point and M=0
+exponent-only endpoints. Per-format decisions are documented in
+[`docs/decoder_strategies/expanded_formats.md`](docs/decoder_strategies/expanded_formats.md).
+Its split H200 compilation/correctness gate is experiment 016:
+
+```bash
+sbatch --wait scripts/run_expanded_format_strategy_smoke_h200.sbatch
+```
 
 ## Storage-format DOT and GEMV
 

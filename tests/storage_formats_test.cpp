@@ -66,6 +66,10 @@ int main() {
 
   bool ok = true;
   ok = ok && check_exact<e1m6>(1.0);
+  ok = ok && check_exact<e0m1>(0.5);
+  ok = ok && check_exact<e0m3>(0.375);
+  ok = ok && check_exact<fp4_e2m1>(6.0);
+  ok = ok && check_exact<e3m0>(1.0);
   ok = ok && check_exact<e1m6>(-1.0);
   ok = ok && check_exact<e2m5>(0.5);
   ok = ok && check_exact<e3m4>(0.25);
@@ -86,17 +90,39 @@ int main() {
     ok = false;
   }
 
+  ok = ok && exhaustive_round_trip<e0m1>();
+  ok = ok && exhaustive_round_trip<e1m0>();
+  ok = ok && exhaustive_round_trip<e0m3>();
+  ok = ok && exhaustive_round_trip<e1m2>();
+  ok = ok && exhaustive_round_trip<fp4_e2m1>();
+  ok = ok && exhaustive_round_trip<e3m0>();
+  ok = ok && exhaustive_round_trip<e0m7>();
   ok = ok && exhaustive_round_trip<e1m6>();
   ok = ok && exhaustive_round_trip<e2m5>();
   ok = ok && exhaustive_round_trip<e3m4>();
+  ok = ok && exhaustive_round_trip<e6m1>();
+  ok = ok && exhaustive_round_trip<e7m0>();
+  ok = ok && exhaustive_round_trip<e0m15>();
   ok = ok && exhaustive_round_trip<e1m14>();
   ok = ok && exhaustive_round_trip<e2m13>();
   ok = ok && exhaustive_round_trip<e3m12>();
+  ok = ok && exhaustive_round_trip<e4m11>();
+  ok = ok && exhaustive_round_trip<e6m9>();
+  ok = ok && exhaustive_round_trip<e7m8>();
+  ok = ok && exhaustive_round_trip<e9m6>();
+  ok = ok && exhaustive_round_trip<e10m5>();
   ok = ok && exhaustive_round_trip<e11m4>();
 
+  ok = ok && sampled_round_trip<e0m31>();
   ok = ok && sampled_round_trip<e1m30>();
   ok = ok && sampled_round_trip<e2m29>();
   ok = ok && sampled_round_trip<e3m28>();
+  ok = ok && sampled_round_trip<e4m27>();
+  ok = ok && sampled_round_trip<e5m26>();
+  ok = ok && sampled_round_trip<e6m25>();
+  ok = ok && sampled_round_trip<e7m24>();
+  ok = ok && sampled_round_trip<e9m22>();
+  ok = ok && sampled_round_trip<e10m21>();
   ok = ok && sampled_round_trip<e11m20>();
 
   const auto e2_inf =

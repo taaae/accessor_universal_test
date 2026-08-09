@@ -93,43 +93,70 @@ host_storage_from_raw<storage::fp32_e8m23>(std::uint32_t raw) {
 
 template <typename Format> struct smoke_context {
   using storage_type = storage::storage_type_t<Format>;
+  using device_storage_type = fs::device_storage_t<Format>;
   using layout = fs::format_layout_t<Format>;
   static constexpr auto code_count = std::size_t{1} << layout::total_bits;
+  static constexpr auto validation_count =
+      layout::total_bits < 8 ? std::size_t{256} : code_count;
   static constexpr auto subnormal_count =
       std::size_t{1} << layout::fraction_bits;
-  static constexpr auto pair_count =
-      layout::total_bits == 8 ? (std::size_t{1} << 16) : std::size_t{0};
+  static constexpr auto pair_count = layout::total_bits <= 8
+                                         ? (std::size_t{1}
+                                            << (2 * layout::total_bits))
+                                         : std::size_t{0};
+  static constexpr auto quad_count =
+      layout::total_bits == 2 ? std::size_t{256} : std::size_t{0};
   static constexpr auto prefix_count =
       std::size_t{1} << (layout::exponent_bits + 1);
 
   std::vector<storage_type> codes;
+  std::vector<device_storage_type> packed_codes;
   std::vector<double> expected;
   std::vector<std::uint32_t> full_high;
   std::vector<std::uint32_t> subnormal_high;
   std::vector<std::uint32_t> prefix_high;
   std::vector<uint2> pair_high;
-  device_buffer<storage_type> device_codes;
+  std::vector<uint4> quad_high;
+  device_buffer<device_storage_type> device_codes;
   device_buffer<double> device_output;
   device_buffer<std::uint32_t> device_full_high;
   device_buffer<std::uint32_t> device_subnormal_high;
   device_buffer<std::uint32_t> device_prefix_high;
   device_buffer<uint2> device_pair_high;
+  device_buffer<uint4> device_quad_high;
 
   smoke_context()
-      : codes(code_count), expected(code_count), full_high(code_count),
+      : codes(validation_count),
+        packed_codes(fs::packed_storage_count<Format>(validation_count)),
+        expected(validation_count), full_high(code_count),
         subnormal_high(subnormal_count), prefix_high(prefix_count),
-        pair_high(pair_count),
-        device_codes(codes.size()), device_output(codes.size()),
+        pair_high(pair_count), quad_high(quad_count),
+        device_codes(packed_codes.size()), device_output(codes.size()),
         device_full_high(full_high.size()),
         device_subnormal_high(subnormal_high.size()),
         device_prefix_high(prefix_high.size()),
-        device_pair_high(pair_high.size()) {
-    static_assert(layout::total_bits == 8 || layout::total_bits == 16,
-                  "the exhaustive smoke context covers 8- and 16-bit codes");
+        device_pair_high(pair_high.size()),
+        device_quad_high(quad_high.size()) {
+    static_assert(layout::total_bits == 2 || layout::total_bits == 4 ||
+                      layout::total_bits == 8 || layout::total_bits == 16,
+                  "the exhaustive smoke context covers 2/4/8/16-bit codes");
+    for (std::size_t index = 0; index < codes.size(); ++index) {
+      const auto raw = static_cast<std::uint32_t>(
+          layout::total_bits < 8 && index < 64 ? 0 : index % code_count);
+      codes[index] = host_storage_from_raw<Format>(raw);
+      expected[index] = storage::decode<Format>(codes[index]);
+      if constexpr (layout::total_bits < 8) {
+        const auto bit_offset = index * layout::total_bits;
+        packed_codes[bit_offset / 8] |= static_cast<device_storage_type>(
+            raw << (bit_offset % 8));
+      } else {
+        packed_codes[index] = codes[index];
+      }
+    }
     for (std::uint32_t raw = 0; raw < code_count; ++raw) {
-      codes[raw] = host_storage_from_raw<Format>(raw);
-      expected[raw] = storage::decode<Format>(codes[raw]);
-      full_high[raw] = static_cast<std::uint32_t>(bits(expected[raw]) >> 32);
+      const auto value =
+          storage::decode<Format>(host_storage_from_raw<Format>(raw));
+      full_high[raw] = static_cast<std::uint32_t>(bits(value) >> 32);
     }
     for (std::uint32_t fraction = 0; fraction < subnormal_count; ++fraction) {
       const auto value =
@@ -143,15 +170,24 @@ template <typename Format> struct smoke_context {
           storage::decode<Format>(host_storage_from_raw<Format>(raw));
       prefix_high[prefix] = static_cast<std::uint32_t>(bits(value) >> 32);
     }
-    if constexpr (layout::total_bits == 8) {
-      for (std::uint32_t high = 0; high < 256; ++high) {
-        for (std::uint32_t low = 0; low < 256; ++low) {
-          pair_high[low + (high << 8)] = {full_high[low], full_high[high]};
+    if constexpr (layout::total_bits <= 8) {
+      for (std::uint32_t high = 0; high < code_count; ++high) {
+        for (std::uint32_t low = 0; low < code_count; ++low) {
+          pair_high[low + (high << layout::total_bits)] = {
+              full_high[low], full_high[high]};
         }
       }
     }
-    check_cuda(cudaMemcpy(device_codes.data, codes.data(),
-                          codes.size() * sizeof(codes[0]),
+    if constexpr (layout::total_bits == 2) {
+      for (std::uint32_t packed = 0; packed < 256; ++packed) {
+        quad_high[packed] = {full_high[packed & 3u],
+                             full_high[(packed >> 2) & 3u],
+                             full_high[(packed >> 4) & 3u],
+                             full_high[(packed >> 6) & 3u]};
+      }
+    }
+    check_cuda(cudaMemcpy(device_codes.data, packed_codes.data(),
+                          packed_codes.size() * sizeof(packed_codes[0]),
                           cudaMemcpyHostToDevice),
                "copy codes");
     check_cuda(cudaMemcpy(device_full_high.data, full_high.data(),
@@ -166,18 +202,24 @@ template <typename Format> struct smoke_context {
                           prefix_high.size() * sizeof(prefix_high[0]),
                           cudaMemcpyHostToDevice),
                "copy prefix table");
-    if constexpr (layout::total_bits == 8) {
+    if constexpr (layout::total_bits <= 8) {
       check_cuda(cudaMemcpy(device_pair_high.data, pair_high.data(),
                             pair_high.size() * sizeof(pair_high[0]),
                             cudaMemcpyHostToDevice),
                  "copy pair table");
+    }
+    if constexpr (layout::total_bits == 2) {
+      check_cuda(cudaMemcpy(device_quad_high.data, quad_high.data(),
+                            quad_high.size() * sizeof(quad_high[0]),
+                            cudaMemcpyHostToDevice),
+                 "copy quad table");
     }
   }
 
   fs::table_bundle tables() const {
     return {device_full_high.data, device_subnormal_high.data,
             device_prefix_high.data,
-            device_pair_high.data};
+            device_pair_high.data, device_quad_high.data};
   }
 };
 
@@ -238,7 +280,7 @@ template <typename Format> struct sampled_smoke_context {
   }
 
   fs::table_bundle tables() const {
-    return {nullptr, nullptr, device_prefix_high.data, nullptr};
+    return {nullptr, nullptr, device_prefix_high.data, nullptr, nullptr};
   }
 };
 
@@ -340,6 +382,196 @@ using sp = fs::strategy<Kind, Lanes, Location, Unpack>;
   run_strategy<storage::format,                                                \
                sp<fs::decode_kind::kind, lanes, fs::table_location::location, \
                   fs::unpack_kind::unpack>>(context, #format, name, csv)
+
+template <typename Format, fs::decode_kind Kind,
+          fs::table_location Location = fs::table_location::global_read_only,
+          typename Context>
+void run_all_widths(Context &context, const char *base, std::ofstream *csv) {
+  const auto run = [&](auto width) {
+    constexpr auto lanes = decltype(width)::value;
+    const auto name = std::string(base) + "_x" + std::to_string(lanes);
+    run_strategy<Format, s<Kind, lanes, Location>>(
+        context, Format::name, name.c_str(), csv);
+  };
+  run(std::integral_constant<int, 1>{});
+  run(std::integral_constant<int, 2>{});
+  run(std::integral_constant<int, 4>{});
+  run(std::integral_constant<int, 8>{});
+}
+
+template <typename Format, fs::decode_kind Kind,
+          fs::table_location Location = fs::table_location::global_read_only,
+          typename Context>
+void run_packed_widths(Context &context, const char *base,
+                       std::ofstream *csv) {
+  const auto run = [&](auto width) {
+    constexpr auto lanes = decltype(width)::value;
+    const auto name = std::string(base) + "_x" + std::to_string(lanes);
+    run_strategy<Format, s<Kind, lanes, Location>>(
+        context, Format::name, name.c_str(), csv);
+  };
+  run(std::integral_constant<int, 2>{});
+  run(std::integral_constant<int, 4>{});
+  run(std::integral_constant<int, 8>{});
+}
+
+template <typename Format>
+void run_subbyte_suite(std::ofstream *csv) {
+  std::cout << Format::name << " dense sub-byte strategy validation\n";
+  smoke_context<Format> context;
+  run_all_widths<Format, fs::decode_kind::generic>(context, "generic", csv);
+  run_all_widths<Format, fs::decode_kind::direct_words_branchy>(
+      context, "word_branchy", csv);
+  run_all_widths<Format, fs::decode_kind::direct_words_masked>(
+      context, "word_masked", csv);
+  run_all_widths<Format, fs::decode_kind::fp32_bits>(context, "fp32_bits",
+                                                     csv);
+  if constexpr (Format::exponent_bits == 0) {
+    run_all_widths<Format, fs::decode_kind::fixed_integer>(
+        context, "fixed_integer", csv);
+  }
+  if constexpr (Format::exponent_bits == 1 && Format::finite) {
+    run_all_widths<Format, fs::decode_kind::e1_integer>(
+        context, "e1_integer", csv);
+  }
+  if constexpr (Format::fraction_bits == 0) {
+    run_all_widths<Format, fs::decode_kind::exponent_only>(
+        context, "exponent_only", csv);
+  }
+  run_all_widths<Format, fs::decode_kind::full_high_lut>(
+      context, "full_high_global", csv);
+  run_all_widths<Format, fs::decode_kind::full_high_lut,
+                 fs::table_location::shared>(context, "full_high_shared",
+                                             csv);
+  run_all_widths<Format, fs::decode_kind::warp_high_lut>(
+      context, "full_high_warp", csv);
+  run_packed_widths<Format, fs::decode_kind::pair_high_lut>(
+      context, "pair_l2", csv);
+  run_packed_widths<Format, fs::decode_kind::pair_high_lut,
+                    fs::table_location::shared>(context, "pair_shared", csv);
+  if constexpr (Format::total_bits == 2) {
+    run_strategy<Format, s<fs::decode_kind::quad_high_lut, 4>>(
+        context, Format::name, "byte_quad_l2_x4", csv);
+    run_strategy<Format, s<fs::decode_kind::quad_high_lut, 8>>(
+        context, Format::name, "byte_quad_l2_x8", csv);
+    run_strategy<Format,
+                 s<fs::decode_kind::quad_high_lut, 4,
+                   fs::table_location::shared>>(
+        context, Format::name, "byte_quad_shared_x4", csv);
+    run_strategy<Format,
+                 s<fs::decode_kind::quad_high_lut, 8,
+                   fs::table_location::shared>>(
+        context, Format::name, "byte_quad_shared_x8", csv);
+  }
+  if constexpr (std::is_same_v<Format, storage::fp4_e2m1>) {
+    run_strategy<Format, s<fs::decode_kind::native_direct, 1>>(
+        context, Format::name, "native_half_x1", csv);
+    run_packed_widths<Format, fs::decode_kind::native_packed>(
+        context, "native_half2", csv);
+  }
+}
+
+template <typename Format>
+void run_added_8bit_suite(std::ofstream *csv) {
+  std::cout << Format::name << " exhaustive strategy validation\n";
+  smoke_context<Format> context;
+  run_all_widths<Format, fs::decode_kind::generic>(context, "generic", csv);
+  run_all_widths<Format, fs::decode_kind::direct_words_branchy>(
+      context, "word_branchy", csv);
+  run_all_widths<Format, fs::decode_kind::direct_words_masked>(
+      context, "word_masked", csv);
+  run_all_widths<Format, fs::decode_kind::fp32_bits>(context, "fp32_bits",
+                                                     csv);
+  if constexpr (Format::exponent_bits == 0) {
+    run_all_widths<Format, fs::decode_kind::fixed_integer>(
+        context, "fixed_integer", csv);
+  }
+  if constexpr (Format::fraction_bits == 0) {
+    run_all_widths<Format, fs::decode_kind::exponent_only>(
+        context, "exponent_only", csv);
+  }
+  run_all_widths<Format, fs::decode_kind::full_high_lut>(
+      context, "full_high_global", csv);
+  run_all_widths<Format, fs::decode_kind::full_high_lut,
+                 fs::table_location::shared>(context, "full_high_shared",
+                                             csv);
+  run_packed_widths<Format, fs::decode_kind::pair_high_lut>(
+      context, "pair_l2", csv);
+  if constexpr (Format::exponent_bits > 0 && Format::fraction_bits > 0) {
+    run_all_widths<Format, fs::decode_kind::subnormal_high_lut>(
+        context, "subnormal_global", csv);
+    run_all_widths<Format, fs::decode_kind::subnormal_high_lut,
+                   fs::table_location::shared>(context, "subnormal_shared",
+                                               csv);
+    run_all_widths<Format, fs::decode_kind::prefix_high_lut>(
+        context, "prefix_global", csv);
+    run_all_widths<Format, fs::decode_kind::prefix_high_lut,
+                   fs::table_location::shared>(context, "prefix_shared",
+                                               csv);
+  }
+  run_strategy<Format,
+               s<fs::decode_kind::full_high_lut_swizzled, 4,
+                 fs::table_location::shared>>(
+      context, Format::name, "full_high_swizzled_x4", csv);
+  run_strategy<Format,
+               s<fs::decode_kind::full_high_lut_swizzled, 8,
+                 fs::table_location::shared>>(
+      context, Format::name, "full_high_swizzled_x8", csv);
+}
+
+template <typename Format>
+void run_added_16bit_suite(std::ofstream *csv) {
+  std::cout << Format::name << " exhaustive strategy validation\n";
+  smoke_context<Format> context;
+  run_all_widths<Format, fs::decode_kind::generic>(context, "generic", csv);
+  run_all_widths<Format, fs::decode_kind::direct_words_branchy>(
+      context, "word_branchy", csv);
+  run_all_widths<Format, fs::decode_kind::direct_words_masked>(
+      context, "word_masked", csv);
+  if constexpr (Format::exponent_bits <= 8) {
+    run_all_widths<Format, fs::decode_kind::fp32_bits>(context, "fp32_bits",
+                                                       csv);
+  }
+  if constexpr (Format::exponent_bits == 0) {
+    run_all_widths<Format, fs::decode_kind::fixed_integer>(
+        context, "fixed_integer", csv);
+  }
+  run_all_widths<Format, fs::decode_kind::full_high_lut>(
+      context, "full_high_l2", csv);
+  if constexpr (Format::exponent_bits > 0) {
+    run_all_widths<Format, fs::decode_kind::subnormal_high_lut>(
+        context, "subnormal_global", csv);
+    run_all_widths<Format, fs::decode_kind::subnormal_high_lut,
+                   fs::table_location::shared>(context, "subnormal_shared",
+                                               csv);
+    run_all_widths<Format, fs::decode_kind::prefix_high_lut>(
+        context, "prefix_global", csv);
+    run_all_widths<Format, fs::decode_kind::prefix_high_lut,
+                   fs::table_location::shared>(context, "prefix_shared",
+                                               csv);
+  }
+}
+
+template <typename Format>
+void run_added_32bit_suite(std::ofstream *csv) {
+  std::cout << Format::name << " sampled strategy validation\n";
+  sampled_smoke_context<Format> context;
+  run_all_widths<Format, fs::decode_kind::generic>(context, "generic", csv);
+  run_all_widths<Format, fs::decode_kind::direct_words_branchy>(
+      context, "word_branchy", csv);
+  run_all_widths<Format, fs::decode_kind::direct_words_masked>(
+      context, "word_masked", csv);
+  if constexpr (Format::exponent_bits == 0) {
+    run_all_widths<Format, fs::decode_kind::fixed_integer>(
+        context, "fixed_integer", csv);
+  } else {
+    run_all_widths<Format, fs::decode_kind::prefix_high_lut>(
+        context, "prefix_global", csv);
+    run_all_widths<Format, fs::decode_kind::prefix_high_lut,
+                   fs::table_location::shared>(context, "prefix_shared",
+                                               csv);
+  }
+}
 
 void run_e1m6_suite(std::ofstream *csv) {
   std::cout << "E1M6 exhaustive strategy validation\n";
@@ -959,6 +1191,38 @@ int main(int argc, char **argv) {
       csv << "format,strategy,lanes,mismatches\n";
     }
     auto *csv_ptr = output.empty() ? nullptr : &csv;
+#if defined(AUT_EXPANDED_FORMAT_SMOKE)
+#if AUT_EXPANDED_SMOKE_BITS == 2
+    run_subbyte_suite<storage::e0m1>(csv_ptr);
+    run_subbyte_suite<storage::e1m0>(csv_ptr);
+#elif AUT_EXPANDED_SMOKE_BITS == 4
+    run_subbyte_suite<storage::e0m3>(csv_ptr);
+    run_subbyte_suite<storage::e1m2>(csv_ptr);
+    run_subbyte_suite<storage::fp4_e2m1>(csv_ptr);
+    run_subbyte_suite<storage::e3m0>(csv_ptr);
+#elif AUT_EXPANDED_SMOKE_BITS == 8
+    run_added_8bit_suite<storage::e0m7>(csv_ptr);
+    run_added_8bit_suite<storage::e6m1>(csv_ptr);
+    run_added_8bit_suite<storage::e7m0>(csv_ptr);
+#elif AUT_EXPANDED_SMOKE_BITS == 16
+    run_added_16bit_suite<storage::e0m15>(csv_ptr);
+    run_added_16bit_suite<storage::e4m11>(csv_ptr);
+    run_added_16bit_suite<storage::e6m9>(csv_ptr);
+    run_added_16bit_suite<storage::e7m8>(csv_ptr);
+    run_added_16bit_suite<storage::e9m6>(csv_ptr);
+    run_added_16bit_suite<storage::e10m5>(csv_ptr);
+#elif AUT_EXPANDED_SMOKE_BITS == 32
+    run_added_32bit_suite<storage::e0m31>(csv_ptr);
+    run_added_32bit_suite<storage::e4m27>(csv_ptr);
+    run_added_32bit_suite<storage::e5m26>(csv_ptr);
+    run_added_32bit_suite<storage::e6m25>(csv_ptr);
+    run_added_32bit_suite<storage::e7m24>(csv_ptr);
+    run_added_32bit_suite<storage::e9m22>(csv_ptr);
+    run_added_32bit_suite<storage::e10m21>(csv_ptr);
+#else
+#error "AUT_EXPANDED_SMOKE_BITS must be 2, 4, 8, 16, or 32"
+#endif
+#else
     run_e1m6_suite(csv_ptr);
     run_e2m5_additions(csv_ptr);
     run_e3m4_additions(csv_ptr);
@@ -975,6 +1239,7 @@ int main(int argc, char **argv) {
     run_e3m28_suite(csv_ptr);
     run_fp32_suite(csv_ptr);
     run_e11m20_suite(csv_ptr);
+#endif
     std::cout << "All registered strategies passed.\n";
   } catch (const std::exception &error) {
     std::cerr << "error: " << error.what() << '\n';
