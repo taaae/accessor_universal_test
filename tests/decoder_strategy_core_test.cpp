@@ -240,6 +240,16 @@ void test_bf16() {
   }
 }
 
+void test_e11m4() {
+  for (std::uint32_t raw = 0; raw < 65536; ++raw) {
+    const auto expected = aut::storage::decode<aut::storage::e11m4>(
+        static_cast<std::uint16_t>(raw));
+    const auto direct = aut::decoder::words_to_double(
+        aut::decoder::decode_prefix_words<4>(raw));
+    assert(bits(direct) == bits(expected));
+  }
+}
+
 } // namespace
 
 int main() {
@@ -251,5 +261,6 @@ int main() {
   test_e3m12();
   test_fp16();
   test_bf16();
+  test_e11m4();
   std::cout << "decoder strategy core tests passed\n";
 }

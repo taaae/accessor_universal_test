@@ -34,6 +34,7 @@ using e2m13_layout = binary_layout<16, 2, special_policy::ieee>;
 using e3m12_layout = binary_layout<16, 3, special_policy::ieee>;
 using fp16_e5m10_layout = binary_layout<16, 5, special_policy::ieee>;
 using bf16_e8m7_layout = binary_layout<16, 8, special_policy::ieee>;
+using e11m4_layout = binary_layout<16, 11, special_policy::fp64_prefix>;
 
 struct fp64_words {
   std::uint32_t high{};

@@ -583,6 +583,29 @@ void run_bf16_suite(std::ofstream *csv) {
       "subnormal_shared_x8");
 }
 
+void run_e11m4_suite(std::ofstream *csv) {
+  std::cout << "E11M4 exhaustive strategy validation\n";
+  smoke_context<storage::e11m4> context;
+  RUN(e11m4, context, generic, 1, global_read_only, "generic_x1");
+  RUN(e11m4, context, generic, 2, global_read_only, "generic_x2");
+  RUN(e11m4, context, generic, 4, global_read_only, "generic_x4");
+  RUN(e11m4, context, generic, 8, global_read_only, "generic_x8");
+  RUN(e11m4, context, prefix_word, 1, global_read_only,
+      "prefix_word_x1");
+  RUN(e11m4, context, prefix_word, 2, global_read_only,
+      "prefix_word_x2");
+  RUN(e11m4, context, prefix_word, 4, global_read_only,
+      "prefix_word_x4");
+  RUN(e11m4, context, prefix_word, 8, global_read_only,
+      "prefix_word_x8");
+  RUN(e11m4, context, full_high_lut, 1, global_read_only,
+      "full_high_l2_x1");
+  RUN(e11m4, context, full_high_lut, 4, global_read_only,
+      "full_high_l2_x4");
+  RUN(e11m4, context, full_high_lut, 8, global_read_only,
+      "full_high_l2_x8");
+}
+
 #undef RUN
 
 } // namespace
@@ -623,6 +646,7 @@ int main(int argc, char **argv) {
     run_e3m12_suite(csv_ptr);
     run_fp16_suite(csv_ptr);
     run_bf16_suite(csv_ptr);
+    run_e11m4_suite(csv_ptr);
     std::cout << "All registered strategies passed.\n";
   } catch (const std::exception &error) {
     std::cerr << "error: " << error.what() << '\n';
