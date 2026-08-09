@@ -79,3 +79,10 @@ def test_every_nonbaseline_format_is_registered_for_cuda_smoke():
     for name in set(EXPECTED_FORMATS) - {"fp64_e11m52"}:
         assert f"format_layout<storage::{name}>" in header
         assert f"storage::{name}" in smoke
+
+
+def test_every_non_e2e3_format_is_dispatched_by_the_full_benchmark():
+    benchmark = (ROOT / "src" / "all_format_strategy_bench.cu").read_text()
+    expected = set(EXPECTED_FORMATS) - {"fp64_e11m52", "e2m5", "e3m4"}
+    for name in expected:
+        assert f"DISPATCH({name})" in benchmark

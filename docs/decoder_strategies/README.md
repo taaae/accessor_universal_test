@@ -3,8 +3,8 @@
 Every 8-, 16-, and 32-bit storage format now has a format-specific decision
 note, exact portable decoder core coverage, registered CUDA packet strategies,
 and cumulative decoder/DOT/GEMV smoke instantiations. These are candidate
-implementations, not performance winners; the H200 smoke run must pass before
-the full benchmark is built.
+implementations, not performance winners; experiment 015 measures the complete
+kernel scaling needed to select the winners.
 
 | Bits | Format | Decision note |
 |---:|---|---|
@@ -35,3 +35,5 @@ Shared implementation files:
   CUDA packet loads, native conversions, LUT placement, and fused DOT/GEMV;
 - [`all_format_strategy_smoke.cu`](../../src/all_format_strategy_smoke.cu):
   cumulative exhaustive/sampled GPU validation.
+- [`all_format_strategy_bench.cu`](../../src/all_format_strategy_bench.cu):
+  complete DOT/GEMV timing for the non-E2M5/E3M4 strategy families.
