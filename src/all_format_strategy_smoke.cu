@@ -700,6 +700,37 @@ void run_e1m30_suite(std::ofstream *csv) {
   RUN(e1m30, context, prefix_high_lut, 8, shared, "prefix_shared_x8");
 }
 
+void run_e2m29_suite(std::ofstream *csv) {
+  std::cout << "E2M29 sampled strategy validation\n";
+  sampled_smoke_context<storage::e2m29> context;
+  RUN(e2m29, context, generic, 1, global_read_only, "generic_x1");
+  RUN(e2m29, context, generic, 2, global_read_only, "generic_x2");
+  RUN(e2m29, context, generic, 4, global_read_only, "generic_x4");
+  RUN(e2m29, context, generic, 8, global_read_only, "generic_x8");
+  RUN(e2m29, context, direct_words_branchy, 1, global_read_only,
+      "word_branchy_x1");
+  RUN(e2m29, context, direct_words_branchy, 2, global_read_only,
+      "word_branchy_x2");
+  RUN(e2m29, context, direct_words_branchy, 4, global_read_only,
+      "word_branchy_x4");
+  RUN(e2m29, context, direct_words_branchy, 8, global_read_only,
+      "word_branchy_x8");
+  RUN(e2m29, context, direct_words_masked, 1, global_read_only,
+      "word_masked_x1");
+  RUN(e2m29, context, direct_words_masked, 2, global_read_only,
+      "word_masked_x2");
+  RUN(e2m29, context, direct_words_masked, 4, global_read_only,
+      "word_masked_x4");
+  RUN(e2m29, context, direct_words_masked, 8, global_read_only,
+      "word_masked_x8");
+  RUN(e2m29, context, prefix_high_lut, 4, global_read_only,
+      "prefix_global_x4");
+  RUN(e2m29, context, prefix_high_lut, 8, global_read_only,
+      "prefix_global_x8");
+  RUN(e2m29, context, prefix_high_lut, 4, shared, "prefix_shared_x4");
+  RUN(e2m29, context, prefix_high_lut, 8, shared, "prefix_shared_x8");
+}
+
 #undef RUN
 
 } // namespace
@@ -742,6 +773,7 @@ int main(int argc, char **argv) {
     run_bf16_suite(csv_ptr);
     run_e11m4_suite(csv_ptr);
     run_e1m30_suite(csv_ptr);
+    run_e2m29_suite(csv_ptr);
     std::cout << "All registered strategies passed.\n";
   } catch (const std::exception &error) {
     std::cerr << "error: " << error.what() << '\n';
