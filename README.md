@@ -200,6 +200,8 @@ every 8-, 16-, and 32-bit format is in
 machine-readable per-format priorities, LUT sizes, packet widths, and excluded
 paths are in
 [`analysis/decoder_strategy_matrix.csv`](analysis/decoder_strategy_matrix.csv).
+The completed candidate-implementation index is in
+[`docs/decoder_strategies/README.md`](docs/decoder_strategies/README.md).
 
 ## Storage-format DOT and GEMV
 

@@ -5,6 +5,11 @@ implementing and measuring; it does not claim winners before the H200 runs.
 The machine-readable companion is
 [`analysis/decoder_strategy_matrix.csv`](../analysis/decoder_strategy_matrix.csv).
 
+Implementation update: all candidate families selected here are registered in
+the cumulative strategy/smoke framework. See
+[`docs/decoder_strategies/README.md`](decoder_strategies/README.md). CUDA
+compilation and runtime validation remain pending on the H200 smoke run.
+
 ## Bottom line
 
 There is no single fair decoder for every format. The 16 storage formats fall

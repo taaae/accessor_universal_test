@@ -21,6 +21,7 @@ The evolving multi-experiment HTML report is at [`report/index.html`](report/ind
 | 011 | `011_e2e3_strategy_performance` | Compare complete DOT/GEMV time for all E2M5/E3M4 decoder strategies against raw FP64. |
 | 012 | `012_e2e3_strategy_expansion_smoke` | Exhaustively validate the selected direct-word, compact-LUT, x8, and bank-swizzled E2M5/E3M4 strategies. |
 | 013 | `013_e2e3_expanded_strategy_performance` | Measure the complete DOT/GEMV scaling of all 42 expanded strategies per E2M5/E3M4 format against raw FP64. |
+| 014 | `014_all_format_strategy_smoke` | Exhaustively/statistically validate all new format decoder strategies and launch their fused DOT/GEMV paths. |
 
 Timestamped repetitions of an unchanged experiment belong in the existing
 directory. Create the next numbered directory when changing the kernel,

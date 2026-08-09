@@ -66,3 +66,16 @@ def test_inexact_fp32_intermediates_are_not_proposed():
         assert "FP32-BITS" not in row["p0_strategies"]
         assert "FP32-BITS" not in row["p1_strategies"]
 
+
+def test_every_nonbaseline_format_has_an_implementation_note():
+    note_root = ROOT / "docs" / "decoder_strategies"
+    expected = set(EXPECTED_FORMATS) - {"fp64_e11m52"}
+    assert {path.stem for path in note_root.glob("*.md")} - {"README"} == expected
+
+
+def test_every_nonbaseline_format_is_registered_for_cuda_smoke():
+    header = (ROOT / "include" / "format_decoder_strategies.cuh").read_text()
+    smoke = (ROOT / "src" / "all_format_strategy_smoke.cu").read_text()
+    for name in set(EXPECTED_FORMATS) - {"fp64_e11m52"}:
+        assert f"format_layout<storage::{name}>" in header
+        assert f"storage::{name}" in smoke
