@@ -27,6 +27,7 @@ struct binary_layout {
 };
 
 using e1m6_layout = binary_layout<8, 1, special_policy::finite_all>;
+using e2m5_layout = binary_layout<8, 2, special_policy::ieee>;
 using fp8_e4m3_layout = binary_layout<8, 4, special_policy::e4m3fn>;
 using fp8_e5m2_layout = binary_layout<8, 5, special_policy::ieee>;
 using e1m14_layout = binary_layout<16, 1, special_policy::finite_all>;
