@@ -61,6 +61,14 @@ host_storage_from_raw<storage::fp8_e4m3>(std::uint32_t raw) {
   return value;
 }
 
+template <>
+storage::storage_type_t<storage::fp8_e5m2>
+host_storage_from_raw<storage::fp8_e5m2>(std::uint32_t raw) {
+  storage::storage_type_t<storage::fp8_e5m2> value;
+  value.__x = static_cast<__nv_fp8_storage_t>(raw);
+  return value;
+}
+
 template <typename Format> struct smoke_context {
   using storage_type = storage::storage_type_t<Format>;
   using layout = fs::format_layout_t<Format>;
@@ -264,6 +272,57 @@ void run_fp8_e4m3_suite(std::ofstream *csv) {
   RUN(fp8_e4m3, context, pair_high_lut, 8, global_read_only, "pair_l2_x8");
 }
 
+void run_fp8_e5m2_suite(std::ofstream *csv) {
+  std::cout << "FP8 E5M2 exhaustive strategy validation\n";
+  smoke_context<storage::fp8_e5m2> context;
+  RUN(fp8_e5m2, context, generic, 1, global_read_only, "generic_x1");
+  RUN(fp8_e5m2, context, native_direct, 1, global_read_only,
+      "native_direct_x1");
+  RUN(fp8_e5m2, context, native_fp32, 1, global_read_only,
+      "native_fp32_x1");
+  RUN(fp8_e5m2, context, native_packed, 2, global_read_only,
+      "native_float2_x2");
+  RUN(fp8_e5m2, context, native_packed, 4, global_read_only,
+      "native_float4_x4");
+  RUN(fp8_e5m2, context, native_packed, 8, global_read_only,
+      "native_float4_x8");
+  RUN(fp8_e5m2, context, native_half2, 2, global_read_only,
+      "native_half2_x2");
+  RUN(fp8_e5m2, context, native_half2, 4, global_read_only,
+      "native_half2_x4");
+  RUN(fp8_e5m2, context, native_half2, 8, global_read_only,
+      "native_half2_x8");
+  RUN(fp8_e5m2, context, direct_words_branchy, 1, global_read_only,
+      "word_branchy_x1");
+  RUN(fp8_e5m2, context, direct_words_branchy, 4, global_read_only,
+      "word_branchy_x4");
+  RUN(fp8_e5m2, context, direct_words_branchy, 8, global_read_only,
+      "word_branchy_x8");
+  RUN(fp8_e5m2, context, direct_words_masked, 1, global_read_only,
+      "word_masked_x1");
+  RUN(fp8_e5m2, context, direct_words_masked, 4, global_read_only,
+      "word_masked_x4");
+  RUN(fp8_e5m2, context, direct_words_masked, 8, global_read_only,
+      "word_masked_x8");
+  RUN(fp8_e5m2, context, fp32_bits, 1, global_read_only, "fp32_bits_x1");
+  RUN(fp8_e5m2, context, fp32_bits, 4, global_read_only, "fp32_bits_x4");
+  RUN(fp8_e5m2, context, fp32_bits, 8, global_read_only, "fp32_bits_x8");
+  RUN(fp8_e5m2, context, full_high_lut, 1, global_read_only,
+      "full_high_global_x1");
+  RUN(fp8_e5m2, context, full_high_lut, 4, global_read_only,
+      "full_high_global_x4");
+  RUN(fp8_e5m2, context, full_high_lut, 8, global_read_only,
+      "full_high_global_x8");
+  RUN(fp8_e5m2, context, full_high_lut, 4, shared,
+      "full_high_shared_x4");
+  RUN(fp8_e5m2, context, full_high_lut, 8, shared,
+      "full_high_shared_x8");
+  RUN(fp8_e5m2, context, subnormal_high_lut, 8, shared,
+      "subnormal_shared_x8");
+  RUN(fp8_e5m2, context, pair_high_lut, 4, global_read_only, "pair_l2_x4");
+  RUN(fp8_e5m2, context, pair_high_lut, 8, global_read_only, "pair_l2_x8");
+}
+
 #undef RUN
 
 } // namespace
@@ -298,6 +357,7 @@ int main(int argc, char **argv) {
     auto *csv_ptr = output.empty() ? nullptr : &csv;
     run_e1m6_suite(csv_ptr);
     run_fp8_e4m3_suite(csv_ptr);
+    run_fp8_e5m2_suite(csv_ptr);
     std::cout << "All registered strategies passed.\n";
   } catch (const std::exception &error) {
     std::cerr << "error: " << error.what() << '\n';

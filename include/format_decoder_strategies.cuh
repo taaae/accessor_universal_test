@@ -46,6 +46,9 @@ template <> struct format_layout<storage::e1m6> {
 template <> struct format_layout<storage::fp8_e4m3> {
   using type = decoder::fp8_e4m3_layout;
 };
+template <> struct format_layout<storage::fp8_e5m2> {
+  using type = decoder::fp8_e5m2_layout;
+};
 template <typename Format>
 using format_layout_t = typename format_layout<Format>::type;
 
@@ -179,6 +182,14 @@ template <>
 __device__ __forceinline__ storage::storage_type_t<storage::fp8_e4m3>
 storage_from_raw<storage::fp8_e4m3>(std::uint32_t raw) {
   storage::storage_type_t<storage::fp8_e4m3> value;
+  value.__x = static_cast<__nv_fp8_storage_t>(raw);
+  return value;
+}
+
+template <>
+__device__ __forceinline__ storage::storage_type_t<storage::fp8_e5m2>
+storage_from_raw<storage::fp8_e5m2>(std::uint32_t raw) {
+  storage::storage_type_t<storage::fp8_e5m2> value;
   value.__x = static_cast<__nv_fp8_storage_t>(raw);
   return value;
 }
@@ -344,6 +355,52 @@ decode_e4m3_half2_packet(const source_packet<Lanes> &packet) {
   return result;
 }
 
+template <int Lanes>
+__device__ __forceinline__ decoded_packet<Lanes>
+decode_e5m2_native_packet(const source_packet<Lanes> &packet) {
+  decoded_packet<Lanes> result{};
+  if constexpr (Lanes == 1) {
+    result.values[0] = static_cast<double>(
+        static_cast<float>(storage_from_raw<storage::fp8_e5m2>(
+            raw_lane<storage::fp8_e5m2, 0>(packet))));
+  } else if constexpr (Lanes == 2) {
+    __nv_fp8x2_e5m2 packed;
+    packed.__x = static_cast<__nv_fp8x2_storage_t>(packet.words[0]);
+    const auto values = static_cast<float2>(packed);
+    result.values[0] = static_cast<double>(values.x);
+    result.values[1] = static_cast<double>(values.y);
+  } else {
+#pragma unroll
+    for (int group = 0; group < Lanes / 4; ++group) {
+      __nv_fp8x4_e5m2 packed;
+      packed.__x = static_cast<__nv_fp8x4_storage_t>(packet.words[group]);
+      const auto values = static_cast<float4>(packed);
+      result.values[4 * group] = static_cast<double>(values.x);
+      result.values[4 * group + 1] = static_cast<double>(values.y);
+      result.values[4 * group + 2] = static_cast<double>(values.z);
+      result.values[4 * group + 3] = static_cast<double>(values.w);
+    }
+  }
+  return result;
+}
+
+template <int Lanes>
+__device__ __forceinline__ decoded_packet<Lanes>
+decode_e5m2_half2_packet(const source_packet<Lanes> &packet) {
+  static_assert(Lanes == 2 || Lanes == 4 || Lanes == 8);
+  decoded_packet<Lanes> result{};
+#pragma unroll
+  for (int group = 0; group < Lanes / 2; ++group) {
+    const auto word = packet.words[group / 2] >> (16 * (group % 2));
+    __nv_fp8x2_e5m2 packed;
+    packed.__x = static_cast<__nv_fp8x2_storage_t>(word);
+    const auto values = __half22float2(static_cast<__half2>(packed));
+    result.values[2 * group] = static_cast<double>(values.x);
+    result.values[2 * group + 1] = static_cast<double>(values.y);
+  }
+  return result;
+}
+
 template <typename Format, int Lanes>
 __device__ __forceinline__ decoded_packet<Lanes>
 decode_pair_packet(const source_packet<Lanes> &packet, table_bundle tables) {
@@ -374,11 +431,21 @@ __device__ __forceinline__ decoded_packet<Strategy::lanes>
 decode_packet(const source_packet<Strategy::lanes> &packet,
               table_bundle tables) {
   if constexpr (Strategy::kind == decode_kind::native_packed) {
-    static_assert(std::is_same_v<Format, storage::fp8_e4m3>);
-    return decode_e4m3_native_packet(packet);
+    static_assert(std::is_same_v<Format, storage::fp8_e4m3> ||
+                  std::is_same_v<Format, storage::fp8_e5m2>);
+    if constexpr (std::is_same_v<Format, storage::fp8_e4m3>) {
+      return decode_e4m3_native_packet(packet);
+    } else {
+      return decode_e5m2_native_packet(packet);
+    }
   } else if constexpr (Strategy::kind == decode_kind::native_half2) {
-    static_assert(std::is_same_v<Format, storage::fp8_e4m3>);
-    return decode_e4m3_half2_packet(packet);
+    static_assert(std::is_same_v<Format, storage::fp8_e4m3> ||
+                  std::is_same_v<Format, storage::fp8_e5m2>);
+    if constexpr (std::is_same_v<Format, storage::fp8_e4m3>) {
+      return decode_e4m3_half2_packet(packet);
+    } else {
+      return decode_e5m2_half2_packet(packet);
+    }
   } else if constexpr (Strategy::kind == decode_kind::pair_high_lut) {
     return decode_pair_packet<Format>(packet, tables);
   } else {
