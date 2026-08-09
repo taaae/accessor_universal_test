@@ -27,6 +27,7 @@ struct binary_layout {
 };
 
 using e1m6_layout = binary_layout<8, 1, special_policy::finite_all>;
+using fp8_e4m3_layout = binary_layout<8, 4, special_policy::e4m3fn>;
 
 struct fp64_words {
   std::uint32_t high{};

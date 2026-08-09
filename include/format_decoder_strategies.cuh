@@ -24,6 +24,8 @@ enum class decode_kind {
   native_direct,
   native_fp32,
   native_packed,
+  native_half2,
+  pair_high_lut,
 };
 
 enum class table_location { global_read_only, shared };
@@ -41,6 +43,9 @@ template <typename Format> struct format_layout;
 template <> struct format_layout<storage::e1m6> {
   using type = decoder::e1m6_layout;
 };
+template <> struct format_layout<storage::fp8_e4m3> {
+  using type = decoder::fp8_e4m3_layout;
+};
 template <typename Format>
 using format_layout_t = typename format_layout<Format>::type;
 
@@ -48,13 +53,15 @@ struct table_bundle {
   const std::uint32_t *full_high{};
   const std::uint32_t *subnormal_high{};
   const std::uint32_t *prefix_high{};
+  const uint2 *pair_high{};
 };
 
 template <typename Strategy>
 inline constexpr bool uses_table_v =
     Strategy::kind == decode_kind::full_high_lut ||
     Strategy::kind == decode_kind::subnormal_high_lut ||
-    Strategy::kind == decode_kind::prefix_high_lut;
+    Strategy::kind == decode_kind::prefix_high_lut ||
+    Strategy::kind == decode_kind::pair_high_lut;
 
 template <typename Format, typename Strategy>
 inline constexpr std::size_t table_entries_v = [] {
@@ -65,6 +72,8 @@ inline constexpr std::size_t table_entries_v = [] {
     return std::size_t{1} << layout::fraction_bits;
   } else if constexpr (Strategy::kind == decode_kind::prefix_high_lut) {
     return std::size_t{1} << (layout::exponent_bits + 1);
+  } else if constexpr (Strategy::kind == decode_kind::pair_high_lut) {
+    return std::size_t{1} << 16;
   } else {
     return std::size_t{0};
   }
@@ -166,6 +175,14 @@ storage_from_raw(std::uint32_t raw) {
   return static_cast<storage::storage_type_t<Format>>(raw);
 }
 
+template <>
+__device__ __forceinline__ storage::storage_type_t<storage::fp8_e4m3>
+storage_from_raw<storage::fp8_e4m3>(std::uint32_t raw) {
+  storage::storage_type_t<storage::fp8_e4m3> value;
+  value.__x = static_cast<__nv_fp8_storage_t>(raw);
+  return value;
+}
+
 template <typename Format, typename Strategy>
 __device__ __forceinline__ table_bundle
 stage_shared_table(table_bundle tables, std::uint32_t *shared) {
@@ -176,8 +193,11 @@ stage_shared_table(table_bundle tables, std::uint32_t *shared) {
       source = tables.full_high;
     } else if constexpr (Strategy::kind == decode_kind::subnormal_high_lut) {
       source = tables.subnormal_high;
-    } else {
+    } else if constexpr (Strategy::kind == decode_kind::prefix_high_lut) {
       source = tables.prefix_high;
+    } else {
+      static_assert(Strategy::kind != decode_kind::pair_high_lut,
+                    "the pair LUT is global/L2 only");
     }
     for (std::size_t i = threadIdx.x; i < table_entries_v<Format, Strategy>;
          i += blockDim.x) {
@@ -219,6 +239,16 @@ __device__ __forceinline__ double decode_raw(std::uint32_t raw,
     return decoder::decode_via_fp32<layout>(raw);
   } else if constexpr (Strategy::kind == decode_kind::e1_integer) {
     return decoder::decode_e1_integer<layout>(raw);
+  } else if constexpr (Strategy::kind == decode_kind::native_direct) {
+    return static_cast<double>(storage_from_raw<Format>(raw));
+  } else if constexpr (Strategy::kind == decode_kind::native_fp32) {
+    return static_cast<double>(
+        static_cast<float>(storage_from_raw<Format>(raw)));
+  } else if constexpr (Strategy::kind == decode_kind::native_packed ||
+                       Strategy::kind == decode_kind::native_half2) {
+    // Scalar tail fallback for a packed native strategy.
+    return static_cast<double>(
+        static_cast<float>(storage_from_raw<Format>(raw)));
   } else if constexpr (Strategy::kind == decode_kind::prefix_word) {
     return decoder::words_to_double(
         decoder::decode_prefix_words<layout::fraction_bits>(raw));
@@ -242,6 +272,11 @@ __device__ __forceinline__ double decode_raw(std::uint32_t raw,
     }
     words.high |= (raw >> (layout::total_bits - 1)) << 31;
     return decoder::words_to_double(words);
+  } else if constexpr (Strategy::kind == decode_kind::pair_high_lut) {
+    return decoder::words_to_double(
+        {lookup_high<Strategy>(tables.full_high,
+                               raw & decoder::raw_mask<layout>()),
+         0});
   } else {
     static_assert(Strategy::kind == decode_kind::prefix_high_lut,
                   "native decoders are specialized per format");
@@ -263,6 +298,69 @@ template <int Lanes> struct decoded_packet {
   double values[Lanes];
 };
 
+template <int Lanes>
+__device__ __forceinline__ decoded_packet<Lanes>
+decode_e4m3_native_packet(const source_packet<Lanes> &packet) {
+  decoded_packet<Lanes> result{};
+  if constexpr (Lanes == 1) {
+    result.values[0] = static_cast<double>(
+        static_cast<float>(storage_from_raw<storage::fp8_e4m3>(
+            raw_lane<storage::fp8_e4m3, 0>(packet))));
+  } else if constexpr (Lanes == 2) {
+    __nv_fp8x2_e4m3 packed;
+    packed.__x = static_cast<__nv_fp8x2_storage_t>(packet.words[0]);
+    const auto values = static_cast<float2>(packed);
+    result.values[0] = static_cast<double>(values.x);
+    result.values[1] = static_cast<double>(values.y);
+  } else {
+#pragma unroll
+    for (int group = 0; group < Lanes / 4; ++group) {
+      __nv_fp8x4_e4m3 packed;
+      packed.__x = static_cast<__nv_fp8x4_storage_t>(packet.words[group]);
+      const auto values = static_cast<float4>(packed);
+      result.values[4 * group] = static_cast<double>(values.x);
+      result.values[4 * group + 1] = static_cast<double>(values.y);
+      result.values[4 * group + 2] = static_cast<double>(values.z);
+      result.values[4 * group + 3] = static_cast<double>(values.w);
+    }
+  }
+  return result;
+}
+
+template <int Lanes>
+__device__ __forceinline__ decoded_packet<Lanes>
+decode_e4m3_half2_packet(const source_packet<Lanes> &packet) {
+  static_assert(Lanes == 2 || Lanes == 4 || Lanes == 8);
+  decoded_packet<Lanes> result{};
+#pragma unroll
+  for (int group = 0; group < Lanes / 2; ++group) {
+    const auto word = packet.words[group / 2] >> (16 * (group % 2));
+    __nv_fp8x2_e4m3 packed;
+    packed.__x = static_cast<__nv_fp8x2_storage_t>(word);
+    const auto values = __half22float2(static_cast<__half2>(packed));
+    result.values[2 * group] = static_cast<double>(values.x);
+    result.values[2 * group + 1] = static_cast<double>(values.y);
+  }
+  return result;
+}
+
+template <typename Format, int Lanes>
+__device__ __forceinline__ decoded_packet<Lanes>
+decode_pair_packet(const source_packet<Lanes> &packet, table_bundle tables) {
+  static_assert(sizeof(storage::storage_type_t<Format>) == 1);
+  static_assert(Lanes == 2 || Lanes == 4 || Lanes == 8);
+  decoded_packet<Lanes> result{};
+#pragma unroll
+  for (int pair = 0; pair < Lanes / 2; ++pair) {
+    const auto low = raw_lane<Format, 2 * pair>(packet);
+    const auto high = raw_lane<Format, 2 * pair + 1>(packet);
+    const auto words = __ldg(tables.pair_high + low + (high << 8));
+    result.values[2 * pair] = decoder::words_to_double({words.x, 0});
+    result.values[2 * pair + 1] = decoder::words_to_double({words.y, 0});
+  }
+  return result;
+}
+
 template <typename Format, typename Strategy, std::size_t... Lane>
 __device__ __forceinline__ decoded_packet<Strategy::lanes>
 decode_packet_impl(const source_packet<Strategy::lanes> &packet,
@@ -275,8 +373,18 @@ template <typename Format, typename Strategy>
 __device__ __forceinline__ decoded_packet<Strategy::lanes>
 decode_packet(const source_packet<Strategy::lanes> &packet,
               table_bundle tables) {
-  return decode_packet_impl<Format, Strategy>(
-      packet, tables, std::make_index_sequence<Strategy::lanes>{});
+  if constexpr (Strategy::kind == decode_kind::native_packed) {
+    static_assert(std::is_same_v<Format, storage::fp8_e4m3>);
+    return decode_e4m3_native_packet(packet);
+  } else if constexpr (Strategy::kind == decode_kind::native_half2) {
+    static_assert(std::is_same_v<Format, storage::fp8_e4m3>);
+    return decode_e4m3_half2_packet(packet);
+  } else if constexpr (Strategy::kind == decode_kind::pair_high_lut) {
+    return decode_pair_packet<Format>(packet, tables);
+  } else {
+    return decode_packet_impl<Format, Strategy>(
+        packet, tables, std::make_index_sequence<Strategy::lanes>{});
+  }
 }
 
 template <typename Format, typename Strategy>
