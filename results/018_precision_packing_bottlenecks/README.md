@@ -61,7 +61,11 @@ schema includes:
 
 The run uses ten warmups, three randomized rounds, five samples per round, and
 enough launches per sample to target at least 15 ms. The final reduction is
-included in complete DOT time.
+included in complete DOT time. Per-thread and per-block accumulation uses the
+selected arithmetic type. DOT's small array of block partials is finalized in
+FP64 for every mode, avoiding FP16 overflow in the final inter-block sum and
+keeping that fixed overhead comparable. GEMV row reductions remain in the
+selected arithmetic type and write FP64 only after the row is complete.
 
 `timing_summary.csv` contains medians, dispersion, packet speedups, mixed
 precision penalties, classical roof limits, and roof gaps. The measured HBM
