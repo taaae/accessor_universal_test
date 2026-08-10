@@ -1214,11 +1214,11 @@ void run_components(const options &settings, const device_info &device) {
 }
 
 template <typename Format, pp::arithmetic_kind Arithmetic>
-timed_variant
-select_variant(const options &settings,
-               const pp::device_storage_t<Format> *left_or_matrix,
-               const pp::device_storage_t<Format> *right_or_vector,
-               int dot_blocks, void *partials, double *result) {
+std::vector<timed_variant>
+make_profile_variants(const options &settings,
+                      const pp::device_storage_t<Format> *left_or_matrix,
+                      const pp::device_storage_t<Format> *right_or_vector,
+                      int dot_blocks, void *partials, double *result) {
   std::vector<timed_variant> variants;
   if (settings.profile_kernel == kernel_kind::dot) {
     append_dot_variants<Format, Arithmetic>(variants, left_or_matrix,
@@ -1245,6 +1245,17 @@ select_variant(const options &settings,
       }
     }
   }
+  return variants;
+}
+
+template <typename Format, pp::arithmetic_kind Arithmetic>
+timed_variant
+select_variant(const options &settings,
+               const pp::device_storage_t<Format> *left_or_matrix,
+               const pp::device_storage_t<Format> *right_or_vector,
+               int dot_blocks, void *partials, double *result) {
+  auto variants = make_profile_variants<Format, Arithmetic>(
+      settings, left_or_matrix, right_or_vector, dot_blocks, partials, result);
   for (auto &variant : variants) {
     if (variant.model.family == settings.profile_family &&
         variant.model.lanes == settings.profile_lanes) {
@@ -1291,14 +1302,22 @@ void run_profile(const options &settings, const device_info &device) {
   encode<Format>(source.get(), b.get(), logical_b, device.multiprocessors);
   CUDA_CHECK(cudaDeviceSynchronize());
 
-  timed_variant selected;
+  std::vector<timed_variant> selected;
   dispatch_arithmetic<Format>(settings.profile_arithmetic, [&](auto tag) {
     constexpr auto arithmetic = decltype(tag)::value;
-    selected = select_variant<Format, arithmetic>(
-        settings, a.get(), b.get(), dot_blocks, partials.get(), result.get());
+    if (settings.profile_family == "all") {
+      selected = make_profile_variants<Format, arithmetic>(
+          settings, a.get(), b.get(), dot_blocks, partials.get(), result.get());
+    } else {
+      selected.push_back(select_variant<Format, arithmetic>(
+          settings, a.get(), b.get(), dot_blocks, partials.get(),
+          result.get()));
+    }
   });
   for (int warmup = 0; warmup < settings.warmup; ++warmup) {
-    selected.launch();
+    for (auto &variant : selected) {
+      variant.launch();
+    }
   }
   CUDA_CHECK(cudaDeviceSynchronize());
 
@@ -1309,19 +1328,22 @@ void run_profile(const options &settings, const device_info &device) {
   output << "profile_sequence,distribution,kernel,storage,storage_bits,"
             "arithmetic,family,lanes,m,n,useful_flops,logical_storage_bytes,"
             "modeled_load_instructions,timing_status\n";
-  output << "0," << name(settings.profile_distribution) << ','
-         << name(settings.profile_kernel) << ',' << Format::name << ','
-         << Format::total_bits << ',' << name(selected.model.arithmetic) << ','
-         << selected.model.family << ',' << selected.model.lanes << ','
-         << selected.model.rows << ',' << selected.model.columns << ','
-         << selected.model.useful_flops << ','
-         << selected.model.logical_storage_bytes << ','
-         << selected.model.modeled_load_instructions
-         << ",profiler_contaminated\n";
+  for (std::size_t sequence = 0; sequence < selected.size(); ++sequence) {
+    const auto &model = selected[sequence].model;
+    output << sequence << ',' << name(settings.profile_distribution) << ','
+           << name(settings.profile_kernel) << ',' << Format::name << ','
+           << Format::total_bits << ',' << name(model.arithmetic) << ','
+           << model.family << ',' << model.lanes << ',' << model.rows << ','
+           << model.columns << ',' << model.useful_flops << ','
+           << model.logical_storage_bytes << ','
+           << model.modeled_load_instructions << ",profiler_contaminated\n";
+  }
   output.flush();
 
   CUDA_CHECK(cudaProfilerStart());
-  selected.launch();
+  for (auto &variant : selected) {
+    variant.launch();
+  }
   CUDA_CHECK(cudaGetLastError());
   CUDA_CHECK(cudaDeviceSynchronize());
   CUDA_CHECK(cudaProfilerStop());
