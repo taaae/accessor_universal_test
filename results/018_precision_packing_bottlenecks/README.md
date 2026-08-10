@@ -71,6 +71,11 @@ selected arithmetic type and write FP64 only after the row is complete.
 precision penalties, classical roof limits, and roof gaps. The measured HBM
 calibration is used instead of the product-sheet bandwidth.
 
+The separate native `packed_arithmetic` control remains in timing and profiler
+outputs, but is intentionally omitted from derived roof/resource-floor CSVs.
+The scalar arithmetic-chain calibration is not a valid compute ceiling for
+`half2` or `bfloat162` instructions.
+
 ## Component calibration
 
 `component_samples.csv` provides empirical resource floors:
@@ -80,8 +85,9 @@ calibration is used instead of the product-sheet bandwidth.
   arithmetic type;
 - `register_decode`: conversion with the source packet already in registers;
 - `arithmetic_chain`: one versus x2/x4/x8 independent accumulator chains;
-- `hbm_calibration`: a large streaming read used as the sustainable-bandwidth
-  reference.
+
+The fastest large `stream_load` result is used as the empirical sustainable
+read-bandwidth reference.
 
 These are lower-bound diagnostics, not additive time components. GPU resources
 overlap, so later plots must not stack their times.
@@ -97,10 +103,12 @@ one launch under Nsight Compute for large DOT and GEMV cases. It collects:
 - DRAM bytes and executed FP32/FP64 arithmetic instructions;
 - the `.ncu-rep`, details text, raw CSV, and a case-to-report manifest.
 
-The representative set profiles x1 and x8 for all storage/arithmetic pairs,
-plus x8 scalar-unrolled controls. FP16/BF16 same-type cases additionally profile
-packed arithmetic. Profiling time is marked contaminated and is never used as
-ordinary performance data.
+The representative set profiles every scalar-single, scalar-unrolled, and
+vector-packet control at its valid x1/x2/x4/x8 widths. FP16/BF16 same-type cases
+also profile packed arithmetic x2/x4/x8. Related variants share one application
+launch per format/arithmetic/kernel so profiler startup does not dominate the
+job. Profiling time is marked contaminated and is never used as ordinary
+performance data.
 
 ## Intended plots
 

@@ -354,6 +354,14 @@ def derive_roofs(
     roof_rows = []
     floor_rows = []
     for row in timing:
+        # Native half2/bfloat162 arithmetic is a separate control.  Its
+        # throughput ceiling is not represented by the scalar arithmetic-chain
+        # calibration below, so do not publish a misleading roof or resource
+        # floor for it.  Complete-kernel timing and NCU data still retain these
+        # rows.
+        family = str(row["family"])
+        if family == "packed_arithmetic":
+            continue
         elapsed = float(row["median_time_ms"])
         bytes_ = float(row["logical_storage_bytes"])
         flops = float(row["useful_flops"])
@@ -375,10 +383,7 @@ def derive_roofs(
             }
         )
 
-        family = str(row["family"])
         lanes = str(row["lanes"])
-        if family == "packed_arithmetic":
-            continue
         distribution = str(row["distribution"])
         storage = str(row["storage"])
         logical_input_values = (
