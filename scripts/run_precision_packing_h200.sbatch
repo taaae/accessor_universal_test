@@ -19,6 +19,14 @@ if [[ ! -f "${repo_dir}/CMakeLists.txt" ||
     exit 2
 fi
 
+source /etc/profile
+cuda_module="${CUDA_MODULE:-cuda/13.1.1}"
+if ! type module >/dev/null 2>&1; then
+    echo "error: environment-modules is unavailable after sourcing /etc/profile" >&2
+    exit 2
+fi
+module load "${cuda_module}"
+
 cd "${repo_dir}"
 srun --ntasks=1 --cpus-per-task="${SLURM_CPUS_PER_TASK}" \
     env \
