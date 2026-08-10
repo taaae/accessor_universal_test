@@ -407,6 +407,215 @@ __global__ void encode_values(const double *source,
   }
 }
 
+template <typename Format>
+__device__ __forceinline__ std::uint64_t
+scalar_raw_checksum(const device_storage_t<Format> *values,
+                    std::size_t logical_index) {
+  if constexpr (std::is_same_v<Format, storage::fp64_e11m52>) {
+    return static_cast<std::uint64_t>(
+        __double_as_longlong(values[logical_index]));
+  } else {
+    return load_scalar_raw<Format>(values, logical_index);
+  }
+}
+
+template <typename Format, access_kind Access, int Lanes>
+__device__ __forceinline__ std::uint64_t
+packet_checksum(const device_storage_t<Format> *values,
+                std::size_t logical_offset) {
+  std::uint64_t checksum{};
+  if constexpr (Access == access_kind::vector_packet &&
+                std::is_same_v<Format, storage::fp64_e11m52>) {
+    if constexpr (Lanes == 1) {
+      checksum = scalar_raw_checksum<Format>(values, logical_offset);
+    } else {
+#pragma unroll
+      for (int pair = 0; pair < Lanes / 2; ++pair) {
+        const auto loaded = *reinterpret_cast<const double2 *>(
+            values + logical_offset + 2 * pair);
+        checksum ^= static_cast<std::uint64_t>(__double_as_longlong(loaded.x));
+        checksum = (checksum << 7) ^
+                   static_cast<std::uint64_t>(__double_as_longlong(loaded.y));
+      }
+    }
+  } else if constexpr (Access == access_kind::vector_packet) {
+    const auto packet =
+        fs::load_source_packet<Format, Lanes>(values, logical_offset);
+    constexpr auto word_count = (Format::total_bits * Lanes + 31) / 32;
+#pragma unroll
+    for (int word = 0; word < word_count; ++word) {
+      checksum = (checksum << 11) ^ packet.words[word];
+    }
+  } else {
+#pragma unroll
+    for (int lane = 0; lane < Lanes; ++lane) {
+      checksum = (checksum << 7) ^
+                 scalar_raw_checksum<Format>(values, logical_offset + lane);
+    }
+  }
+  return checksum;
+}
+
+__device__ __forceinline__ std::uint64_t block_xor(std::uint64_t value) {
+  __shared__ std::uint64_t shared[block_threads];
+  shared[threadIdx.x] = value;
+  __syncthreads();
+  for (int offset = block_threads / 2; offset != 0; offset /= 2) {
+    if (threadIdx.x < offset) {
+      shared[threadIdx.x] ^= shared[threadIdx.x + offset];
+    }
+    __syncthreads();
+  }
+  return shared[0];
+}
+
+template <typename Format, access_kind Access, int Lanes>
+__global__ void stream_load(const device_storage_t<Format> *values,
+                            std::size_t count, std::uint64_t *block_checksums) {
+  const auto thread =
+      static_cast<std::size_t>(blockIdx.x) * blockDim.x + threadIdx.x;
+  const auto stride = static_cast<std::size_t>(gridDim.x) * blockDim.x;
+  const auto packet_count = count / Lanes;
+  std::uint64_t checksum{};
+  for (auto packet = thread; packet < packet_count; packet += stride) {
+    checksum ^= packet_checksum<Format, Access, Lanes>(values, packet * Lanes);
+  }
+  const auto tail = packet_count * Lanes + thread;
+  if (tail < count) {
+    checksum ^= scalar_raw_checksum<Format>(values, tail);
+  }
+  const auto total = block_xor(checksum);
+  if (threadIdx.x == 0) {
+    block_checksums[blockIdx.x] = total;
+  }
+}
+
+template <typename Format, arithmetic_kind Arithmetic, access_kind Access,
+          int Lanes>
+__global__ void stream_decode(const device_storage_t<Format> *values,
+                              std::size_t count, double *block_sums) {
+  const auto thread =
+      static_cast<std::size_t>(blockIdx.x) * blockDim.x + threadIdx.x;
+  const auto stride = static_cast<std::size_t>(gridDim.x) * blockDim.x;
+  const auto packet_count = count / Lanes;
+  arithmetic_t<Arithmetic> sums[Lanes];
+#pragma unroll
+  for (int lane = 0; lane < Lanes; ++lane) {
+    sums[lane] = arithmetic<Arithmetic>::zero();
+  }
+  for (auto packet = thread; packet < packet_count; packet += stride) {
+    const auto decoded =
+        load_values<Format, Arithmetic, Access, Lanes>(values, packet * Lanes);
+#pragma unroll
+    for (int lane = 0; lane < Lanes; ++lane) {
+      sums[lane] = arithmetic<Arithmetic>::add(sums[lane], decoded.lane[lane]);
+    }
+  }
+  const auto tail = packet_count * Lanes + thread;
+  if (tail < count) {
+    sums[0] = arithmetic<Arithmetic>::add(
+        sums[0], load_scalar<Format, Arithmetic>(values, tail));
+  }
+  const auto total = block_sum<Arithmetic>(combine_accumulators(sums));
+  if (threadIdx.x == 0) {
+    block_sums[blockIdx.x] = arithmetic<Arithmetic>::to_double(total);
+  }
+}
+
+template <typename Format, int Lanes> struct register_raw_packet {
+  std::uint64_t lane[Lanes];
+};
+
+template <typename Format, int Lanes>
+__device__ __forceinline__ register_raw_packet<Format, Lanes>
+load_register_raw_packet(const device_storage_t<Format> *values,
+                         std::size_t logical_offset) {
+  register_raw_packet<Format, Lanes> result{};
+#pragma unroll
+  for (int lane = 0; lane < Lanes; ++lane) {
+    result.lane[lane] =
+        scalar_raw_checksum<Format>(values, logical_offset + lane);
+  }
+  return result;
+}
+
+template <typename Format>
+__device__ __forceinline__ void register_barrier(std::uint64_t &raw) {
+  if constexpr (std::is_same_v<Format, storage::fp64_e11m52>) {
+    asm volatile("" : "+l"(raw));
+  } else {
+    auto narrow = static_cast<std::uint32_t>(raw);
+    asm volatile("" : "+r"(narrow));
+    raw = narrow;
+  }
+}
+
+template <typename Format, arithmetic_kind Arithmetic>
+__device__ __forceinline__ arithmetic_t<Arithmetic>
+decode_register_raw(std::uint64_t raw) {
+  if constexpr (std::is_same_v<Format, storage::fp64_e11m52>) {
+    static_assert(Arithmetic == arithmetic_kind::fp64);
+    return __longlong_as_double(static_cast<long long>(raw));
+  } else {
+    return decode_raw_as<Format, Arithmetic>(static_cast<std::uint32_t>(raw));
+  }
+}
+
+template <typename Format, arithmetic_kind Arithmetic, int Lanes>
+__global__ void register_decode(const device_storage_t<Format> *values,
+                                std::size_t count, int repeats,
+                                double *thread_sums) {
+  const auto thread =
+      static_cast<std::size_t>(blockIdx.x) * blockDim.x + threadIdx.x;
+  auto logical = thread * Lanes;
+  if (logical + Lanes > count) {
+    logical %= count - Lanes + 1;
+  }
+  auto packet = load_register_raw_packet<Format, Lanes>(values, logical);
+  arithmetic_t<Arithmetic> sums[Lanes];
+#pragma unroll
+  for (int lane = 0; lane < Lanes; ++lane) {
+    sums[lane] = arithmetic<Arithmetic>::zero();
+  }
+#pragma unroll 1
+  for (int repeat = 0; repeat < repeats; ++repeat) {
+#pragma unroll
+    for (int lane = 0; lane < Lanes; ++lane) {
+      register_barrier<Format>(packet.lane[lane]);
+      sums[lane] = arithmetic<Arithmetic>::add(
+          sums[lane],
+          decode_register_raw<Format, Arithmetic>(packet.lane[lane]));
+    }
+  }
+  thread_sums[thread] = arithmetic<Arithmetic>::to_double(
+      combine_accumulators<Arithmetic, Lanes>(sums));
+}
+
+template <arithmetic_kind Arithmetic, int Chains>
+__global__ void arithmetic_chain(int repeats, double *thread_sums) {
+  static_assert(Chains == 1 || Chains == 2 || Chains == 4 || Chains == 8);
+  const auto thread =
+      static_cast<std::size_t>(blockIdx.x) * blockDim.x + threadIdx.x;
+  auto source = static_cast<float>((thread & 31u) + 1u) * (1.0f / 64.0f);
+  asm volatile("" : "+f"(source));
+  const auto value = arithmetic<Arithmetic>::from_float(source);
+  arithmetic_t<Arithmetic> sums[Chains];
+#pragma unroll
+  for (int chain = 0; chain < Chains; ++chain) {
+    sums[chain] = arithmetic<Arithmetic>::from_float(
+        static_cast<float>(chain + 1) * (1.0f / 256.0f));
+  }
+#pragma unroll 1
+  for (int repeat = 0; repeat < repeats; ++repeat) {
+#pragma unroll
+    for (int chain = 0; chain < Chains; ++chain) {
+      sums[chain] = arithmetic<Arithmetic>::fma(value, value, sums[chain]);
+    }
+  }
+  thread_sums[thread] = arithmetic<Arithmetic>::to_double(
+      combine_accumulators<Arithmetic, Chains>(sums));
+}
+
 // Packed arithmetic is intentionally separate from vector-packet access so a
 // timing change cannot be attributed to both at once.
 template <typename Format>
