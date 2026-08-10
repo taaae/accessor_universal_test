@@ -10,7 +10,7 @@
 #SBATCH --output=results/018_precision_packing_bottlenecks/slurm-%j.out
 #SBATCH --export=ALL,TMPDIR=/tmp
 
-set -euo pipefail
+set -eo pipefail
 
 repo_dir="${SLURM_SUBMIT_DIR:?submit this job from the repository root}"
 if [[ ! -f "${repo_dir}/CMakeLists.txt" ||
@@ -20,6 +20,7 @@ if [[ ! -f "${repo_dir}/CMakeLists.txt" ||
 fi
 
 source /etc/profile
+set -u
 cuda_module="${CUDA_MODULE:-cuda/13.1.1}"
 if ! type module >/dev/null 2>&1; then
     echo "error: environment-modules is unavailable after sourcing /etc/profile" >&2
