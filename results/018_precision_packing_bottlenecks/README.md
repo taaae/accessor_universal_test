@@ -78,7 +78,7 @@ The scalar arithmetic-chain calibration is not a valid compute ceiling for
 
 ## Component calibration
 
-`component_samples.csv` provides empirical resource floors:
+`component_samples.csv` provides isolated resource diagnostics:
 
 - `stream_load`: source traffic without decoding;
 - `stream_decode`: source traffic plus conversion, accumulated in the selected
@@ -89,8 +89,11 @@ The scalar arithmetic-chain calibration is not a valid compute ceiling for
 The fastest large `stream_load` result is used as the empirical sustainable
 read-bandwidth reference.
 
-These are lower-bound diagnostics, not additive time components. GPU resources
-overlap, so later plots must not stack their times.
+The summaries scale these isolated measurements to the logical work of each
+complete kernel. They are not mathematical lower bounds: checksum/reduction
+overhead and different overlap can make a scaled component exceed complete
+kernel time. GPU resources also overlap, so later plots must not stack or sum
+these values.
 
 ## Nsight Compute data
 
@@ -117,7 +120,7 @@ The collected data supports:
 1. complete kernel time and logical throughput versus N;
 2. x1-normalized speedup versus x1/x2/x4/x8;
 3. classical roofline points and measured roof gap;
-4. non-stacked resource-floor bars with actual time overlaid;
+4. non-stacked scaled component diagnostics with actual time overlaid;
 5. an Nsight Compute resource/stall heatmap;
 6. scalar-unrolled versus vector-packet comparisons that attribute the gain.
 

@@ -100,8 +100,11 @@ requested storage bytes, modeled load-instruction count, and correctness data.
 - `register_decode`: conversion after source bits are already in registers;
 - `arithmetic_chain`: x1/x2/x4/x8 independent arithmetic chains.
 
-These timings are empirical lower bounds. They overlap inside a real kernel and
-must never be stacked or summed as if they were disjoint time components.
+These timings are isolated diagnostics. Their summaries scale them to the
+logical work of a complete kernel, but they are not mathematical lower bounds:
+checksum/reduction overhead and different overlap can make a scaled component
+larger than complete-kernel time. They must never be stacked or summed as if
+they were disjoint time components.
 
 ### Nsight Compute
 
@@ -123,8 +126,8 @@ profiler-contaminated and is not a normal performance result.
 2. x1-normalized speedup versus x1/x2/x4/x8.
 3. Mixed-precision slowdown relative to the narrowest arithmetic mode.
 4. Classical roofline position and distance from the empirical roof.
-5. Actual time overlaid against separate, non-stacked load/decode/arithmetic
-   lower bounds.
+5. Actual time overlaid against separate, non-stacked scaled
+   load/decode/arithmetic diagnostics.
 6. Nsight Compute heatmaps for memory/SM use, instruction density, occupancy,
    and stalls.
 7. Direct `scalar_unrolled` versus `vector_packet` comparison. This is the key

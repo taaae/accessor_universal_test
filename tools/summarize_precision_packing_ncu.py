@@ -66,17 +66,14 @@ WEIGHTED_METRICS = {
     "eligible_warps_per_scheduler": (
         "smsp__warps_eligible.avg.per_cycle_active",
     ),
-    "long_scoreboard_stall_percent": (
-        "smsp__warp_issue_stalled_long_scoreboard_per_warp_active.pct",
-        "smsp__average_warps_issue_stalled_long_scoreboard_per_issue_active.pct",
+    "long_scoreboard_stall_per_issue": (
+        "smsp__average_warps_issue_stalled_long_scoreboard_per_issue_active.ratio",
     ),
-    "math_pipe_throttle_percent": (
-        "smsp__warp_issue_stalled_math_pipe_throttle_per_warp_active.pct",
-        "smsp__average_warps_issue_stalled_math_pipe_throttle_per_issue_active.pct",
+    "math_pipe_throttle_stall_per_issue": (
+        "smsp__average_warps_issue_stalled_math_pipe_throttle_per_issue_active.ratio",
     ),
-    "mio_throttle_percent": (
-        "smsp__warp_issue_stalled_mio_throttle_per_warp_active.pct",
-        "smsp__average_warps_issue_stalled_mio_throttle_per_issue_active.pct",
+    "mio_throttle_stall_per_issue": (
+        "smsp__average_warps_issue_stalled_mio_throttle_per_issue_active.ratio",
     ),
 }
 

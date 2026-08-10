@@ -423,11 +423,14 @@ def derive_roofs(
                 **{field: row[field] for field in TIMING_KEYS},
                 "median_time_ms": elapsed,
                 "hbm_floor_ms": memory_floor,
-                "stream_load_empirical_floor_ms": load_floor,
-                "stream_decode_empirical_floor_ms": decode_floor,
-                "register_decode_empirical_floor_ms": register_floor,
-                "arithmetic_chain_empirical_floor_ms": arithmetic_floor,
-                "note": "overlapping_empirical_bounds_do_not_sum",
+                "stream_load_scaled_component_ms": load_floor,
+                "stream_decode_scaled_component_ms": decode_floor,
+                "register_decode_scaled_component_ms": register_floor,
+                "arithmetic_chain_scaled_component_ms": arithmetic_floor,
+                "note": (
+                    "isolated_component_equivalents_can_exceed_kernel_time_"
+                    "and_do_not_sum"
+                ),
             }
         )
     return roof_rows, floor_rows
