@@ -266,6 +266,47 @@ foreach(expanded_bits IN ITEMS 2 4 8 16 32)
     )
 endforeach()
 
+set(
+    precision_packing_formats
+    fp16
+    bf16
+    fp32
+    fp8_e4m3
+    fp8_e5m2
+    fp4_e2m1
+    fp64
+)
+set(precision_packing_format_id 0)
+foreach(precision_format IN LISTS precision_packing_formats)
+    math(EXPR precision_packing_format_id "${precision_packing_format_id} + 1")
+    set(precision_target "precision_packing_bench_${precision_format}")
+    add_executable(${precision_target} src/precision_packing_bench.cu)
+    target_link_libraries(${precision_target} PRIVATE CUDA::curand_static)
+    target_include_directories(
+        ${precision_target}
+        PRIVATE
+            "${CMAKE_CURRENT_SOURCE_DIR}/include"
+    )
+    target_compile_definitions(
+        ${precision_target}
+        PRIVATE
+            AUT_PRECISION_FORMAT=${precision_packing_format_id}
+    )
+    target_compile_options(
+        ${precision_target}
+        PRIVATE
+            "$<$<COMPILE_LANGUAGE:CXX>:-O3>"
+            "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v>"
+    )
+    set_target_properties(
+        ${precision_target}
+        PROPERTIES
+            CUDA_RUNTIME_LIBRARY Static
+            CUDA_SEPARABLE_COMPILATION OFF
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+    )
+endforeach()
+
 set_target_properties(
     dot_bench
     PROPERTIES
