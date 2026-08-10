@@ -1,0 +1,21 @@
+==PROF== Connected to process 3294550 (/storage/home/timofeirusanov/accessor_universal_test/build-h200/bin/precision_packing_bench_fp8_e5m2)
+==PROF== Profiling "dot_map" - 0: 0%....50%....100% - 21 passes
+==PROF== Profiling "dot_finalize" - 1: 0%....50%....100% - 21 passes
+==PROF== Profiling "dot_map" - 2: 0%....50%....100% - 21 passes
+==PROF== Profiling "dot_finalize" - 3: 0%....50%....100% - 21 passes
+==PROF== Profiling "dot_map" - 4: 0%....50%....100% - 21 passes
+==PROF== Profiling "dot_finalize" - 5: 0%....50%....100% - 21 passes
+==PROF== Profiling "dot_map" - 6: 0%....50%....100% - 21 passes
+==PROF== Profiling "dot_finalize" - 7: 0%....50%....100% - 21 passes
+==PROF== Profiling "dot_map" - 8: 0%....50%....100% - 21 passes
+==PROF== Profiling "dot_finalize" - 9: 0%....50%....100% - 21 passes
+==PROF== Profiling "dot_map" - 10: 0%....50%....100% - 21 passes
+==PROF== Profiling "dot_finalize" - 11: 0%....50%....100% - 21 passes
+==PROF== Profiling "dot_map" - 12: 0%....50%....100% - 21 passes
+==PROF== Profiling "dot_finalize" - 13: 0%....50%....100% - 21 passes
+Precision packing benchmark
+GPU: NVIDIA H200 NVL (sm_90)
+Storage: fp8_e5m2
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/018_precision_packing_bottlenecks/run_20260810T181143Z/profile/fp8_e5m2/fp16/dot/fp8_e5m2_fp16_dot_20260810T181143Z_metadata.csv
+==PROF== Disconnected from process 3294550
+==PROF== Report: /storage/home/timofeirusanov/accessor_universal_test/results/018_precision_packing_bottlenecks/run_20260810T181143Z/profile/fp8_e5m2/fp16/dot/fp8_e5m2_fp16_dot_20260810T181143Z.ncu-rep

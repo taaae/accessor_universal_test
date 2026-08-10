@@ -1,0 +1,6 @@
+Precision packing benchmark
+GPU: NVIDIA H200 NVL (sm_90)
+Storage: fp8_e4m3
+uniform_0_1 components fp8_e4m3 complete
+normal_0_1 components fp8_e4m3 complete
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/018_precision_packing_bottlenecks/run_20260810T181143Z/components_fp8_e4m3.csv

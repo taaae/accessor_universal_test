@@ -1,0 +1,8 @@
+profile_sequence,distribution,kernel,storage,storage_bits,arithmetic,family,lanes,m,n,useful_flops,logical_storage_bytes,modeled_load_instructions,timing_status
+0,normal_0_1,dot,bf16_e8m7,16,fp64,scalar_single,1,1,134217728,2.68435e+08,5.36871e+08,2.68435e+08,profiler_contaminated
+1,normal_0_1,dot,bf16_e8m7,16,fp64,scalar_unrolled,2,1,134217728,2.68435e+08,5.36871e+08,2.68435e+08,profiler_contaminated
+2,normal_0_1,dot,bf16_e8m7,16,fp64,vector_packet,2,1,134217728,2.68435e+08,5.36871e+08,1.34218e+08,profiler_contaminated
+3,normal_0_1,dot,bf16_e8m7,16,fp64,scalar_unrolled,4,1,134217728,2.68435e+08,5.36871e+08,2.68435e+08,profiler_contaminated
+4,normal_0_1,dot,bf16_e8m7,16,fp64,vector_packet,4,1,134217728,2.68435e+08,5.36871e+08,6.71089e+07,profiler_contaminated
+5,normal_0_1,dot,bf16_e8m7,16,fp64,scalar_unrolled,8,1,134217728,2.68435e+08,5.36871e+08,2.68435e+08,profiler_contaminated
+6,normal_0_1,dot,bf16_e8m7,16,fp64,vector_packet,8,1,134217728,2.68435e+08,5.36871e+08,3.35544e+07,profiler_contaminated

@@ -1,0 +1,24 @@
+Precision packing benchmark
+GPU: NVIDIA H200 NVL (sm_90)
+Storage: bf16_e8m7
+uniform_0_1 DOT bf16_e8m7 N=2^12 complete
+uniform_0_1 DOT bf16_e8m7 N=2^16 complete
+uniform_0_1 DOT bf16_e8m7 N=2^20 complete
+uniform_0_1 DOT bf16_e8m7 N=2^24 complete
+uniform_0_1 DOT bf16_e8m7 N=2^27 complete
+uniform_0_1 GEMV bf16_e8m7 M=1024 N=2^8 complete
+uniform_0_1 GEMV bf16_e8m7 M=1024 N=2^10 complete
+uniform_0_1 GEMV bf16_e8m7 M=1024 N=2^12 complete
+uniform_0_1 GEMV bf16_e8m7 M=1024 N=2^14 complete
+uniform_0_1 GEMV bf16_e8m7 M=1024 N=2^16 complete
+normal_0_1 DOT bf16_e8m7 N=2^12 complete
+normal_0_1 DOT bf16_e8m7 N=2^16 complete
+normal_0_1 DOT bf16_e8m7 N=2^20 complete
+normal_0_1 DOT bf16_e8m7 N=2^24 complete
+normal_0_1 DOT bf16_e8m7 N=2^27 complete
+normal_0_1 GEMV bf16_e8m7 M=1024 N=2^8 complete
+normal_0_1 GEMV bf16_e8m7 M=1024 N=2^10 complete
+normal_0_1 GEMV bf16_e8m7 M=1024 N=2^12 complete
+normal_0_1 GEMV bf16_e8m7 M=1024 N=2^14 complete
+normal_0_1 GEMV bf16_e8m7 M=1024 N=2^16 complete
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/018_precision_packing_bottlenecks/run_20260810T181143Z/timing_bf16.csv

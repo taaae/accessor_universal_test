@@ -1,0 +1,8 @@
+Precision packing benchmark
+GPU: NVIDIA H200 NVL (sm_90)
+Storage: fp16_e5m10
+uniform_0_1 DOT fp16_e5m10 N=2^12 complete
+uniform_0_1 GEMV fp16_e5m10 M=32 N=2^8 complete
+normal_0_1 DOT fp16_e5m10 N=2^12 complete
+normal_0_1 GEMV fp16_e5m10 M=32 N=2^8 complete
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/018_precision_packing_bottlenecks/run_20260810T181143Z/validation/validation_fp16.csv

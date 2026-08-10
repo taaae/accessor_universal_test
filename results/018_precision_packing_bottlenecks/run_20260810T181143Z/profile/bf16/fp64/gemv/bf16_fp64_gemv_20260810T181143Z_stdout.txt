@@ -1,0 +1,14 @@
+==PROF== Connected to process 3291277 (/storage/home/timofeirusanov/accessor_universal_test/build-h200/bin/precision_packing_bench_bf16)
+==PROF== Profiling "gemv" - 0: 0%....50%....100% - 21 passes
+==PROF== Profiling "gemv" - 1: 0%....50%....100% - 21 passes
+==PROF== Profiling "gemv" - 2: 0%....50%....100% - 21 passes
+==PROF== Profiling "gemv" - 3: 0%....50%....100% - 21 passes
+==PROF== Profiling "gemv" - 4: 0%....50%....100% - 21 passes
+==PROF== Profiling "gemv" - 5: 0%....50%....100% - 21 passes
+==PROF== Profiling "gemv" - 6: 0%....50%....100% - 21 passes
+Precision packing benchmark
+GPU: NVIDIA H200 NVL (sm_90)
+Storage: bf16_e8m7
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/018_precision_packing_bottlenecks/run_20260810T181143Z/profile/bf16/fp64/gemv/bf16_fp64_gemv_20260810T181143Z_metadata.csv
+==PROF== Disconnected from process 3291277
+==PROF== Report: /storage/home/timofeirusanov/accessor_universal_test/results/018_precision_packing_bottlenecks/run_20260810T181143Z/profile/bf16/fp64/gemv/bf16_fp64_gemv_20260810T181143Z.ncu-rep
