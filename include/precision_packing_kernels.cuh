@@ -307,7 +307,8 @@ __global__ void dot_map(const device_storage_t<Format> *left,
     const auto b = load_scalar<Format, Arithmetic>(right, tail);
     sums[0] = arithmetic<Arithmetic>::fma(a, b, sums[0]);
   }
-  const auto total = block_sum<Arithmetic>(combine_accumulators(sums));
+  const auto total =
+      block_sum<Arithmetic>(combine_accumulators<Arithmetic, Lanes>(sums));
   if (threadIdx.x == 0) {
     partials[blockIdx.x] = total;
   }
@@ -369,7 +370,8 @@ __global__ void gemv(const device_storage_t<Format> *matrix,
     const auto x = load_scalar<Format, Arithmetic>(vector, tail);
     sums[0] = arithmetic<Arithmetic>::fma(a, x, sums[0]);
   }
-  const auto total = block_sum<Arithmetic>(combine_accumulators(sums));
+  const auto total =
+      block_sum<Arithmetic>(combine_accumulators<Arithmetic, Lanes>(sums));
   if (threadIdx.x == 0) {
     result[row] = arithmetic<Arithmetic>::to_double(total);
   }
@@ -516,7 +518,8 @@ __global__ void stream_decode(const device_storage_t<Format> *values,
     sums[0] = arithmetic<Arithmetic>::add(
         sums[0], load_scalar<Format, Arithmetic>(values, tail));
   }
-  const auto total = block_sum<Arithmetic>(combine_accumulators(sums));
+  const auto total =
+      block_sum<Arithmetic>(combine_accumulators<Arithmetic, Lanes>(sums));
   if (threadIdx.x == 0) {
     block_sums[blockIdx.x] = arithmetic<Arithmetic>::to_double(total);
   }
