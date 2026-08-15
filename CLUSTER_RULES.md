@@ -70,6 +70,12 @@ print, or modify private key material.
 7. Submit with `sbatch --parsable`, record the returned job ID, and close the SSH
    connection. Avoid long quoted `--wrap` payloads; use version-controlled batch
    scripts.
+8. About one minute after submission, reconnect briefly and check both the job's
+   state with `squeue` and the relevant tail of its Slurm `.out` file. This early
+   check is required to catch module, path, build, allocation, and startup errors
+   before the job wastes its time allocation. If the job is still pending, record
+   the scheduler reason; an empty output file is then expected. Check the log
+   again shortly after the job actually starts.
 
 ## Cluster environment details learned here
 
