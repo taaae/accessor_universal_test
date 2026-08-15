@@ -73,6 +73,16 @@ target_include_directories(
 target_compile_options(decoder_strategy_core_test PRIVATE -O3)
 add_test(NAME decoder_strategy_core_test COMMAND decoder_strategy_core_test)
 
+add_executable(bitwidth_benchmark_core_test
+    tests/bitwidth_benchmark_core_test.cpp)
+target_include_directories(
+    bitwidth_benchmark_core_test
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+target_compile_options(bitwidth_benchmark_core_test PRIVATE -O3)
+add_test(NAME bitwidth_benchmark_core_test COMMAND bitwidth_benchmark_core_test)
+
 add_executable(accuracy_statistics_test tests/accuracy_statistics_test.cpp)
 target_include_directories(
     accuracy_statistics_test

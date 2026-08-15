@@ -18,21 +18,12 @@ namespace aut::storage {
 
 namespace detail {
 
-template <int Bits> struct uint_for;
-template <> struct uint_for<2> {
-  using type = std::uint8_t;
-};
-template <> struct uint_for<4> {
-  using type = std::uint8_t;
-};
-template <> struct uint_for<8> {
-  using type = std::uint8_t;
-};
-template <> struct uint_for<16> {
-  using type = std::uint16_t;
-};
-template <> struct uint_for<32> {
-  using type = std::uint32_t;
+template <int Bits> struct uint_for {
+  static_assert(Bits >= 2 && Bits <= 32,
+                "the storage experiments cover 2 through 32 logical bits");
+  using type = std::conditional_t<
+      (Bits <= 8), std::uint8_t,
+      std::conditional_t<(Bits <= 16), std::uint16_t, std::uint32_t>>;
 };
 
 AUT_STORAGE_HD AUT_STORAGE_INLINE std::uint64_t double_bits(double value) {
@@ -90,7 +81,7 @@ round_right_shift_even(std::uint64_t value, unsigned shift) {
 } // namespace detail
 
 /**
- * A compact binary format with 2, 4, 8, 16, or 32 logical bits.
+ * A compact binary format with 2 through 32 logical bits.
  *
  * Two- and four-bit codecs use uint8_t as their logical raw-code type; CUDA
  * arrays pack those raw codes densely through format_decoder_strategies.cuh.
@@ -102,8 +93,7 @@ round_right_shift_even(std::uint64_t value, unsigned shift) {
  * overflow. Both families use round-to-nearest-even and gradual underflow.
  */
 template <int TotalBits, int ExponentBits, bool Finite> struct binary_format {
-  static_assert(TotalBits == 2 || TotalBits == 4 || TotalBits == 8 ||
-                TotalBits == 16 || TotalBits == 32);
+  static_assert(TotalBits >= 2 && TotalBits <= 32);
   static_assert(ExponentBits >= 0 && ExponentBits <= 11);
   static_assert(ExponentBits < TotalBits);
   static constexpr int total_bits = TotalBits;
