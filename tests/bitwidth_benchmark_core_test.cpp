@@ -115,6 +115,11 @@ int main() {
   test_format<aut::storage::e2m7>();
   test_format<aut::storage::e5m4>();
   test_format<aut::storage::e8m1>();
+  test_format<aut::storage::e0m11>();
+  test_format<aut::storage::e2m9>();
+  test_format<aut::storage::e5m6>();
+  test_format<aut::storage::e8m3>();
+  test_format<aut::storage::e11m0>();
 
   static_assert(aut::bitwidth::dense_geometry<6>::values_per_aligned_chunk ==
                 16);
