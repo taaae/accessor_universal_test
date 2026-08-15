@@ -138,6 +138,38 @@ add_bitwidth_strategy_benchmark(24)
 add_bitwidth_strategy_benchmark(28)
 add_bitwidth_strategy_benchmark(32)
 
+function(add_lns_strategy_benchmark name format_id enable_fp32)
+    set(target "lns_strategy_bench_${name}")
+    add_executable(${target} src/lns_strategy_bench.cu)
+    target_link_libraries(${target} PRIVATE CUDA::curand_static)
+    target_include_directories(
+        ${target}
+        PRIVATE
+            "${CMAKE_CURRENT_SOURCE_DIR}/include"
+    )
+    target_compile_definitions(
+        ${target}
+        PRIVATE
+            AUT_LNS_FORMAT_ID=${format_id}
+            AUT_LNS_ENABLE_FP32=${enable_fp32}
+    )
+    target_compile_options(
+        ${target}
+        PRIVATE
+            "$<$<COMPILE_LANGUAGE:CXX>:-O3>"
+            "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v>"
+    )
+    set_target_properties(
+        ${target}
+        PROPERTIES
+            CUDA_RUNTIME_LIBRARY Static
+            CUDA_SEPARABLE_COMPILATION OFF
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+    )
+endfunction()
+
+add_lns_strategy_benchmark(lns4_r1 1 1)
+
 add_executable(accuracy_statistics_test tests/accuracy_statistics_test.cpp)
 target_include_directories(
     accuracy_statistics_test
