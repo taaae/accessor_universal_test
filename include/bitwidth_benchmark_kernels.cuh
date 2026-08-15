@@ -337,11 +337,12 @@ __device__ __forceinline__ std::uint32_t cooperative_raw(
   const auto active = __activemask();
   const auto low = __shfl_sync(active, loaded, low_word,
                                geometry::consumers);
-  std::uint32_t high{};
-  if (shift + Format::total_bits > 32) {
-    high = __shfl_sync(active, loaded, low_word + 1,
-                       geometry::consumers);
-  }
+  // Every lane named by `active` must execute the same shuffle.  Whether a
+  // code crosses a word boundary varies by lane, so guarding this shuffle by
+  // that condition can deadlock the warp.  Non-crossing lanes simply discard
+  // the fetched high word after the shift and mask below.
+  const auto high = __shfl_sync(active, loaded, low_word + 1,
+                                geometry::consumers);
   const auto pair = static_cast<std::uint64_t>(low) |
                     (static_cast<std::uint64_t>(high) << 32);
   return static_cast<std::uint32_t>(pair >> shift) &
