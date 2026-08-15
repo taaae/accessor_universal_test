@@ -460,12 +460,12 @@ public:
 
 private:
   template <bw::decoder_kind Decoder> static constexpr std::size_t table_bytes() {
-    return bw::table_entries<Format, Decoder>() * sizeof(std::uint32_t);
+    return bw::table_entries_v<Format, Decoder> * sizeof(std::uint32_t);
   }
 
   template <bw::decoder_kind Decoder>
   static constexpr std::size_t shared_bytes() {
-    return (bw::uses_shared_table<Decoder>() ? table_bytes<Decoder>() : 0) +
+    return (bw::uses_shared_table_v<Decoder> ? table_bytes<Decoder>() : 0) +
            256 * sizeof(value_type);
   }
 

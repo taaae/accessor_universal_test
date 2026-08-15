@@ -72,7 +72,7 @@ template <typename Format, storage_layout Layout> struct storage_view {
 };
 
 template <typename Format, decoder_kind Decoder>
-constexpr std::size_t table_entries() {
+inline constexpr std::size_t table_entries_v = [] {
   if constexpr (Decoder == decoder_kind::full_lut_global ||
                 Decoder == decoder_kind::full_lut_shared) {
     return std::size_t{1} << Format::total_bits;
@@ -83,15 +83,15 @@ constexpr std::size_t table_entries() {
                        Decoder == decoder_kind::subnormal_lut_shared) {
     return std::size_t{1} << Format::fraction_bits;
   } else {
-    return 0;
+    return std::size_t{0};
   }
-}
+}();
 
-template <decoder_kind Decoder> constexpr bool uses_shared_table() {
-  return Decoder == decoder_kind::full_lut_shared ||
-         Decoder == decoder_kind::prefix_lut_shared ||
-         Decoder == decoder_kind::subnormal_lut_shared;
-}
+template <decoder_kind Decoder>
+inline constexpr bool uses_shared_table_v =
+    Decoder == decoder_kind::full_lut_shared ||
+    Decoder == decoder_kind::prefix_lut_shared ||
+    Decoder == decoder_kind::subnormal_lut_shared;
 
 template <typename Format, decoder_kind Decoder>
 __device__ __forceinline__ const std::uint32_t *
@@ -107,9 +107,9 @@ prepare_table(decoder_tables tables, std::uint32_t *shared) {
                        Decoder == decoder_kind::subnormal_lut_shared) {
     global = tables.subnormal;
   }
-  if constexpr (uses_shared_table<Decoder>()) {
+  if constexpr (uses_shared_table_v<Decoder>) {
     for (std::size_t index = threadIdx.x;
-         index < table_entries<Format, Decoder>(); index += blockDim.x) {
+         index < table_entries_v<Format, Decoder>; index += blockDim.x) {
       shared[index] = global[index];
     }
     __syncthreads();
@@ -232,8 +232,8 @@ __global__ void dot_thread_kernel(storage_view<Format, Layout> left,
   auto *table_shared = reinterpret_cast<std::uint32_t *>(dynamic_shared);
   auto *table = prepare_table<Format, Decoder>(tables, table_shared);
   auto *reduce_shared = reinterpret_cast<compute_t<Compute> *>(
-      dynamic_shared + table_entries<Format, Decoder>() *
-                           (uses_shared_table<Decoder>() ? sizeof(std::uint32_t)
+      dynamic_shared + table_entries_v<Format, Decoder> *
+                           (uses_shared_table_v<Decoder> ? sizeof(std::uint32_t)
                                                         : 0));
 
   compute_t<Compute> sum{};
@@ -289,8 +289,8 @@ __global__ void gemv_thread_kernel(storage_view<Format, Layout> matrix,
   auto *table_shared = reinterpret_cast<std::uint32_t *>(dynamic_shared);
   auto *table = prepare_table<Format, Decoder>(tables, table_shared);
   auto *reduce_shared = reinterpret_cast<compute_t<Compute> *>(
-      dynamic_shared + table_entries<Format, Decoder>() *
-                           (uses_shared_table<Decoder>() ? sizeof(std::uint32_t)
+      dynamic_shared + table_entries_v<Format, Decoder> *
+                           (uses_shared_table_v<Decoder> ? sizeof(std::uint32_t)
                                                         : 0));
   const auto row = static_cast<std::size_t>(blockIdx.x);
   if (row >= rows) {
@@ -359,8 +359,8 @@ __global__ void dot_cooperative_kernel(const std::uint32_t *left,
   auto *table_shared = reinterpret_cast<std::uint32_t *>(dynamic_shared);
   auto *table = prepare_table<Format, Decoder>(tables, table_shared);
   auto *reduce_shared = reinterpret_cast<compute_t<Compute> *>(
-      dynamic_shared + table_entries<Format, Decoder>() *
-                           (uses_shared_table<Decoder>() ? sizeof(std::uint32_t)
+      dynamic_shared + table_entries_v<Format, Decoder> *
+                           (uses_shared_table_v<Decoder> ? sizeof(std::uint32_t)
                                                         : 0));
   const auto global_thread = static_cast<std::size_t>(blockIdx.x) * blockDim.x +
                              threadIdx.x;
@@ -404,8 +404,8 @@ __global__ void gemv_cooperative_kernel(const std::uint32_t *matrix,
   auto *table_shared = reinterpret_cast<std::uint32_t *>(dynamic_shared);
   auto *table = prepare_table<Format, Decoder>(tables, table_shared);
   auto *reduce_shared = reinterpret_cast<compute_t<Compute> *>(
-      dynamic_shared + table_entries<Format, Decoder>() *
-                           (uses_shared_table<Decoder>() ? sizeof(std::uint32_t)
+      dynamic_shared + table_entries_v<Format, Decoder> *
+                           (uses_shared_table_v<Decoder> ? sizeof(std::uint32_t)
                                                         : 0));
   const auto row = static_cast<std::size_t>(blockIdx.x);
   if (row >= rows) {

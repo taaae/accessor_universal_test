@@ -20,6 +20,10 @@ Set `STOP_AFTER=smoke` for the first CUDA build/preflight.  A normal rerun uses
 the cached build and completes all stages; `STOP_AFTER=screen` is also available
 for an intermediate strategy-inventory run.
 
+Before reserving a GPU for the smoke stage, submit
+`scripts/check_bitwidth_strategy_build.sbatch`.  It compiles every width shard
+and runs the host-only tests without requesting a GPU.
+
 The committed strategy rationale for each width is under
 `docs/decoder_strategies/bitwidth_*.md`.  Generated runs are stored in
 `run_<UTC timestamp>/smoke`, `screen`, and `full` subdirectories.
