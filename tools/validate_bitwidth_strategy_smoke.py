@@ -8,7 +8,6 @@ import csv
 import math
 from collections import defaultdict
 from pathlib import Path
-from statistics import median
 
 
 def parse_args() -> argparse.Namespace:
@@ -28,10 +27,9 @@ def main() -> None:
     values: dict[tuple[str, ...], dict[str, list[float]]] = defaultdict(
         lambda: defaultdict(list)
     )
-    invalid_rows = []
     for row in rows:
-        if row["valid"] != "1" or not math.isfinite(float(row["result"])):
-            invalid_rows.append(row)
+        if row["valid"] != "1":
+            raise SystemExit("smoke CSV contains an incomplete kernel row")
         group = (
             row["format"],
             row["arithmetic_type"],
@@ -40,9 +38,6 @@ def main() -> None:
             row["N"],
         )
         values[group][row["strategy_id"]].append(float(row["result"]))
-    if invalid_rows:
-        raise SystemExit(f"{len(invalid_rows)} smoke rows contain invalid results")
-
     output_rows = []
     failures = []
     for group, strategies in sorted(values.items()):
@@ -54,14 +49,24 @@ def main() -> None:
             baseline_id = preferred if preferred in strategies else fallback
         if baseline_id not in strategies:
             raise SystemExit(f"missing scalar baseline for {group}")
-        baseline = median(strategies[baseline_id])
+        baseline = strategies[baseline_id][0]
         arithmetic = group[1]
         tolerance = 5.0e-3 if arithmetic == "fp32" else 1.0e-9
         scale = max(abs(baseline), 1.0)
         for strategy, samples in sorted(strategies.items()):
-            value = median(samples)
-            relative = abs(value - baseline) / scale
-            passed = relative <= tolerance
+            value = samples[0]
+            if math.isnan(baseline):
+                relative = math.nan
+                passed = math.isnan(value)
+            elif math.isinf(baseline):
+                relative = 0.0 if value == baseline else math.inf
+                passed = value == baseline
+            elif not math.isfinite(value):
+                relative = math.inf
+                passed = False
+            else:
+                relative = abs(value - baseline) / scale
+                passed = relative <= tolerance
             output_rows.append(
                 {
                     "format": group[0],

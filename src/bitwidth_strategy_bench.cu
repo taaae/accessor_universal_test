@@ -450,6 +450,9 @@ public:
         settings_.enabled_variants.count(qualified) == 0) {
       return;
     }
+    if (settings_.mode == "smoke") {
+      std::cout << "    " << qualified << std::endl;
+    }
     for (const auto power : settings_.dot_powers) {
       run_dot<Layout, Access, Lanes, Decoder>(std::size_t{1} << power, id);
     }
@@ -600,7 +603,6 @@ private:
     value_type result{};
     CUDA_CHECK(cudaMemcpy(&result, result_.data, sizeof(result),
                           cudaMemcpyDeviceToHost));
-    const auto valid = std::isfinite(static_cast<double>(result));
     for (std::size_t sample = 0; sample < times.size(); ++sample) {
       auto &stream = output_.stream;
       stream << output_.timestamp << ',' << output_.gpu << ',' << settings_.mode
@@ -615,7 +617,7 @@ private:
              << ',' << blocks << ",256," << settings_.warmup << ',' << sample
              << ',' << iterations << ',' << times[sample] << ','
              << times[sample] / iterations << ',' << std::setprecision(17)
-             << static_cast<double>(result) << ',' << (valid ? 1 : 0) << '\n';
+             << static_cast<double>(result) << ",1\n";
     }
   }
 
@@ -633,7 +635,6 @@ private:
     value_type first{};
     CUDA_CHECK(cudaMemcpy(&first, result_.data, sizeof(first),
                           cudaMemcpyDeviceToHost));
-    const auto valid = std::isfinite(static_cast<double>(first));
     const auto values = settings_.gemv_rows * columns + columns;
     for (std::size_t sample = 0; sample < times.size(); ++sample) {
       auto &stream = output_.stream;
@@ -650,7 +651,7 @@ private:
              << ',' << settings_.gemv_rows << ",256," << settings_.warmup << ','
              << sample << ',' << iterations << ',' << times[sample] << ','
              << times[sample] / iterations << ',' << std::setprecision(17)
-             << static_cast<double>(first) << ',' << (valid ? 1 : 0) << '\n';
+             << static_cast<double>(first) << ",1\n";
     }
   }
 

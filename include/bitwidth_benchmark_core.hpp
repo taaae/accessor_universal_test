@@ -94,6 +94,11 @@ template <int Bits> struct cooperative_geometry;
     static constexpr int values_per_consumer = values_ / consumers_;        \
     static_assert(values_ * bits_ == words_ * 32);                           \
     static_assert(values_ % consumers_ == 0);                               \
+    static_assert(consumers_ > 0 && consumers_ <= 32);                       \
+    static_assert((consumers_ & (consumers_ - 1)) == 0);                     \
+    static_assert(32 % consumers_ == 0);                                    \
+    /* The unconditional guard-word shuffle needs one active zero lane. */  \
+    static_assert(words_ < consumers_);                                     \
   }
 
 AUT_DEFINE_COOPERATIVE_GEOMETRY(2, 16, 1, 4);
