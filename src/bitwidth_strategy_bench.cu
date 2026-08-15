@@ -906,6 +906,23 @@ void run_registered_formats(const options &settings,
     run_one_format<storage::e11m12, Compute>(settings, distribution, sources,
                                              output, left_count, right_count);
   }
+#elif AUT_BITWIDTH_TOTAL_BITS == 28
+  if constexpr (Compute == bw::compute_kind::fp32) {
+    run_one_format<storage::e4m23, Compute>(settings, distribution, sources,
+                                            output, left_count, right_count);
+  } else {
+    run_one_format<storage::e2m25, Compute>(settings, distribution, sources,
+                                            output, left_count, right_count);
+  }
+  run_one_format<storage::e5m22, Compute>(settings, distribution, sources,
+                                          output, left_count, right_count);
+  if constexpr (Compute == bw::compute_kind::fp32) {
+    run_one_format<storage::e8m19, Compute>(settings, distribution, sources,
+                                            output, left_count, right_count);
+  } else {
+    run_one_format<storage::e11m16, Compute>(settings, distribution, sources,
+                                             output, left_count, right_count);
+  }
 #else
 #error "the selected width has not been registered"
 #endif

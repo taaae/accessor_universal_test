@@ -202,6 +202,11 @@ AUT_DEFINE_BINARY_FORMAT(e2m21, 24, 2, false);
 AUT_DEFINE_BINARY_FORMAT(e5m18, 24, 5, false);
 AUT_DEFINE_BINARY_FORMAT(e8m15, 24, 8, false);
 
+AUT_DEFINE_BINARY_FORMAT(e2m25, 28, 2, false);
+AUT_DEFINE_BINARY_FORMAT(e4m23, 28, 4, false);
+AUT_DEFINE_BINARY_FORMAT(e5m22, 28, 5, false);
+AUT_DEFINE_BINARY_FORMAT(e8m19, 28, 8, false);
+
 AUT_DEFINE_BINARY_FORMAT(e0m31, 32, 0, true);
 struct e1m30 : binary_format<32, 1, true> {
   static constexpr const char *name = "e1m30";
@@ -244,6 +249,9 @@ struct e11m8 : fp64_prefix<8> {
 };
 struct e11m12 : fp64_prefix<12> {
   static constexpr const char *name = "e11m12";
+};
+struct e11m16 : fp64_prefix<16> {
+  static constexpr const char *name = "e11m16";
 };
 
 struct e11m4 : fp64_prefix<4> {
@@ -536,6 +544,10 @@ AUT_INHERIT_BINARY_CODEC(e0m23);
 AUT_INHERIT_BINARY_CODEC(e2m21);
 AUT_INHERIT_BINARY_CODEC(e5m18);
 AUT_INHERIT_BINARY_CODEC(e8m15);
+AUT_INHERIT_BINARY_CODEC(e2m25);
+AUT_INHERIT_BINARY_CODEC(e4m23);
+AUT_INHERIT_BINARY_CODEC(e5m22);
+AUT_INHERIT_BINARY_CODEC(e8m19);
 AUT_INHERIT_BINARY_CODEC(e0m31);
 AUT_INHERIT_BINARY_CODEC(e4m27);
 AUT_INHERIT_BINARY_CODEC(e5m26);
@@ -586,6 +598,7 @@ template <> struct codec<e11m2> : prefix_codec<2> {};
 template <> struct codec<e11m5> : prefix_codec<5> {};
 template <> struct codec<e11m8> : prefix_codec<8> {};
 template <> struct codec<e11m12> : prefix_codec<12> {};
+template <> struct codec<e11m16> : prefix_codec<16> {};
 
 template <typename Format>
 using storage_type_t = typename codec<Format>::storage_type;
