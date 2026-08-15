@@ -800,6 +800,13 @@ void run_registered_formats(const options &settings,
   }
   run_one_format<storage::e8m0, Compute>(settings, distribution, sources, output,
                                          left_count, right_count);
+#elif AUT_BITWIDTH_TOTAL_BITS == 10
+  run_one_format<storage::e2m7, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
+  run_one_format<storage::e5m4, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
+  run_one_format<storage::e8m1, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
 #else
 #error "the selected width has not been registered"
 #endif
