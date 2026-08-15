@@ -30,6 +30,9 @@ finish_manifest() {
         echo "final_stage=${current_stage}"
         echo "exit_status=${status}"
     } >>"${run_dir}/run_manifest.txt"
+    if ((status != 0)); then
+        echo "error: unified benchmark failed in stage '${current_stage}' (exit ${status})" >&2
+    fi
 }
 trap finish_manifest EXIT
 
@@ -67,7 +70,9 @@ gpu_snapshot() {
 {
     nvcc --version
     echo
-    nvidia-smi -q -d COMPUTE,CLOCK,POWER,ECC,MIG
+    # MIG is not a portable -d selector, even on drivers that expose MIG query
+    # fields.  Keep the environment capture compatible with physical H200s.
+    nvidia-smi -q -d COMPUTE,CLOCK,POWER,ECC
 } >"${run_dir}/environment.txt"
 gpu_snapshot start
 
