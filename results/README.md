@@ -25,6 +25,9 @@ The evolving multi-experiment HTML report is at [`report/index.html`](report/ind
 | 015 | `015_all_format_strategy_performance` | Measure complete DOT/GEMV scaling for every registered strategy of the remaining 8-, 16-, and 32-bit formats against locally remeasured raw FP64. |
 | 016 | `016_expanded_format_strategy_smoke` | Validate all strategies for the 22 additional formats that complete the 2-/4-/8-/16-/32-bit E/M inventory. |
 | 017 | `017_expanded_format_strategy_performance` | Measure complete DOT/GEMV scaling for every strategy validated by experiment 016 against locally remeasured raw FP64. |
+| 018 | `018_precision_packing_bottlenecks` | Isolate packet-width, arithmetic, load-issue, and conversion bottlenecks for native storage formats. |
+| 020 | `020_bitwidth_strategy_performance` | Screen dense, padded, packet, cooperative, native, and LUT strategies for selected 2–32-bit formats with FP32 and FP64 arithmetic. |
+| 021 | `021_unified_strategy_performance` | Rerun the common and historical strategy inventories inside one physical H200 allocation. |
 
 Timestamped repetitions of an unchanged experiment belong in the existing
 directory. Create the next numbered directory when changing the kernel,
