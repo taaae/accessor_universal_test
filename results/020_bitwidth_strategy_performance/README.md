@@ -1,13 +1,15 @@
 # Experiment 020: arbitrary-width conversion and access strategies
 
 This experiment measures DOT and GEMV with true FP32 and FP64 accumulation for
-selected 2–28-bit storage formats.  Numeric layout, physical dense/padded
+selected 2–32-bit storage formats.  Numeric layout, physical dense/padded
 storage, scalar/thread-packet/cooperative access, and conversion decoder are
 recorded independently.
 
-The 2-bit shard also records same-topology raw FP32→FP32 and FP64→FP64 x1/x2/
-x4/x8 baselines once per dataset.  These are shared baselines for all width
-cohorts rather than being remeasured redundantly in every executable.
+The unified inventory includes the prior 8-/16-/32-bit cohorts and their CUDA
+native FP8, FP16, BF16, and FP32 decoders.  Layouts outside FP32's exact direct
+decoder range remain FP64-only.  Same-topology raw FP32→FP32 and FP64→FP64
+x1/x2/x4/x8 anchors are interleaved before every width in the screen and full
+stages to expose clock or thermal drift.
 
 The job has three stages:
 

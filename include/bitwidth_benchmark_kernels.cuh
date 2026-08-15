@@ -1,6 +1,7 @@
 #ifndef ACCESSOR_UNIVERSAL_TEST_BITWIDTH_BENCHMARK_KERNELS_CUH_
 #define ACCESSOR_UNIVERSAL_TEST_BITWIDTH_BENCHMARK_KERNELS_CUH_
 
+#include "cuda_storage_formats.cuh"
 #include "bitwidth_benchmark_core.hpp"
 
 #include <cuda_fp6.h>
@@ -11,6 +12,40 @@
 #include <type_traits>
 
 namespace aut::bitwidth {
+
+template <> struct format_layout<storage::fp8_e4m3> {
+  using type = decoder::binary_layout<8, 4, decoder::special_policy::e4m3fn>;
+};
+
+template <typename Format> struct native_format_traits {
+  static constexpr bool supported = false;
+  static constexpr bool packed = false;
+};
+
+template <> struct native_format_traits<storage::fp4_e2m1> {
+  static constexpr bool supported = true;
+  static constexpr bool packed = true;
+};
+template <> struct native_format_traits<storage::fp8_e4m3> {
+  static constexpr bool supported = true;
+  static constexpr bool packed = true;
+};
+template <> struct native_format_traits<storage::fp8_e5m2> {
+  static constexpr bool supported = true;
+  static constexpr bool packed = true;
+};
+template <> struct native_format_traits<storage::fp16_e5m10> {
+  static constexpr bool supported = true;
+  static constexpr bool packed = true;
+};
+template <> struct native_format_traits<storage::bf16_e8m7> {
+  static constexpr bool supported = true;
+  static constexpr bool packed = true;
+};
+template <> struct native_format_traits<storage::fp32_e8m23> {
+  static constexpr bool supported = true;
+  static constexpr bool packed = false;
+};
 
 template <typename Format> struct native_fp6_traits {
   static constexpr bool supported = false;
@@ -24,6 +59,41 @@ template <> struct native_fp6_traits<storage::e2m3> {
 template <> struct native_fp6_traits<storage::e3m2> {
   static constexpr bool supported = true;
   static constexpr auto interpretation = __NV_E3M2;
+};
+
+template <> struct padded_raw_traits<storage::fp8_e4m3> {
+  __device__ __forceinline__ static std::uint32_t
+  get(padded_storage_t<storage::fp8_e4m3> value) {
+    return static_cast<std::uint32_t>(value.__x);
+  }
+};
+
+template <> struct padded_raw_traits<storage::fp8_e5m2> {
+  __device__ __forceinline__ static std::uint32_t
+  get(padded_storage_t<storage::fp8_e5m2> value) {
+    return static_cast<std::uint32_t>(value.__x);
+  }
+};
+
+template <> struct padded_raw_traits<storage::fp16_e5m10> {
+  __device__ __forceinline__ static std::uint32_t
+  get(padded_storage_t<storage::fp16_e5m10> value) {
+    return static_cast<std::uint32_t>(__half_as_ushort(value));
+  }
+};
+
+template <> struct padded_raw_traits<storage::bf16_e8m7> {
+  __device__ __forceinline__ static std::uint32_t
+  get(padded_storage_t<storage::bf16_e8m7> value) {
+    return static_cast<std::uint32_t>(__bfloat16_as_ushort(value));
+  }
+};
+
+template <> struct padded_raw_traits<storage::fp32_e8m23> {
+  __device__ __forceinline__ static std::uint32_t
+  get(padded_storage_t<storage::fp32_e8m23> value) {
+    return __float_as_uint(value);
+  }
 };
 
 struct decoder_tables {
@@ -129,6 +199,34 @@ value_from_high_word(std::uint32_t word) {
   }
 }
 
+template <typename Format, compute_kind Compute>
+__device__ __forceinline__ compute_t<Compute>
+decode_native_scalar(std::uint32_t raw) {
+  float value{};
+  if constexpr (std::is_same_v<Format, storage::fp4_e2m1>) {
+    const __half converted(__nv_cvt_fp4_to_halfraw(
+        static_cast<__nv_fp4_storage_t>(raw & 0xfu), __NV_E2M1));
+    value = __half2float(converted);
+  } else if constexpr (std::is_same_v<Format, storage::fp8_e4m3>) {
+    __nv_fp8_e4m3 stored;
+    stored.__x = static_cast<__nv_fp8_storage_t>(raw);
+    value = static_cast<float>(stored);
+  } else if constexpr (std::is_same_v<Format, storage::fp8_e5m2>) {
+    __nv_fp8_e5m2 stored;
+    stored.__x = static_cast<__nv_fp8_storage_t>(raw);
+    value = static_cast<float>(stored);
+  } else if constexpr (std::is_same_v<Format, storage::fp16_e5m10>) {
+    value = __half2float(__half{__half_raw{static_cast<unsigned short>(raw)}});
+  } else if constexpr (std::is_same_v<Format, storage::bf16_e8m7>) {
+    value = __bfloat162float(__nv_bfloat16{
+        __nv_bfloat16_raw{static_cast<unsigned short>(raw)}});
+  } else {
+    static_assert(std::is_same_v<Format, storage::fp32_e8m23>);
+    value = __uint_as_float(raw);
+  }
+  return static_cast<compute_t<Compute>>(value);
+}
+
 template <typename Format, compute_kind Compute, decoder_kind Decoder>
 __device__ __forceinline__ compute_t<Compute>
 decode_with_table(std::uint32_t raw, const std::uint32_t *table) {
@@ -172,11 +270,18 @@ decode_with_table(std::uint32_t raw, const std::uint32_t *table) {
     const auto high = table[fraction] | (sign << 31);
     return value_from_high_word<Format, Compute>(high);
   } else if constexpr (Decoder == decoder_kind::native_scalar) {
-    static_assert(native_fp6_traits<Format>::supported);
-    const __half converted(__nv_cvt_fp6_to_halfraw(
-        static_cast<__nv_fp6_storage_t>(raw),
-        native_fp6_traits<Format>::interpretation));
-    return static_cast<compute_t<Compute>>(__half2float(converted));
+    if constexpr (native_fp6_traits<Format>::supported) {
+      const __half converted(__nv_cvt_fp6_to_halfraw(
+          static_cast<__nv_fp6_storage_t>(raw),
+          native_fp6_traits<Format>::interpretation));
+      return static_cast<compute_t<Compute>>(__half2float(converted));
+    } else {
+      static_assert(native_format_traits<Format>::supported);
+      return decode_native_scalar<Format, Compute>(raw);
+    }
+  } else if constexpr (Decoder == decoder_kind::generic_reference &&
+                       native_format_traits<Format>::supported) {
+    return decode_native_scalar<Format, Compute>(raw);
   } else {
     return decode_raw<Format, Compute, Decoder>(raw);
   }
@@ -189,17 +294,90 @@ decode_packet_values(const std::uint32_t (&raw)[Lanes],
                      const std::uint32_t *table,
                      compute_t<Compute> (&values)[Lanes]) {
   if constexpr (Decoder == decoder_kind::native_packed) {
-    static_assert(native_fp6_traits<Format>::supported);
     static_assert(Lanes % 2 == 0);
+    if constexpr (native_fp6_traits<Format>::supported) {
 #pragma unroll
-    for (int lane = 0; lane < Lanes; lane += 2) {
-      const auto packed = static_cast<__nv_fp6x2_storage_t>(
-          raw[lane] | (raw[lane + 1] << 8));
-      const __half2 converted(__nv_cvt_fp6x2_to_halfraw2(
-          packed, native_fp6_traits<Format>::interpretation));
-      const auto pair = __half22float2(converted);
-      values[lane] = static_cast<compute_t<Compute>>(pair.x);
-      values[lane + 1] = static_cast<compute_t<Compute>>(pair.y);
+      for (int lane = 0; lane < Lanes; lane += 2) {
+        const auto packed = static_cast<__nv_fp6x2_storage_t>(
+            raw[lane] | (raw[lane + 1] << 8));
+        const __half2 converted(__nv_cvt_fp6x2_to_halfraw2(
+            packed, native_fp6_traits<Format>::interpretation));
+        const auto pair = __half22float2(converted);
+        values[lane] = static_cast<compute_t<Compute>>(pair.x);
+        values[lane + 1] = static_cast<compute_t<Compute>>(pair.y);
+      }
+    } else if constexpr (std::is_same_v<Format, storage::fp4_e2m1>) {
+#pragma unroll
+      for (int lane = 0; lane < Lanes; lane += 2) {
+        const auto packed = static_cast<__nv_fp4x2_storage_t>(
+            raw[lane] | (raw[lane + 1] << 4));
+        const __half2 converted(
+            __nv_cvt_fp4x2_to_halfraw2(packed, __NV_E2M1));
+        const auto pair = __half22float2(converted);
+        values[lane] = static_cast<compute_t<Compute>>(pair.x);
+        values[lane + 1] = static_cast<compute_t<Compute>>(pair.y);
+      }
+    } else if constexpr (std::is_same_v<Format, storage::fp8_e4m3> ||
+                         std::is_same_v<Format, storage::fp8_e5m2>) {
+      if constexpr (Lanes == 2) {
+        const auto bits = static_cast<__nv_fp8x2_storage_t>(
+            raw[0] | (raw[1] << 8));
+        float2 pair{};
+        if constexpr (std::is_same_v<Format, storage::fp8_e4m3>) {
+          __nv_fp8x2_e4m3 packed;
+          packed.__x = bits;
+          pair = static_cast<float2>(packed);
+        } else {
+          __nv_fp8x2_e5m2 packed;
+          packed.__x = bits;
+          pair = static_cast<float2>(packed);
+        }
+        values[0] = static_cast<compute_t<Compute>>(pair.x);
+        values[1] = static_cast<compute_t<Compute>>(pair.y);
+      } else {
+#pragma unroll
+        for (int lane = 0; lane < Lanes; lane += 4) {
+          const auto bits = static_cast<__nv_fp8x4_storage_t>(
+              raw[lane] | (raw[lane + 1] << 8) |
+              (raw[lane + 2] << 16) | (raw[lane + 3] << 24));
+          float4 packet{};
+          if constexpr (std::is_same_v<Format, storage::fp8_e4m3>) {
+            __nv_fp8x4_e4m3 packed;
+            packed.__x = bits;
+            packet = static_cast<float4>(packed);
+          } else {
+            __nv_fp8x4_e5m2 packed;
+            packed.__x = bits;
+            packet = static_cast<float4>(packed);
+          }
+          values[lane] = static_cast<compute_t<Compute>>(packet.x);
+          values[lane + 1] = static_cast<compute_t<Compute>>(packet.y);
+          values[lane + 2] = static_cast<compute_t<Compute>>(packet.z);
+          values[lane + 3] = static_cast<compute_t<Compute>>(packet.w);
+        }
+      }
+    } else if constexpr (std::is_same_v<Format, storage::fp16_e5m10>) {
+#pragma unroll
+      for (int lane = 0; lane < Lanes; lane += 2) {
+        const __half2_raw bits{static_cast<unsigned short>(raw[lane]),
+                               static_cast<unsigned short>(raw[lane + 1])};
+        const auto pair = __half22float2(__half2{bits});
+        values[lane] = static_cast<compute_t<Compute>>(pair.x);
+        values[lane + 1] = static_cast<compute_t<Compute>>(pair.y);
+      }
+    } else if constexpr (std::is_same_v<Format, storage::bf16_e8m7>) {
+#pragma unroll
+      for (int lane = 0; lane < Lanes; lane += 2) {
+        const __nv_bfloat162_raw bits{
+            static_cast<unsigned short>(raw[lane]),
+            static_cast<unsigned short>(raw[lane + 1])};
+        const auto pair = __bfloat1622float2(__nv_bfloat162{bits});
+        values[lane] = static_cast<compute_t<Compute>>(pair.x);
+        values[lane + 1] = static_cast<compute_t<Compute>>(pair.y);
+      }
+    } else {
+      static_assert(native_format_traits<Format>::packed,
+                    "native packed decoder unavailable for this format");
     }
   } else {
 #pragma unroll

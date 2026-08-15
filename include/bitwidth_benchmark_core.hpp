@@ -107,16 +107,21 @@ AUT_DEFINE_COOPERATIVE_GEOMETRY(4, 8, 1, 4);
 AUT_DEFINE_COOPERATIVE_GEOMETRY(5, 32, 5, 8);
 AUT_DEFINE_COOPERATIVE_GEOMETRY(6, 16, 3, 4);
 AUT_DEFINE_COOPERATIVE_GEOMETRY(7, 32, 7, 8);
+AUT_DEFINE_COOPERATIVE_GEOMETRY(8, 4, 1, 4);
 AUT_DEFINE_COOPERATIVE_GEOMETRY(9, 32, 9, 16);
 AUT_DEFINE_COOPERATIVE_GEOMETRY(10, 16, 5, 8);
 AUT_DEFINE_COOPERATIVE_GEOMETRY(12, 8, 3, 4);
 AUT_DEFINE_COOPERATIVE_GEOMETRY(14, 16, 7, 8);
+AUT_DEFINE_COOPERATIVE_GEOMETRY(16, 2, 1, 2);
 AUT_DEFINE_COOPERATIVE_GEOMETRY(17, 32, 17, 32);
 AUT_DEFINE_COOPERATIVE_GEOMETRY(20, 8, 5, 8);
 AUT_DEFINE_COOPERATIVE_GEOMETRY(24, 4, 3, 4);
 AUT_DEFINE_COOPERATIVE_GEOMETRY(28, 8, 7, 8);
 
 #undef AUT_DEFINE_COOPERATIVE_GEOMETRY
+
+template <int Bits>
+inline constexpr bool cooperative_supported_v = Bits < 32;
 
 template <int Bits>
 AUT_BITWIDTH_HD AUT_BITWIDTH_INLINE constexpr std::uint32_t raw_mask() {
@@ -166,10 +171,17 @@ constexpr std::size_t dense_data_bytes(std::size_t values) {
 template <typename Format>
 using padded_storage_t = storage::storage_type_t<Format>;
 
+template <typename Format> struct padded_raw_traits {
+  AUT_BITWIDTH_HD AUT_BITWIDTH_INLINE static std::uint32_t
+  get(padded_storage_t<Format> value) {
+    return static_cast<std::uint32_t>(value) & raw_mask<Format::total_bits>();
+  }
+};
+
 template <typename Format>
 AUT_BITWIDTH_HD AUT_BITWIDTH_INLINE std::uint32_t
 raw_from_padded(padded_storage_t<Format> value) {
-  return static_cast<std::uint32_t>(value) & raw_mask<Format::total_bits>();
+  return padded_raw_traits<Format>::get(value);
 }
 
 AUT_BITWIDTH_HD AUT_BITWIDTH_INLINE std::uint32_t float_bits(float value) {

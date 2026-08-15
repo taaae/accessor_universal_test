@@ -38,7 +38,7 @@ cmake --build "${build_dir}" --parallel 2 \
 ctest --test-dir "${build_dir}" --output-on-failure \
     -R 'bitwidth_benchmark_core_test|storage_formats_test|decoder_strategy_core_test'
 
-widths=(2 3 4 5 6 7 9 10 12 14 17 20 24 28)
+widths=(2 3 4 5 6 7 8 9 10 12 14 16 17 20 24 28 32)
 for width in "${widths[@]}"; do
     target="bitwidth_strategy_bench_${width}"
     echo "Building ${target}"

@@ -301,13 +301,35 @@ template <typename Format, bw::compute_kind Compute> struct table_storage {
   device_buffer<std::uint32_t> prefix;
   device_buffer<std::uint32_t> subnormal;
 
+  static double reference_value(std::uint32_t raw) {
+    if constexpr (std::is_same_v<Format, storage::fp8_e4m3>) {
+      storage::storage_type_t<Format> value;
+      value.__x = static_cast<__nv_fp8_storage_t>(raw);
+      return storage::decode<Format>(value);
+    } else if constexpr (std::is_same_v<Format, storage::fp8_e5m2>) {
+      storage::storage_type_t<Format> value;
+      value.__x = static_cast<__nv_fp8_storage_t>(raw);
+      return storage::decode<Format>(value);
+    } else if constexpr (std::is_same_v<Format, storage::fp16_e5m10>) {
+      return storage::decode<Format>(
+          __half{__half_raw{static_cast<unsigned short>(raw)}});
+    } else if constexpr (std::is_same_v<Format, storage::bf16_e8m7>) {
+      return storage::decode<Format>(__nv_bfloat16{
+          __nv_bfloat16_raw{static_cast<unsigned short>(raw)}});
+    } else if constexpr (std::is_same_v<Format, storage::fp32_e8m23>) {
+      float value{};
+      std::memcpy(&value, &raw, sizeof(value));
+      return static_cast<double>(value);
+    } else {
+      return bw::decode_reference<Format, bw::compute_kind::fp64>(raw);
+    }
+  }
+
   static std::uint32_t target_high(std::uint32_t raw) {
     if constexpr (Compute == bw::compute_kind::fp32) {
-      return bw::float_bits(
-          bw::decode_reference<Format, bw::compute_kind::fp32>(raw));
+      return bw::float_bits(static_cast<float>(reference_value(raw)));
     } else {
-      const auto value =
-          bw::decode_reference<Format, bw::compute_kind::fp64>(raw);
+      const auto value = reference_value(raw);
       std::uint64_t bits{};
       std::memcpy(&bits, &value, sizeof(bits));
       return static_cast<std::uint32_t>(bits >> 32);
@@ -398,9 +420,13 @@ std::string variant_id() {
                           : Access == bw::access_method::thread_packet
                                 ? "thread_packet"
                                 : "cooperative_shuffle";
-  const auto packet = Access == bw::access_method::cooperative_shuffle
-                          ? bw::cooperative_geometry<AUT_BITWIDTH_TOTAL_BITS>::values
-                          : Lanes;
+  const auto packet = [] {
+    if constexpr (Access == bw::access_method::cooperative_shuffle) {
+      return bw::cooperative_geometry<AUT_BITWIDTH_TOTAL_BITS>::values;
+    } else {
+      return Lanes;
+    }
+  }();
   return std::string(layout) + "/" + access + "/x" +
          std::to_string(packet) + "/" + decoder_name(Decoder);
 }
@@ -690,9 +716,11 @@ void run_access_family(format_runner<Format, Compute> &runner) {
                               bw::access_method::thread_packet, 4, Decoder>();
   runner.template run_variant<bw::storage_layout::padded,
                               bw::access_method::thread_packet, 8, Decoder>();
-  runner.template run_variant<bw::storage_layout::dense,
-                              bw::access_method::cooperative_shuffle, 1,
-                              Decoder>();
+  if constexpr (bw::cooperative_supported_v<Format::total_bits>) {
+    runner.template run_variant<bw::storage_layout::dense,
+                                bw::access_method::cooperative_shuffle, 1,
+                                Decoder>();
+  }
 }
 
 template <typename Format, bw::compute_kind Compute,
@@ -741,8 +769,12 @@ void run_strategies(format_runner<Format, Compute> &runner) {
                         bw::decoder_kind::subnormal_lut_shared>(runner);
     }
   }
-  if constexpr (bw::native_fp6_traits<Format>::supported) {
+  if constexpr (bw::native_fp6_traits<Format>::supported ||
+                bw::native_format_traits<Format>::supported) {
     run_access_family<Format, Compute, bw::decoder_kind::native_scalar>(runner);
+  }
+  if constexpr (bw::native_fp6_traits<Format>::supported ||
+                bw::native_format_traits<Format>::packed) {
     run_thread_packet_family<Format, Compute,
                              bw::decoder_kind::native_packed>(runner);
   }
@@ -990,6 +1022,23 @@ void run_registered_formats(const options &settings,
     run_one_format<storage::e6m0, Compute>(settings, distribution, sources,
                                            output, left_count, right_count);
   }
+#elif AUT_BITWIDTH_TOTAL_BITS == 8
+  run_one_format<storage::e0m7, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
+  run_one_format<storage::e1m6, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
+  run_one_format<storage::e2m5, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
+  run_one_format<storage::e3m4, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
+  run_one_format<storage::fp8_e4m3, Compute>(
+      settings, distribution, sources, output, left_count, right_count);
+  run_one_format<storage::fp8_e5m2, Compute>(
+      settings, distribution, sources, output, left_count, right_count);
+  run_one_format<storage::e6m1, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
+  run_one_format<storage::e7m0, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
 #elif AUT_BITWIDTH_TOTAL_BITS == 9
   if constexpr (Compute == bw::compute_kind::fp32) {
     run_one_format<storage::e0m8, Compute>(settings, distribution, sources,
@@ -1038,6 +1087,33 @@ void run_registered_formats(const options &settings,
                                            output, left_count, right_count);
   } else {
     run_one_format<storage::e11m2, Compute>(settings, distribution, sources,
+                                            output, left_count, right_count);
+  }
+#elif AUT_BITWIDTH_TOTAL_BITS == 16
+  run_one_format<storage::e0m15, Compute>(settings, distribution, sources,
+                                          output, left_count, right_count);
+  run_one_format<storage::e1m14, Compute>(settings, distribution, sources,
+                                          output, left_count, right_count);
+  run_one_format<storage::e2m13, Compute>(settings, distribution, sources,
+                                          output, left_count, right_count);
+  run_one_format<storage::e3m12, Compute>(settings, distribution, sources,
+                                          output, left_count, right_count);
+  run_one_format<storage::e4m11, Compute>(settings, distribution, sources,
+                                          output, left_count, right_count);
+  run_one_format<storage::fp16_e5m10, Compute>(
+      settings, distribution, sources, output, left_count, right_count);
+  run_one_format<storage::e6m9, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
+  run_one_format<storage::e7m8, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
+  run_one_format<storage::bf16_e8m7, Compute>(
+      settings, distribution, sources, output, left_count, right_count);
+  if constexpr (Compute == bw::compute_kind::fp64) {
+    run_one_format<storage::e9m6, Compute>(settings, distribution, sources,
+                                           output, left_count, right_count);
+    run_one_format<storage::e10m5, Compute>(settings, distribution, sources,
+                                            output, left_count, right_count);
+    run_one_format<storage::e11m4, Compute>(settings, distribution, sources,
                                             output, left_count, right_count);
   }
 #elif AUT_BITWIDTH_TOTAL_BITS == 17
@@ -1096,6 +1172,36 @@ void run_registered_formats(const options &settings,
                                             output, left_count, right_count);
   } else {
     run_one_format<storage::e11m16, Compute>(settings, distribution, sources,
+                                             output, left_count, right_count);
+  }
+#elif AUT_BITWIDTH_TOTAL_BITS == 32
+  if constexpr (Compute == bw::compute_kind::fp32) {
+    run_one_format<storage::fp32_e8m23, Compute>(
+        settings, distribution, sources, output, left_count, right_count);
+  } else {
+    run_one_format<storage::e0m31, Compute>(settings, distribution, sources,
+                                            output, left_count, right_count);
+    run_one_format<storage::e1m30, Compute>(settings, distribution, sources,
+                                            output, left_count, right_count);
+    run_one_format<storage::e2m29, Compute>(settings, distribution, sources,
+                                            output, left_count, right_count);
+    run_one_format<storage::e3m28, Compute>(settings, distribution, sources,
+                                            output, left_count, right_count);
+    run_one_format<storage::e4m27, Compute>(settings, distribution, sources,
+                                            output, left_count, right_count);
+    run_one_format<storage::e5m26, Compute>(settings, distribution, sources,
+                                            output, left_count, right_count);
+    run_one_format<storage::e6m25, Compute>(settings, distribution, sources,
+                                            output, left_count, right_count);
+    run_one_format<storage::e7m24, Compute>(settings, distribution, sources,
+                                            output, left_count, right_count);
+    run_one_format<storage::fp32_e8m23, Compute>(
+        settings, distribution, sources, output, left_count, right_count);
+    run_one_format<storage::e9m22, Compute>(settings, distribution, sources,
+                                            output, left_count, right_count);
+    run_one_format<storage::e10m21, Compute>(settings, distribution, sources,
+                                             output, left_count, right_count);
+    run_one_format<storage::e11m20, Compute>(settings, distribution, sources,
                                              output, left_count, right_count);
   }
 #else

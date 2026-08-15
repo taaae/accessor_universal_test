@@ -10,7 +10,7 @@ timestamp="$(date -u +%Y%m%dT%H%M%SZ)"
 run_dir="${RUN_DIR:-${results_root}/run_${timestamp}}"
 started_epoch="$(date +%s)"
 
-read -r -a widths <<<"${WIDTHS:-2 3 4 5 6 7 9 10 12 14 17 20 24 28}"
+read -r -a widths <<<"${WIDTHS:-2 3 4 5 6 7 8 9 10 12 14 16 17 20 24 28 32}"
 dot_powers="${DOT_POWERS:-12,16,20,24,27}"
 gemv_powers="${GEMV_POWERS:-8,10,12,14,16}"
 gemv_rows="${GEMV_ROWS:-1024}"
@@ -19,6 +19,7 @@ samples="${SAMPLES:-5}"
 target_sample_ms="${TARGET_SAMPLE_MS:-15}"
 seed="${BASE_SEED:-2611923443488327891}"
 stop_after="${STOP_AFTER:-full}"
+raw_anchor_variants="natural/scalar/x1/raw,natural/thread_packet/x2/raw,natural/thread_packet/x4/raw,natural/thread_packet/x8/raw"
 
 if [[ "${stop_after}" != "smoke" && "${stop_after}" != "screen" &&
       "${stop_after}" != "full" ]]; then
@@ -52,6 +53,7 @@ merge_csv() {
     echo "full_samples=${samples}"
     echo "full_target_sample_ms=${target_sample_ms}"
     echo "base_seed=${seed}"
+    echo "raw_baseline_schedule=before_each_width_in_screen_and_full"
     echo "stop_after=${stop_after}"
     echo "git_status_begin"
     git -C "${repo_dir}" status --short
@@ -111,6 +113,20 @@ fi
 
 screen_files=()
 for width in "${widths[@]}"; do
+    anchor_output="${run_dir}/screen/raw_anchor_before_${width}bit.csv"
+    "${build_dir}/bin/bitwidth_strategy_bench_2" \
+        --mode screen \
+        --dot-powers "${SCREEN_DOT_POWERS:-24}" \
+        --gemv-powers "${SCREEN_GEMV_POWERS:-14}" \
+        --gemv-rows "${gemv_rows}" \
+        --warmup "${SCREEN_WARMUP:-3}" \
+        --samples "${SCREEN_SAMPLES:-3}" \
+        --target-sample-ms "${SCREEN_TARGET_SAMPLE_MS:-5}" \
+        --seed "${seed}" \
+        --variants "${raw_anchor_variants}" \
+        --output "${anchor_output}" \
+        >"${run_dir}/screen/raw_anchor_before_${width}bit_stdout.txt"
+    screen_files+=("${anchor_output}")
     output="${run_dir}/screen/timing_samples_${width}bit.csv"
     "${build_dir}/bin/bitwidth_strategy_bench_${width}" \
         --mode screen \
@@ -149,6 +165,20 @@ fi
 
 full_files=()
 for width in "${widths[@]}"; do
+    anchor_output="${run_dir}/full/raw_anchor_before_${width}bit.csv"
+    "${build_dir}/bin/bitwidth_strategy_bench_2" \
+        --mode full \
+        --dot-powers "${dot_powers}" \
+        --gemv-powers "${gemv_powers}" \
+        --gemv-rows "${gemv_rows}" \
+        --warmup "${warmup}" \
+        --samples "${samples}" \
+        --target-sample-ms "${target_sample_ms}" \
+        --seed "${seed}" \
+        --variants "${raw_anchor_variants}" \
+        --output "${anchor_output}" \
+        >"${run_dir}/full/raw_anchor_before_${width}bit_stdout.txt"
+    full_files+=("${anchor_output}")
     output="${run_dir}/full/timing_samples_${width}bit.csv"
     "${build_dir}/bin/bitwidth_strategy_bench_${width}" \
         --mode full \
