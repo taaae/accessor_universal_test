@@ -697,6 +697,17 @@ void run_strategies(format_runner<Format, Compute> &runner) {
     run_access_family<Format, Compute, bw::decoder_kind::full_lut_global>(runner);
     run_access_family<Format, Compute, bw::decoder_kind::full_lut_shared>(runner);
   }
+  if constexpr (Format::total_bits >= 9 && Format::exponent_bits >= 2 &&
+                Format::fraction_bits > 0) {
+    run_access_family<Format, Compute, bw::decoder_kind::prefix_lut_global>(runner);
+    run_access_family<Format, Compute, bw::decoder_kind::prefix_lut_shared>(runner);
+    if constexpr (Format::fraction_bits <= 12) {
+      run_access_family<Format, Compute,
+                        bw::decoder_kind::subnormal_lut_global>(runner);
+      run_access_family<Format, Compute,
+                        bw::decoder_kind::subnormal_lut_shared>(runner);
+    }
+  }
   if constexpr (bw::native_fp6_traits<Format>::supported) {
     run_access_family<Format, Compute, bw::decoder_kind::native_scalar>(runner);
     run_thread_packet_family<Format, Compute,
@@ -775,6 +786,20 @@ void run_registered_formats(const options &settings,
     run_one_format<storage::e6m0, Compute>(settings, distribution, sources,
                                            output, left_count, right_count);
   }
+#elif AUT_BITWIDTH_TOTAL_BITS == 9
+  if constexpr (Compute == bw::compute_kind::fp32) {
+    run_one_format<storage::e0m8, Compute>(settings, distribution, sources,
+                                           output, left_count, right_count);
+    run_one_format<storage::e4m4, Compute>(settings, distribution, sources,
+                                           output, left_count, right_count);
+  } else {
+    run_one_format<storage::e2m6, Compute>(settings, distribution, sources,
+                                           output, left_count, right_count);
+    run_one_format<storage::e5m3, Compute>(settings, distribution, sources,
+                                           output, left_count, right_count);
+  }
+  run_one_format<storage::e8m0, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
 #else
 #error "the selected width has not been registered"
 #endif
