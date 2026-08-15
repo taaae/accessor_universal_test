@@ -88,6 +88,7 @@ struct options {
   double target_sample_ms{10.0};
   std::uint64_t seed{0x243f6a8885a308d3ull};
   std::string output{"lns_timing_samples.csv"};
+  std::string validation_output;
   std::set<std::string> enabled_variants;
 };
 
@@ -121,6 +122,8 @@ options parse_options(int argc, char **argv) {
       result.seed = std::stoull(value());
     } else if (argument == "--output") {
       result.output = value();
+    } else if (argument == "--validation-output") {
+      result.validation_output = value();
     } else if (argument == "--variants") {
       for (const auto &variant : parse_strings(value())) {
         result.enabled_variants.insert(variant);
@@ -345,6 +348,177 @@ template <typename Format, bw::compute_kind Compute> struct table_storage {
     return {full.data, fraction.data, coarse.data, pair.data};
   }
 };
+
+const char *decoder_name(lk::decoder_kind decoder);
+
+template <lk::decoder_kind Decoder> constexpr double relative_tolerance() {
+  if constexpr (Decoder == lk::decoder_kind::ex2_approx) {
+    return 4e-6;
+  } else if constexpr (Decoder == lk::decoder_kind::split_linear) {
+    return 1e-5;
+  } else if constexpr (Decoder == lk::decoder_kind::split_quadratic) {
+    return 1e-7;
+  } else if constexpr (Decoder == lk::decoder_kind::split_cubic) {
+    return 1e-9;
+  } else {
+    return 1e-12;
+  }
+}
+
+template <typename Format, bw::compute_kind Compute, lk::decoder_kind Decoder>
+void validate_decoder(const options &settings,
+                      table_storage<Format, Compute> &tables,
+                      std::ofstream *summary) {
+  using value_type = bw::compute_t<Compute>;
+  constexpr std::uint64_t domain =
+      std::uint64_t{1} << Format::total_bits;
+  constexpr std::size_t maximum_cases = 65536;
+  const auto cases = static_cast<std::size_t>(
+      std::min<std::uint64_t>(domain, maximum_cases));
+  std::vector<std::uint32_t> host_raw(cases);
+  for (std::size_t index = 0; index < cases; ++index) {
+    host_raw[index] = static_cast<std::uint32_t>(
+        (static_cast<unsigned long long>(index) * domain) / cases);
+  }
+  if (cases >= 2) {
+    host_raw[cases - 2] = lns::zero_raw<Format>();
+    host_raw[cases - 1] = lns::nan_raw<Format>();
+  }
+  device_buffer<std::uint32_t> raw(cases);
+  device_buffer<value_type> observed(cases);
+  CUDA_CHECK(cudaMemcpy(raw.data, host_raw.data(),
+                        cases * sizeof(std::uint32_t),
+                        cudaMemcpyHostToDevice));
+  constexpr auto shared =
+      lk::shared_table_bytes_v<Format, Compute, Decoder>;
+  if constexpr (shared > 48 * 1024) {
+    CUDA_CHECK(cudaFuncSetAttribute(
+        lk::validate_decode_kernel<Format, Compute, Decoder>,
+        cudaFuncAttributeMaxDynamicSharedMemorySize, static_cast<int>(shared)));
+  }
+  lk::validate_decode_kernel<Format, Compute, Decoder>
+      <<<std::min<int>(256, static_cast<int>((cases + 255) / 256)), 256,
+         shared>>>(raw.data, cases, tables.view(), observed.data);
+  CUDA_CHECK(cudaGetLastError());
+  std::vector<value_type> host_observed(cases);
+  CUDA_CHECK(cudaMemcpy(host_observed.data(), observed.data,
+                        cases * sizeof(value_type), cudaMemcpyDeviceToHost));
+
+  std::size_t failures{};
+  double maximum_relative{};
+  double maximum_absolute{};
+  std::uint32_t worst_raw{};
+  for (std::size_t index = 0; index < cases; ++index) {
+    auto expected = lns::decode<Format, value_type>(host_raw[index]);
+    if constexpr (Decoder == lk::decoder_kind::ex2_approx) {
+      const auto raw_value = host_raw[index];
+      if (!lns::is_special<Format>(raw_value)) {
+        constexpr float scale = static_cast<float>(
+            std::uint64_t{1} << Format::log_fraction_bits);
+        auto projected = std::exp2(
+            static_cast<float>(lns::log_code<Format>(raw_value)) / scale);
+        if (lns::sign<Format>(raw_value)) {
+          projected = -projected;
+        }
+        expected = static_cast<value_type>(projected);
+      }
+    }
+    const auto actual = host_observed[index];
+    bool valid{};
+    double absolute{};
+    double relative{};
+    if (std::isnan(static_cast<double>(expected))) {
+      valid = std::isnan(static_cast<double>(actual));
+    } else if (std::isinf(static_cast<double>(expected))) {
+      valid = std::isinf(static_cast<double>(actual)) &&
+              std::signbit(static_cast<double>(expected)) ==
+                  std::signbit(static_cast<double>(actual));
+    } else {
+      absolute = std::abs(static_cast<double>(actual) -
+                          static_cast<double>(expected));
+      const auto denominator =
+          std::max(std::abs(static_cast<double>(expected)),
+                   std::is_same_v<value_type, float> ? 1e-37 : 1e-307);
+      relative = absolute / denominator;
+      const auto tolerance =
+          std::is_same_v<value_type, float>
+              ? std::max(relative_tolerance<Decoder>(), 2e-6)
+              : relative_tolerance<Decoder>();
+      valid = relative <= tolerance ||
+              (expected == value_type{} && actual == value_type{});
+    }
+    if (!valid) {
+      ++failures;
+    }
+    if (relative > maximum_relative) {
+      maximum_relative = relative;
+      maximum_absolute = absolute;
+      worst_raw = host_raw[index];
+    }
+  }
+  if (summary != nullptr) {
+    *summary << Format::name << ',' << bw::compute_traits<Compute>::name << ','
+             << decoder_name(Decoder) << ',' << cases << ',' << failures << ','
+             << std::setprecision(17) << maximum_absolute << ','
+             << maximum_relative << ',' << worst_raw << '\n';
+  }
+  if (failures != 0) {
+    throw std::runtime_error(std::string("decoder validation failed: ") +
+                             Format::name + "/" +
+                             bw::compute_traits<Compute>::name + "/" +
+                             decoder_name(Decoder) + " failures=" +
+                             std::to_string(failures));
+  }
+}
+
+template <typename Format, bw::compute_kind Compute>
+void validate_decoders(const options &settings,
+                       table_storage<Format, Compute> &tables) {
+  std::ofstream output;
+  const auto needs_header = !settings.validation_output.empty() &&
+                            !std::ifstream(settings.validation_output).good();
+  if (!settings.validation_output.empty()) {
+    output.open(settings.validation_output, std::ios::app);
+    if (!output) {
+      throw std::runtime_error("cannot open validation output: " +
+                               settings.validation_output);
+    }
+    if (needs_header) {
+      output << "format,arithmetic_type,decoder,cases,failures,"
+                "max_absolute_error,max_relative_error,worst_raw\n";
+    }
+  }
+  auto *stream = output ? &output : nullptr;
+  validate_decoder<Format, Compute, lk::decoder_kind::reference_exp2>(
+      settings, tables, stream);
+  validate_decoder<Format, Compute, lk::decoder_kind::ex2_approx>(
+      settings, tables, stream);
+  if constexpr (Format::total_bits <= 12) {
+    validate_decoder<Format, Compute, lk::decoder_kind::full_lut_global>(
+        settings, tables, stream);
+    validate_decoder<Format, Compute, lk::decoder_kind::full_lut_shared>(
+        settings, tables, stream);
+  }
+  if constexpr (Format::log_fraction_bits <= 13) {
+    validate_decoder<Format, Compute, lk::decoder_kind::fraction_lut_global>(
+        settings, tables, stream);
+    validate_decoder<Format, Compute, lk::decoder_kind::fraction_lut_shared>(
+        settings, tables, stream);
+  }
+  if constexpr (Format::log_fraction_bits <= 5) {
+    validate_decoder<Format, Compute, lk::decoder_kind::fraction_lut_warp>(
+        settings, tables, stream);
+  }
+  if constexpr (Format::log_fraction_bits >= 6) {
+    validate_decoder<Format, Compute, lk::decoder_kind::split_linear>(
+        settings, tables, stream);
+    validate_decoder<Format, Compute, lk::decoder_kind::split_quadratic>(
+        settings, tables, stream);
+    validate_decoder<Format, Compute, lk::decoder_kind::split_cubic>(
+        settings, tables, stream);
+  }
+  std::cout << "    decoder validation passed" << std::endl;
+}
 
 const char *decoder_name(lk::decoder_kind decoder) {
   switch (decoder) {
@@ -829,6 +1003,10 @@ void run_compute(const options &settings, const std::string &distribution,
   encoded_buffers<selected_format> encoded(left_count, right_count);
   encoded.encode(sources, left_count, right_count);
   table_storage<selected_format, Compute> tables;
+  if (settings.mode == "smoke" &&
+      distribution == settings.distributions.front()) {
+    validate_decoders(settings, tables);
+  }
   runner<selected_format, Compute> benchmark(settings, distribution, encoded,
                                                tables, output);
   run_strategies(benchmark);
