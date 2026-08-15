@@ -3,6 +3,7 @@
 
 #include "bitwidth_benchmark_core.hpp"
 
+#include <cuda_fp6.h>
 #include <cuda_runtime.h>
 
 #include <cstddef>
@@ -10,6 +11,20 @@
 #include <type_traits>
 
 namespace aut::bitwidth {
+
+template <typename Format> struct native_fp6_traits {
+  static constexpr bool supported = false;
+};
+
+template <> struct native_fp6_traits<storage::e2m3> {
+  static constexpr bool supported = true;
+  static constexpr auto interpretation = __NV_E2M3;
+};
+
+template <> struct native_fp6_traits<storage::e3m2> {
+  static constexpr bool supported = true;
+  static constexpr auto interpretation = __NV_E3M2;
+};
 
 struct decoder_tables {
   const std::uint32_t *full{};
@@ -156,8 +171,41 @@ decode_with_table(std::uint32_t raw, const std::uint32_t *table) {
     const auto sign = raw >> (Format::total_bits - 1);
     const auto high = table[fraction] | (sign << 31);
     return value_from_high_word<Format, Compute>(high);
+  } else if constexpr (Decoder == decoder_kind::native_scalar) {
+    static_assert(native_fp6_traits<Format>::supported);
+    const __half converted(__nv_cvt_fp6_to_halfraw(
+        static_cast<__nv_fp6_storage_t>(raw),
+        native_fp6_traits<Format>::interpretation));
+    return static_cast<compute_t<Compute>>(__half2float(converted));
   } else {
     return decode_raw<Format, Compute, Decoder>(raw);
+  }
+}
+
+template <typename Format, compute_kind Compute, decoder_kind Decoder,
+          int Lanes>
+__device__ __forceinline__ void
+decode_packet_values(const std::uint32_t (&raw)[Lanes],
+                     const std::uint32_t *table,
+                     compute_t<Compute> (&values)[Lanes]) {
+  if constexpr (Decoder == decoder_kind::native_packed) {
+    static_assert(native_fp6_traits<Format>::supported);
+    static_assert(Lanes % 2 == 0);
+#pragma unroll
+    for (int lane = 0; lane < Lanes; lane += 2) {
+      const auto packed = static_cast<__nv_fp6x2_storage_t>(
+          raw[lane] | (raw[lane + 1] << 8));
+      const __half2 converted(__nv_cvt_fp6x2_to_halfraw2(
+          packed, native_fp6_traits<Format>::interpretation));
+      const auto pair = __half22float2(converted);
+      values[lane] = static_cast<compute_t<Compute>>(pair.x);
+      values[lane + 1] = static_cast<compute_t<Compute>>(pair.y);
+    }
+  } else {
+#pragma unroll
+    for (int lane = 0; lane < Lanes; ++lane) {
+      values[lane] = decode_with_table<Format, Compute, Decoder>(raw[lane], table);
+    }
   }
 }
 
@@ -199,14 +247,14 @@ __global__ void dot_thread_kernel(storage_view<Format, Layout> left,
     std::uint32_t right_raw[Lanes]{};
     left.template raw_packet<Lanes>(base, left_raw);
     right.template raw_packet<Lanes>(base, right_raw);
+    compute_t<Compute> left_values[Lanes]{};
+    compute_t<Compute> right_values[Lanes]{};
+    decode_packet_values<Format, Compute, Decoder>(left_raw, table, left_values);
+    decode_packet_values<Format, Compute, Decoder>(right_raw, table, right_values);
 #pragma unroll
     for (int lane = 0; lane < Lanes; ++lane) {
       if (base + lane < count) {
-        const auto a = decode_with_table<Format, Compute, Decoder>(left_raw[lane],
-                                                                   table);
-        const auto b = decode_with_table<Format, Compute, Decoder>(right_raw[lane],
-                                                                   table);
-        sum = a * b + sum;
+        sum = left_values[lane] * right_values[lane] + sum;
       }
     }
   }
@@ -255,14 +303,16 @@ __global__ void gemv_thread_kernel(storage_view<Format, Layout> matrix,
     std::uint32_t vector_raw[Lanes]{};
     matrix.template raw_packet<Lanes>(row * columns + base, matrix_raw);
     vector.template raw_packet<Lanes>(base, vector_raw);
+    compute_t<Compute> matrix_values[Lanes]{};
+    compute_t<Compute> vector_values[Lanes]{};
+    decode_packet_values<Format, Compute, Decoder>(matrix_raw, table,
+                                                    matrix_values);
+    decode_packet_values<Format, Compute, Decoder>(vector_raw, table,
+                                                    vector_values);
 #pragma unroll
     for (int lane = 0; lane < Lanes; ++lane) {
       if (base + lane < columns) {
-        const auto a = decode_with_table<Format, Compute, Decoder>(
-            matrix_raw[lane], table);
-        const auto b = decode_with_table<Format, Compute, Decoder>(
-            vector_raw[lane], table);
-        sum = a * b + sum;
+        sum = matrix_values[lane] * vector_values[lane] + sum;
       }
     }
   }

@@ -662,6 +662,23 @@ void run_access_family(format_runner<Format, Compute> &runner) {
                               Decoder>();
 }
 
+template <typename Format, bw::compute_kind Compute,
+          bw::decoder_kind Decoder>
+void run_thread_packet_family(format_runner<Format, Compute> &runner) {
+  runner.template run_variant<bw::storage_layout::dense,
+                              bw::access_method::thread_packet, 2, Decoder>();
+  runner.template run_variant<bw::storage_layout::dense,
+                              bw::access_method::thread_packet, 4, Decoder>();
+  runner.template run_variant<bw::storage_layout::dense,
+                              bw::access_method::thread_packet, 8, Decoder>();
+  runner.template run_variant<bw::storage_layout::padded,
+                              bw::access_method::thread_packet, 2, Decoder>();
+  runner.template run_variant<bw::storage_layout::padded,
+                              bw::access_method::thread_packet, 4, Decoder>();
+  runner.template run_variant<bw::storage_layout::padded,
+                              bw::access_method::thread_packet, 8, Decoder>();
+}
+
 template <typename Format, bw::compute_kind Compute>
 void run_strategies(format_runner<Format, Compute> &runner) {
   run_scalar_family<Format, Compute, bw::decoder_kind::generic_reference>(runner);
@@ -679,6 +696,11 @@ void run_strategies(format_runner<Format, Compute> &runner) {
   if constexpr (Format::total_bits <= 14) {
     run_access_family<Format, Compute, bw::decoder_kind::full_lut_global>(runner);
     run_access_family<Format, Compute, bw::decoder_kind::full_lut_shared>(runner);
+  }
+  if constexpr (bw::native_fp6_traits<Format>::supported) {
+    run_access_family<Format, Compute, bw::decoder_kind::native_scalar>(runner);
+    run_thread_packet_family<Format, Compute,
+                             bw::decoder_kind::native_packed>(runner);
   }
 }
 
@@ -722,6 +744,19 @@ void run_registered_formats(const options &settings,
                                            output, left_count, right_count);
   }
   run_one_format<storage::e4m0, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
+#elif AUT_BITWIDTH_TOTAL_BITS == 6
+  run_one_format<storage::e0m5, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
+  run_one_format<storage::e1m4, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
+  run_one_format<storage::e2m3, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
+  run_one_format<storage::e3m2, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
+  run_one_format<storage::e4m1, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
+  run_one_format<storage::e5m0, Compute>(settings, distribution, sources, output,
                                          left_count, right_count);
 #else
 #error "the selected width has not been registered"
