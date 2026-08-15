@@ -83,6 +83,15 @@ target_include_directories(
 target_compile_options(bitwidth_benchmark_core_test PRIVATE -O3)
 add_test(NAME bitwidth_benchmark_core_test COMMAND bitwidth_benchmark_core_test)
 
+add_executable(lns_benchmark_core_test tests/lns_benchmark_core_test.cpp)
+target_include_directories(
+    lns_benchmark_core_test
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+target_compile_options(lns_benchmark_core_test PRIVATE -O3)
+add_test(NAME lns_benchmark_core_test COMMAND lns_benchmark_core_test)
+
 function(add_bitwidth_strategy_benchmark bits)
     set(target "bitwidth_strategy_bench_${bits}")
     add_executable(${target} src/bitwidth_strategy_bench.cu)
