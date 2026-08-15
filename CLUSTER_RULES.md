@@ -103,6 +103,11 @@ print, or modify private key material.
   `TMPDIR=/tmp` explicitly in jobs that need it.
 - The target GPU is Hopper `sm_90`; configure CMake with
   `CMAKE_CUDA_ARCHITECTURES=90`.
+- An explicit link to the shared `CUDA::cudart` target overrides the practical
+  benefit of setting `CUDA_RUNTIME_LIBRARY Static`. For portable batch
+  executables, let the CUDA runtime property supply `cudart_static` and link
+  static CUDA dependencies such as `CUDA::curand_static` where available. This
+  avoids depending on a node-specific runtime-library search path.
 
 ## Failure handling and cleanup
 
@@ -148,6 +153,10 @@ print, or modify private key material.
 - Enabling `set -u` before sourcing `/etc/profile` caused an immediate failure in
   the system `debuginfod` profile. Use the environment initialization order
   documented above.
+- A benchmark linked both `CUDA::cudart` and a nominally static CUDA runtime. It
+  compiled successfully but failed at startup on a normal H200 node because
+  `libcudart.so.13` was not on the dynamic-loader path. Do not mix explicit
+  shared CUDA runtime targets with the static runtime target property.
 - Polling only `squeue` can produce an empty row after a fast failure. Follow it
   with the exact `.out` path instead of assuming success.
 - Do not use an instrumented Nsight Compute duration as the performance result;

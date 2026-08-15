@@ -43,6 +43,11 @@ for width in "${widths[@]}"; do
     target="bitwidth_strategy_bench_${width}"
     echo "Building ${target}"
     cmake --build "${build_dir}" --parallel 2 --target "${target}"
+    if ldd "${build_dir}/bin/${target}" | grep -Eq 'lib(cudart|curand)\.so'; then
+        echo "error: ${target} retains a shared CUDA runtime dependency" >&2
+        ldd "${build_dir}/bin/${target}" >&2
+        exit 1
+    fi
 done
 
 echo "All arbitrary-width CUDA targets compiled successfully."

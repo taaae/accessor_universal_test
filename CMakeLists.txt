@@ -86,7 +86,7 @@ add_test(NAME bitwidth_benchmark_core_test COMMAND bitwidth_benchmark_core_test)
 function(add_bitwidth_strategy_benchmark bits)
     set(target "bitwidth_strategy_bench_${bits}")
     add_executable(${target} src/bitwidth_strategy_bench.cu)
-    target_link_libraries(${target} PRIVATE CUDA::cudart CUDA::curand)
+    target_link_libraries(${target} PRIVATE CUDA::curand_static)
     target_include_directories(
         ${target}
         PRIVATE
