@@ -34,6 +34,11 @@ template <typename Format> void test_format() {
     if (std::isnan(reference64)) {
       assert(std::isnan(direct64));
     } else {
+      if (double_bits(reference64) != double_bits(direct64)) {
+        std::cerr << "FP64 mismatch: " << Format::name << " raw=" << raw
+                  << " reference=0x" << std::hex << double_bits(reference64)
+                  << " direct=0x" << double_bits(direct64) << std::dec << '\n';
+      }
       assert(double_bits(reference64) == double_bits(direct64));
     }
 
@@ -45,6 +50,11 @@ template <typename Format> void test_format() {
       if (std::isnan(reference32)) {
         assert(std::isnan(direct32));
       } else {
+        if (float_bits(reference32) != float_bits(direct32)) {
+          std::cerr << "FP32 mismatch: " << Format::name << " raw=" << raw
+                    << " reference=0x" << std::hex << float_bits(reference32)
+                    << " direct=0x" << float_bits(direct32) << std::dec << '\n';
+        }
         assert(float_bits(reference32) == float_bits(direct32));
       }
     }
@@ -120,6 +130,10 @@ int main() {
   test_format<aut::storage::e5m6>();
   test_format<aut::storage::e8m3>();
   test_format<aut::storage::e11m0>();
+  test_format<aut::storage::e2m11>();
+  test_format<aut::storage::e5m8>();
+  test_format<aut::storage::e8m5>();
+  test_format<aut::storage::e11m2>();
 
   static_assert(aut::bitwidth::dense_geometry<6>::values_per_aligned_chunk ==
                 16);

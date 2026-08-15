@@ -168,7 +168,10 @@ AUT_DEFINE_BINARY_FORMAT(e0m11, 12, 0, true);
 AUT_DEFINE_BINARY_FORMAT(e2m9, 12, 2, false);
 AUT_DEFINE_BINARY_FORMAT(e5m6, 12, 5, false);
 AUT_DEFINE_BINARY_FORMAT(e8m3, 12, 8, false);
-AUT_DEFINE_BINARY_FORMAT(e11m0, 12, 11, false);
+
+AUT_DEFINE_BINARY_FORMAT(e2m11, 14, 2, false);
+AUT_DEFINE_BINARY_FORMAT(e5m8, 14, 5, false);
+AUT_DEFINE_BINARY_FORMAT(e8m5, 14, 8, false);
 
 AUT_DEFINE_BINARY_FORMAT(e0m15, 16, 0, true);
 struct e1m14 : binary_format<16, 1, true> {
@@ -206,12 +209,19 @@ AUT_DEFINE_BINARY_FORMAT(e10m21, 32, 10, false);
 #undef AUT_DEFINE_BINARY_FORMAT
 
 template <int FractionBits> struct fp64_prefix {
-  static_assert(FractionBits == 4 || FractionBits == 20,
-                "the experiment uses only the 16- and 32-bit FP64 prefixes");
+  static_assert(FractionBits >= 0 && FractionBits <= 20,
+                "FP64-prefix experiments retain up to the high-word fraction");
   static constexpr int total_bits = 12 + FractionBits;
   static constexpr int exponent_bits = 11;
   static constexpr int fraction_bits = FractionBits;
   static constexpr bool finite = false;
+};
+
+struct e11m0 : fp64_prefix<0> {
+  static constexpr const char *name = "e11m0";
+};
+struct e11m2 : fp64_prefix<2> {
+  static constexpr const char *name = "e11m2";
 };
 
 struct e11m4 : fp64_prefix<4> {
@@ -485,7 +495,9 @@ AUT_INHERIT_BINARY_CODEC(e0m11);
 AUT_INHERIT_BINARY_CODEC(e2m9);
 AUT_INHERIT_BINARY_CODEC(e5m6);
 AUT_INHERIT_BINARY_CODEC(e8m3);
-AUT_INHERIT_BINARY_CODEC(e11m0);
+AUT_INHERIT_BINARY_CODEC(e2m11);
+AUT_INHERIT_BINARY_CODEC(e5m8);
+AUT_INHERIT_BINARY_CODEC(e8m5);
 AUT_INHERIT_BINARY_CODEC(e0m15);
 AUT_INHERIT_BINARY_CODEC(e4m11);
 AUT_INHERIT_BINARY_CODEC(e6m9);
@@ -537,6 +549,8 @@ template <int FractionBits> struct prefix_codec {
 
 template <> struct codec<e11m4> : prefix_codec<4> {};
 template <> struct codec<e11m20> : prefix_codec<20> {};
+template <> struct codec<e11m0> : prefix_codec<0> {};
+template <> struct codec<e11m2> : prefix_codec<2> {};
 
 template <typename Format>
 using storage_type_t = typename codec<Format>::storage_type;

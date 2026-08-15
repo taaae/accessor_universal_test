@@ -475,11 +475,23 @@ private:
   void launch_dot(std::size_t count, int blocks) {
     if constexpr (Access == bw::access_method::cooperative_shuffle) {
       static_assert(Layout == bw::storage_layout::dense);
+      if constexpr (shared_bytes<Decoder>() > 48 * 1024) {
+        CUDA_CHECK(cudaFuncSetAttribute(
+            bw::dot_cooperative_kernel<Format, Compute, Decoder>,
+            cudaFuncAttributeMaxDynamicSharedMemorySize,
+            static_cast<int>(shared_bytes<Decoder>())));
+      }
       bw::dot_cooperative_kernel<Format, Compute, Decoder>
           <<<blocks, 256, shared_bytes<Decoder>()>>>(
               encoded_.left_dense.data, encoded_.right_dense.data, count,
               tables_.view(), partials_.data);
     } else {
+      if constexpr (shared_bytes<Decoder>() > 48 * 1024) {
+        CUDA_CHECK(cudaFuncSetAttribute(
+            bw::dot_thread_kernel<Format, Compute, Layout, Lanes, Decoder>,
+            cudaFuncAttributeMaxDynamicSharedMemorySize,
+            static_cast<int>(shared_bytes<Decoder>())));
+      }
       bw::dot_thread_kernel<Format, Compute, Layout, Lanes, Decoder>
           <<<blocks, 256, shared_bytes<Decoder>()>>>(
               encoded_.template left_view<Layout>(),
@@ -496,12 +508,24 @@ private:
   void launch_gemv(std::size_t columns) {
     if constexpr (Access == bw::access_method::cooperative_shuffle) {
       static_assert(Layout == bw::storage_layout::dense);
+      if constexpr (shared_bytes<Decoder>() > 48 * 1024) {
+        CUDA_CHECK(cudaFuncSetAttribute(
+            bw::gemv_cooperative_kernel<Format, Compute, Decoder>,
+            cudaFuncAttributeMaxDynamicSharedMemorySize,
+            static_cast<int>(shared_bytes<Decoder>())));
+      }
       bw::gemv_cooperative_kernel<Format, Compute, Decoder>
           <<<static_cast<int>(settings_.gemv_rows), 256,
              shared_bytes<Decoder>()>>>(
               encoded_.left_dense.data, encoded_.right_dense.data,
               settings_.gemv_rows, columns, tables_.view(), result_.data);
     } else {
+      if constexpr (shared_bytes<Decoder>() > 48 * 1024) {
+        CUDA_CHECK(cudaFuncSetAttribute(
+            bw::gemv_thread_kernel<Format, Compute, Layout, Lanes, Decoder>,
+            cudaFuncAttributeMaxDynamicSharedMemorySize,
+            static_cast<int>(shared_bytes<Decoder>())));
+      }
       bw::gemv_thread_kernel<Format, Compute, Layout, Lanes, Decoder>
           <<<static_cast<int>(settings_.gemv_rows), 256,
              shared_bytes<Decoder>()>>>(
@@ -822,6 +846,18 @@ void run_registered_formats(const options &settings,
                                            output, left_count, right_count);
   } else {
     run_one_format<storage::e11m0, Compute>(settings, distribution, sources,
+                                            output, left_count, right_count);
+  }
+#elif AUT_BITWIDTH_TOTAL_BITS == 14
+  run_one_format<storage::e2m11, Compute>(settings, distribution, sources,
+                                          output, left_count, right_count);
+  run_one_format<storage::e5m8, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
+  if constexpr (Compute == bw::compute_kind::fp32) {
+    run_one_format<storage::e8m5, Compute>(settings, distribution, sources,
+                                           output, left_count, right_count);
+  } else {
+    run_one_format<storage::e11m2, Compute>(settings, distribution, sources,
                                             output, left_count, right_count);
   }
 #else
