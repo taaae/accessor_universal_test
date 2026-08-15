@@ -169,6 +169,7 @@ function(add_lns_strategy_benchmark name format_id enable_fp32)
 endfunction()
 
 add_lns_strategy_benchmark(lns4_r1 1 1)
+add_lns_strategy_benchmark(lns6_r2 2 1)
 
 add_executable(accuracy_statistics_test tests/accuracy_statistics_test.cpp)
 target_include_directories(
