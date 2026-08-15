@@ -83,6 +83,29 @@ target_include_directories(
 target_compile_options(bitwidth_benchmark_core_test PRIVATE -O3)
 add_test(NAME bitwidth_benchmark_core_test COMMAND bitwidth_benchmark_core_test)
 
+function(add_bitwidth_strategy_benchmark bits)
+    set(target "bitwidth_strategy_bench_${bits}")
+    add_executable(${target} src/bitwidth_strategy_bench.cu)
+    target_link_libraries(${target} PRIVATE CUDA::cudart CUDA::curand)
+    target_include_directories(
+        ${target}
+        PRIVATE
+            "${CMAKE_CURRENT_SOURCE_DIR}/include"
+    )
+    target_compile_definitions(
+        ${target}
+        PRIVATE AUT_BITWIDTH_TOTAL_BITS=${bits}
+    )
+    target_compile_options(
+        ${target}
+        PRIVATE
+            "$<$<COMPILE_LANGUAGE:CXX>:-O3>"
+            "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v>"
+    )
+endfunction()
+
+add_bitwidth_strategy_benchmark(3)
+
 add_executable(accuracy_statistics_test tests/accuracy_statistics_test.cpp)
 target_include_directories(
     accuracy_statistics_test

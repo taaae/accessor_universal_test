@@ -110,6 +110,10 @@ template <int TotalBits, int ExponentBits, bool Finite> struct binary_format {
 AUT_DEFINE_BINARY_FORMAT(e0m1, 2, 0, true);
 AUT_DEFINE_BINARY_FORMAT(e1m0, 2, 1, false);
 
+AUT_DEFINE_BINARY_FORMAT(e0m2, 3, 0, true);
+AUT_DEFINE_BINARY_FORMAT(e1m1, 3, 1, true);
+AUT_DEFINE_BINARY_FORMAT(e2m0, 3, 2, false);
+
 AUT_DEFINE_BINARY_FORMAT(e0m3, 4, 0, true);
 AUT_DEFINE_BINARY_FORMAT(e1m2, 4, 1, true);
 // NVIDIA's E2M1 FP4 encoding is finite-only: exponent 3 stores 4 and 6.
@@ -407,6 +411,9 @@ template <> struct codec<e3m28> : inherited_binary_codec<e3m28> {};
 
 AUT_INHERIT_BINARY_CODEC(e0m1);
 AUT_INHERIT_BINARY_CODEC(e1m0);
+AUT_INHERIT_BINARY_CODEC(e0m2);
+AUT_INHERIT_BINARY_CODEC(e1m1);
+AUT_INHERIT_BINARY_CODEC(e2m0);
 AUT_INHERIT_BINARY_CODEC(e0m3);
 AUT_INHERIT_BINARY_CODEC(e1m2);
 AUT_INHERIT_BINARY_CODEC(fp4_e2m1);

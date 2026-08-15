@@ -84,6 +84,33 @@ template <int Bits> struct dense_geometry {
   static constexpr int chunk_bits = values_per_aligned_chunk * Bits;
 };
 
+template <int Bits> struct cooperative_geometry;
+
+#define AUT_DEFINE_COOPERATIVE_GEOMETRY(bits_, values_, words_, consumers_)  \
+  template <> struct cooperative_geometry<bits_> {                          \
+    static constexpr int values = values_;                                  \
+    static constexpr int words = words_;                                    \
+    static constexpr int consumers = consumers_;                            \
+    static constexpr int values_per_consumer = values_ / consumers_;        \
+    static_assert(values_ * bits_ == words_ * 32);                           \
+    static_assert(values_ % consumers_ == 0);                               \
+  }
+
+AUT_DEFINE_COOPERATIVE_GEOMETRY(3, 32, 3, 8);
+AUT_DEFINE_COOPERATIVE_GEOMETRY(5, 32, 5, 8);
+AUT_DEFINE_COOPERATIVE_GEOMETRY(6, 16, 3, 4);
+AUT_DEFINE_COOPERATIVE_GEOMETRY(7, 32, 7, 8);
+AUT_DEFINE_COOPERATIVE_GEOMETRY(9, 32, 9, 16);
+AUT_DEFINE_COOPERATIVE_GEOMETRY(10, 16, 5, 8);
+AUT_DEFINE_COOPERATIVE_GEOMETRY(12, 8, 3, 4);
+AUT_DEFINE_COOPERATIVE_GEOMETRY(14, 16, 7, 8);
+AUT_DEFINE_COOPERATIVE_GEOMETRY(17, 32, 17, 32);
+AUT_DEFINE_COOPERATIVE_GEOMETRY(20, 8, 5, 8);
+AUT_DEFINE_COOPERATIVE_GEOMETRY(24, 4, 3, 4);
+AUT_DEFINE_COOPERATIVE_GEOMETRY(28, 8, 7, 8);
+
+#undef AUT_DEFINE_COOPERATIVE_GEOMETRY
+
 template <int Bits>
 AUT_BITWIDTH_HD AUT_BITWIDTH_INLINE constexpr std::uint32_t raw_mask() {
   if constexpr (Bits == 32) {

@@ -84,6 +84,9 @@ int main() {
 
   test_format<aut::storage::e0m1>();
   test_format<aut::storage::e1m0>();
+  test_format<aut::storage::e0m2>();
+  test_format<aut::storage::e1m1>();
+  test_format<aut::storage::e2m0>();
   test_format<aut::storage::e0m3>();
   test_format<aut::storage::e1m2>();
   test_format<aut::storage::fp4_e2m1>();
