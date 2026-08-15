@@ -83,6 +83,20 @@ template <typename Format> void test_format() {
     test_round_trip_representable<Format>();
   }
   test_fused_products<Format>();
+
+  constexpr auto scale = std::uint64_t{1} << Format::log_fraction_bits;
+  const auto minimum = aut::lns::minimum_finite_log_code<Format>();
+  const auto below_threshold =
+      std::exp2((static_cast<double>(minimum) - 0.5001) / scale);
+  const auto above_threshold =
+      std::exp2((static_cast<double>(minimum) - 0.4999) / scale);
+  assert(aut::lns::is_zero<Format>(
+      aut::lns::encode<Format>(below_threshold)));
+  assert(aut::lns::encode<Format>(above_threshold) ==
+         aut::lns::make_raw<Format>(false, minimum));
+  assert(aut::lns::log_code<Format>(aut::lns::encode<Format>(
+             std::numeric_limits<double>::infinity())) ==
+         aut::lns::maximum_finite_log_code<Format>());
 }
 
 } // namespace

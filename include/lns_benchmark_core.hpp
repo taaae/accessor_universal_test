@@ -178,9 +178,12 @@ AUT_LNS_HD AUT_LNS_INLINE Target decode(std::uint32_t raw) {
 
 template <typename Format, typename Source>
 AUT_LNS_HD AUT_LNS_INLINE std::uint32_t encode(Source value) {
-  if (::isnan(static_cast<double>(value)) ||
-      ::isinf(static_cast<double>(value))) {
+  if (::isnan(static_cast<double>(value))) {
     return nan_raw<Format>();
+  }
+  if (::isinf(static_cast<double>(value))) {
+    return make_raw<Format>(value < Source{0},
+                            maximum_finite_log_code<Format>());
   }
   if (value == Source{0}) {
     return zero_raw<Format>();
@@ -189,12 +192,19 @@ AUT_LNS_HD AUT_LNS_INLINE std::uint32_t encode(Source value) {
   const auto magnitude = negative ? -static_cast<double>(value)
                                   : static_cast<double>(value);
   constexpr auto scale = std::uint64_t{1} << Format::log_fraction_bits;
-  auto rounded = static_cast<std::int64_t>(
-      ::nearbyint(::log2(magnitude) * static_cast<double>(scale)));
+  const auto scaled_log =
+      ::log2(magnitude) * static_cast<double>(scale);
   const auto minimum = static_cast<std::int64_t>(
       minimum_finite_log_code<Format>());
   const auto maximum = static_cast<std::int64_t>(
       maximum_finite_log_code<Format>());
+  // Universal's saturating LNS maps values at or below the half-step below
+  // minpos to zero.  Values between that threshold and minpos round/clamp to
+  // minpos instead of wrapping through the reserved code.
+  if (scaled_log <= static_cast<double>(minimum) - 0.5) {
+    return zero_raw<Format>();
+  }
+  auto rounded = static_cast<std::int64_t>(::nearbyint(scaled_log));
   rounded = rounded < minimum ? minimum : rounded > maximum ? maximum : rounded;
   return make_raw<Format>(negative, static_cast<std::int32_t>(rounded));
 }

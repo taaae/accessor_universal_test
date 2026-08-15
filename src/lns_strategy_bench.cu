@@ -807,9 +807,11 @@ private:
   void run_dot(std::size_t count, const std::string &id) {
     const auto work = [&] {
       if constexpr (Access == bw::access_method::cooperative_shuffle) {
-        return (count +
-                lk::cooperative_geometry<Format::total_bits>::values - 1) /
-               lk::cooperative_geometry<Format::total_bits>::values;
+        constexpr auto values =
+            lk::cooperative_geometry<Format::total_bits>::values;
+        constexpr auto consumers =
+            lk::cooperative_geometry<Format::total_bits>::consumers;
+        return ((count + values - 1) / values) * consumers;
       } else {
         return (count + Lanes - 1) / Lanes;
       }
