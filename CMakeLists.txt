@@ -174,6 +174,7 @@ add_lns_strategy_benchmark(lns8_r2 3 1)
 add_lns_strategy_benchmark(lns8_r3 4 1)
 add_lns_strategy_benchmark(lns8_r4 5 1)
 add_lns_strategy_benchmark(lns8_r5 6 1)
+add_lns_strategy_benchmark(lns10_r4 7 1)
 
 add_executable(accuracy_statistics_test tests/accuracy_statistics_test.cpp)
 target_include_directories(
