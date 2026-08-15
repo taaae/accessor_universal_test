@@ -1,5 +1,6 @@
 #include "bitwidth_benchmark_core.hpp"
 
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <cstdint>
@@ -25,7 +26,11 @@ std::uint32_t float_bits(float value) {
 template <typename Format> void test_format() {
   namespace bw = aut::bitwidth;
   const auto codes = std::uint64_t{1} << Format::total_bits;
-  for (std::uint64_t code = 0; code < codes; ++code) {
+  const auto samples = std::min<std::uint64_t>(codes, 65536);
+  for (std::uint64_t sample = 0; sample < samples; ++sample) {
+    const auto code = codes == samples
+                          ? sample
+                          : sample * (codes - 1) / (samples - 1);
     const auto raw = static_cast<std::uint32_t>(code);
     const auto reference64 = bw::decode_reference<Format, bw::compute_kind::fp64>(raw);
     const auto direct64 =
@@ -134,6 +139,10 @@ int main() {
   test_format<aut::storage::e5m8>();
   test_format<aut::storage::e8m5>();
   test_format<aut::storage::e11m2>();
+  test_format<aut::storage::e2m14>();
+  test_format<aut::storage::e5m11>();
+  test_format<aut::storage::e8m8>();
+  test_format<aut::storage::e11m5>();
 
   static_assert(aut::bitwidth::dense_geometry<6>::values_per_aligned_chunk ==
                 16);

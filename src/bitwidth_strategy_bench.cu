@@ -314,10 +314,15 @@ template <typename Format, bw::compute_kind Compute> struct table_storage {
     }
   }
 
+  static constexpr std::size_t full_count =
+      Format::total_bits <= 14 ? std::size_t{1} << Format::total_bits : 1;
+  static constexpr std::size_t subnormal_count =
+      Format::fraction_bits <= 12 ? std::size_t{1} << Format::fraction_bits : 1;
+
   table_storage()
-      : full(std::size_t{1} << Format::total_bits),
+      : full(full_count),
         prefix(std::size_t{1} << (Format::exponent_bits + 1)),
-        subnormal(std::size_t{1} << Format::fraction_bits) {
+        subnormal(subnormal_count) {
     std::vector<std::uint32_t> host_full(full.count);
     for (std::size_t raw = 0; raw < host_full.size(); ++raw) {
       host_full[raw] = target_high(static_cast<std::uint32_t>(raw));
@@ -858,6 +863,18 @@ void run_registered_formats(const options &settings,
                                            output, left_count, right_count);
   } else {
     run_one_format<storage::e11m2, Compute>(settings, distribution, sources,
+                                            output, left_count, right_count);
+  }
+#elif AUT_BITWIDTH_TOTAL_BITS == 17
+  run_one_format<storage::e2m14, Compute>(settings, distribution, sources,
+                                          output, left_count, right_count);
+  run_one_format<storage::e5m11, Compute>(settings, distribution, sources,
+                                          output, left_count, right_count);
+  if constexpr (Compute == bw::compute_kind::fp32) {
+    run_one_format<storage::e8m8, Compute>(settings, distribution, sources,
+                                           output, left_count, right_count);
+  } else {
+    run_one_format<storage::e11m5, Compute>(settings, distribution, sources,
                                             output, left_count, right_count);
   }
 #else
