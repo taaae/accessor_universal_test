@@ -1,0 +1,61 @@
+-- Configuring done (3.7s)
+-- Generating done (118.6s)
+-- Build files have been written to: /storage/home/timofeirusanov/accessor_universal_test/build-h200
+[100%] Built target bitwidth_benchmark_core_test
+[100%] Built target storage_formats_test
+[100%] Built target decoder_strategy_core_test
+Internal ctest changing into directory: /storage/home/timofeirusanov/accessor_universal_test/build-h200
+Test project /storage/home/timofeirusanov/accessor_universal_test/build-h200
+    Start 2: storage_formats_test
+1/3 Test #2: storage_formats_test .............   Passed    0.07 sec
+    Start 3: decoder_strategy_core_test
+2/3 Test #3: decoder_strategy_core_test .......   Passed    0.06 sec
+    Start 4: bitwidth_benchmark_core_test
+3/3 Test #4: bitwidth_benchmark_core_test .....   Passed    0.05 sec
+
+100% tests passed, 0 tests failed out of 3
+
+Total Test time (real) =   0.55 sec
+Building bitwidth_strategy_bench_2
+[ 50%] Linking CUDA executable bin/bitwidth_strategy_bench_2
+[100%] Built target bitwidth_strategy_bench_2
+Building bitwidth_strategy_bench_3
+[ 50%] Linking CUDA executable bin/bitwidth_strategy_bench_3
+[100%] Built target bitwidth_strategy_bench_3
+Building bitwidth_strategy_bench_4
+[ 50%] Linking CUDA executable bin/bitwidth_strategy_bench_4
+[100%] Built target bitwidth_strategy_bench_4
+Building bitwidth_strategy_bench_5
+[ 50%] Linking CUDA executable bin/bitwidth_strategy_bench_5
+[100%] Built target bitwidth_strategy_bench_5
+Building bitwidth_strategy_bench_6
+[ 50%] Linking CUDA executable bin/bitwidth_strategy_bench_6
+[100%] Built target bitwidth_strategy_bench_6
+Building bitwidth_strategy_bench_7
+[ 50%] Linking CUDA executable bin/bitwidth_strategy_bench_7
+[100%] Built target bitwidth_strategy_bench_7
+Building bitwidth_strategy_bench_9
+[ 50%] Linking CUDA executable bin/bitwidth_strategy_bench_9
+[100%] Built target bitwidth_strategy_bench_9
+Building bitwidth_strategy_bench_10
+[ 50%] Linking CUDA executable bin/bitwidth_strategy_bench_10
+[100%] Built target bitwidth_strategy_bench_10
+Building bitwidth_strategy_bench_12
+[ 50%] Linking CUDA executable bin/bitwidth_strategy_bench_12
+[100%] Built target bitwidth_strategy_bench_12
+Building bitwidth_strategy_bench_14
+[ 50%] Linking CUDA executable bin/bitwidth_strategy_bench_14
+[100%] Built target bitwidth_strategy_bench_14
+Building bitwidth_strategy_bench_17
+[ 50%] Linking CUDA executable bin/bitwidth_strategy_bench_17
+[100%] Built target bitwidth_strategy_bench_17
+Building bitwidth_strategy_bench_20
+[ 50%] Linking CUDA executable bin/bitwidth_strategy_bench_20
+[100%] Built target bitwidth_strategy_bench_20
+Building bitwidth_strategy_bench_24
+[ 50%] Linking CUDA executable bin/bitwidth_strategy_bench_24
+[100%] Built target bitwidth_strategy_bench_24
+Building bitwidth_strategy_bench_28
+[ 50%] Linking CUDA executable bin/bitwidth_strategy_bench_28
+[100%] Built target bitwidth_strategy_bench_28
+All arbitrary-width CUDA targets compiled successfully.
