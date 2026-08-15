@@ -178,10 +178,15 @@ AUT_LNS_HD AUT_LNS_INLINE Target decode(std::uint32_t raw) {
 
 template <typename Format, typename Source>
 AUT_LNS_HD AUT_LNS_INLINE std::uint32_t encode(Source value) {
-  if (::isnan(static_cast<double>(value))) {
+  const auto wide_value = static_cast<double>(value);
+  // Avoid relying on whether a given host standard library also exports the
+  // C math classification functions into the global namespace.  These tests
+  // are valid in both the host and CUDA device passes.
+  if (wide_value != wide_value) {
     return nan_raw<Format>();
   }
-  if (::isinf(static_cast<double>(value))) {
+  constexpr auto finite_limit = std::numeric_limits<double>::max();
+  if (wide_value > finite_limit || wide_value < -finite_limit) {
     return make_raw<Format>(value < Source{0},
                             maximum_finite_log_code<Format>());
   }
