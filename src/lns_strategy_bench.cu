@@ -89,6 +89,7 @@ struct options {
   std::uint64_t seed{0x243f6a8885a308d3ull};
   std::string output{"lns_timing_samples.csv"};
   std::string validation_output;
+  std::string variant_file;
   std::set<std::string> enabled_variants;
 };
 
@@ -124,12 +125,27 @@ options parse_options(int argc, char **argv) {
       result.output = value();
     } else if (argument == "--validation-output") {
       result.validation_output = value();
+    } else if (argument == "--variant-file") {
+      result.variant_file = value();
     } else if (argument == "--variants") {
       for (const auto &variant : parse_strings(value())) {
         result.enabled_variants.insert(variant);
       }
     } else {
       throw std::runtime_error("unknown option: " + argument);
+    }
+  }
+  if (!result.variant_file.empty()) {
+    std::ifstream input(result.variant_file);
+    if (!input) {
+      throw std::runtime_error("cannot open variant file: " +
+                               result.variant_file);
+    }
+    std::string line;
+    while (std::getline(input, line)) {
+      if (!line.empty() && line.front() != '#') {
+        result.enabled_variants.insert(line);
+      }
     }
   }
   if (result.mode == "smoke") {
