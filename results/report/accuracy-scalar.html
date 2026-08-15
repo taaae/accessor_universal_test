@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="report.css">
 </head>
 <body>
-<header><div class="shell"><a class="brand" href="index.html">H200 storage-format report</a><nav aria-label="Report sections"><a href="index.html">Overview</a><a href="total-performance.html">Total performance</a><a href="same-bit-formats.html">Same-bit formats</a><a href="packing.html">Packed vs unpacked</a><a href="roofline.html">Roofline</a><a href="conversion.html">Conversion</a><a href="bottlenecks.html">Bottlenecks</a><a href="accuracy.html" aria-current="page" class="active">Accuracy</a><a href="methodology.html">Methodology</a><a href="e2e3-strategies.html">E2M5, E3M4 strategies</a></nav></div></header>
+<header><div class="shell"><a class="brand" href="index.html">H200 storage-format report</a><nav aria-label="Report sections"><a href="index.html">Overview</a><a href="total-performance.html">Total performance</a><a href="same-bit-formats.html">Same-bit formats</a><a href="packing.html">Packed vs unpacked</a><a href="roofline.html">Roofline</a><a href="conversion.html">Conversion</a><a href="bottlenecks.html">Bottlenecks</a><a href="accuracy.html" aria-current="page" class="active">Accuracy</a><a href="methodology.html">Methodology</a><a href="general-info.html">General info</a><a href="packing-bottlenecks.html">Packing bottlenecks</a><a href="conversion-fp32.html">Storage → FP32 arithmetic</a><a href="conversion-strategies.html">Storage → FP64 arithmetic</a></nav></div></header>
 <main class="shell">
 <h1>Scalar and arithmetic accuracy</h1>
 <p class="lead">Scalar quantization behavior, non-finite outputs, and FP64 accumulation error are kept separate.</p>
@@ -29,6 +29,6 @@
 <figure><a href="../006_accuracy_model/generated/gpu_fp64_arithmetic_validation.svg"><img src="../006_accuracy_model/generated/gpu_fp64_arithmetic_validation.svg" alt="Measured FP64 kernel arithmetic error relative to its structural bound."></a></figure>
 </section>
 </main>
-<footer><div class="shell">Performance: <code>run_20260808T131626Z</code> · Accuracy: <code>run_20260808T122054Z</code> · E2/E3 strategies: <code>run_20260809T112417Z</code></div></footer>
+<footer><div class="shell">Performance: <code>run_20260808T131626Z</code> · Accuracy: <code>run_20260808T122054Z</code> · Conversion strategies: <code>run_20260809T112417Z</code> + <code>run_20260809T143636Z</code> + <code>run_20260809T184919Z</code></div></footer>
 </body>
 </html>

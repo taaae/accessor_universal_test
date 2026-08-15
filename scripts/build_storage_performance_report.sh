@@ -29,3 +29,6 @@ uv run python tools/summarize_storage_performance.py \
 uv run python tools/build_storage_performance_report.py \
     --run-dir "${run_dir}" \
     --output-dir results/report
+
+uv run python tools/build_precision_packing_report.py \
+    --output-dir results/report
