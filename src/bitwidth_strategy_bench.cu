@@ -412,7 +412,7 @@ const char *decoder_name(bw::decoder_kind decoder) {
 }
 
 template <bw::storage_layout Layout, bw::access_method Access, int Lanes,
-          bw::decoder_kind Decoder>
+          bw::decoder_kind Decoder, int Bits = AUT_BITWIDTH_TOTAL_BITS>
 std::string variant_id() {
   const auto layout = Layout == bw::storage_layout::dense ? "dense" : "padded";
   const auto access = Access == bw::access_method::scalar
@@ -422,7 +422,8 @@ std::string variant_id() {
                                 : "cooperative_shuffle";
   const auto packet = [] {
     if constexpr (Access == bw::access_method::cooperative_shuffle) {
-      return bw::cooperative_geometry<AUT_BITWIDTH_TOTAL_BITS>::values;
+      static_assert(bw::cooperative_supported_v<Bits>);
+      return bw::cooperative_geometry<Bits>::values;
     } else {
       return Lanes;
     }
