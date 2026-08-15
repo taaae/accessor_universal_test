@@ -96,6 +96,7 @@ template <int Bits> struct cooperative_geometry;
     static_assert(values_ % consumers_ == 0);                               \
   }
 
+AUT_DEFINE_COOPERATIVE_GEOMETRY(2, 16, 1, 4);
 AUT_DEFINE_COOPERATIVE_GEOMETRY(3, 32, 3, 8);
 AUT_DEFINE_COOPERATIVE_GEOMETRY(5, 32, 5, 8);
 AUT_DEFINE_COOPERATIVE_GEOMETRY(6, 16, 3, 4);

@@ -763,7 +763,12 @@ void run_registered_formats(const options &settings,
                             const std::string &distribution,
                             source_buffers &sources, csv_output &output,
                             std::size_t left_count, std::size_t right_count) {
-#if AUT_BITWIDTH_TOTAL_BITS == 3
+#if AUT_BITWIDTH_TOTAL_BITS == 2
+  run_one_format<storage::e0m1, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
+  run_one_format<storage::e1m0, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
+#elif AUT_BITWIDTH_TOTAL_BITS == 3
   run_one_format<storage::e0m2, Compute>(settings, distribution, sources, output,
                                          left_count, right_count);
   run_one_format<storage::e1m1, Compute>(settings, distribution, sources, output,
