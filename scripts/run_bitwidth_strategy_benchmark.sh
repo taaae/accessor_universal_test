@@ -18,6 +18,13 @@ warmup="${WARMUP:-10}"
 samples="${SAMPLES:-5}"
 target_sample_ms="${TARGET_SAMPLE_MS:-15}"
 seed="${BASE_SEED:-2611923443488327891}"
+stop_after="${STOP_AFTER:-full}"
+
+if [[ "${stop_after}" != "smoke" && "${stop_after}" != "screen" &&
+      "${stop_after}" != "full" ]]; then
+    echo "error: STOP_AFTER must be smoke, screen, or full" >&2
+    exit 2
+fi
 
 mkdir -p "${run_dir}/smoke" "${run_dir}/screen" "${run_dir}/full"
 
@@ -45,6 +52,7 @@ merge_csv() {
     echo "full_samples=${samples}"
     echo "full_target_sample_ms=${target_sample_ms}"
     echo "base_seed=${seed}"
+    echo "stop_after=${stop_after}"
     echo "git_status_begin"
     git -C "${repo_dir}" status --short
     echo "git_status_end"
@@ -90,6 +98,17 @@ python3 "${repo_dir}/tools/validate_bitwidth_strategy_smoke.py" \
     --output "${run_dir}/smoke/validation.csv" \
     | tee "${run_dir}/smoke/validation.txt"
 
+if [[ "${stop_after}" == "smoke" ]]; then
+    finished_epoch="$(date +%s)"
+    {
+        echo "finished_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+        echo "wall_time_seconds=$((finished_epoch - started_epoch))"
+        echo "completed_stage=smoke"
+    } >>"${run_dir}/run_manifest.txt"
+    echo "Smoke preflight complete: ${run_dir}"
+    exit 0
+fi
+
 screen_files=()
 for width in "${widths[@]}"; do
     output="${run_dir}/screen/timing_samples_${width}bit.csv"
@@ -116,6 +135,17 @@ python3 "${repo_dir}/tools/select_bitwidth_strategy_finalists.py" \
     --ranking "${run_dir}/screen/strategy_ranking.csv" \
     --top "${FINALISTS_PER_GROUP:-2}" \
     | tee "${run_dir}/screen/selection.txt"
+
+if [[ "${stop_after}" == "screen" ]]; then
+    finished_epoch="$(date +%s)"
+    {
+        echo "finished_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+        echo "wall_time_seconds=$((finished_epoch - started_epoch))"
+        echo "completed_stage=screen"
+    } >>"${run_dir}/run_manifest.txt"
+    echo "Screening complete: ${run_dir}"
+    exit 0
+fi
 
 full_files=()
 for width in "${widths[@]}"; do
@@ -144,6 +174,7 @@ finished_epoch="$(date +%s)"
 {
     echo "finished_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
     echo "wall_time_seconds=$((finished_epoch - started_epoch))"
+    echo "completed_stage=full"
 } >>"${run_dir}/run_manifest.txt"
 
 echo

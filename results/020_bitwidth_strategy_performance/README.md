@@ -16,6 +16,10 @@ The job has three stages:
 3. complete N sweeps for the best two candidates per format, arithmetic type,
    kernel, storage layout, and access group, plus mandatory scalar controls.
 
+Set `STOP_AFTER=smoke` for the first CUDA build/preflight.  A normal rerun uses
+the cached build and completes all stages; `STOP_AFTER=screen` is also available
+for an intermediate strategy-inventory run.
+
 The committed strategy rationale for each width is under
 `docs/decoder_strategies/bitwidth_*.md`.  Generated runs are stored in
 `run_<UTC timestamp>/smoke`, `screen`, and `full` subdirectories.
