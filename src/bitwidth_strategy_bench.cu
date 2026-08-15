@@ -775,6 +775,15 @@ void run_registered_formats(const options &settings,
                                          left_count, right_count);
   run_one_format<storage::e2m0, Compute>(settings, distribution, sources, output,
                                          left_count, right_count);
+#elif AUT_BITWIDTH_TOTAL_BITS == 4
+  run_one_format<storage::e0m3, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
+  run_one_format<storage::e1m2, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
+  run_one_format<storage::fp4_e2m1, Compute>(settings, distribution, sources,
+                                             output, left_count, right_count);
+  run_one_format<storage::e3m0, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
 #elif AUT_BITWIDTH_TOTAL_BITS == 5
   run_one_format<storage::e0m4, Compute>(settings, distribution, sources, output,
                                          left_count, right_count);

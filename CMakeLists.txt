@@ -106,6 +106,7 @@ endfunction()
 
 add_bitwidth_strategy_benchmark(2)
 add_bitwidth_strategy_benchmark(3)
+add_bitwidth_strategy_benchmark(4)
 add_bitwidth_strategy_benchmark(5)
 add_bitwidth_strategy_benchmark(6)
 add_bitwidth_strategy_benchmark(7)
