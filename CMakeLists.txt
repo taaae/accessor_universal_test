@@ -113,6 +113,7 @@ add_bitwidth_strategy_benchmark(10)
 add_bitwidth_strategy_benchmark(12)
 add_bitwidth_strategy_benchmark(14)
 add_bitwidth_strategy_benchmark(17)
+add_bitwidth_strategy_benchmark(20)
 
 add_executable(accuracy_statistics_test tests/accuracy_statistics_test.cpp)
 target_include_directories(
