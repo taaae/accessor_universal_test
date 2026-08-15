@@ -708,6 +708,21 @@ void run_registered_formats(const options &settings,
                                          left_count, right_count);
   run_one_format<storage::e2m0, Compute>(settings, distribution, sources, output,
                                          left_count, right_count);
+#elif AUT_BITWIDTH_TOTAL_BITS == 5
+  run_one_format<storage::e0m4, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
+  if constexpr (Compute == bw::compute_kind::fp64) {
+    run_one_format<storage::e1m3, Compute>(settings, distribution, sources,
+                                           output, left_count, right_count);
+  }
+  run_one_format<storage::e2m2, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
+  if constexpr (Compute == bw::compute_kind::fp64) {
+    run_one_format<storage::e3m1, Compute>(settings, distribution, sources,
+                                           output, left_count, right_count);
+  }
+  run_one_format<storage::e4m0, Compute>(settings, distribution, sources, output,
+                                         left_count, right_count);
 #else
 #error "the selected width has not been registered"
 #endif
