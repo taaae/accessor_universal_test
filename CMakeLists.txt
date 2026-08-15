@@ -102,6 +102,13 @@ function(add_bitwidth_strategy_benchmark bits)
             "$<$<COMPILE_LANGUAGE:CXX>:-O3>"
             "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v>"
     )
+    set_target_properties(
+        ${target}
+        PROPERTIES
+            CUDA_RUNTIME_LIBRARY Static
+            CUDA_SEPARABLE_COMPILATION OFF
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+    )
 endfunction()
 
 add_bitwidth_strategy_benchmark(2)

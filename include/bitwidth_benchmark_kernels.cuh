@@ -488,6 +488,66 @@ __global__ void pack_dense_kernel(const padded_storage_t<Format> *source,
   }
 }
 
+template <typename Target>
+__global__ void cast_source_kernel(const double *source, Target *destination,
+                                   std::size_t count) {
+  for (auto index = static_cast<std::size_t>(blockIdx.x) * blockDim.x +
+                    threadIdx.x;
+       index < count;
+       index += static_cast<std::size_t>(gridDim.x) * blockDim.x) {
+    destination[index] = static_cast<Target>(source[index]);
+  }
+}
+
+template <typename Target, int Lanes>
+__global__ void raw_dot_kernel(const Target *left, const Target *right,
+                               std::size_t count, Target *partials) {
+  __shared__ Target shared[256];
+  Target sum{};
+  const auto packets = (count + Lanes - 1) / Lanes;
+  for (auto packet = static_cast<std::size_t>(blockIdx.x) * blockDim.x +
+                     threadIdx.x;
+       packet < packets;
+       packet += static_cast<std::size_t>(gridDim.x) * blockDim.x) {
+    const auto base = packet * Lanes;
+#pragma unroll
+    for (int lane = 0; lane < Lanes; ++lane) {
+      if (base + lane < count) {
+        sum = left[base + lane] * right[base + lane] + sum;
+      }
+    }
+  }
+  const auto reduced = block_sum(sum, shared);
+  if (threadIdx.x == 0) {
+    partials[blockIdx.x] = reduced;
+  }
+}
+
+template <typename Target, int Lanes>
+__global__ void raw_gemv_kernel(const Target *matrix, const Target *vector,
+                                std::size_t rows, std::size_t columns,
+                                Target *result) {
+  __shared__ Target shared[256];
+  const auto row = static_cast<std::size_t>(blockIdx.x);
+  if (row >= rows) {
+    return;
+  }
+  Target sum{};
+  for (auto base = static_cast<std::size_t>(threadIdx.x) * Lanes;
+       base < columns; base += static_cast<std::size_t>(blockDim.x) * Lanes) {
+#pragma unroll
+    for (int lane = 0; lane < Lanes; ++lane) {
+      if (base + lane < columns) {
+        sum = matrix[row * columns + base + lane] * vector[base + lane] + sum;
+      }
+    }
+  }
+  const auto reduced = block_sum(sum, shared);
+  if (threadIdx.x == 0) {
+    result[row] = reduced;
+  }
+}
+
 } // namespace aut::bitwidth
 
 #endif // ACCESSOR_UNIVERSAL_TEST_BITWIDTH_BENCHMARK_KERNELS_CUH_

@@ -443,8 +443,11 @@ public:
             bw::decoder_kind Decoder>
   void run_variant() {
     const auto id = variant_id<Layout, Access, Lanes, Decoder>();
+    const auto qualified = std::string(Format::name) + "/" +
+                           bw::compute_traits<Compute>::name + "/" + id;
     if (!settings_.enabled_variants.empty() &&
-        settings_.enabled_variants.count(id) == 0) {
+        settings_.enabled_variants.count(id) == 0 &&
+        settings_.enabled_variants.count(qualified) == 0) {
       return;
     }
     for (const auto power : settings_.dot_powers) {
@@ -758,6 +761,163 @@ void run_one_format(const options &settings, const std::string &distribution,
   run_strategies(runner);
 }
 
+template <bw::compute_kind Compute> class raw_baseline_runner {
+public:
+  using value_type = bw::compute_t<Compute>;
+
+  raw_baseline_runner(const options &settings, const std::string &distribution,
+                      const source_buffers &sources, csv_output &output,
+                      std::size_t left_count, std::size_t right_count)
+      : settings_(settings), distribution_(distribution), output_(output),
+        left_(left_count + 8), right_(right_count + 8), partials_(512),
+        result_(settings.gemv_rows) {
+    constexpr int threads = 256;
+    bw::cast_source_kernel<<<
+        static_cast<int>(std::min<std::size_t>((left_count + threads - 1) /
+                                                   threads,
+                                               4096)),
+        threads>>>(sources.left.data, left_.data, left_count);
+    bw::cast_source_kernel<<<
+        static_cast<int>(std::min<std::size_t>((right_count + threads - 1) /
+                                                   threads,
+                                               4096)),
+        threads>>>(sources.right.data, right_.data, right_count);
+    CUDA_CHECK(cudaGetLastError());
+    CUDA_CHECK(cudaDeviceSynchronize());
+  }
+
+  void run() {
+    run_width<1>();
+    run_width<2>();
+    run_width<4>();
+    run_width<8>();
+  }
+
+private:
+  static constexpr int bits = Compute == bw::compute_kind::fp32 ? 32 : 64;
+  static constexpr int exponent_bits = Compute == bw::compute_kind::fp32 ? 8 : 11;
+  static constexpr int mantissa_bits = Compute == bw::compute_kind::fp32 ? 23 : 52;
+  static constexpr const char *format_name =
+      Compute == bw::compute_kind::fp32 ? "raw_fp32" : "raw_fp64";
+
+  template <int Lanes> std::string id() const {
+    return std::string("natural/") + (Lanes == 1 ? "scalar" : "thread_packet") +
+           "/x" + std::to_string(Lanes) + "/raw";
+  }
+
+  template <int Lanes> bool enabled() const {
+    const auto strategy = id<Lanes>();
+    const auto qualified = std::string(format_name) + "/" +
+                           bw::compute_traits<Compute>::name + "/" + strategy;
+    return settings_.enabled_variants.empty() ||
+           settings_.enabled_variants.count(strategy) != 0 ||
+           settings_.enabled_variants.count(qualified) != 0;
+  }
+
+  template <typename Launch>
+  std::pair<int, std::vector<double>> measure(Launch launch) {
+    for (int warmup = 0; warmup < settings_.warmup; ++warmup) {
+      launch();
+    }
+    CUDA_CHECK(cudaGetLastError());
+    CUDA_CHECK(cudaDeviceSynchronize());
+    const auto pilot = timer_.measure(1, launch);
+    auto iterations = 1;
+    if (settings_.target_sample_ms > 0 && pilot > 0) {
+      iterations = std::clamp(
+          static_cast<int>(std::ceil(settings_.target_sample_ms / pilot)), 1,
+          10000);
+    }
+    std::vector<double> times;
+    for (int sample = 0; sample < settings_.samples; ++sample) {
+      times.push_back(timer_.measure(iterations, launch));
+    }
+    return {iterations, times};
+  }
+
+  template <int Lanes> void write_metadata(std::ostream &stream) const {
+    stream << "natural," << (Lanes == 1 ? "scalar" : "thread_packet") << ','
+           << Lanes << ',' << std::min(128, bits * Lanes)
+           << ",1,1," << Lanes << ",none,raw,";
+  }
+
+  template <int Lanes> void run_width() {
+    if (!enabled<Lanes>()) {
+      return;
+    }
+    for (const auto power : settings_.dot_powers) {
+      const auto count = std::size_t{1} << power;
+      const auto packets = (count + Lanes - 1) / Lanes;
+      const auto blocks = static_cast<int>(std::max<std::size_t>(
+          1, std::min<std::size_t>(512, (packets + 255) / 256)));
+      const auto launch = [&] {
+        bw::raw_dot_kernel<value_type, Lanes><<<blocks, 256>>>(
+            left_.data, right_.data, count, partials_.data);
+        bw::finalize_dot_kernel<<<1, 256>>>(partials_.data,
+                                            static_cast<std::size_t>(blocks),
+                                            result_.data);
+      };
+      const auto [iterations, times] = measure(launch);
+      value_type result{};
+      CUDA_CHECK(cudaMemcpy(&result, result_.data, sizeof(result),
+                            cudaMemcpyDeviceToHost));
+      write_rows<Lanes>("dot", count, 0, 1, blocks,
+                        2 * count * sizeof(value_type), iterations, times,
+                        result);
+    }
+    for (const auto power : settings_.gemv_powers) {
+      const auto columns = std::size_t{1} << power;
+      const auto launch = [&] {
+        bw::raw_gemv_kernel<value_type, Lanes>
+            <<<static_cast<int>(settings_.gemv_rows), 256>>>(
+                left_.data, right_.data, settings_.gemv_rows, columns,
+                result_.data);
+      };
+      const auto [iterations, times] = measure(launch);
+      value_type result{};
+      CUDA_CHECK(cudaMemcpy(&result, result_.data, sizeof(result),
+                            cudaMemcpyDeviceToHost));
+      const auto input_values = settings_.gemv_rows * columns + columns;
+      write_rows<Lanes>("gemv", columns, settings_.gemv_rows,
+                        settings_.gemv_rows,
+                        static_cast<int>(settings_.gemv_rows),
+                        input_values * sizeof(value_type), iterations, times,
+                        result);
+    }
+  }
+
+  template <int Lanes>
+  void write_rows(const char *kernel, std::size_t n, std::size_t m,
+                  std::size_t rows, int blocks, std::size_t input_bytes,
+                  int iterations, const std::vector<double> &times,
+                  value_type result) {
+    for (std::size_t sample = 0; sample < times.size(); ++sample) {
+      auto &stream = output_.stream;
+      stream << output_.timestamp << ',' << output_.gpu << ',' << settings_.mode
+             << ',' << distribution_ << ',' << kernel << ',' << format_name
+             << ',' << bits << ',' << exponent_bits << ',' << mantissa_bits
+             << ',' << bw::compute_traits<Compute>::name << ',';
+      write_metadata<Lanes>(stream);
+      stream << id<Lanes>() << ',' << n << ',' << m << ',' << rows << ','
+             << input_bytes << ',' << input_bytes << ",0," << blocks
+             << ",256," << settings_.warmup << ',' << sample << ','
+             << iterations << ',' << times[sample] << ','
+             << times[sample] / iterations << ',' << std::setprecision(17)
+             << static_cast<double>(result) << ','
+             << (std::isfinite(static_cast<double>(result)) ? 1 : 0) << '\n';
+    }
+  }
+
+  const options &settings_;
+  const std::string &distribution_;
+  csv_output &output_;
+  device_buffer<value_type> left_;
+  device_buffer<value_type> right_;
+  device_buffer<value_type> partials_;
+  device_buffer<value_type> result_;
+  event_timer timer_;
+};
+
 template <bw::compute_kind Compute>
 void run_registered_formats(const options &settings,
                             const std::string &distribution,
@@ -971,6 +1131,15 @@ int main(int argc, char **argv) {
       const auto &distribution = settings.distributions[dataset];
       std::cout << distribution << std::endl;
       sources.generate(distribution, settings.seed + dataset * 0x9e3779b97f4a7c15ull);
+#if AUT_BITWIDTH_TOTAL_BITS == 2
+      std::cout << "  raw baselines" << std::endl;
+      raw_baseline_runner<bw::compute_kind::fp32>(
+          settings, distribution, sources, output, left_count, right_count)
+          .run();
+      raw_baseline_runner<bw::compute_kind::fp64>(
+          settings, distribution, sources, output, left_count, right_count)
+          .run();
+#endif
       run_registered_formats<bw::compute_kind::fp32>(
           settings, distribution, sources, output, left_count, right_count);
       run_registered_formats<bw::compute_kind::fp64>(
