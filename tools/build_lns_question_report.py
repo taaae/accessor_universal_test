@@ -51,6 +51,8 @@ DECODER_LABELS = {
     "split_cubic": "Split lookup + cubic term",
     "pair_lut_global": "Pair-product lookup · cached global",
     "pair_lut_shared": "Pair-product lookup · shared memory",
+    "fused_sum_lut_global": "Fused product lookup · cached global",
+    "fused_sum_lut_shared": "Fused product lookup · shared memory",
 }
 
 DECODER_COLORS = {
@@ -67,6 +69,8 @@ DECODER_COLORS = {
     "split_cubic": "#C17C00",
     "pair_lut_global": "#8C564B",
     "pair_lut_shared": "#3B8ED0",
+    "fused_sum_lut_global": "#A63603",
+    "fused_sum_lut_shared": "#E6550D",
 }
 
 MULTIPLY_LABELS = {"ordinary": "ordinary", "fused": "fused"}
@@ -717,6 +721,14 @@ def strategy_explanation(index: LnsIndex, row: dict[str, str]) -> tuple[str, str
             "Looks up a coarse exponential from the leading fraction bits and "
             f"reconstructs the remainder with a {order} polynomial, which keeps the "
             "table small for wide fractions."
+        )
+    elif decoder.startswith("fused_sum_lut"):
+        where = "shared memory" if decoder.endswith("shared") else "the cached global path"
+        decoder_text = (
+            f"Adds the two stored logarithms as integers, then spends a single "
+            f"{1 << bits:,}-entry lookup on the sum from {where}. The table is "
+            "the same size as the per-value full lookup, but it decodes a whole "
+            "product instead of one operand."
         )
     elif decoder.startswith("pair_lut"):
         where = "shared memory" if decoder.endswith("shared") else "the cached global path"

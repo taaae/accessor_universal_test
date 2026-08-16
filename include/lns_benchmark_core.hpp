@@ -105,6 +105,21 @@ AUT_LNS_HD AUT_LNS_INLINE constexpr std::int32_t maximum_finite_log_code() {
   return static_cast<std::int32_t>(special_log_code<Format>()) - 1;
 }
 
+// A fused product adds two finite log codes, each in
+// [-special+1, special-1], so the sum spans [-2*special+2, 2*special-2].
+// Biasing by 2*special-2 maps that onto [0, 4*special-4], which fits a table
+// of 4*special == 2^total_bits entries -- the same size as the full lookup
+// over single codes, and the reason a fused product table is affordable.
+template <typename Format>
+AUT_LNS_HD AUT_LNS_INLINE constexpr std::int32_t product_log_bias() {
+  return 2 * static_cast<std::int32_t>(special_log_code<Format>()) - 2;
+}
+
+template <typename Format>
+AUT_LNS_HD AUT_LNS_INLINE constexpr std::size_t product_log_entries() {
+  return std::size_t{1} << Format::total_bits;
+}
+
 template <typename Format>
 AUT_LNS_HD AUT_LNS_INLINE bool is_special(std::uint32_t raw) {
   return (raw & log_mask<Format>()) == special_log_code<Format>();

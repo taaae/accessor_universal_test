@@ -119,8 +119,13 @@ ctest --test-dir "${build_dir}" --output-on-failure \
 # (1 fractional bit).  Build and sanitize it before the remaining sixteen so a
 # synchronisation fault costs one short build rather than the whole run.
 current_stage="build_sanitizer_target"
+# lns4_r1 covers the warp paths; lns12_r6 is the smallest target that exercises
+# the fused-sum lookup in both its global and shared forms with a table large
+# enough (4096 entries) for an indexing slip to land outside the allocation.
 cmake --build "${build_dir}" --parallel "${build_jobs}" \
     --target lns_strategy_bench_lns4_r1
+cmake --build "${build_dir}" --parallel "${build_jobs}" \
+    --target lns_strategy_bench_lns12_r6
 
 current_stage="warp_synccheck"
 if ! command -v compute-sanitizer >/dev/null 2>&1; then
@@ -146,6 +151,26 @@ if [[ "${sanitizer_rows}" -lt 6 ]]; then
     exit 2
 fi
 echo "synccheck covered ${sanitizer_rows} shuffle kernel launches"
+
+current_stage="fused_sum_memcheck"
+# The fused-sum lookup is indexed by a biased sum of two log codes, so its
+# failure mode is an out-of-bounds read rather than a synchronisation fault.
+compute-sanitizer --tool memcheck --error-exitcode 98 \
+    "${build_dir}/bin/lns_strategy_bench_lns12_r6" \
+    --mode smoke \
+    --distributions uniform_0_1 \
+    --variants "fused/dense/scalar/x1/fused_sum_lut_global,fused/dense/scalar/x1/fused_sum_lut_shared,fused/dense/thread_packet/x4/fused_sum_lut_shared,fused/padded/thread_packet/x8/fused_sum_lut_global,fused/dense/cooperative_shuffle/x8/fused_sum_lut_global" \
+    --seed "${seed}" \
+    --output "${run_dir}/sanitizer/fused_sum_samples.csv" \
+    2>&1 | tee "${run_dir}/sanitizer/memcheck.txt"
+
+memcheck_rows="$(($(wc -l <"${run_dir}/sanitizer/fused_sum_samples.csv") - 1))"
+if [[ "${memcheck_rows}" -lt 8 ]]; then
+    echo "error: memcheck produced ${memcheck_rows} timing rows; the" >&2
+    echo "       fused-sum --variants ids match no compiled variant" >&2
+    exit 2
+fi
+echo "memcheck covered ${memcheck_rows} fused-sum kernel launches"
 
 if [[ "${stop_after}" == "sanitizer" ]]; then
     current_stage="sanitizer_complete"

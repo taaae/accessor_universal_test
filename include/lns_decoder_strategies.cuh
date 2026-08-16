@@ -28,7 +28,9 @@ enum class decoder_kind {
   split_quadratic,
   split_cubic,
   pair_lut_global,
-  pair_lut_shared
+  pair_lut_shared,
+  fused_sum_lut_global,
+  fused_sum_lut_shared
 };
 
 enum class multiply_kind { ordinary, fused };
@@ -38,6 +40,7 @@ template <compute_kind Compute> struct table_bundle {
   const compute_t<Compute> *fraction{};
   const compute_t<Compute> *coarse{};
   const compute_t<Compute> *pair{};
+  const compute_t<Compute> *product{};
 };
 
 template <typename Format, decoder_kind Decoder>
@@ -59,6 +62,9 @@ inline constexpr std::size_t table_entries_v = [] {
   } else if constexpr (Decoder == decoder_kind::pair_lut_global ||
                        Decoder == decoder_kind::pair_lut_shared) {
     return std::size_t{1} << (2 * Format::total_bits);
+  } else if constexpr (Decoder == decoder_kind::fused_sum_lut_global ||
+                       Decoder == decoder_kind::fused_sum_lut_shared) {
+    return lns::product_log_entries<Format>();
   } else {
     return std::size_t{0};
   }
@@ -68,12 +74,18 @@ template <decoder_kind Decoder>
 inline constexpr bool uses_shared_table_v =
     Decoder == decoder_kind::full_lut_shared ||
     Decoder == decoder_kind::fraction_lut_shared ||
-    Decoder == decoder_kind::pair_lut_shared;
+    Decoder == decoder_kind::pair_lut_shared ||
+    Decoder == decoder_kind::fused_sum_lut_shared;
 
 template <decoder_kind Decoder>
 inline constexpr bool is_pair_decoder_v =
     Decoder == decoder_kind::pair_lut_global ||
     Decoder == decoder_kind::pair_lut_shared;
+
+template <decoder_kind Decoder>
+inline constexpr bool is_fused_sum_decoder_v =
+    Decoder == decoder_kind::fused_sum_lut_global ||
+    Decoder == decoder_kind::fused_sum_lut_shared;
 
 template <decoder_kind Decoder>
 inline constexpr bool is_full_decoder_v =
@@ -102,6 +114,8 @@ prepare_context(table_bundle<Compute> tables, compute_t<Compute> *shared) {
     global = tables.coarse;
   } else if constexpr (is_pair_decoder_v<Decoder>) {
     global = tables.pair;
+  } else if constexpr (is_fused_sum_decoder_v<Decoder>) {
+    global = tables.product;
   }
 
   decoder_context<Format, Compute, Decoder> context{};
@@ -306,9 +320,31 @@ multiply(std::uint32_t left, std::uint32_t right,
          decoder_context<Format, Compute, Decoder> context) {
   using target = compute_t<Compute>;
   if constexpr (Multiply == multiply_kind::ordinary) {
-    static_assert(!is_pair_decoder_v<Decoder>);
+    static_assert(!is_pair_decoder_v<Decoder> && !is_fused_sum_decoder_v<Decoder>,
+                  "pair and fused-sum tables only describe products");
     return decode_raw<Format, Compute, Decoder>(left, context) *
            decode_raw<Format, Compute, Decoder>(right, context);
+  } else if constexpr (is_fused_sum_decoder_v<Decoder>) {
+    // The point of the strategy: add the two logarithms, then spend a single
+    // lookup on the sum.  The table is indexed by the biased product log, so
+    // it needs 2^total_bits entries -- the same size as the full lookup over
+    // single codes, which is what makes this affordable where the pair table
+    // (2^(2*total_bits)) is not.
+    const auto product = lns::multiply_codes<Format>(left, right);
+    if (product.nan) {
+      if constexpr (Compute == compute_kind::fp32) {
+        return __int_as_float(0x7fc00000);
+      } else {
+        return __hiloint2double(0x7ff80000, 0);
+      }
+    }
+    if (product.zero) {
+      return product.negative ? -target{0} : target{0};
+    }
+    const auto index = static_cast<std::size_t>(
+        product.log + static_cast<std::int64_t>(lns::product_log_bias<Format>()));
+    const auto magnitude = context.table[index];
+    return product.negative ? -magnitude : magnitude;
   } else if constexpr (is_pair_decoder_v<Decoder>) {
     constexpr auto shift = Format::total_bits;
     const auto index = (left & lns::raw_mask<Format>()) |

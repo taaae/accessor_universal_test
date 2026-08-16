@@ -6,6 +6,7 @@
 #include <iostream>
 #include <limits>
 #include <type_traits>
+#include <vector>
 
 namespace {
 
@@ -77,10 +78,67 @@ template <typename Format> void test_fused_products() {
   }
 }
 
+// The fused-sum lookup indexes one table by the biased sum of two log codes.
+// Build that table exactly as the benchmark does, then check across the whole
+// (or a strided) operand domain that every finite product lands inside the
+// table and reads back the value multiply_fused would have computed.  An
+// indexing slip here would be an out-of-bounds read on the GPU.
+template <typename Format> void test_product_log_table() {
+  constexpr auto entries = aut::lns::product_log_entries<Format>();
+  constexpr auto bias = aut::lns::product_log_bias<Format>();
+  constexpr auto scale =
+      static_cast<double>(std::uint64_t{1} << Format::log_fraction_bits);
+
+  std::vector<double> table(entries);
+  for (std::size_t index = 0; index < entries; ++index) {
+    const auto raw_log = static_cast<std::int64_t>(index) - bias;
+    const auto clamped = raw_log < -bias ? -bias : raw_log > bias ? bias : raw_log;
+    table[index] = std::exp2(static_cast<double>(clamped) / scale);
+  }
+
+  const auto count = std::uint64_t{1} << Format::total_bits;
+  const auto stride = count <= 256 ? std::uint64_t{1} : count / 255;
+  std::size_t checked{};
+  for (std::uint64_t a = 0; a < count; a += stride) {
+    for (std::uint64_t b = 0; b < count; b += stride) {
+      const auto left = static_cast<std::uint32_t>(a);
+      const auto right = static_cast<std::uint32_t>(b);
+      const auto product = aut::lns::multiply_codes<Format>(left, right);
+      if (product.nan || product.zero) {
+        continue;
+      }
+      const auto index = product.log + static_cast<std::int64_t>(bias);
+      assert(index >= 0);
+      assert(static_cast<std::size_t>(index) < entries);
+      // The slot must hold the true magnitude, not a clamped stand-in.
+      assert(product.log >= -bias && product.log <= bias);
+      const auto expected =
+          aut::lns::multiply_fused<Format, double>(left, right);
+      const auto magnitude = table[static_cast<std::size_t>(index)];
+      const auto actual = product.negative ? -magnitude : magnitude;
+      // A wide-range format overflows the compute type long before it runs
+      // out of log codes, so the table and the reference must agree on
+      // infinity too rather than be differenced into a NaN.
+      if (std::isinf(expected)) {
+        assert(std::isinf(actual));
+        assert(std::signbit(actual) == std::signbit(expected));
+      } else {
+        assert(std::isfinite(actual));
+        const auto denominator =
+            std::abs(expected) > 0.0 ? std::abs(expected) : 1.0;
+        assert(std::abs(actual - expected) / denominator < 1e-12);
+      }
+      ++checked;
+    }
+  }
+  assert(checked > 0);
+}
+
 template <typename Format> void test_format() {
   test_raw_domain<Format>();
   if constexpr (Format::total_bits <= 16) {
     test_round_trip_representable<Format>();
+    test_product_log_table<Format>();
   }
   test_fused_products<Format>();
 

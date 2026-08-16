@@ -308,11 +308,15 @@ template <typename Format, bw::compute_kind Compute> struct table_storage {
       Format::total_bits <= 6
           ? std::size_t{1} << (2 * Format::total_bits)
           : 1;
+  // Indexed by the biased sum of two log codes; see lns::product_log_bias.
+  static constexpr std::size_t product_count =
+      Format::total_bits <= 16 ? lns::product_log_entries<Format>() : 1;
 
   device_buffer<value_type> full{full_count};
   device_buffer<value_type> fraction{fraction_count};
   device_buffer<value_type> coarse{coarse_count};
   device_buffer<value_type> pair{pair_count};
+  device_buffer<value_type> product{product_count};
 
   table_storage() {
     std::vector<value_type> host_full(full_count);
@@ -351,6 +355,25 @@ template <typename Format, bw::compute_kind Compute> struct table_storage {
       }
     }
     copy(pair, host_pair);
+
+    std::vector<value_type> host_product(product_count);
+    if constexpr (Format::total_bits <= 16) {
+      constexpr auto bias = lns::product_log_bias<Format>();
+      constexpr auto scale = static_cast<double>(
+          std::uint64_t{1} << Format::log_fraction_bits);
+      // Only |log| <= bias is reachable from two finite codes; the few unused
+      // slots are filled with the nearest reachable magnitude so an indexing
+      // slip cannot read uninitialised memory.
+      for (std::size_t index = 0; index < product_count; ++index) {
+        const auto raw_log = static_cast<std::int64_t>(index) - bias;
+        const auto clamped = raw_log < -bias ? -bias
+                             : raw_log > bias ? bias
+                                              : raw_log;
+        host_product[index] = static_cast<value_type>(
+            std::exp2(static_cast<double>(clamped) / scale));
+      }
+    }
+    copy(product, host_product);
   }
 
   static void copy(device_buffer<value_type> &device,
@@ -361,7 +384,7 @@ template <typename Format, bw::compute_kind Compute> struct table_storage {
   }
 
   lk::table_bundle<Compute> view() const {
-    return {full.data, fraction.data, coarse.data, pair.data};
+    return {full.data, fraction.data, coarse.data, pair.data, product.data};
   }
 };
 
@@ -574,6 +597,10 @@ const char *decoder_name(lk::decoder_kind decoder) {
     return "pair_lut_global";
   case lk::decoder_kind::pair_lut_shared:
     return "pair_lut_shared";
+  case lk::decoder_kind::fused_sum_lut_global:
+    return "fused_sum_lut_global";
+  case lk::decoder_kind::fused_sum_lut_shared:
+    return "fused_sum_lut_shared";
   }
   return "unknown";
 }
@@ -982,6 +1009,17 @@ void run_strategies(runner<Format, Compute> &run) {
     run_access_family<Format, Compute, lk::decoder_kind::pair_lut_global,
                       lk::multiply_kind::fused>(run);
     run_access_family<Format, Compute, lk::decoder_kind::pair_lut_shared,
+                      lk::multiply_kind::fused>(run);
+  }
+  // The fused counterpart of the full lookup: one table over the summed log
+  // instead of one table per operand.  Global reaches 16 bits; shared stops at
+  // 12, where the table is still 32 KiB of FP64.
+  if constexpr (Format::total_bits <= 16) {
+    run_access_family<Format, Compute, lk::decoder_kind::fused_sum_lut_global,
+                      lk::multiply_kind::fused>(run);
+  }
+  if constexpr (Format::total_bits <= 12) {
+    run_access_family<Format, Compute, lk::decoder_kind::fused_sum_lut_shared,
                       lk::multiply_kind::fused>(run);
   }
 }
