@@ -1,0 +1,15 @@
+format,arithmetic_type,decoder,cases,distinct_codes,failures,max_absolute_error,max_relative_error,worst_raw
+lns4_r1,fp32,reference_exp2,4099,16,0,2.9802322387695312e-08,8.4293698464413266e-08,5
+lns4_r1,fp32,ex2_approx,4099,16,0,2.9802322387695312e-08,8.4293698464413266e-08,5
+lns4_r1,fp32,full_lut_global,4099,16,0,0,0,0
+lns4_r1,fp32,full_lut_shared,4099,16,0,0,0,0
+lns4_r1,fp32,fraction_lut_global,4099,16,0,0,0,0
+lns4_r1,fp32,fraction_lut_shared,4099,16,0,0,0,0
+lns4_r1,fp32,fraction_lut_warp,4099,16,0,0,0,0
+lns4_r1,fp64,reference_exp2,4099,16,0,2.2204460492503131e-16,1.5700924586837749e-16,1
+lns4_r1,fp64,ex2_approx,4099,16,0,2.9802322387695312e-08,8.4293698464413266e-08,5
+lns4_r1,fp64,full_lut_global,4099,16,0,0,0,0
+lns4_r1,fp64,full_lut_shared,4099,16,0,0,0,0
+lns4_r1,fp64,fraction_lut_global,4099,16,0,0,0,0
+lns4_r1,fp64,fraction_lut_shared,4099,16,0,0,0,0
+lns4_r1,fp64,fraction_lut_warp,4099,16,0,0,0,0

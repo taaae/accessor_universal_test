@@ -1,0 +1,9 @@
+LNS strategy benchmark: lns16_r4
+GPU: NVIDIA H200 NVL (sm_90)
+uniform_0_1
+  lns16_r4 -> fp32
+  lns16_r4 -> fp64
+normal_0_1
+  lns16_r4 -> fp32
+  lns16_r4 -> fp64
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/022_lns_strategy_performance/run_20260816T145820Z/full/timing_samples_lns16_r4.csv
