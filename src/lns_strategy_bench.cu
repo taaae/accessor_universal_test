@@ -389,16 +389,28 @@ void validate_decoder(const options &settings,
   constexpr std::uint64_t domain =
       std::uint64_t{1} << Format::total_bits;
   constexpr std::size_t maximum_cases = 65536;
-  const auto cases = static_cast<std::size_t>(
+  // A narrow format covers its whole domain in a handful of cases -- sixteen
+  // for a four-bit format.  Launching only those leaves most lanes of the
+  // first warp permanently inactive, which is a regime the warp-shuffle
+  // decoders never meet in a real kernel, so a warp-divergence deadlock
+  // validates clean and then hangs the benchmark.  Repeat the code list until
+  // the launch spans many full warps and ends on a ragged tail.
+  constexpr std::size_t minimum_cases = 4099;  // prime: guarantees a tail
+  const auto distinct = static_cast<std::size_t>(
       std::min<std::uint64_t>(domain, maximum_cases));
+  const auto cases = std::max(distinct, minimum_cases);
+  std::vector<std::uint32_t> codes(distinct);
+  for (std::size_t index = 0; index < distinct; ++index) {
+    codes[index] = static_cast<std::uint32_t>(
+        (static_cast<unsigned long long>(index) * domain) / distinct);
+  }
+  if (distinct >= 2) {
+    codes[distinct - 2] = lns::zero_raw<Format>();
+    codes[distinct - 1] = lns::nan_raw<Format>();
+  }
   std::vector<std::uint32_t> host_raw(cases);
   for (std::size_t index = 0; index < cases; ++index) {
-    host_raw[index] = static_cast<std::uint32_t>(
-        (static_cast<unsigned long long>(index) * domain) / cases);
-  }
-  if (cases >= 2) {
-    host_raw[cases - 2] = lns::zero_raw<Format>();
-    host_raw[cases - 1] = lns::nan_raw<Format>();
+    host_raw[index] = codes[index % distinct];
   }
   device_buffer<std::uint32_t> raw(cases);
   device_buffer<value_type> observed(cases);
@@ -474,9 +486,9 @@ void validate_decoder(const options &settings,
   }
   if (summary != nullptr) {
     *summary << Format::name << ',' << bw::compute_traits<Compute>::name << ','
-             << decoder_name(Decoder) << ',' << cases << ',' << failures << ','
-             << std::setprecision(17) << maximum_absolute << ','
-             << maximum_relative << ',' << worst_raw << '\n';
+             << decoder_name(Decoder) << ',' << cases << ',' << distinct << ','
+             << failures << ',' << std::setprecision(17) << maximum_absolute
+             << ',' << maximum_relative << ',' << worst_raw << '\n';
   }
   if (failures != 0) {
     throw std::runtime_error(std::string("decoder validation failed: ") +
@@ -500,8 +512,8 @@ void validate_decoders(const options &settings,
                                settings.validation_output);
     }
     if (needs_header) {
-      output << "format,arithmetic_type,decoder,cases,failures,"
-                "max_absolute_error,max_relative_error,worst_raw\n";
+      output << "format,arithmetic_type,decoder,cases,distinct_codes,"
+                "failures,max_absolute_error,max_relative_error,worst_raw\n";
     }
   }
   auto *stream = output ? &output : nullptr;

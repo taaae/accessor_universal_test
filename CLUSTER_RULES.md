@@ -161,3 +161,18 @@ print, or modify private key material.
   with the exact `.out` path instead of assuming success.
 - Do not use an instrumented Nsight Compute duration as the performance result;
   kernel replay can inflate it by orders of magnitude.
+- A deadlocked kernel consumed an entire eight-hour LNS allocation while
+  producing no output after the first six minutes. Two rules follow. Every
+  benchmark binary must run under a per-target `timeout`, so a hang costs
+  minutes and names the variant instead of the whole reservation. And every
+  runner that launches warp-shuffle kernels needs a `compute-sanitizer
+  --tool synccheck` stage over those variants before the timed stages, built
+  from the smallest target that exercises them.
+- Do not trust a decoder self-check that only covers a narrow format's code
+  domain. Sixteen cases for a four-bit format leave most lanes of the first
+  warp inactive, so warp-divergence faults validate clean and then hang the
+  benchmark. Repeat the code list until the launch spans full warps and ends
+  on a ragged tail.
+- A `--variants` entry that matches nothing is skipped silently. Any stage
+  that exists to exercise specific variants must assert afterwards that rows
+  were actually produced, or it will pass vacuously once an id changes.

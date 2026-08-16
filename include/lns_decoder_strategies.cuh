@@ -132,19 +132,25 @@ template <typename Target>
 __device__ __forceinline__ Target warp_lookup(Target entry,
                                                std::uint32_t index,
                                                const Target *fallback) {
+  // Every lane named by `active` must execute the same shuffle.  `index` is
+  // data dependent, so testing whether the holding lane is active *before*
+  // shuffling deadlocks the warp: the lanes that take the early exit never
+  // arrive and the remaining lanes wait for them until the job is killed.
+  // Shuffle unconditionally instead and discard the result afterwards; a
+  // shuffle from an inactive lane is undefined but never blocks.
   const auto active = __activemask();
-  if ((active & (std::uint32_t{1} << index)) == 0) {
-    return fallback[index];
-  }
+  const auto source = static_cast<int>(index & 31u);
+  Target shuffled{};
   if constexpr (std::is_same_v<Target, float>) {
-    return __shfl_sync(active, entry, static_cast<int>(index));
+    shuffled = __shfl_sync(active, entry, source);
   } else {
     const auto low = __double2loint(entry);
     const auto high = __double2hiint(entry);
-    return __hiloint2double(
-        __shfl_sync(active, high, static_cast<int>(index)),
-        __shfl_sync(active, low, static_cast<int>(index)));
+    shuffled = __hiloint2double(__shfl_sync(active, high, source),
+                                __shfl_sync(active, low, source));
   }
+  const auto holder_active = (active & (std::uint32_t{1} << source)) != 0;
+  return holder_active ? shuffled : fallback[index];
 }
 
 template <typename Target>
