@@ -119,7 +119,7 @@ code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
 .comparison-mini-table-wide { grid-column: 1 / -1; }
 .current-format { background: var(--active); box-shadow: inset 4px 0 0 var(--link); }
 .question-format-heading { font-size: clamp(1.55rem, 3vw, 2rem); margin: 0 0 24px; }
-.same-bit-transposed { min-width: 760px; table-layout: fixed; }
+.same-bit-transposed { table-layout: fixed; } /* min-width is set per table, from the peer count */
 .same-bit-transposed th, .same-bit-transposed td { text-align: center; width: auto; }
 .same-bit-transposed th:first-child { text-align: left; width: 112px; }
 .same-bit-transposed td { font-variant-numeric: tabular-nums; white-space: nowrap; }

@@ -18,4 +18,5 @@ figures=total-kernel-time.svg,relative-fp64.svg,size-scaling.svg,same-bit-8.svg,
 interactive_pages=same-bit-8.html,same-bit-16.html,same-bit-32.html,all-format-performance.html,conversion-e0m1.html,conversion-e1m0.html,conversion-e0m3.html,conversion-e1m2.html,conversion-fp4_e2m1.html,conversion-e3m0.html,conversion-e0m7.html,conversion-e1m6.html,conversion-e2m5.html,conversion-e3m4.html,conversion-fp8_e4m3.html,conversion-fp8_e5m2.html,conversion-e6m1.html,conversion-e7m0.html,conversion-e0m15.html,conversion-e1m14.html,conversion-e2m13.html,conversion-e3m12.html,conversion-e4m11.html,conversion-fp16_e5m10.html,conversion-e6m9.html,conversion-e7m8.html,conversion-bf16_e8m7.html,conversion-e9m6.html,conversion-e10m5.html,conversion-e11m4.html,conversion-e0m31.html,conversion-e1m30.html,conversion-e2m29.html,conversion-e3m28.html,conversion-e4m27.html,conversion-e5m26.html,conversion-e6m25.html,conversion-e7m24.html,conversion-fp32_e8m23.html,conversion-e9m22.html,conversion-e10m21.html,conversion-e11m20.html
 packing_bottleneck_run=run_20260810T181143Z
 unified_strategy_run=run_20260815T171642Z
-unified_six_bit_rows=5460
+unified_question_pages=142
+unified_measured_rows=63380

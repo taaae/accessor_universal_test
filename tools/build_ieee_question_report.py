@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Build question-led IEEE conversion pages from the unified H200 run.
 
-The first rollout deliberately covers only the six-bit formats.  The helpers
-are width-agnostic so the same page structure can be enabled for the remaining
-formats after the presentation and comparison semantics have been reviewed.
+Every storage format measured by the unified run gets a page per arithmetic
+type.  The format inventory and its width grouping come from the report
+navigation, so the pages, the navigation, and the overview cards always agree.
 """
 
 from __future__ import annotations
@@ -28,7 +28,6 @@ import matplotlib.pyplot as plt
 import build_storage_performance_report as base
 
 
-SIX_BIT_FORMATS = ("e0m5", "e1m4", "e2m3", "e3m2", "e4m1", "e5m0")
 COMPUTES = ("fp32", "fp64")
 KERNELS = ("dot", "gemv")
 LAYOUTS = ("dense", "padded")
@@ -38,49 +37,131 @@ DISTRIBUTIONS = ("uniform_0_1", "normal_0_1")
 DECODER_LABELS = {
     "raw": "Raw arithmetic baseline",
     "generic": "Generic decoder",
-    "direct_branchy": "Direct bit construction",
+    "direct_branchy": "Direct bit construction · branchy",
+    "direct_masked": "Direct bit construction · masked",
     "fixed_integer": "Fixed-point integer path",
     "e1_integer": "E1 integer path",
+    "exponent_only": "Exponent-only construction",
     "full_lut_global": "Full lookup · cached global",
     "full_lut_shared": "Full lookup · shared memory",
-}
-
-DECODER_EXPLANATIONS = {
-    "generic": (
-        "Runs the general IEEE-like decoder after extracting each code, then "
-        "returns the requested arithmetic type."
-    ),
-    "direct_branchy": (
-        "Extracts sign, exponent, and mantissa fields and constructs the target "
-        "floating-point value directly, with separate zero/subnormal/normal paths."
-    ),
-    "fixed_integer": (
-        "Treats the exponent-free payload as a signed fixed-point integer and "
-        "applies its compile-time power-of-two scale."
-    ),
-    "e1_integer": (
-        "Uses the E1 layout's integer-like representation and an exact "
-        "power-of-two scale instead of a general floating-point decoder."
-    ),
-    "full_lut_global": (
-        "Uses the six-bit code as an index into a 64-entry table containing the "
-        "final arithmetic value. The table is read through the cached global path."
-    ),
-    "full_lut_shared": (
-        "Stages a 64-entry table in shared memory, then uses each six-bit code "
-        "as the lookup index for the final arithmetic value."
-    ),
+    "prefix_lut_global": "Prefix lookup · cached global",
+    "prefix_lut_shared": "Prefix lookup · shared memory",
+    "subnormal_lut_global": "Subnormal lookup · cached global",
+    "subnormal_lut_shared": "Subnormal lookup · shared memory",
+    "native_scalar": "Native CUDA scalar conversion",
+    "native_packed": "Native CUDA packed conversion",
 }
 
 DECODER_COLORS = {
     "raw": "#222222",
     "generic": "#6c757d",
     "direct_branchy": "#0072B2",
+    "direct_masked": "#3B8ED0",
     "fixed_integer": "#009E73",
     "e1_integer": "#56B4E9",
+    "exponent_only": "#7E57C2",
     "full_lut_global": "#D55E00",
     "full_lut_shared": "#CC79A7",
+    "prefix_lut_global": "#B8860B",
+    "prefix_lut_shared": "#E69F00",
+    "subnormal_lut_global": "#8C564B",
+    "subnormal_lut_shared": "#C17C00",
+    "native_scalar": "#005F73",
+    "native_packed": "#0AA6A6",
 }
+
+# Table sizes follow ``table_entries_v`` in include/bitwidth_benchmark_kernels.cuh
+# and are cross-checked against the run's ``table_bytes`` column.
+TABLE_ENTRY_RULES = {
+    "full_lut": lambda bits, exponent, mantissa: 1 << bits,
+    "prefix_lut": lambda bits, exponent, mantissa: 1 << (exponent + 1),
+    "subnormal_lut": lambda bits, exponent, mantissa: 1 << mantissa,
+}
+
+
+def table_entries(decoder: str, bits: int, exponent: int, mantissa: int) -> int | None:
+    for family, rule in TABLE_ENTRY_RULES.items():
+        if decoder.startswith(family):
+            return rule(bits, exponent, mantissa)
+    return None
+
+
+def entry_count(entries: int) -> str:
+    """Render a table size with the article its spoken form takes."""
+    text = f"{entries:,}"
+    return f"an {text}" if text.startswith("8") else f"a {text}"
+
+
+def decoder_explanation(row: dict[str, str]) -> str:
+    """Describe one decoder in terms of the format it is decoding."""
+    decoder = row["decoder"]
+    bits = int(row["bits"])
+    exponent = int(row["exponent_bits"])
+    mantissa = int(row["mantissa_bits"])
+    entries = table_entries(decoder, bits, exponent, mantissa)
+    residence = (
+        "The table is staged in shared memory."
+        if decoder.endswith("_shared")
+        else "The table is read through the cached global path."
+    )
+    if decoder == "generic":
+        return (
+            "Runs the general IEEE-like decoder after extracting each code, then "
+            "returns the requested arithmetic type."
+        )
+    if decoder == "direct_branchy":
+        return (
+            "Extracts sign, exponent, and mantissa fields and constructs the target "
+            "floating-point value directly, with separate zero/subnormal/normal paths."
+        )
+    if decoder == "direct_masked":
+        return (
+            "Constructs the target value from the same extracted fields, but selects "
+            "between the zero, subnormal, normal, and special cases with masks "
+            "instead of branches."
+        )
+    if decoder == "fixed_integer":
+        return (
+            "Treats the exponent-free payload as a signed fixed-point integer and "
+            "applies its compile-time power-of-two scale."
+        )
+    if decoder == "e1_integer":
+        return (
+            "Uses the E1 layout's integer-like representation and an exact "
+            "power-of-two scale instead of a general floating-point decoder."
+        )
+    if decoder == "exponent_only":
+        return (
+            "The format carries no mantissa bits, so sign and exponent are turned "
+            "into the target value by compile-time-specialized bit construction."
+        )
+    if decoder.startswith("full_lut"):
+        return (
+            f"Uses the {bits}-bit code as an index into {entry_count(entries)}-entry table "
+            f"holding the final arithmetic value. {residence}"
+        )
+    if decoder.startswith("prefix_lut"):
+        return (
+            f"Looks up the sign and exponent prefix in {entry_count(entries)}-entry table and "
+            f"inserts the {mantissa} stored mantissa bits directly, falling back to "
+            f"direct construction for zero-exponent and special codes. {residence}"
+        )
+    if decoder.startswith("subnormal_lut"):
+        return (
+            f"Builds normal values by direct construction and consults a compact, "
+            f"{entries:,}-entry table only for zero-exponent codes. {residence}"
+        )
+    if decoder == "native_scalar":
+        return (
+            "Converts each value with CUDA's native hardware conversion intrinsic "
+            "for this format, then widens the result to the arithmetic type."
+        )
+    if decoder == "native_packed":
+        return (
+            "Converts adjacent values with CUDA's native packed vector conversion "
+            "intrinsic, then widens each decoded lane to the arithmetic type."
+        )
+    return f"Uses the {decoder.replace('_', ' ')} decoder."
 
 
 @dataclass(frozen=True)
@@ -106,6 +187,31 @@ def parse_args() -> argparse.Namespace:
         "--output-dir", type=Path, default=Path("results/report")
     )
     return parser.parse_args()
+
+
+def width_groups(compute: str) -> dict[int, tuple[str, ...]]:
+    """Storage width -> formats, taken from the report navigation inventory."""
+    return {
+        storage_bits: tuple(format_names)
+        for storage_bits, format_names in base.COMPUTE_CONVERSION_FORMATS[
+            compute
+        ].items()
+    }
+
+
+def compute_formats(compute: str) -> tuple[str, ...]:
+    return tuple(
+        format_name
+        for format_names in width_groups(compute).values()
+        for format_name in format_names
+    )
+
+
+def format_width(compute: str, format_name: str) -> int:
+    for storage_bits, format_names in width_groups(compute).items():
+        if format_name in format_names:
+            return storage_bits
+    raise KeyError(f"{format_name} is not a {compute} conversion format")
 
 
 def newest_unified_run(root: Path) -> Path:
@@ -151,16 +257,47 @@ def strategy_score(rows: Sequence[dict[str, str]], kernel: str) -> float:
     return geometric_mean(values)
 
 
+class RowIndex:
+    """Groups the run once so repeated lookups do not rescan the whole CSV.
+
+    Comparing every format against every more-precise peer turns the naive
+    scan into tens of millions of row visits per page, so selections and
+    baselines are memoised alongside the grouping.
+    """
+
+    def __init__(self, rows: Sequence[dict[str, str]]) -> None:
+        self.rows = rows
+        self.by_case: dict[tuple[str, str, str], list[dict[str, str]]] = defaultdict(
+            list
+        )
+        for row in rows:
+            self.by_case[
+                (row["arithmetic_type"], row["format"], row["kernel"])
+            ].append(row)
+        self.selections: dict[tuple, Selection | None] = {}
+        self.baselines: dict[tuple[str, str], float] = {}
+        self.inventories: dict[str, dict[str, tuple[int, int]]] = {}
+
+
+_INDEX_CACHE: dict[int, RowIndex] = {}
+
+
+def row_index(rows: Sequence[dict[str, str]]) -> RowIndex:
+    cached = _INDEX_CACHE.get(id(rows))
+    if cached is None or cached.rows is not rows:
+        cached = RowIndex(rows)
+        _INDEX_CACHE[id(rows)] = cached
+    return cached
+
+
 def format_rows(
     rows: Sequence[dict[str, str]], compute: str, format_name: str, kernel: str
 ) -> list[dict[str, str]]:
+    # A fresh list every call: callers extend the result with baseline series.
     return [
         row
-        for row in rows
-        if row["arithmetic_type"] == compute
-        and row["format"] == format_name
-        and row["kernel"] == kernel
-        and row.get("all_valid", "1") == "1"
+        for row in row_index(rows).by_case.get((compute, format_name, kernel), ())
+        if row.get("all_valid", "1") == "1"
     ]
 
 
@@ -190,6 +327,25 @@ def best_selection(
     *,
     access_method: str | None = None,
 ) -> Selection | None:
+    index = row_index(rows)
+    key = (compute, format_name, kernel, layout, scope, access_method)
+    if key in index.selections:
+        return index.selections[key]
+    index.selections[key] = selection = _compute_best_selection(
+        rows, compute, format_name, kernel, layout, scope, access_method
+    )
+    return selection
+
+
+def _compute_best_selection(
+    rows: Sequence[dict[str, str]],
+    compute: str,
+    format_name: str,
+    kernel: str,
+    layout: str,
+    scope: str,
+    access_method: str | None,
+) -> Selection | None:
     candidates = eligible_rows(
         format_rows(rows, compute, format_name, kernel), layout, scope
     )
@@ -212,14 +368,14 @@ def best_selection(
 def baseline_score(
     rows: Sequence[dict[str, str]], compute: str, kernel: str
 ) -> float:
+    index = row_index(rows)
+    if (compute, kernel) in index.baselines:
+        return index.baselines[(compute, kernel)]
     raw_format = f"raw_{compute}"
     raw = [
         row
-        for row in rows
-        if row["arithmetic_type"] == compute
-        and row["format"] == raw_format
-        and row["kernel"] == kernel
-        and row["access_method"] == "scalar"
+        for row in index.by_case.get((compute, raw_format, kernel), ())
+        if row["access_method"] == "scalar"
         and int(row["packet_values"]) == 1
         and row.get("all_valid", "1") == "1"
     ]
@@ -236,10 +392,14 @@ def baseline_score(
         }
         for (distribution, size), values in grouped.items()
     ]
-    return strategy_score(collapsed, kernel)
+    index.baselines[(compute, kernel)] = score = strategy_score(collapsed, kernel)
+    return score
 
 
 def format_bits(rows: Sequence[dict[str, str]], compute: str) -> dict[str, tuple[int, int]]:
+    index = row_index(rows)
+    if compute in index.inventories:
+        return index.inventories[compute]
     result: dict[str, tuple[int, int]] = {}
     for row in rows:
         if row["arithmetic_type"] != compute or row["format"].startswith("raw_"):
@@ -248,6 +408,7 @@ def format_bits(rows: Sequence[dict[str, str]], compute: str) -> dict[str, tuple
             row["format"],
             (int(row["exponent_bits"]), int(row["mantissa_bits"])),
         )
+    index.inventories[compute] = result
     return result
 
 
@@ -378,76 +539,54 @@ def padded_table(
 def same_bit_tables(
     rows: Sequence[dict[str, str]], compute: str, format_name: str
 ) -> str:
+    storage_bits = format_width(compute, format_name)
+    peers = width_groups(compute)[storage_bits]
+    # table-layout is fixed, so reserve room for the label plus one column per peer
+    min_width = 112 + 104 * len(peers)
     tables = []
     for kernel in KERNELS:
         for scope in SCOPES:
             for layout in LAYOUTS:
-                if format_name == "e0m5":
-                    type_cells = []
-                    timing_cells = []
-                    for candidate in SIX_BIT_FORMATS:
-                        selection = best_selection(
-                            rows, compute, candidate, kernel, layout, scope
-                        )
-                        current = (
-                            ' class="current-format-column"'
-                            if candidate == format_name
-                            else ""
-                        )
-                        filename = base.compute_conversion_format_filename(
-                            compute, candidate
-                        )
-                        type_cells.append(
-                            f"<th{current}><a href=\"{html.escape(filename)}\">"
-                            f"{html.escape(base.label(candidate))}</a></th>"
-                        )
-                        timing_cells.append(
-                            f"<td{current}>"
-                            + (
-                                f"{selection.score_ms:.6g} ms"
-                                if selection is not None
-                                else "—"
-                            )
-                            + "</td>"
-                        )
-                    tables.append(
-                        '<div class="comparison-mini-table comparison-mini-table-wide">'
-                        f"<h3>{kernel.upper()} · {layout.title()} · "
-                        f"{'x1' if scope == 'x1' else 'Best'}</h3>"
-                        '<div class="table-wrap"><table class="strategy-table '
-                        'same-bit-transposed"><tbody><tr><th>6-bit type</th>'
-                        f"{''.join(type_cells)}</tr><tr><th>Best time</th>"
-                        f"{''.join(timing_cells)}</tr></tbody></table></div></div>"
-                    )
-                    continue
-
-                baseline = baseline_score(rows, compute, kernel)
-                body = []
-                for candidate in SIX_BIT_FORMATS:
+                type_cells = []
+                timing_cells = []
+                for candidate in peers:
                     selection = best_selection(
                         rows, compute, candidate, kernel, layout, scope
                     )
-                    speedup = baseline / selection.score_ms if selection else None
-                    current = " class=\"current-format\"" if candidate == format_name else ""
+                    current = (
+                        ' class="current-format-column"'
+                        if candidate == format_name
+                        else ""
+                    )
                     filename = base.compute_conversion_format_filename(
                         compute, candidate
                     )
-                    body.append(
-                        f"<tr{current}><th><a href=\"{html.escape(filename)}\">"
+                    type_cells.append(
+                        f"<th{current}><a href=\"{html.escape(filename)}\">"
                         f"{html.escape(base.label(candidate))}</a></th>"
-                        f"{ratio_cell(speedup)}</tr>"
+                    )
+                    timing_cells.append(
+                        f"<td{current}>"
+                        + (
+                            f"{selection.score_ms:.6g} ms"
+                            if selection is not None
+                            else "—"
+                        )
+                        + "</td>"
                     )
                 tables.append(
-                    '<div class="comparison-mini-table">'
+                    '<div class="comparison-mini-table comparison-mini-table-wide">'
                     f"<h3>{kernel.upper()} · {layout.title()} · "
                     f"{'x1' if scope == 'x1' else 'Best'}</h3>"
-                    '<div class="table-wrap"><table class="strategy-table">'
-                    f"<thead><tr><th>6-bit type</th><th>vs raw {compute.upper()}</th>"
-                    f"</tr></thead><tbody>{''.join(body)}</tbody></table></div></div>"
+                    '<div class="table-wrap"><table class="strategy-table '
+                    'same-bit-transposed" style="min-width:'
+                    f'{min_width}px"><tbody><tr><th>{storage_bits}-bit type</th>'
+                    f"{''.join(type_cells)}</tr><tr><th>Best time</th>"
+                    f"{''.join(timing_cells)}</tr></tbody></table></div></div>"
                 )
     return (
         '<section class="text-section question-section"><h2>'
-        "Comparison of same-bit types</h2>"
+        f"Comparison of same-bit types ({storage_bits}-bit)</h2>"
         f'<div class="question-table-grid">{"".join(tables)}</div></section>'
     )
 
@@ -482,17 +621,34 @@ def packing_table(
     )
 
 
+def padded_container_bits(bits: int) -> int:
+    for container in (8, 16, 32):
+        if bits <= container:
+            return container
+    raise ValueError(f"no padded container for {bits}-bit storage")
+
+
 def access_explanation(row: dict[str, str]) -> tuple[str, str]:
     layout = row["storage_layout"]
     access = row["access_method"]
     packet = int(row["packet_values"])
     decoder = row["decoder"]
+    bits = int(row["bits"])
     if layout == "dense":
-        storage = "Reads the compact six-bit bitstream without byte padding."
-        storage_pipeline = "dense 6-bit stream"
+        storage = f"Reads the compact {bits}-bit bitstream without padding."
+        storage_pipeline = f"dense {bits}-bit stream"
     else:
-        storage = "Reads one byte per value; two padding bits are unused."
-        storage_pipeline = "padded 8-bit slots"
+        container = padded_container_bits(bits)
+        slack = container - bits
+        storage = (
+            f"Reads one {container}-bit slot per value; "
+            + (
+                f"{slack} padding bits are unused."
+                if slack
+                else "the value fills the slot exactly."
+            )
+        )
+        storage_pipeline = f"padded {container}-bit slots"
     if access == "scalar":
         access_text = "Each thread loads and decodes one value at a time."
         access_pipeline = "scalar x1"
@@ -503,15 +659,18 @@ def access_explanation(row: dict[str, str]) -> tuple[str, str]:
         )
         access_pipeline = f"thread packet x{packet}"
     else:
+        loaders = int(row["loader_threads"])
+        consumers = int(row["consumer_threads"])
+        per_consumer = int(row["values_per_consumer"])
+        word_bits = int(row["load_word_bits"])
         access_text = (
-            f"A cooperative thread group loads a dense {packet}-value chunk, "
-            "redistributes its words with warp shuffles, and divides decoded "
-            "values among consumers."
+            f"A cooperative group loads a dense {packet}-value chunk as "
+            f"{loaders} × {word_bits}-bit words, redistributes them with warp "
+            f"shuffles, and gives each of {consumers} consumer lanes "
+            f"{per_consumer} values to decode."
         )
         access_pipeline = f"shuffle chunk x{packet}"
-    decoder_text = DECODER_EXPLANATIONS.get(
-        decoder, f"Uses the {decoder.replace('_', ' ')} decoder."
-    )
+    decoder_text = decoder_explanation(row)
     pipeline = (
         f"{storage_pipeline} → {access_pipeline} → "
         f"{DECODER_LABELS.get(decoder, decoder)} → {row['arithmetic_type'].upper()} FMA"
@@ -846,11 +1005,8 @@ def page_body(
         + '<section class="experiment-status completed-section">'
         '<span class="status-badge">H200 measured</span>'
         f"<strong>Experiment 021 · {html.escape(run_dir.name)}</strong></section>"
-        + (
-            f'<h2 class="question-format-heading">{html.escape(base.label(format_name))}</h2>'
-            if format_name == "e0m5"
-            else ""
-        )
+        + f'<h2 class="question-format-heading">'
+        f"{html.escape(base.label(format_name))}</h2>"
         + usefulness_table(rows, compute, format_name)
         + precise_peer_table(rows, compute, format_name)
         + padded_table(rows, compute, format_name)
@@ -877,7 +1033,7 @@ def read_manifest(path: Path) -> dict[str, str]:
 def update_overview_cards(output_dir: Path, compute: str) -> None:
     overview = output_dir / base.compute_conversion_overview_filename(compute)
     document = overview.read_text(encoding="utf-8")
-    for format_name in SIX_BIT_FORMATS:
+    for format_name in compute_formats(compute):
         filename = base.compute_conversion_format_filename(compute, format_name)
         pattern = re.compile(
             rf'<a class="report-link pending-report-link" href="{re.escape(filename)}">'
@@ -898,10 +1054,14 @@ def update_overview_cards(output_dir: Path, compute: str) -> None:
             )
         if count != 1:
             raise ValueError(f"could not update overview card for {compute}/{format_name}")
-    document = document.replace(
-        "<span class=\"status-badge\">Pending H200 data</span>",
-        "<span class=\"status-badge\">6-bit H200 data available</span>",
-        1,
+    # The badge may still say "pending", or carry the wording of an earlier
+    # partial rollout; both become the full-inventory wording.
+    document = re.sub(
+        r'<span class="status-badge">(?:Pending H200 data|'
+        r'[\w-]+ H200 data available)</span>',
+        '<span class="status-badge">Unified H200 data available</span>',
+        document,
+        count=1,
     )
     overview.write_text(document, encoding="utf-8")
 
@@ -922,7 +1082,7 @@ EXTRA_CSS = """
 .comparison-mini-table-wide { grid-column: 1 / -1; }
 .current-format { background: var(--active); box-shadow: inset 4px 0 0 var(--link); }
 .question-format-heading { font-size: clamp(1.55rem, 3vw, 2rem); margin: 0 0 24px; }
-.same-bit-transposed { min-width: 760px; table-layout: fixed; }
+.same-bit-transposed { table-layout: fixed; } /* min-width is set per table, from the peer count */
 .same-bit-transposed th, .same-bit-transposed td { text-align: center; width: auto; }
 .same-bit-transposed th:first-child { text-align: left; width: 112px; }
 .same-bit-transposed td { font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -945,16 +1105,32 @@ EXTRA_CSS = """
 
 def validate(rows: Sequence[dict[str, str]]) -> None:
     for compute in COMPUTES:
+        expected = set(compute_formats(compute))
         available = {
             row["format"]
             for row in rows
-            if row["arithmetic_type"] == compute and row["bits"] == "6"
+            if row["arithmetic_type"] == compute
+            and not row["format"].startswith("raw_")
         }
-        if available != set(SIX_BIT_FORMATS):
+        if available != expected:
             raise SystemExit(
-                f"{compute} six-bit inventory mismatch: {sorted(available)}"
+                f"{compute} inventory mismatch; "
+                f"missing {sorted(expected - available)}, "
+                f"unexpected {sorted(available - expected)}"
             )
-        for format_name in SIX_BIT_FORMATS:
+        for format_name in sorted(expected):
+            # The navigation groups formats by storage width; the pages rely on
+            # that grouping matching the measured width.
+            measured = {
+                int(row["bits"])
+                for row in rows
+                if row["arithmetic_type"] == compute and row["format"] == format_name
+            }
+            if measured != {format_width(compute, format_name)}:
+                raise SystemExit(
+                    f"{compute}/{format_name} width mismatch: navigation says "
+                    f"{format_width(compute, format_name)}, run says {sorted(measured)}"
+                )
             for kernel in KERNELS:
                 for layout in LAYOUTS:
                     for scope in SCOPES:
@@ -983,8 +1159,14 @@ def main() -> None:
     interactive = output_dir / "interactive"
     assets.mkdir(parents=True, exist_ok=True)
     interactive.mkdir(parents=True, exist_ok=True)
+    page_count = 0
     for compute in COMPUTES:
-        for format_name in SIX_BIT_FORMATS:
+        formats = compute_formats(compute)
+        for index, format_name in enumerate(formats, start=1):
+            print(
+                f"[{compute} {index}/{len(formats)}] {base.label(format_name)}",
+                flush=True,
+            )
             for kernel in KERNELS:
                 svg_path, chart_metadata = plot_strategy_component(
                     rows,
@@ -1022,26 +1204,41 @@ def main() -> None:
                 ),
             )
             (output_dir / filename).write_text(document, encoding="utf-8")
+            page_count += 1
         update_overview_cards(output_dir, compute)
 
+    # Rewrite the block rather than skipping it, so CSS edits reach built reports.
     css_path = output_dir / "report.css"
     css = css_path.read_text(encoding="utf-8")
-    if "/* Question-led unified IEEE pages. */" not in css:
-        css_path.write_text(css.rstrip() + "\n" + EXTRA_CSS, encoding="utf-8")
+    marker = "/* Question-led unified IEEE pages. */"
+    if marker in css:
+        css = css[: css.index(marker)]
+    css_path.write_text(css.rstrip() + "\n" + EXTRA_CSS, encoding="utf-8")
 
     manifest_path = output_dir / "report_manifest.txt"
     current_manifest = "\n".join(
         line
         for line in manifest_path.read_text(encoding="utf-8").splitlines()
-        if not line.startswith(("unified_strategy_run=", "unified_six_bit_rows="))
+        if not line.startswith(
+            (
+                "unified_strategy_run=",
+                "unified_six_bit_rows=",
+                "unified_question_pages=",
+                "unified_measured_rows=",
+            )
+        )
     ).rstrip()
+    measured_rows = sum(
+        1 for row in rows if not row["format"].startswith("raw_")
+    )
     manifest_path.write_text(
         current_manifest
         + f"\nunified_strategy_run={run_dir.name}"
-        + f"\nunified_six_bit_rows={sum(row['bits'] == '6' for row in rows)}\n",
+        + f"\nunified_question_pages={page_count}"
+        + f"\nunified_measured_rows={measured_rows}\n",
         encoding="utf-8",
     )
-    print(f"Updated six-bit IEEE question pages in {output_dir}")
+    print(f"Updated {page_count} IEEE question pages in {output_dir}")
 
 
 if __name__ == "__main__":
