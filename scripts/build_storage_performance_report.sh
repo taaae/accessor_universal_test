@@ -35,3 +35,9 @@ uv run python tools/build_precision_packing_report.py \
 
 uv run python tools/build_ieee_question_report.py \
     --output-dir results/report
+
+# LNS_FORMATS limits the rollout while the page design is under review; leave it
+# unset to build a page for every format in the newest experiment 022 run.
+uv run python tools/build_lns_question_report.py \
+    --output-dir results/report \
+    --formats "${LNS_FORMATS:-}"

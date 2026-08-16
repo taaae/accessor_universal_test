@@ -387,8 +387,10 @@ PAGES = (
     ("methodology.html", "Methodology"),
     ("general-info.html", "General info"),
     ("packing-bottlenecks.html", "Packing bottlenecks"),
-    ("conversion-fp32.html", "Storage → FP32 arithmetic"),
-    ("conversion-strategies.html", "Storage → FP64 arithmetic"),
+    ("conversion-fp32.html", "IEEE → FP32"),
+    ("conversion-strategies.html", "IEEE → FP64"),
+    ("lns-fp32.html", "LNS → FP32"),
+    ("lns-fp64.html", "LNS → FP64"),
 )
 
 ACCURACY_PAGES = (
@@ -3141,6 +3143,10 @@ def navigation(current: str) -> str:
         ) or (
             filename == "conversion-fp32.html"
             and current.startswith("conversion-fp32-")
+        ) or (
+            filename == "lns-fp32.html" and current.startswith("lns-fp32-")
+        ) or (
+            filename == "lns-fp64.html" and current.startswith("lns-fp64-")
         )
         active = ' aria-current="page" class="active"' if is_active else ""
         links.append(f'<a href="{filename}"{active}>{html.escape(text)}</a>')
@@ -3372,8 +3378,8 @@ def write_report(
             ("bottlenecks.html", "Bottlenecks", "Nsight resource pressure, registers, and occupancy."),
             ("general-info.html", "General info", "Accessor contracts and access-pattern recommendations for 2- through 32-bit storage."),
             ("packing-bottlenecks.html", "Packing bottlenecks", "Packet speedup, roofline motion, resource transitions, and mixed-arithmetic cost."),
-            ("conversion-fp32.html", "Storage → FP32 arithmetic", "Dense, padded, packet, shuffle, and decoder comparisons using FP32 arithmetic."),
-            ("conversion-strategies.html", "Storage → FP64 arithmetic", "Dense, padded, packet, shuffle, and decoder comparisons using FP64 arithmetic."),
+            ("conversion-fp32.html", "IEEE → FP32", "Dense, padded, packet, shuffle, and decoder comparisons using FP32 arithmetic."),
+            ("conversion-strategies.html", "IEEE → FP64", "Dense, padded, packet, shuffle, and decoder comparisons using FP64 arithmetic."),
         )
     )
     accuracy_cards = "".join(
@@ -3934,7 +3940,7 @@ kernel dot_cooperative(Accessor a, Accessor b, size_t N) {
 </ul></section>""",
         ),
         "conversion-fp32.html": (
-            "Storage → FP32 arithmetic",
+            "IEEE → FP32",
             "Per-format DOT and GEMV comparisons using FP32 arithmetic.",
             conversion_navigation("conversion-fp32.html", "fp32")
             + """<section class="experiment-status pending-section">
@@ -3943,7 +3949,7 @@ kernel dot_cooperative(Accessor a, Accessor b, size_t N) {
             + "".join(fp32_conversion_overview_sections),
         ),
         "conversion-strategies.html": (
-            "Storage → FP64 arithmetic",
+            "IEEE → FP64",
             "Per-format DOT and GEMV comparisons using FP64 arithmetic.",
             conversion_navigation("conversion-strategies.html", "fp64")
             + """<section class="experiment-status pending-section">
