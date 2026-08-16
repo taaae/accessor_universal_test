@@ -1,0 +1,28 @@
+experiment=020_bitwidth_strategy_performance
+started_utc=2026-08-15T17:16:44Z
+git_commit=8c3a5fa611e454657072a92d0a6b74819e65ff85
+widths=2 3 4 5 6 7 8 9 10 12 14 16 17 20 24 28 32
+arithmetic_types=fp32,fp64
+storage_layouts=dense,padded
+access_methods=scalar,thread_packet,cooperative_shuffle
+screen_dot_powers=24
+screen_gemv_powers=14
+full_dot_powers=12,16,20,24,27
+full_gemv_powers=8,10,12,14,16
+gemv_rows=1024
+distributions=uniform_0_1,normal_0_1
+full_warmup=10
+full_samples=5
+full_target_sample_ms=15
+base_seed=2611923443488327891
+raw_baseline_schedule=before_each_width_in_screen_and_full
+stop_after=full
+git_status_begin
+?? results/021_unified_strategy_performance/run_20260815T165012Z/
+?? results/021_unified_strategy_performance/run_20260815T171642Z/
+?? results/021_unified_strategy_performance/slurm-443857.out
+?? results/021_unified_strategy_performance/slurm-443861.out
+git_status_end
+finished_utc=2026-08-15T18:34:38Z
+wall_time_seconds=4674
+completed_stage=full

@@ -1,0 +1,5 @@
+suite	directory	role
+unified_core	/storage/home/timofeirusanov/accessor_universal_test/results/021_unified_strategy_performance/run_20260815T171642Z/unified_core	common FP32/FP64 comparison harness
+legacy_e2e3	/storage/home/timofeirusanov/accessor_universal_test/results/021_unified_strategy_performance/run_20260815T171642Z/legacy_e2e3	historical specialized E2M5/E3M4 FP64 strategies
+legacy_primary	/storage/home/timofeirusanov/accessor_universal_test/results/021_unified_strategy_performance/run_20260815T171642Z/legacy_primary	historical primary 8/16/32-bit FP64 strategies
+legacy_expanded	/storage/home/timofeirusanov/accessor_universal_test/results/021_unified_strategy_performance/run_20260815T171642Z/legacy_expanded	historical expanded 2/4/8/16/32-bit FP64 strategies

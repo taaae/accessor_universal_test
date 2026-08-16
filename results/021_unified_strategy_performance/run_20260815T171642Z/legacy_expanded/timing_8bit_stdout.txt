@@ -1,0 +1,72 @@
+All-format decoder strategy benchmark
+GPU: NVIDIA H200 NVL (sm_90)
+e0m7 (8 bit, 33 strategies)
+  uniform_0_1
+    DOT N=2^12 complete
+    DOT N=2^16 complete
+    DOT N=2^20 complete
+    DOT N=2^24 complete
+    DOT N=2^27 complete
+    GEMV M=1024, N=2^8 complete
+    GEMV M=1024, N=2^10 complete
+    GEMV M=1024, N=2^12 complete
+    GEMV M=1024, N=2^14 complete
+    GEMV M=1024, N=2^16 complete
+  normal_0_1
+    DOT N=2^12 complete
+    DOT N=2^16 complete
+    DOT N=2^20 complete
+    DOT N=2^24 complete
+    DOT N=2^27 complete
+    GEMV M=1024, N=2^8 complete
+    GEMV M=1024, N=2^10 complete
+    GEMV M=1024, N=2^12 complete
+    GEMV M=1024, N=2^14 complete
+    GEMV M=1024, N=2^16 complete
+e6m1 (8 bit, 45 strategies)
+  uniform_0_1
+    DOT N=2^12 complete
+    DOT N=2^16 complete
+    DOT N=2^20 complete
+    DOT N=2^24 complete
+    DOT N=2^27 complete
+    GEMV M=1024, N=2^8 complete
+    GEMV M=1024, N=2^10 complete
+    GEMV M=1024, N=2^12 complete
+    GEMV M=1024, N=2^14 complete
+    GEMV M=1024, N=2^16 complete
+  normal_0_1
+    DOT N=2^12 complete
+    DOT N=2^16 complete
+    DOT N=2^20 complete
+    DOT N=2^24 complete
+    DOT N=2^27 complete
+    GEMV M=1024, N=2^8 complete
+    GEMV M=1024, N=2^10 complete
+    GEMV M=1024, N=2^12 complete
+    GEMV M=1024, N=2^14 complete
+    GEMV M=1024, N=2^16 complete
+e7m0 (8 bit, 33 strategies)
+  uniform_0_1
+    DOT N=2^12 complete
+    DOT N=2^16 complete
+    DOT N=2^20 complete
+    DOT N=2^24 complete
+    DOT N=2^27 complete
+    GEMV M=1024, N=2^8 complete
+    GEMV M=1024, N=2^10 complete
+    GEMV M=1024, N=2^12 complete
+    GEMV M=1024, N=2^14 complete
+    GEMV M=1024, N=2^16 complete
+  normal_0_1
+    DOT N=2^12 complete
+    DOT N=2^16 complete
+    DOT N=2^20 complete
+    DOT N=2^24 complete
+    DOT N=2^27 complete
+    GEMV M=1024, N=2^8 complete
+    GEMV M=1024, N=2^10 complete
+    GEMV M=1024, N=2^12 complete
+    GEMV M=1024, N=2^14 complete
+    GEMV M=1024, N=2^16 complete
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/021_unified_strategy_performance/run_20260815T171642Z/legacy_expanded/timing_samples_8bit.csv

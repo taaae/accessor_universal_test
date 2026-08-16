@@ -1,0 +1,17 @@
+Arbitrary-width strategy benchmark: 17 bits
+GPU: NVIDIA H200 NVL (sm_90)
+uniform_0_1
+  e2m14 -> fp32
+  e5m11 -> fp32
+  e8m8 -> fp32
+  e2m14 -> fp64
+  e5m11 -> fp64
+  e11m5 -> fp64
+normal_0_1
+  e2m14 -> fp32
+  e5m11 -> fp32
+  e8m8 -> fp32
+  e2m14 -> fp64
+  e5m11 -> fp64
+  e11m5 -> fp64
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/021_unified_strategy_performance/run_20260815T171642Z/unified_core/full/timing_samples_17bit.csv

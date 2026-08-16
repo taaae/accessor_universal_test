@@ -1,0 +1,23 @@
+experiment=021_unified_strategy_performance
+purpose=rerun old and new conversion strategies on one physical H200 allocation
+started_utc=2026-08-15T17:16:42Z
+git_commit=8c3a5fa611e454657072a92d0a6b74819e65ff85
+stop_after=full
+core_widths=2,3,4,5,6,7,8,9,10,12,14,16,17,20,24,28,32
+core_arithmetic=fp32,fp64
+core_policy=screen_all_then_full_selected_per_access_group
+legacy_e2e3=all_historical_fp64_strategies
+legacy_primary=all_historical_fp64_strategies_for_primary_power_of_two_formats
+legacy_expanded=all_historical_fp64_strategies_for_expanded_power_of_two_formats
+timing=CUDA_events_complete_DOT_or_GEMV
+profiling=none
+git_status_begin
+?? results/021_unified_strategy_performance/run_20260815T165012Z/
+?? results/021_unified_strategy_performance/run_20260815T171642Z/
+?? results/021_unified_strategy_performance/slurm-443857.out
+?? results/021_unified_strategy_performance/slurm-443861.out
+git_status_end
+finished_utc=2026-08-15T19:53:19Z
+wall_time_seconds=9397
+final_stage=complete
+exit_status=0

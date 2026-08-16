@@ -1,0 +1,30 @@
+
+snapshot=start
+snapshot_utc=2026-08-15T17:16:42Z
+name, uuid, pci.bus_id, driver_version, memory.total [MiB], memory.used [MiB], utilization.gpu [%], temperature.gpu, power.draw [W], power.limit [W], clocks.current.sm [MHz], clocks.current.memory [MHz], ecc.mode.current, mig.mode.current
+NVIDIA H200 NVL, GPU-6c93a4ab-891b-9ae8-54bb-4f6cd72868ba, 00000001:8E:00.0, 610.43.02, 143771 MiB, 0 MiB, 0 %, 30, 69.29 W, 600.00 W, 345 MHz, 3201 MHz, Enabled, Disabled
+
+snapshot=after_synccheck
+snapshot_utc=2026-08-15T17:16:44Z
+name, uuid, pci.bus_id, driver_version, memory.total [MiB], memory.used [MiB], utilization.gpu [%], temperature.gpu, power.draw [W], power.limit [W], clocks.current.sm [MHz], clocks.current.memory [MHz], ecc.mode.current, mig.mode.current
+NVIDIA H200 NVL, GPU-6c93a4ab-891b-9ae8-54bb-4f6cd72868ba, 00000001:8E:00.0, 610.43.02, 143771 MiB, 0 MiB, 2 %, 30, 79.19 W, 600.00 W, 1785 MHz, 3201 MHz, Enabled, Disabled
+
+snapshot=after_unified_core
+snapshot_utc=2026-08-15T18:34:38Z
+name, uuid, pci.bus_id, driver_version, memory.total [MiB], memory.used [MiB], utilization.gpu [%], temperature.gpu, power.draw [W], power.limit [W], clocks.current.sm [MHz], clocks.current.memory [MHz], ecc.mode.current, mig.mode.current
+NVIDIA H200 NVL, GPU-6c93a4ab-891b-9ae8-54bb-4f6cd72868ba, 00000001:8E:00.0, 610.43.02, 143771 MiB, 0 MiB, 0 %, 39, 72.35 W, 600.00 W, 345 MHz, 3201 MHz, Enabled, Disabled
+
+snapshot=after_legacy_e2e3
+snapshot_utc=2026-08-15T18:40:34Z
+name, uuid, pci.bus_id, driver_version, memory.total [MiB], memory.used [MiB], utilization.gpu [%], temperature.gpu, power.draw [W], power.limit [W], clocks.current.sm [MHz], clocks.current.memory [MHz], ecc.mode.current, mig.mode.current
+NVIDIA H200 NVL, GPU-6c93a4ab-891b-9ae8-54bb-4f6cd72868ba, 00000001:8E:00.0, 610.43.02, 143771 MiB, 0 MiB, 0 %, 42, 202.20 W, 600.00 W, 1785 MHz, 3201 MHz, Enabled, Disabled
+
+snapshot=after_legacy_primary
+snapshot_utc=2026-08-15T19:01:18Z
+name, uuid, pci.bus_id, driver_version, memory.total [MiB], memory.used [MiB], utilization.gpu [%], temperature.gpu, power.draw [W], power.limit [W], clocks.current.sm [MHz], clocks.current.memory [MHz], ecc.mode.current, mig.mode.current
+NVIDIA H200 NVL, GPU-6c93a4ab-891b-9ae8-54bb-4f6cd72868ba, 00000001:8E:00.0, 610.43.02, 143771 MiB, 0 MiB, 0 %, 40, 100.80 W, 600.00 W, 1785 MHz, 3201 MHz, Enabled, Disabled
+
+snapshot=finish
+snapshot_utc=2026-08-15T19:53:19Z
+name, uuid, pci.bus_id, driver_version, memory.total [MiB], memory.used [MiB], utilization.gpu [%], temperature.gpu, power.draw [W], power.limit [W], clocks.current.sm [MHz], clocks.current.memory [MHz], ecc.mode.current, mig.mode.current
+NVIDIA H200 NVL, GPU-6c93a4ab-891b-9ae8-54bb-4f6cd72868ba, 00000001:8E:00.0, 610.43.02, 143771 MiB, 0 MiB, 0 %, 40, 72.74 W, 600.00 W, 345 MHz, 3201 MHz, Enabled, Disabled

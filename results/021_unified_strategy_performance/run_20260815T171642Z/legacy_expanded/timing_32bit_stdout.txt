@@ -1,0 +1,164 @@
+All-format decoder strategy benchmark
+GPU: NVIDIA H200 NVL (sm_90)
+e0m31 (32 bit, 16 strategies)
+  uniform_0_1
+    DOT N=2^12 complete
+    DOT N=2^16 complete
+    DOT N=2^20 complete
+    DOT N=2^24 complete
+    DOT N=2^27 complete
+    GEMV M=1024, N=2^8 complete
+    GEMV M=1024, N=2^10 complete
+    GEMV M=1024, N=2^12 complete
+    GEMV M=1024, N=2^14 complete
+    GEMV M=1024, N=2^16 complete
+  normal_0_1
+    DOT N=2^12 complete
+    DOT N=2^16 complete
+    DOT N=2^20 complete
+    DOT N=2^24 complete
+    DOT N=2^27 complete
+    GEMV M=1024, N=2^8 complete
+    GEMV M=1024, N=2^10 complete
+    GEMV M=1024, N=2^12 complete
+    GEMV M=1024, N=2^14 complete
+    GEMV M=1024, N=2^16 complete
+e10m21 (32 bit, 20 strategies)
+  uniform_0_1
+    DOT N=2^12 complete
+    DOT N=2^16 complete
+    DOT N=2^20 complete
+    DOT N=2^24 complete
+    DOT N=2^27 complete
+    GEMV M=1024, N=2^8 complete
+    GEMV M=1024, N=2^10 complete
+    GEMV M=1024, N=2^12 complete
+    GEMV M=1024, N=2^14 complete
+    GEMV M=1024, N=2^16 complete
+  normal_0_1
+    DOT N=2^12 complete
+    DOT N=2^16 complete
+    DOT N=2^20 complete
+    DOT N=2^24 complete
+    DOT N=2^27 complete
+    GEMV M=1024, N=2^8 complete
+    GEMV M=1024, N=2^10 complete
+    GEMV M=1024, N=2^12 complete
+    GEMV M=1024, N=2^14 complete
+    GEMV M=1024, N=2^16 complete
+e4m27 (32 bit, 20 strategies)
+  uniform_0_1
+    DOT N=2^12 complete
+    DOT N=2^16 complete
+    DOT N=2^20 complete
+    DOT N=2^24 complete
+    DOT N=2^27 complete
+    GEMV M=1024, N=2^8 complete
+    GEMV M=1024, N=2^10 complete
+    GEMV M=1024, N=2^12 complete
+    GEMV M=1024, N=2^14 complete
+    GEMV M=1024, N=2^16 complete
+  normal_0_1
+    DOT N=2^12 complete
+    DOT N=2^16 complete
+    DOT N=2^20 complete
+    DOT N=2^24 complete
+    DOT N=2^27 complete
+    GEMV M=1024, N=2^8 complete
+    GEMV M=1024, N=2^10 complete
+    GEMV M=1024, N=2^12 complete
+    GEMV M=1024, N=2^14 complete
+    GEMV M=1024, N=2^16 complete
+e5m26 (32 bit, 20 strategies)
+  uniform_0_1
+    DOT N=2^12 complete
+    DOT N=2^16 complete
+    DOT N=2^20 complete
+    DOT N=2^24 complete
+    DOT N=2^27 complete
+    GEMV M=1024, N=2^8 complete
+    GEMV M=1024, N=2^10 complete
+    GEMV M=1024, N=2^12 complete
+    GEMV M=1024, N=2^14 complete
+    GEMV M=1024, N=2^16 complete
+  normal_0_1
+    DOT N=2^12 complete
+    DOT N=2^16 complete
+    DOT N=2^20 complete
+    DOT N=2^24 complete
+    DOT N=2^27 complete
+    GEMV M=1024, N=2^8 complete
+    GEMV M=1024, N=2^10 complete
+    GEMV M=1024, N=2^12 complete
+    GEMV M=1024, N=2^14 complete
+    GEMV M=1024, N=2^16 complete
+e6m25 (32 bit, 20 strategies)
+  uniform_0_1
+    DOT N=2^12 complete
+    DOT N=2^16 complete
+    DOT N=2^20 complete
+    DOT N=2^24 complete
+    DOT N=2^27 complete
+    GEMV M=1024, N=2^8 complete
+    GEMV M=1024, N=2^10 complete
+    GEMV M=1024, N=2^12 complete
+    GEMV M=1024, N=2^14 complete
+    GEMV M=1024, N=2^16 complete
+  normal_0_1
+    DOT N=2^12 complete
+    DOT N=2^16 complete
+    DOT N=2^20 complete
+    DOT N=2^24 complete
+    DOT N=2^27 complete
+    GEMV M=1024, N=2^8 complete
+    GEMV M=1024, N=2^10 complete
+    GEMV M=1024, N=2^12 complete
+    GEMV M=1024, N=2^14 complete
+    GEMV M=1024, N=2^16 complete
+e7m24 (32 bit, 20 strategies)
+  uniform_0_1
+    DOT N=2^12 complete
+    DOT N=2^16 complete
+    DOT N=2^20 complete
+    DOT N=2^24 complete
+    DOT N=2^27 complete
+    GEMV M=1024, N=2^8 complete
+    GEMV M=1024, N=2^10 complete
+    GEMV M=1024, N=2^12 complete
+    GEMV M=1024, N=2^14 complete
+    GEMV M=1024, N=2^16 complete
+  normal_0_1
+    DOT N=2^12 complete
+    DOT N=2^16 complete
+    DOT N=2^20 complete
+    DOT N=2^24 complete
+    DOT N=2^27 complete
+    GEMV M=1024, N=2^8 complete
+    GEMV M=1024, N=2^10 complete
+    GEMV M=1024, N=2^12 complete
+    GEMV M=1024, N=2^14 complete
+    GEMV M=1024, N=2^16 complete
+e9m22 (32 bit, 20 strategies)
+  uniform_0_1
+    DOT N=2^12 complete
+    DOT N=2^16 complete
+    DOT N=2^20 complete
+    DOT N=2^24 complete
+    DOT N=2^27 complete
+    GEMV M=1024, N=2^8 complete
+    GEMV M=1024, N=2^10 complete
+    GEMV M=1024, N=2^12 complete
+    GEMV M=1024, N=2^14 complete
+    GEMV M=1024, N=2^16 complete
+  normal_0_1
+    DOT N=2^12 complete
+    DOT N=2^16 complete
+    DOT N=2^20 complete
+    DOT N=2^24 complete
+    DOT N=2^27 complete
+    GEMV M=1024, N=2^8 complete
+    GEMV M=1024, N=2^10 complete
+    GEMV M=1024, N=2^12 complete
+    GEMV M=1024, N=2^14 complete
+    GEMV M=1024, N=2^16 complete
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/021_unified_strategy_performance/run_20260815T171642Z/legacy_expanded/timing_samples_32bit.csv

@@ -1,0 +1,47 @@
+Arbitrary-width strategy benchmark: 16 bits
+GPU: NVIDIA H200 NVL (sm_90)
+uniform_0_1
+  e0m15 -> fp32
+  e1m14 -> fp32
+  e2m13 -> fp32
+  e3m12 -> fp32
+  e4m11 -> fp32
+  fp16_e5m10 -> fp32
+  e6m9 -> fp32
+  e7m8 -> fp32
+  bf16_e8m7 -> fp32
+  e0m15 -> fp64
+  e1m14 -> fp64
+  e2m13 -> fp64
+  e3m12 -> fp64
+  e4m11 -> fp64
+  fp16_e5m10 -> fp64
+  e6m9 -> fp64
+  e7m8 -> fp64
+  bf16_e8m7 -> fp64
+  e9m6 -> fp64
+  e10m5 -> fp64
+  e11m4 -> fp64
+normal_0_1
+  e0m15 -> fp32
+  e1m14 -> fp32
+  e2m13 -> fp32
+  e3m12 -> fp32
+  e4m11 -> fp32
+  fp16_e5m10 -> fp32
+  e6m9 -> fp32
+  e7m8 -> fp32
+  bf16_e8m7 -> fp32
+  e0m15 -> fp64
+  e1m14 -> fp64
+  e2m13 -> fp64
+  e3m12 -> fp64
+  e4m11 -> fp64
+  fp16_e5m10 -> fp64
+  e6m9 -> fp64
+  e7m8 -> fp64
+  bf16_e8m7 -> fp64
+  e9m6 -> fp64
+  e10m5 -> fp64
+  e11m4 -> fp64
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/021_unified_strategy_performance/run_20260815T171642Z/unified_core/full/timing_samples_16bit.csv

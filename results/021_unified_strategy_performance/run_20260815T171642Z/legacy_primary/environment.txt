@@ -1,0 +1,21 @@
+experiment=015_all_format_strategy_performance
+purpose=complete DOT and GEMV timing sweep for every non-E2M5/E3M4 decoder strategy
+started_utc=2026-08-15T18:40:34Z
+git_commit=8c3a5fa611e454657072a92d0a6b74819e65ff85
+git_status_begin
+?? results/021_unified_strategy_performance/run_20260815T165012Z/
+?? results/021_unified_strategy_performance/run_20260815T171642Z/
+?? results/021_unified_strategy_performance/slurm-443857.out
+?? results/021_unified_strategy_performance/slurm-443861.out
+git_status_end
+
+nvidia_smi
+name, uuid, pci.bus_id, driver_version, memory.total [MiB], ecc.mode.current, clocks.max.sm [MHz], clocks.max.memory [MHz], power.limit [W]
+NVIDIA H200 NVL, GPU-6c93a4ab-891b-9ae8-54bb-4f6cd72868ba, 00000001:8E:00.0, 610.43.02, 143771 MiB, Enabled, 1785 MHz, 3201 MHz, 600.00 W
+
+nvcc_version
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Tue_Dec_16_07:23:41_PM_PST_2025
+Cuda compilation tools, release 13.1, V13.1.115
+Build cuda_13.1.r13.1/compiler.37061995_0

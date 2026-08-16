@@ -1,0 +1,15 @@
+Arbitrary-width strategy benchmark: 2 bits
+GPU: NVIDIA H200 NVL (sm_90)
+uniform_0_1
+  raw baselines
+  e0m1 -> fp32
+  e1m0 -> fp32
+  e0m1 -> fp64
+  e1m0 -> fp64
+normal_0_1
+  raw baselines
+  e0m1 -> fp32
+  e1m0 -> fp32
+  e0m1 -> fp64
+  e1m0 -> fp64
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/021_unified_strategy_performance/run_20260815T171642Z/unified_core/full/raw_anchor_before_8bit.csv

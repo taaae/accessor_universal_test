@@ -1,0 +1,24 @@
+All-format decoder strategy benchmark
+GPU: NVIDIA H200 NVL (sm_90)
+e0m7 (8 bit, 33 strategies)
+  uniform_0_1
+    DOT N=2^10 complete
+    GEMV M=64, N=2^8 complete
+  normal_0_1
+    DOT N=2^10 complete
+    GEMV M=64, N=2^8 complete
+e6m1 (8 bit, 45 strategies)
+  uniform_0_1
+    DOT N=2^10 complete
+    GEMV M=64, N=2^8 complete
+  normal_0_1
+    DOT N=2^10 complete
+    GEMV M=64, N=2^8 complete
+e7m0 (8 bit, 33 strategies)
+  uniform_0_1
+    DOT N=2^10 complete
+    GEMV M=64, N=2^8 complete
+  normal_0_1
+    DOT N=2^10 complete
+    GEMV M=64, N=2^8 complete
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/021_unified_strategy_performance/run_20260815T171642Z/legacy_expanded/validation/timing_samples_8bit.csv
