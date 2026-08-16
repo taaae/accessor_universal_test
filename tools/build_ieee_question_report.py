@@ -412,14 +412,43 @@ def format_bits(rows: Sequence[dict[str, str]], compute: str) -> dict[str, tuple
     return result
 
 
+def best_any_layout(
+    rows: Sequence[dict[str, str]],
+    compute: str,
+    format_name: str,
+    kernel: str,
+    scope: str,
+) -> Selection | None:
+    """Fastest strategy for this format at this scope, dense or padded."""
+    selections = [
+        selection
+        for layout in LAYOUTS
+        if (
+            selection := best_selection(
+                rows, compute, format_name, kernel, layout, scope
+            )
+        )
+        is not None
+    ]
+    if not selections:
+        return None
+    return min(selections, key=lambda item: (item.score_ms, item.strategy_id))
+
+
 def faster_precise_peer(
     rows: Sequence[dict[str, str]],
     compute: str,
     format_name: str,
     kernel: str,
-    layout: str,
     scope: str,
 ) -> tuple[str, Selection] | None:
+    """Fastest more-precise type at this scope, across every layout it offers.
+
+    The current type's own row is layout-specific, but the bar it is measured
+    against is not: knowing that a padded strategy beats a wider type's padded
+    strategy is far less useful than knowing whether it beats anything that
+    wider type can do at the same access scope.
+    """
     inventory = format_bits(rows, compute)
     exponent_bits, mantissa_bits = inventory[format_name]
     peers = [
@@ -432,12 +461,29 @@ def faster_precise_peer(
     ]
     selections = []
     for candidate in peers:
-        selection = best_selection(
-            rows, compute, candidate, kernel, layout, scope
-        )
+        selection = best_any_layout(rows, compute, candidate, kernel, scope)
         if selection is not None:
             selections.append((candidate, selection))
-    return min(selections, key=lambda item: item[1].score_ms) if selections else None
+    return (
+        min(selections, key=lambda item: (item[1].score_ms, item[0]))
+        if selections
+        else None
+    )
+
+
+def padded_is_distinct(compute: str, format_name: str) -> bool:
+    """Whether a padded layout is a real alternative for this format.
+
+    A padded slot is the next 8/16/32-bit container, so byte- and word-aligned
+    widths pad by zero bits and their "padded" runs are the dense bytes under
+    another label.  Those pages drop every padded row, table, and subsection.
+    """
+    storage_bits = format_width(compute, format_name)
+    return padded_container_bits(storage_bits) > storage_bits
+
+
+def page_layouts(compute: str, format_name: str) -> tuple[str, ...]:
+    return LAYOUTS if padded_is_distinct(compute, format_name) else ("dense",)
 
 
 def row_label(kernel: str, layout: str, scope: str) -> str:
@@ -459,7 +505,7 @@ def usefulness_table(
     for kernel in KERNELS:
         baseline = baseline_score(rows, compute, kernel)
         for scope in SCOPES:
-            for layout in LAYOUTS:
+            for layout in page_layouts(compute, format_name):
                 selection = best_selection(
                     rows, compute, format_name, kernel, layout, scope
                 )
@@ -481,11 +527,10 @@ def precise_peer_table(
     body = []
     for kernel in KERNELS:
         for scope in SCOPES:
-            for layout in LAYOUTS:
+            # One bar per scope: the fastest more-precise type in any layout.
+            peer = faster_precise_peer(rows, compute, format_name, kernel, scope)
+            for layout in page_layouts(compute, format_name):
                 current = best_selection(
-                    rows, compute, format_name, kernel, layout, scope
-                )
-                peer = faster_precise_peer(
                     rows, compute, format_name, kernel, layout, scope
                 )
                 if current is None or peer is None:
@@ -515,6 +560,8 @@ def precise_peer_table(
 def padded_table(
     rows: Sequence[dict[str, str]], compute: str, format_name: str
 ) -> str:
+    if not padded_is_distinct(compute, format_name):
+        return ""
     body = []
     for kernel in KERNELS:
         for scope in SCOPES:
@@ -546,7 +593,7 @@ def same_bit_tables(
     tables = []
     for kernel in KERNELS:
         for scope in SCOPES:
-            for layout in LAYOUTS:
+            for layout in page_layouts(compute, format_name):
                 type_cells = []
                 timing_cells = []
                 for candidate in peers:
@@ -596,7 +643,7 @@ def packing_table(
 ) -> str:
     body = []
     for kernel in KERNELS:
-        for layout in LAYOUTS:
+        for layout in page_layouts(compute, format_name):
             scalar = best_selection(
                 rows, compute, format_name, kernel, layout, "x1"
             )
@@ -684,7 +731,7 @@ def explanations_section(
     blocks = []
     for kernel in KERNELS:
         for scope in SCOPES:
-            for layout in LAYOUTS:
+            for layout in page_layouts(compute, format_name):
                 selection = best_selection(
                     rows, compute, format_name, kernel, layout, scope
                 )
