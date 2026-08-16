@@ -103,3 +103,37 @@ code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
   .shell { width: min(100% - 20px, 1480px); }
   main { padding-top: 22px; }
 }
+
+/* Question-led unified IEEE pages. */
+.completed-section { border-style: solid; }
+.question-section { max-width: 1220px; }
+.question-table { width: min(100%, 680px); }
+.question-table th:first-child { width: auto; }
+.question-table td:last-child { font-variant-numeric: tabular-nums; font-weight: 650; text-align: right; white-space: nowrap; }
+.ratio-good { background: color-mix(in srgb, #1b8a4b 14%, transparent); color: #146b3a; }
+.ratio-bad { background: color-mix(in srgb, #c43838 14%, transparent); color: #a12626; }
+.ratio-neutral { color: var(--muted); }
+.question-table-grid { display: grid; gap: 24px 30px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.comparison-mini-table h3 { margin: 0 0 7px; }
+.comparison-mini-table .strategy-table { width: 100%; }
+.comparison-mini-table-wide { grid-column: 1 / -1; }
+.current-format { background: var(--active); box-shadow: inset 4px 0 0 var(--link); }
+.question-format-heading { font-size: clamp(1.55rem, 3vw, 2rem); margin: 0 0 24px; }
+.same-bit-transposed { min-width: 760px; table-layout: fixed; }
+.same-bit-transposed th, .same-bit-transposed td { text-align: center; width: auto; }
+.same-bit-transposed th:first-child { text-align: left; width: 112px; }
+.same-bit-transposed td { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.current-format-column { background: var(--active); box-shadow: inset 0 4px 0 var(--link); }
+.strategy-explanation-grid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.strategy-explanation { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+.strategy-explanation h3 { margin: 0 0 8px; }
+.strategy-explanation p { margin: 7px 0; }
+.strategy-pipeline { color: var(--muted); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .86rem; }
+.question-chart-frame { height: 760px; }
+@media (prefers-color-scheme: dark) {
+  .ratio-good { color: #82d8a5; }
+  .ratio-bad { color: #ff9b9b; }
+}
+@media (max-width: 760px) {
+  .question-table-grid, .strategy-explanation-grid { grid-template-columns: 1fr; }
+}

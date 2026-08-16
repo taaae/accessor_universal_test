@@ -3629,6 +3629,7 @@ kernel dot_packet(Accessor a, Accessor b, size_t N) {
 <section class="text-section">
 <h2>Shuffled FP6 access</h2>
 <p>Dense FP6 becomes convenient at 16 values: 16 × 6 bits = 96 bits = three aligned 32-bit words. Four threads can load those three words once, exchange them through registers, and decode four values each.</p>
+<p><strong>Note — current benchmark limitation.</strong> The present cooperative implementation reconstructs each of a consumer thread's four values separately and executes two shuffles per value. That is eight shuffles per input packet, or sixteen in DOT for the two input arrays, although the same two source words cover the consumer's complete 24-bit slice. A better implementation should load the three 32-bit words once per 16-value chunk, shuffle at most two words to each consumer once, assemble one local 24-bit packet, and extract its four six-bit codes in registers. This would reduce the intended shuffle count by about 4×, so the current measurements are not an upper bound on shuffled-access performance.</p>
 <div class="access-flow" role="img" aria-label="Sixteen six-bit values are densely packed into 96 bits, loaded as three 32-bit words by three lanes of a four-thread group, shuffled to every lane, and divided into four decoded values per thread.">
   <div class="flow-stage"><strong>16 × 6-bit values</strong><span>v0 … v15</span></div>
   <span class="flow-arrow" aria-hidden="true">→</span>

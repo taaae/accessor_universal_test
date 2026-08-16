@@ -32,3 +32,6 @@ uv run python tools/build_storage_performance_report.py \
 
 uv run python tools/build_precision_packing_report.py \
     --output-dir results/report
+
+uv run python tools/build_ieee_question_report.py \
+    --output-dir results/report
