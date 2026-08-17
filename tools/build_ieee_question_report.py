@@ -547,6 +547,88 @@ def distribution_split(
     return winner, faster, max(uniform, normal) / min(uniform, normal)
 
 
+CAUTION_FACTOR = 1.10
+
+
+def page_splits(
+    rows: Sequence[dict[str, str]], compute: str, format_name: str
+) -> list[tuple[str, str, tuple[Selection, str, float] | None]]:
+    return [
+        (kernel, scope, distribution_split(rows, compute, format_name, kernel, scope))
+        for kernel in KERNELS
+        for scope in SCOPES
+    ]
+
+
+def split_table(splits, heading: str) -> str:
+    body = []
+    for kernel, scope, split in splits:
+        if split is None:
+            cell = '<td class="ratio-neutral">—</td>'
+        else:
+            _, faster, factor = split
+            css = "ratio-bad" if factor > 1.05 else "ratio-neutral"
+            cell = f'<td class="{css}">{faster} faster by {factor:.3f}×</td>'
+        body.append(f"<tr><th>{case_label(kernel, scope)}</th>{cell}</tr>")
+    return (
+        '<div class="table-wrap"><table class="strategy-table">'
+        f"<thead><tr><th>Case</th><th>{html.escape(heading)}</th></tr></thead>"
+        f"<tbody>{''.join(body)}</tbody></table></div>"
+    )
+
+
+def worst_split(splits) -> float:
+    return max(
+        (split[2] for _, _, split in splits if split is not None), default=1.0
+    )
+
+
+def caution_section(
+    rows: Sequence[dict[str, str]], compute: str, format_name: str
+) -> str:
+    """Flag a page whose winner is materially distribution-sensitive."""
+    if base.format_is_untrusted(format_name):
+        return ""          # the red section already says something stronger
+    splits = page_splits(rows, compute, format_name)
+    worst = worst_split(splits)
+    if worst < CAUTION_FACTOR:
+        return ""
+    winner = best_any_layout(rows, compute, format_name, "dot", "best")
+    lookup = winner is not None and "lut" in winner.row["decoder"]
+    if lookup:
+        why = (
+            "The winning strategy decodes through a lookup table, and how well "
+            "that table stays in cache depends on how widely the input spreads "
+            "across it. U(0,1) values occupy a narrow band of codes and keep the "
+            "table hot; N(0,1) spans both signs and a wider magnitude range, "
+            "touching about twice as many table cache lines. The effect only "
+            "appears once the input is large enough to evict the table, and it "
+            "grows with the number of lookups each thread performs, which is why "
+            "the packed Best rows move most. Data spread wider than these test "
+            "distributions would slow the table further, so treat the headline "
+            "speedup as an upper bound rather than a settled figure."
+        )
+    else:
+        why = (
+            "The winning strategy is materially faster on one input distribution "
+            "than the other, so the single figure quoted elsewhere on this page "
+            "hides a real spread. Data shaped differently from these test "
+            "distributions may land anywhere inside it."
+        )
+    strategy = (
+        f"<p>Best strategy measured here: "
+        f"<code>{html.escape(winner.strategy_id)}</code>.</p>"
+        if winner
+        else ""
+    )
+    return f"""<section class="text-section caution-section">
+<h2>Why results are not 100% trustworthy</h2>
+{strategy}
+<p>{html.escape(why)}</p>
+{split_table(splits, "Distribution difference on the winning strategy")}
+</section>"""
+
+
 def untrusted_section(
     rows: Sequence[dict[str, str]], compute: str, format_name: str
 ) -> str:
@@ -594,19 +676,7 @@ def untrusted_section(
         f"<tr><th>{html.escape(name)}</th><td>{html.escape(value)}</td></tr>"
         for name, value in measure_rows
     )
-    split_rows = []
-    for kernel in KERNELS:
-        for scope in SCOPES:
-            split = distribution_split(rows, compute, format_name, kernel, scope)
-            if split is None:
-                cell = '<td class="ratio-neutral">—</td>'
-            else:
-                _, faster, factor = split
-                css = "ratio-bad" if factor > 1.05 else "ratio-neutral"
-                cell = f'<td class="{css}">{faster} faster by {factor:.3f}×</td>'
-            split_rows.append(
-                f"<tr><th>{case_label(kernel, scope)}</th>{cell}</tr>"
-            )
+    splits = page_splits(rows, compute, format_name)
     strategy = (
         f"<p>Best strategy measured here: "
         f"<code>{html.escape(winner.strategy_id)}</code>.</p>"
@@ -619,9 +689,7 @@ def untrusted_section(
 {strategy}
 <div class="table-wrap"><table class="strategy-table">
 <thead><tr><th>Measure</th><th>Value</th></tr></thead><tbody>{measures}</tbody></table></div>
-<div class="table-wrap"><table class="strategy-table">
-<thead><tr><th>Case</th><th>Distribution difference on the winning strategy</th></tr></thead>
-<tbody>{''.join(split_rows)}</tbody></table></div>
+{split_table(splits, "Distribution difference on the winning strategy")}
 </section>"""
 
 
@@ -1210,6 +1278,7 @@ def page_body(
         + f'<h2 class="question-format-heading">'
         f"{html.escape(base.label(format_name))}</h2>"
         + untrusted_section(rows, compute, format_name)
+        + caution_section(rows, compute, format_name)
         + usefulness_table(rows, compute, format_name)
         + precise_peer_table(rows, compute, format_name)
         + padded_table(rows, compute, format_name)
@@ -1233,7 +1302,9 @@ def read_manifest(path: Path) -> dict[str, str]:
     return values
 
 
-def update_overview_cards(output_dir: Path, compute: str) -> None:
+def update_overview_cards(
+    output_dir: Path, compute: str, caution: set[str] | None = None
+) -> None:
     overview = output_dir / base.compute_conversion_overview_filename(compute)
     document = overview.read_text(encoding="utf-8")
     for format_name in compute_formats(compute):
@@ -1243,10 +1314,15 @@ def update_overview_cards(output_dir: Path, compute: str) -> None:
             r'(?P<label><strong>.*?</strong>)<span>.*?</span></a>'
         )
         untrusted = base.format_is_untrusted(format_name)
-        marker = ' data-untrusted="true"' if untrusted else ""
+        cautioned = bool(caution) and format_name in caution
+        marker = ' data-untrusted="true"' if untrusted else (
+            ' data-caution="true"' if cautioned else ""
+        )
         caption = (
             "Data does not fit this format -- see the page"
             if untrusted
+            else "Distribution-sensitive -- see the page"
+            if cautioned
             else "Unified H200 question report"
         )
         replacement = (
@@ -1371,6 +1447,7 @@ def main() -> None:
     interactive.mkdir(parents=True, exist_ok=True)
     page_count = 0
     for compute in COMPUTES:
+        caution_formats: set[str] = set()
         formats = compute_formats(compute)
         for index, format_name in enumerate(formats, start=1):
             print(
@@ -1415,7 +1492,11 @@ def main() -> None:
             )
             (output_dir / filename).write_text(document, encoding="utf-8")
             page_count += 1
-        update_overview_cards(output_dir, compute)
+            if not base.format_is_untrusted(format_name) and worst_split(
+                page_splits(rows, compute, format_name)
+            ) >= CAUTION_FACTOR:
+                caution_formats.add(format_name)
+        update_overview_cards(output_dir, compute, caution_formats)
 
     # Rewrite the block rather than skipping it, so CSS edits reach built reports.
     css_path = output_dir / "report.css"

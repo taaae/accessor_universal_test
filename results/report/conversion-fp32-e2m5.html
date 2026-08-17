@@ -17,9 +17,7 @@
 <p>Best strategy measured here: <code>padded/thread_packet/x8/full_lut_shared</code>.</p>
 <div class="table-wrap"><table class="strategy-table">
 <thead><tr><th>Measure</th><th>Value</th></tr></thead><tbody><tr><th>Smallest normal value</th><td>1</td></tr><tr><th>Subnormal share, U(0,1)</th><td>100.0%</td></tr><tr><th>Subnormal share, N(0,1)</th><td>68.3%</td></tr></tbody></table></div>
-<div class="table-wrap"><table class="strategy-table">
-<thead><tr><th>Case</th><th>Distribution difference on the winning strategy</th></tr></thead>
-<tbody><tr><th>DOT x1</th><td class="ratio-neutral">U(0,1) faster by 1.009×</td></tr><tr><th>DOT Best</th><td class="ratio-bad">U(0,1) faster by 1.168×</td></tr><tr><th>GEMV x1</th><td class="ratio-neutral">U(0,1) faster by 1.037×</td></tr><tr><th>GEMV Best</th><td class="ratio-bad">U(0,1) faster by 1.188×</td></tr></tbody></table></div>
+<div class="table-wrap"><table class="strategy-table"><thead><tr><th>Case</th><th>Distribution difference on the winning strategy</th></tr></thead><tbody><tr><th>DOT x1</th><td class="ratio-neutral">U(0,1) faster by 1.009×</td></tr><tr><th>DOT Best</th><td class="ratio-bad">U(0,1) faster by 1.168×</td></tr><tr><th>GEMV x1</th><td class="ratio-neutral">U(0,1) faster by 1.037×</td></tr><tr><th>GEMV Best</th><td class="ratio-bad">U(0,1) faster by 1.188×</td></tr></tbody></table></div>
 </section><section class="text-section question-section">
 <h2>Is this type even useful?<button class="question-note-toggle" type="button" aria-expanded="false" aria-controls="note-is-this-type-even-useful" aria-label="What exactly is compared">*</button></h2>
 <p class="question-note" id="note-is-this-type-even-useful" hidden>Every figure here and in the sections below is a geometric mean over both input distributions at the two largest N. Each row is the fastest strategy for that kernel and access scope, dense or padded; the baseline is raw FP32 read one value per thread, not its fastest packed variant.</p>

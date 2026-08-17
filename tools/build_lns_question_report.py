@@ -144,7 +144,11 @@ def geometric_mean(values: Iterable[float]) -> float:
     return math.exp(statistics.fmean(math.log(value) for value in positive))
 
 
-def strategy_score(rows: Sequence[dict[str, str]], field: str = "median_ms") -> float:
+def strategy_score(
+    rows: Sequence[dict[str, str]],
+    field: str = "median_ms",
+    distributions: Sequence[str] = DISTRIBUTIONS,
+) -> float:
     """Geometric mean over both distributions at the two largest N."""
     sizes = sorted({int(row["N"]) for row in rows})
     if len(sizes) < 2:
@@ -153,9 +157,9 @@ def strategy_score(rows: Sequence[dict[str, str]], field: str = "median_ms") -> 
     values = [
         float(row[field])
         for row in rows
-        if int(row["N"]) in large and row["distribution"] in DISTRIBUTIONS
+        if int(row["N"]) in large and row["distribution"] in distributions
     ]
-    expected = len(large) * len(DISTRIBUTIONS)
+    expected = len(large) * len(distributions)
     if len(values) != expected:
         raise ValueError(f"incomplete aggregate: {len(values)} of {expected}")
     return geometric_mean(values)
@@ -426,6 +430,90 @@ def lns_overview_filename(compute: str) -> str:
 # --------------------------------------------------------------------------
 # Sections
 # --------------------------------------------------------------------------
+
+
+CAUTION_FACTOR = 1.10
+
+
+def distribution_split(
+    index: LnsIndex, compute: str, format_name: str, kernel: str, scope: str
+) -> tuple[Selection, str, float] | None:
+    winner = best_selection(index, compute, format_name, kernel, scope)
+    if winner is None:
+        return None
+    rows = [
+        row
+        for row in index.by_case.get((compute, format_name, kernel), ())
+        if row["strategy_id"] == winner.strategy_id
+    ]
+    uniform = strategy_score(rows, "median_ms", ("uniform_0_1",))
+    normal = strategy_score(rows, "median_ms", ("normal_0_1",))
+    faster = "U(0,1)" if uniform < normal else "N(0,1)"
+    return winner, faster, max(uniform, normal) / min(uniform, normal)
+
+
+def page_splits(index: LnsIndex, compute: str, format_name: str):
+    return [
+        (kernel, scope, distribution_split(index, compute, format_name, kernel, scope))
+        for kernel in KERNELS
+        for scope in SCOPES
+    ]
+
+
+def worst_split(splits) -> float:
+    return max(
+        (split[2] for _, _, split in splits if split is not None), default=1.0
+    )
+
+
+def caution_section(index: LnsIndex, compute: str, format_name: str) -> str:
+    splits = page_splits(index, compute, format_name)
+    if worst_split(splits) < CAUTION_FACTOR:
+        return ""
+    winner = best_selection(index, compute, format_name, "dot", "best")
+    lookup = winner is not None and "lut" in winner.row["decoder"]
+    if lookup:
+        why = (
+            "The winning strategy decodes through a lookup table, and how well "
+            "that table stays in cache depends on how widely the input spreads "
+            "across it. U(0,1) values occupy a narrow band of codes and keep the "
+            "table hot; N(0,1) spans both signs and a wider magnitude range, "
+            "touching about twice as many table cache lines. The effect only "
+            "appears once the input is large enough to evict the table, and it "
+            "grows with the number of lookups each thread performs, which is why "
+            "the packed Best rows move most. Data spread wider than these test "
+            "distributions would slow the table further, so treat the headline "
+            "speedup as an upper bound rather than a settled figure."
+        )
+    else:
+        why = (
+            "The winning strategy is materially faster on one input distribution "
+            "than the other, so the single figure quoted elsewhere on this page "
+            "hides a real spread."
+        )
+    body = []
+    for kernel, scope, split in splits:
+        if split is None:
+            cell = '<td class="ratio-neutral">—</td>'
+        else:
+            _, faster, factor = split
+            css = "ratio-bad" if factor > 1.05 else "ratio-neutral"
+            cell = f'<td class="{css}">{faster} faster by {factor:.3f}×</td>'
+        body.append(f"<tr><th>{case_label(kernel, scope)}</th>{cell}</tr>")
+    strategy = (
+        f"<p>Best strategy measured here: "
+        f"<code>{html.escape(winner.strategy_id)}</code>.</p>"
+        if winner
+        else ""
+    )
+    return f"""<section class="text-section caution-section">
+<h2>Why results are not 100% trustworthy</h2>
+{strategy}
+<p>{html.escape(why)}</p>
+<div class="table-wrap"><table class="strategy-table">
+<thead><tr><th>Case</th><th>Distribution difference on the winning strategy</th></tr></thead>
+<tbody>{''.join(body)}</tbody></table></div>
+</section>"""
 
 
 def usefulness_table(index: LnsIndex, compute: str, format_name: str) -> str:
@@ -1143,6 +1231,7 @@ def page_body(
         '<span class="status-badge">H200 measured</span>'
         f"<strong>Experiment 022 · {html.escape(run_dir.name)}</strong></section>"
         + f'<h2 class="question-format-heading">{lns_label(index, format_name)}</h2>'
+        + caution_section(index, compute, format_name)
         + usefulness_table(index, compute, format_name)
         + precise_peer_table(index, compute, format_name)
         + ieee_comparison_table(index, ieee, compute, format_name)
@@ -1172,10 +1261,19 @@ def overview_body(
             filename = lns_page_filename(compute, format_name)
             layout = index.layouts[format_name]
             if format_name in built:
+                cautioned = worst_split(
+                    page_splits(index, compute, format_name)
+                ) >= CAUTION_FACTOR
+                marker = ' data-caution="true"' if cautioned else ""
+                caption = (
+                    "distribution-sensitive · see the page"
+                    if cautioned
+                    else "question report"
+                )
                 cards.append(
-                    f'<a class="report-link" href="{html.escape(filename)}">'
+                    f'<a class="report-link"{marker} href="{html.escape(filename)}">'
                     f"<strong>{lns_label(index, format_name)}</strong>"
-                    f"<span>{layout.ieee_label} allocation · question report</span></a>"
+                    f"<span>{layout.ieee_label} allocation · {caption}</span></a>"
                 )
             else:
                 cards.append(

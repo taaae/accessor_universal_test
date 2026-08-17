@@ -4164,6 +4164,11 @@ pre code { font-size: 0.9rem; }
 .untrusted-section p { max-width: 78ch; }
 .untrusted-section .strategy-table { margin-bottom: 14px; width: min(100%, 560px); }
 .untrusted-verdict { color: #a12626; font-weight: 650; }
+.caution-section { background: color-mix(in srgb, #d4a017 8%, transparent); border-left: 4px solid #b8860b; margin: 0 0 24px; padding: 14px 18px; }
+.caution-section h2 { color: #8a6100; margin-top: 0; }
+.caution-section p { max-width: 78ch; }
+.caution-section .strategy-table { margin-bottom: 0; width: min(100%, 620px); }
+.report-link[data-caution="true"] { background: color-mix(in srgb, #d4a017 16%, transparent); }
 .strategy-table { border-collapse: collapse; width: min(100%, 980px); }
 .strategy-table th, .strategy-table td { border-bottom: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
 .strategy-table th { white-space: nowrap; width: 120px; }
