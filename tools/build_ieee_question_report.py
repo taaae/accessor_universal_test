@@ -616,12 +616,45 @@ def best_branchless(
     return min(ranked, key=lambda s: (s.score_ms, s.strategy_id)) if ranked else None
 
 
+BRANCHY_GAIN_FACTOR = 1.20
+
+
+def branchy_gains(
+    rows: Sequence[dict[str, str]], compute: str, format_name: str
+) -> list[float | None]:
+    """Per case, what the winner gains over the best branchless strategy.
+
+    ``None`` where the format offers no value-independent strategy at all.
+    """
+    gains: list[float | None] = []
+    for kernel in KERNELS:
+        for scope in SCOPES:
+            winner = best_any_layout(rows, compute, format_name, kernel, scope)
+            alternative = best_branchless(rows, compute, format_name, kernel, scope)
+            if winner is None:
+                continue
+            gains.append(
+                None if alternative is None else alternative.score_ms / winner.score_ms
+            )
+    return gains
+
+
 def page_tier(rows: Sequence[dict[str, str]], compute: str, format_name: str) -> str:
     """red, caution-subnormal, caution, or clean."""
-    subnormal = has_subnormal_data(format_name)
-    if subnormal:
-        branchy = bool(winning_decoders(rows, compute, format_name) & BRANCHY_DECODERS)
-        return "red" if branchy else "caution-subnormal"
+    if has_subnormal_data(format_name):
+        if not winning_decoders(rows, compute, format_name) & BRANCHY_DECODERS:
+            return "caution-subnormal"
+        # A branchy winner only condemns the page when branching cannot be
+        # escaped, or escaping it costs real time.  Where a value-independent
+        # strategy is available at nearly the same speed the result does not
+        # actually rest on the branch.
+        gains = branchy_gains(rows, compute, format_name)
+        if any(gain is None for gain in gains):
+            return "red"
+        finite = [gain for gain in gains if gain is not None]
+        if finite and statistics.median(finite) >= BRANCHY_GAIN_FACTOR:
+            return "red"
+        return "caution-subnormal"
     if worst_split(page_splits(rows, compute, format_name)) >= CAUTION_FACTOR:
         return "caution"
     return "clean"
@@ -750,8 +783,9 @@ def trust_section(
             f"value is {smallest_normal(exponent_bits):.6g} and "
             f"{100 * shares[0]:.1f}% of U(0,1) and {100 * shares[1]:.1f}% of "
             "N(0,1) decode through the subnormal path. The fastest strategy "
-            "here branches on that path, so these timings measure how the input "
-            "happens to be distributed as much as they measure the format."
+            "here branches on that path, and no value-independent alternative "
+            "is available at comparable speed, so these timings measure how the "
+            "input happens to be distributed as much as they measure the format."
         )
         return f"""<section class="text-section untrusted-section">
 <h2>Why the experiment is not trustworthy</h2>
@@ -764,20 +798,39 @@ def trust_section(
 
     if tier == "caution-subnormal":
         shares = subnormal_shares(format_name)
-        why = (
+        branchy = bool(
+            winning_decoders(rows, compute, format_name) & BRANCHY_DECODERS
+        )
+        coverage = (
             f"{100 * shares[0]:.1f}% of U(0,1) and {100 * shares[1]:.1f}% of "
             "N(0,1) fall below this format's smallest normal value, so the "
-            "benchmark stores data the format can barely represent. The winning "
-            "strategy is value independent, so the timings themselves stand, but "
-            "they describe a format being used outside its range and should not "
-            "be read as a recommendation."
+            "benchmark stores data the format can barely represent."
         )
+        if branchy:
+            why = (
+                f"{coverage} A winning strategy here does branch on that path, "
+                "but a value-independent strategy is available at nearly the "
+                "same speed, as the last table shows, so the result does not "
+                "actually rest on the branch. The timings stand; they describe "
+                "a format used outside its range and should not be read as a "
+                "recommendation."
+            )
+            extra = branchy_gain_table(rows, compute, format_name)
+        else:
+            why = (
+                f"{coverage} The winning strategy is value independent, so the "
+                "timings themselves stand, but they describe a format being "
+                "used outside its range and should not be read as a "
+                "recommendation."
+            )
+            extra = ""
         return f"""<section class="text-section caution-section">
 <h2>Why results are not 100% trustworthy</h2>
 {strategy}
 <p>{html.escape(why)}</p>
 {subnormal_table(format_name)}
 {split}
+{extra}
 </section>"""
 
     why = (
