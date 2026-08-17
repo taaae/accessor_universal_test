@@ -4169,6 +4169,7 @@ pre code { font-size: 0.9rem; }
 .caution-section p { max-width: 78ch; }
 .caution-section .strategy-table { margin-bottom: 0; width: min(100%, 620px); }
 .report-link[data-caution="true"] { background: color-mix(in srgb, #d4a017 16%, transparent); }
+.conversion-format-links a[data-caution="true"] { background: color-mix(in srgb, #d4a017 22%, transparent); border-radius: 4px; }
 .strategy-table { border-collapse: collapse; width: min(100%, 980px); }
 .strategy-table th, .strategy-table td { border-bottom: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
 .strategy-table th { white-space: nowrap; width: 120px; }

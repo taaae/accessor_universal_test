@@ -1302,6 +1302,55 @@ def read_manifest(path: Path) -> dict[str, str]:
     return values
 
 
+def mark_caution_navigation(
+    output_dir: Path, compute: str, caution: set[str]
+) -> int:
+    """Tag the subnav links of distribution-sensitive formats.
+
+    The navigation is rendered by the base report, which has no access to the
+    timing data, so the marker is applied afterwards across every page that
+    carries the conversion subnav -- format pages and the overview alike.
+    """
+    if not caution:
+        return 0
+    targets = [
+        base.compute_conversion_format_filename(compute, format_name)
+        for format_name in caution
+    ]
+    touched = 0
+    pages = [output_dir / base.compute_conversion_overview_filename(compute)]
+    pages += [
+        output_dir / base.compute_conversion_format_filename(compute, name)
+        for name in compute_formats(compute)
+    ]
+    for page in pages:
+        if not page.is_file():
+            continue
+        document = page.read_text(encoding="utf-8")
+        match = re.search(
+            r'<nav class="subnav conversion-subnav".*?</nav>', document, re.S
+        )
+        if match is None:
+            continue
+        # Confine the rewrite to the subnav: the same-bit comparison tables
+        # link to these very pages, and a document-wide replace would tag
+        # those cells too.
+        navigation = match.group(0)
+        updated = navigation
+        for filename in targets:
+            updated = updated.replace(
+                f'<a href="{filename}"',
+                f'<a data-caution="true" href="{filename}"',
+            )
+        if updated != navigation:
+            page.write_text(
+                document[: match.start()] + updated + document[match.end() :],
+                encoding="utf-8",
+            )
+            touched += 1
+    return touched
+
+
 def update_overview_cards(
     output_dir: Path, compute: str, caution: set[str] | None = None
 ) -> None:
@@ -1331,8 +1380,11 @@ def update_overview_cards(
         )
         document, count = pattern.subn(replacement, document, count=1)
         if count == 0:
+            # A rebuilt card may already carry a data-untrusted or data-caution
+            # marker between the class and the href, so tolerate any attributes
+            # rather than only matching this builder's previous exact output.
             existing_pattern = re.compile(
-                rf'<a class="report-link" href="{re.escape(filename)}">'
+                rf'<a class="report-link"[^>]*?href="{re.escape(filename)}">'
                 r'(?P<label><strong>.*?</strong>)<span>.*?</span></a>'
             )
             document, count = existing_pattern.subn(
@@ -1497,6 +1549,12 @@ def main() -> None:
             ) >= CAUTION_FACTOR:
                 caution_formats.add(format_name)
         update_overview_cards(output_dir, compute, caution_formats)
+        marked = mark_caution_navigation(output_dir, compute, caution_formats)
+        print(
+            f"  {compute}: {len(caution_formats)} distribution-sensitive formats "
+            f"marked across {marked} pages",
+            flush=True,
+        )
 
     # Rewrite the block rather than skipping it, so CSS edits reach built reports.
     css_path = output_dir / "report.css"

@@ -195,6 +195,7 @@ class LnsIndex:
             self.raw_by_case[(row["arithmetic_type"], row["kernel"])].append(row)
         self.selections: dict[tuple, Selection | None] = {}
         self.baselines: dict[tuple[str, str], float] = {}
+        self.caution: dict[str, set[str]] = {}
 
     def formats(self, compute: str) -> tuple[str, ...]:
         """Formats measured with this arithmetic, narrow to wide then by range."""
@@ -1169,6 +1170,20 @@ def chart_sections(index: LnsIndex, compute: str, format_name: str) -> str:
 # --------------------------------------------------------------------------
 
 
+def caution_formats(index: LnsIndex, compute: str) -> set[str]:
+    """Memoised: the navigation asks for this once per link on every page."""
+    cached = index.caution.get(compute)
+    if cached is None:
+        cached = {
+            format_name
+            for format_name in index.formats(compute)
+            if worst_split(page_splits(index, compute, format_name))
+            >= CAUTION_FACTOR
+        }
+        index.caution[compute] = cached
+    return cached
+
+
 def lns_navigation(index: LnsIndex, compute: str, current: str) -> str:
     """Mirrors the IEEE conversion subnav so both families share one layout.
 
@@ -1192,8 +1207,13 @@ def lns_navigation(index: LnsIndex, compute: str, current: str) -> str:
             active = (
                 ' aria-current="page" class="active"' if filename == current else ""
             )
+            mark = (
+                ' data-caution="true"'
+                if format_name in caution_formats(index, compute)
+                else ""
+            )
             links.append(
-                f'<a href="{html.escape(filename)}"{active}>'
+                f'<a href="{html.escape(filename)}"{active}{mark}>'
                 f"{lns_label(index, format_name)}</a>"
             )
         group_id = f"lns-{compute}-formats-{bits}-bit"
@@ -1261,9 +1281,7 @@ def overview_body(
             filename = lns_page_filename(compute, format_name)
             layout = index.layouts[format_name]
             if format_name in built:
-                cautioned = worst_split(
-                    page_splits(index, compute, format_name)
-                ) >= CAUTION_FACTOR
+                cautioned = format_name in caution_formats(index, compute)
                 marker = ' data-caution="true"' if cautioned else ""
                 caption = (
                     "distribution-sensitive · see the page"
