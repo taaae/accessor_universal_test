@@ -238,7 +238,11 @@ def geometric_mean(values: Iterable[float]) -> float:
     return math.exp(statistics.fmean(math.log(value) for value in positive))
 
 
-def strategy_score(rows: Sequence[dict[str, str]], kernel: str) -> float:
+def strategy_score(
+    rows: Sequence[dict[str, str]],
+    kernel: str,
+    distributions: Sequence[str] = DISTRIBUTIONS,
+) -> float:
     sizes = sorted({int(row["N"]) for row in rows})
     if len(sizes) < 2:
         raise ValueError("strategy does not contain two N values")
@@ -247,9 +251,9 @@ def strategy_score(rows: Sequence[dict[str, str]], kernel: str) -> float:
         float(row["median_ms"])
         for row in rows
         if int(row["N"]) in large_sizes
-        and row["distribution"] in DISTRIBUTIONS
+        and row["distribution"] in distributions
     ]
-    expected = len(large_sizes) * len(DISTRIBUTIONS)
+    expected = len(large_sizes) * len(distributions)
     if len(values) != expected:
         raise ValueError(
             f"incomplete {kernel} large-N aggregate: {len(values)} of {expected}"
@@ -496,6 +500,129 @@ def ratio_cell(value: float | None) -> str:
         return '<td class="ratio-neutral">—</td>'
     css = "ratio-good" if value > 1.0 else "ratio-bad"
     return f'<td class="{css}">{value:.3f}×</td>'
+
+
+def smallest_normal(exponent_bits: int) -> float | None:
+    """Smallest value with a non-zero exponent field; None when E is zero."""
+    if exponent_bits == 0:
+        return None
+    bias = (1 << (exponent_bits - 1)) - 1
+    return 2.0 ** (1 - bias)
+
+
+def largest_finite(exponent_bits: int, mantissa_bits: int) -> float:
+    if exponent_bits == 0:
+        return 1.0 - 2.0 ** -mantissa_bits
+    bias = (1 << (exponent_bits - 1)) - 1
+    top = (1 << exponent_bits) - 2          # all-ones is reserved
+    return 2.0 ** (top - bias) * (2.0 - 2.0 ** -mantissa_bits)
+
+
+def share_below(threshold: float, distribution: str) -> float:
+    """Fraction of the distribution whose magnitude falls under a threshold."""
+    if distribution == "uniform_0_1":
+        return min(max(threshold, 0.0), 1.0)
+    return math.erf(threshold / math.sqrt(2.0))
+
+
+def distribution_split(
+    rows: Sequence[dict[str, str]],
+    compute: str,
+    format_name: str,
+    kernel: str,
+    scope: str,
+) -> tuple[Selection, str, float] | None:
+    """The winner, then which distribution it favours and by how much."""
+    winner = best_any_layout(rows, compute, format_name, kernel, scope)
+    if winner is None:
+        return None
+    by_strategy = [
+        row
+        for row in format_rows(rows, compute, format_name, kernel)
+        if row["strategy_id"] == winner.strategy_id
+    ]
+    uniform = strategy_score(by_strategy, kernel, ("uniform_0_1",))
+    normal = strategy_score(by_strategy, kernel, ("normal_0_1",))
+    faster = "U(0,1)" if uniform < normal else "N(0,1)"
+    return winner, faster, max(uniform, normal) / min(uniform, normal)
+
+
+def untrusted_section(
+    rows: Sequence[dict[str, str]], compute: str, format_name: str
+) -> str:
+    """Why an E0/E1/E2 page's numbers should not be read as a format comparison."""
+    if not base.format_is_untrusted(format_name):
+        return ""
+    exponent_bits, mantissa_bits = base.format_layout_bits(format_name)
+    winner = best_any_layout(rows, compute, format_name, "dot", "best")
+    smallest = smallest_normal(exponent_bits)
+
+    if smallest is None:
+        largest = largest_finite(exponent_bits, mantissa_bits)
+        reason = (
+            f"{base.label(format_name)} carries no exponent, so it is fixed point "
+            f"on [0, {largest:.6g}]. Every input above that clamps to the maximum: "
+            f"{100 * (1 - share_below(largest, 'uniform_0_1')):.1f}% of U(0,1) and "
+            f"{100 * (1 - share_below(largest, 'normal_0_1')):.1f}% of N(0,1). The "
+            "kernels below therefore run on data the format cannot represent."
+        )
+        measure_rows = [
+            ("Largest representable value", f"{largest:.6g}"),
+            ("Saturated share, U(0,1)",
+             f"{100 * (1 - share_below(largest, 'uniform_0_1')):.1f}%"),
+            ("Saturated share, N(0,1)",
+             f"{100 * (1 - share_below(largest, 'normal_0_1')):.1f}%"),
+        ]
+    else:
+        share_u = 100 * share_below(smallest, "uniform_0_1")
+        share_n = 100 * share_below(smallest, "normal_0_1")
+        reason = (
+            f"{base.label(format_name)} has only {exponent_bits} exponent "
+            f"bit{'s' if exponent_bits != 1 else ''}, putting its smallest normal "
+            f"value at {smallest:.6g}. Almost every input is therefore subnormal: "
+            f"{share_u:.1f}% of U(0,1) and {share_n:.1f}% of N(0,1). The timings "
+            "below describe the subnormal path on data the format cannot really "
+            "hold, not a fair comparison against wider formats."
+        )
+        measure_rows = [
+            ("Smallest normal value", f"{smallest:.6g}"),
+            ("Subnormal share, U(0,1)", f"{share_u:.1f}%"),
+            ("Subnormal share, N(0,1)", f"{share_n:.1f}%"),
+        ]
+
+    measures = "".join(
+        f"<tr><th>{html.escape(name)}</th><td>{html.escape(value)}</td></tr>"
+        for name, value in measure_rows
+    )
+    split_rows = []
+    for kernel in KERNELS:
+        for scope in SCOPES:
+            split = distribution_split(rows, compute, format_name, kernel, scope)
+            if split is None:
+                cell = '<td class="ratio-neutral">—</td>'
+            else:
+                _, faster, factor = split
+                css = "ratio-bad" if factor > 1.05 else "ratio-neutral"
+                cell = f'<td class="{css}">{faster} faster by {factor:.3f}×</td>'
+            split_rows.append(
+                f"<tr><th>{case_label(kernel, scope)}</th>{cell}</tr>"
+            )
+    strategy = (
+        f"<p>Best strategy measured here: "
+        f"<code>{html.escape(winner.strategy_id)}</code>.</p>"
+        if winner
+        else ""
+    )
+    return f"""<section class="text-section untrusted-section">
+<h2>Why the experiment is not trustworthy</h2>
+<p class="untrusted-verdict">{html.escape(reason)}</p>
+{strategy}
+<div class="table-wrap"><table class="strategy-table">
+<thead><tr><th>Measure</th><th>Value</th></tr></thead><tbody>{measures}</tbody></table></div>
+<div class="table-wrap"><table class="strategy-table">
+<thead><tr><th>Case</th><th>Distribution difference on the winning strategy</th></tr></thead>
+<tbody>{''.join(split_rows)}</tbody></table></div>
+</section>"""
 
 
 def usefulness_table(
@@ -1082,6 +1209,7 @@ def page_body(
         f"<strong>Experiment 021 · {html.escape(run_dir.name)}</strong></section>"
         + f'<h2 class="question-format-heading">'
         f"{html.escape(base.label(format_name))}</h2>"
+        + untrusted_section(rows, compute, format_name)
         + usefulness_table(rows, compute, format_name)
         + precise_peer_table(rows, compute, format_name)
         + padded_table(rows, compute, format_name)
@@ -1114,9 +1242,16 @@ def update_overview_cards(output_dir: Path, compute: str) -> None:
             rf'<a class="report-link pending-report-link" href="{re.escape(filename)}">'
             r'(?P<label><strong>.*?</strong>)<span>.*?</span></a>'
         )
+        untrusted = base.format_is_untrusted(format_name)
+        marker = ' data-untrusted="true"' if untrusted else ""
+        caption = (
+            "Data does not fit this format -- see the page"
+            if untrusted
+            else "Unified H200 question report"
+        )
         replacement = (
-            f'<a class="report-link" href="{filename}">'
-            r'\g<label><span>Unified H200 question report</span></a>'
+            f'<a class="report-link"{marker} href="{filename}">'
+            r'\g<label>' + f"<span>{caption}</span></a>"
         )
         document, count = pattern.subn(replacement, document, count=1)
         if count == 0:

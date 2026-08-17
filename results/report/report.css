@@ -77,6 +77,12 @@ pre code { font-size: 0.9rem; }
 .question-note-toggle[aria-expanded="true"] { color: var(--fg); }
 .question-note { background: var(--surface); border-left: 3px solid var(--border); color: var(--muted); margin: 0 0 14px; max-width: 78ch; padding: 10px 14px; }
 .question-note[hidden] { display: none; }
+[data-untrusted="true"] { text-decoration: line-through; text-decoration-thickness: 1px; }
+.untrusted-section { background: color-mix(in srgb, #c43838 8%, transparent); border-left: 4px solid #c43838; margin: 0 0 24px; padding: 14px 18px; }
+.untrusted-section h2 { color: #a12626; margin-top: 0; }
+.untrusted-section p { max-width: 78ch; }
+.untrusted-section .strategy-table { margin-bottom: 14px; width: min(100%, 560px); }
+.untrusted-verdict { color: #a12626; font-weight: 650; }
 .strategy-table { border-collapse: collapse; width: min(100%, 980px); }
 .strategy-table th, .strategy-table td { border-bottom: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
 .strategy-table th { white-space: nowrap; width: 120px; }
@@ -141,4 +147,15 @@ code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
 }
 @media (max-width: 760px) {
   .question-table-grid, .strategy-explanation-grid { grid-template-columns: 1fr; }
+}
+
+/* Question-led LNS pages. */
+.lns-match-note { color: var(--muted); margin: 0 0 14px; max-width: 70ch; }
+/* The IEEE subnav pins its overview link across 17 width groups; LNS has
+   fewer, so the count arrives as a custom property on the nav element. */
+.lns-subnav .conversion-overview-link { grid-row: 1 / span var(--lns-format-groups, 17); }
+.lns-subnav .conversion-format-group-label { flex-basis: 54px; }
+@media (max-width: 760px) {
+  .lns-subnav .conversion-overview-link { grid-row: auto; justify-self: start; }
+  .lns-subnav .conversion-format-group-label { flex-basis: auto; }
 }

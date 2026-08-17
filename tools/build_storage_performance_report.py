@@ -553,6 +553,19 @@ def format_layout_bits(name: str) -> tuple[int, int]:
     return int(match.group(1)), int(match.group(2))
 
 
+# Below three exponent bits an IEEE-like format cannot hold the benchmark's
+# input: E0 is fixed point in [0,1) and clamps a third of N(0,1), while E1 and
+# E2 put their smallest normal at 2.0 and 1.0, so nearly every value decodes
+# through the subnormal path.  Their timings describe one code path on data the
+# format cannot represent, so the pages say so and the links are struck through.
+UNTRUSTED_MAX_EXPONENT_BITS = 2
+
+
+def format_is_untrusted(name: str) -> bool:
+    exponent_bits, _ = format_layout_bits(name)
+    return exponent_bits <= UNTRUSTED_MAX_EXPONENT_BITS
+
+
 def format_total_bits(name: str) -> int:
     exponent_bits, mantissa_bits = format_layout_bits(name)
     return 1 + exponent_bits + mantissa_bits
@@ -3198,8 +3211,12 @@ def conversion_navigation(current: str, compute: str = "fp64") -> str:
                 if filename == current
                 else ""
             )
+            untrusted = (
+                ' data-untrusted="true"' if format_is_untrusted(format_name) else ""
+            )
             links.append(
-                f'<a href="{filename}"{active}>{html.escape(label(format_name))}</a>'
+                f'<a href="{filename}"{active}{untrusted}>'
+                f"{html.escape(label(format_name))}</a>"
             )
         group_label_id = f"conversion-{compute}-formats-{storage_bits}-bit"
         groups.append(
@@ -4141,6 +4158,12 @@ pre code { font-size: 0.9rem; }
 .question-note-toggle[aria-expanded="true"] { color: var(--fg); }
 .question-note { background: var(--surface); border-left: 3px solid var(--border); color: var(--muted); margin: 0 0 14px; max-width: 78ch; padding: 10px 14px; }
 .question-note[hidden] { display: none; }
+[data-untrusted="true"] { text-decoration: line-through; text-decoration-thickness: 1px; }
+.untrusted-section { background: color-mix(in srgb, #c43838 8%, transparent); border-left: 4px solid #c43838; margin: 0 0 24px; padding: 14px 18px; }
+.untrusted-section h2 { color: #a12626; margin-top: 0; }
+.untrusted-section p { max-width: 78ch; }
+.untrusted-section .strategy-table { margin-bottom: 14px; width: min(100%, 560px); }
+.untrusted-verdict { color: #a12626; font-weight: 650; }
 .strategy-table { border-collapse: collapse; width: min(100%, 980px); }
 .strategy-table th, .strategy-table td { border-bottom: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
 .strategy-table th { white-space: nowrap; width: 120px; }
