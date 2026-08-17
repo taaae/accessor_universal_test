@@ -491,6 +491,11 @@ def row_label(kernel: str, layout: str, scope: str) -> str:
     return f"{kernel.upper()} {layout.title()} {scope_label}"
 
 
+def case_label(kernel: str, scope: str) -> str:
+    """Row label where dense and padded are merged into one best-of."""
+    return f"{kernel.upper()} {'x1' if scope == 'x1' else 'Best'}"
+
+
 def ratio_cell(value: float | None) -> str:
     if value is None or not math.isfinite(value):
         return '<td class="ratio-neutral">—</td>'
@@ -505,15 +510,12 @@ def usefulness_table(
     for kernel in KERNELS:
         baseline = baseline_score(rows, compute, kernel)
         for scope in SCOPES:
-            for layout in page_layouts(compute, format_name):
-                selection = best_selection(
-                    rows, compute, format_name, kernel, layout, scope
-                )
-                speedup = baseline / selection.score_ms if selection else None
-                body.append(
-                    f"<tr><th>{row_label(kernel, layout, scope)}</th>"
-                    f"{ratio_cell(speedup)}</tr>"
-                )
+            selection = best_any_layout(rows, compute, format_name, kernel, scope)
+            speedup = baseline / selection.score_ms if selection else None
+            body.append(
+                f"<tr><th>{case_label(kernel, scope)}</th>"
+                f"{ratio_cell(speedup)}</tr>"
+            )
     return question_table(
         "Is this type even useful?",
         ("Case", f"Speedup over raw {compute.upper()}"),
@@ -521,8 +523,8 @@ def usefulness_table(
         note=(
             "Every figure here and in the sections below is a geometric mean "
             "over both input distributions at the two largest N. Each row is "
-            "the fastest strategy for that kernel, layout and access scope; "
-            "the baseline is raw "
+            "the fastest strategy for that kernel and access scope, dense or "
+            "padded; the baseline is raw "
             f"{compute.upper()} read one value per thread, not its fastest "
             "packed variant."
         ),
@@ -535,39 +537,30 @@ def precise_peer_table(
     body = []
     for kernel in KERNELS:
         for scope in SCOPES:
-            # One bar per scope: the fastest more-precise type in any layout.
+            # Both sides are now the best of either layout at this scope.
             peer = faster_precise_peer(rows, compute, format_name, kernel, scope)
-            for layout in page_layouts(compute, format_name):
-                current = best_selection(
-                    rows, compute, format_name, kernel, layout, scope
+            current = best_any_layout(rows, compute, format_name, kernel, scope)
+            if current is None or peer is None:
+                peer_cell = "<td>—</td>"
+                speedup = None
+            else:
+                peer_name, peer_selection = peer
+                peer_file = base.compute_conversion_format_filename(
+                    compute, peer_name
                 )
-                if current is None or peer is None:
-                    peer_cell = "<td>—</td>"
-                    speedup = None
-                else:
-                    peer_name, peer_selection = peer
-                    peer_file = base.compute_conversion_format_filename(
-                        compute, peer_name
-                    )
-                    peer_cell = (
-                        f'<td><a href="{html.escape(peer_file)}">'
-                        f"{html.escape(base.label(peer_name))}</a></td>"
-                    )
-                    speedup = peer_selection.score_ms / current.score_ms
-                body.append(
-                    f"<tr><th>{row_label(kernel, layout, scope)}</th>"
-                    f"{peer_cell}{ratio_cell(speedup)}</tr>"
+                peer_cell = (
+                    f'<td><a href="{html.escape(peer_file)}">'
+                    f"{html.escape(base.label(peer_name))}</a></td>"
                 )
+                speedup = peer_selection.score_ms / current.score_ms
+            body.append(
+                f"<tr><th>{case_label(kernel, scope)}</th>"
+                f"{peer_cell}{ratio_cell(speedup)}</tr>"
+            )
     return question_table(
         "Is there a more precise type that is faster?",
         ("Case", "Fastest more-precise type", "Current type speedup"),
         body,
-        note=(
-            "x1 rows face the fastest x1 strategy of any more precise type, "
-            "dense or padded. Best rows face its fastest strategy overall. "
-            "More precise means at least as many exponent and mantissa bits, "
-            "and more of one."
-        ),
     )
 
 
