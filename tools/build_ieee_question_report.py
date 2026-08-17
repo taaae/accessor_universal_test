@@ -15,7 +15,7 @@ import math
 import os
 import re
 import statistics
-from collections import defaultdict
+from collections import Counter, defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, Sequence
@@ -548,6 +548,83 @@ def distribution_split(
 
 
 CAUTION_FACTOR = 1.10
+HIGH_SUBNORMAL_SHARE = 0.50
+
+# Decoders whose cost depends on the value being decoded: they branch on the
+# exponent field, so a warp holding a mix of normals and subnormals executes
+# both paths.  Everything else costs the same whatever it decodes.
+BRANCHY_DECODERS = frozenset(
+    {
+        "direct_branchy",
+        "subnormal_lut_global",
+        "subnormal_lut_shared",
+        "prefix_lut_global",
+        "prefix_lut_shared",
+        "generic",
+    }
+)
+
+
+def subnormal_shares(format_name: str) -> tuple[float, float] | None:
+    """Fraction of each distribution that lands below the smallest normal."""
+    exponent_bits, _ = base.format_layout_bits(format_name)
+    threshold = smallest_normal(exponent_bits)
+    if threshold is None:
+        return None            # no exponent field, so no subnormals at all
+    return (
+        share_below(threshold, "uniform_0_1"),
+        share_below(threshold, "normal_0_1"),
+    )
+
+
+def has_subnormal_data(format_name: str) -> bool:
+    shares = subnormal_shares(format_name)
+    return shares is not None and max(shares) >= HIGH_SUBNORMAL_SHARE
+
+
+def winning_decoders(
+    rows: Sequence[dict[str, str]], compute: str, format_name: str
+) -> set[str]:
+    return {
+        split[0].row["decoder"]
+        for _, _, split in page_splits(rows, compute, format_name)
+        if split is not None
+    }
+
+
+def best_branchless(
+    rows: Sequence[dict[str, str]],
+    compute: str,
+    format_name: str,
+    kernel: str,
+    scope: str,
+) -> Selection | None:
+    """Fastest strategy whose cost does not depend on the decoded value."""
+    candidates: dict[str, list[dict[str, str]]] = defaultdict(list)
+    for row in format_rows(rows, compute, format_name, kernel):
+        if row["decoder"] in BRANCHY_DECODERS:
+            continue
+        if scope == "x1" and not (
+            row["access_method"] == "scalar" and int(row["packet_values"]) == 1
+        ):
+            continue
+        candidates[row["strategy_id"]].append(row)
+    ranked = [
+        Selection(strategy_score(group, kernel), strategy_id, group[0])
+        for strategy_id, group in candidates.items()
+    ]
+    return min(ranked, key=lambda s: (s.score_ms, s.strategy_id)) if ranked else None
+
+
+def page_tier(rows: Sequence[dict[str, str]], compute: str, format_name: str) -> str:
+    """red, caution-subnormal, caution, or clean."""
+    subnormal = has_subnormal_data(format_name)
+    if subnormal:
+        branchy = bool(winning_decoders(rows, compute, format_name) & BRANCHY_DECODERS)
+        return "red" if branchy else "caution-subnormal"
+    if worst_split(page_splits(rows, compute, format_name)) >= CAUTION_FACTOR:
+        return "caution"
+    return "clean"
 
 
 def page_splits(
@@ -583,113 +660,140 @@ def worst_split(splits) -> float:
     )
 
 
-def caution_section(
+def subnormal_table(format_name: str) -> str:
+    shares = subnormal_shares(format_name)
+    if shares is None:
+        return ""
+    exponent_bits, _ = base.format_layout_bits(format_name)
+    rows_html = "".join(
+        f"<tr><th>{html.escape(name)}</th><td>{html.escape(value)}</td></tr>"
+        for name, value in (
+            ("Smallest normal value", f"{smallest_normal(exponent_bits):.6g}"),
+            ("Subnormal share, U(0,1)", f"{100 * shares[0]:.1f}%"),
+            ("Subnormal share, N(0,1)", f"{100 * shares[1]:.1f}%"),
+        )
+    )
+    return (
+        '<div class="table-wrap"><table class="strategy-table">'
+        "<thead><tr><th>Measure</th><th>Value</th></tr></thead>"
+        f"<tbody>{rows_html}</tbody></table></div>"
+    )
+
+
+def branchy_gain_table(
     rows: Sequence[dict[str, str]], compute: str, format_name: str
 ) -> str:
-    """Flag a page whose winner is materially distribution-sensitive."""
-    if base.format_is_untrusted(format_name):
-        return ""          # the red section already says something stronger
-    splits = page_splits(rows, compute, format_name)
-    worst = worst_split(splits)
-    if worst < CAUTION_FACTOR:
+    """What the branchy winner buys over the fastest value-independent option."""
+    body = []
+    for kernel in KERNELS:
+        for scope in SCOPES:
+            winner = best_any_layout(rows, compute, format_name, kernel, scope)
+            alternative = best_branchless(rows, compute, format_name, kernel, scope)
+            if winner is None:
+                cell = '<td class="ratio-neutral">—</td>'
+            elif alternative is None:
+                cell = (
+                    '<td class="ratio-bad">no value-independent strategy exists</td>'
+                )
+            else:
+                gain = alternative.score_ms / winner.score_ms
+                css = "ratio-bad" if gain > 1.05 else "ratio-neutral"
+                cell = (
+                    f'<td class="{css}">{gain:.3f}× '
+                    f"(vs {html.escape(alternative.row['decoder'])})</td>"
+                )
+            body.append(f"<tr><th>{case_label(kernel, scope)}</th>{cell}</tr>")
+    return (
+        '<div class="table-wrap"><table class="strategy-table">'
+        "<thead><tr><th>Case</th>"
+        "<th>Branchy winner's gain over the best branchless strategy</th>"
+        f"</tr></thead><tbody>{''.join(body)}</tbody></table></div>"
+    )
+
+
+def lookup_commentary() -> str:
+    return (
+        "The winning strategy decodes through a lookup table, and how well that "
+        "table stays in cache depends on how widely the input spreads across it. "
+        "U(0,1) values occupy a narrow band of codes and keep the table hot; "
+        "N(0,1) spans both signs and a wider magnitude range, touching about "
+        "twice as many table cache lines. The effect only appears once the input "
+        "is large enough to evict the table, and it grows with the number of "
+        "lookups each thread performs, which is why the packed Best rows move "
+        "most. Data spread wider than these test distributions would slow the "
+        "table further, so treat the headline speedup as an upper bound."
+    )
+
+
+def trust_section(
+    rows: Sequence[dict[str, str]], compute: str, format_name: str
+) -> str:
+    tier = page_tier(rows, compute, format_name)
+    if tier == "clean":
         return ""
+    splits = page_splits(rows, compute, format_name)
     winner = best_any_layout(rows, compute, format_name, "dot", "best")
-    lookup = winner is not None and "lut" in winner.row["decoder"]
-    if lookup:
-        why = (
-            "The winning strategy decodes through a lookup table, and how well "
-            "that table stays in cache depends on how widely the input spreads "
-            "across it. U(0,1) values occupy a narrow band of codes and keep the "
-            "table hot; N(0,1) spans both signs and a wider magnitude range, "
-            "touching about twice as many table cache lines. The effect only "
-            "appears once the input is large enough to evict the table, and it "
-            "grows with the number of lookups each thread performs, which is why "
-            "the packed Best rows move most. Data spread wider than these test "
-            "distributions would slow the table further, so treat the headline "
-            "speedup as an upper bound rather than a settled figure."
-        )
-    else:
-        why = (
-            "The winning strategy is materially faster on one input distribution "
-            "than the other, so the single figure quoted elsewhere on this page "
-            "hides a real spread. Data shaped differently from these test "
-            "distributions may land anywhere inside it."
-        )
     strategy = (
         f"<p>Best strategy measured here: "
         f"<code>{html.escape(winner.strategy_id)}</code>.</p>"
         if winner
         else ""
+    )
+    split = split_table(splits, "Distribution difference on the winning strategy")
+
+    if tier == "red":
+        shares = subnormal_shares(format_name)
+        exponent_bits, _ = base.format_layout_bits(format_name)
+        reason = (
+            f"{base.label(format_name)} has only {exponent_bits} exponent "
+            f"bit{'s' if exponent_bits != 1 else ''}, so its smallest normal "
+            f"value is {smallest_normal(exponent_bits):.6g} and "
+            f"{100 * shares[0]:.1f}% of U(0,1) and {100 * shares[1]:.1f}% of "
+            "N(0,1) decode through the subnormal path. The fastest strategy "
+            "here branches on that path, so these timings measure how the input "
+            "happens to be distributed as much as they measure the format."
+        )
+        return f"""<section class="text-section untrusted-section">
+<h2>Why the experiment is not trustworthy</h2>
+<p class="untrusted-verdict">{html.escape(reason)}</p>
+{strategy}
+{subnormal_table(format_name)}
+{split}
+{branchy_gain_table(rows, compute, format_name)}
+</section>"""
+
+    if tier == "caution-subnormal":
+        shares = subnormal_shares(format_name)
+        why = (
+            f"{100 * shares[0]:.1f}% of U(0,1) and {100 * shares[1]:.1f}% of "
+            "N(0,1) fall below this format's smallest normal value, so the "
+            "benchmark stores data the format can barely represent. The winning "
+            "strategy is value independent, so the timings themselves stand, but "
+            "they describe a format being used outside its range and should not "
+            "be read as a recommendation."
+        )
+        return f"""<section class="text-section caution-section">
+<h2>Why results are not 100% trustworthy</h2>
+{strategy}
+<p>{html.escape(why)}</p>
+{subnormal_table(format_name)}
+{split}
+</section>"""
+
+    why = (
+        lookup_commentary()
+        if winner is not None and "lut" in winner.row["decoder"]
+        else (
+            "The winning strategy is materially faster on one input distribution "
+            "than the other, so the single figure quoted elsewhere on this page "
+            "hides a real spread."
+        )
     )
     return f"""<section class="text-section caution-section">
 <h2>Why results are not 100% trustworthy</h2>
 {strategy}
 <p>{html.escape(why)}</p>
-{split_table(splits, "Distribution difference on the winning strategy")}
-</section>"""
-
-
-def untrusted_section(
-    rows: Sequence[dict[str, str]], compute: str, format_name: str
-) -> str:
-    """Why an E0/E1/E2 page's numbers should not be read as a format comparison."""
-    if not base.format_is_untrusted(format_name):
-        return ""
-    exponent_bits, mantissa_bits = base.format_layout_bits(format_name)
-    winner = best_any_layout(rows, compute, format_name, "dot", "best")
-    smallest = smallest_normal(exponent_bits)
-
-    if smallest is None:
-        largest = largest_finite(exponent_bits, mantissa_bits)
-        reason = (
-            f"{base.label(format_name)} carries no exponent, so it is fixed point "
-            f"on [0, {largest:.6g}]. Every input above that clamps to the maximum: "
-            f"{100 * (1 - share_below(largest, 'uniform_0_1')):.1f}% of U(0,1) and "
-            f"{100 * (1 - share_below(largest, 'normal_0_1')):.1f}% of N(0,1). The "
-            "kernels below therefore run on data the format cannot represent."
-        )
-        measure_rows = [
-            ("Largest representable value", f"{largest:.6g}"),
-            ("Saturated share, U(0,1)",
-             f"{100 * (1 - share_below(largest, 'uniform_0_1')):.1f}%"),
-            ("Saturated share, N(0,1)",
-             f"{100 * (1 - share_below(largest, 'normal_0_1')):.1f}%"),
-        ]
-    else:
-        share_u = 100 * share_below(smallest, "uniform_0_1")
-        share_n = 100 * share_below(smallest, "normal_0_1")
-        reason = (
-            f"{base.label(format_name)} has only {exponent_bits} exponent "
-            f"bit{'s' if exponent_bits != 1 else ''}, putting its smallest normal "
-            f"value at {smallest:.6g}. Almost every input is therefore subnormal: "
-            f"{share_u:.1f}% of U(0,1) and {share_n:.1f}% of N(0,1). The timings "
-            "below describe the subnormal path on data the format cannot really "
-            "hold, not a fair comparison against wider formats."
-        )
-        measure_rows = [
-            ("Smallest normal value", f"{smallest:.6g}"),
-            ("Subnormal share, U(0,1)", f"{share_u:.1f}%"),
-            ("Subnormal share, N(0,1)", f"{share_n:.1f}%"),
-        ]
-
-    measures = "".join(
-        f"<tr><th>{html.escape(name)}</th><td>{html.escape(value)}</td></tr>"
-        for name, value in measure_rows
-    )
-    splits = page_splits(rows, compute, format_name)
-    strategy = (
-        f"<p>Best strategy measured here: "
-        f"<code>{html.escape(winner.strategy_id)}</code>.</p>"
-        if winner
-        else ""
-    )
-    return f"""<section class="text-section untrusted-section">
-<h2>Why the experiment is not trustworthy</h2>
-<p class="untrusted-verdict">{html.escape(reason)}</p>
-{strategy}
-<div class="table-wrap"><table class="strategy-table">
-<thead><tr><th>Measure</th><th>Value</th></tr></thead><tbody>{measures}</tbody></table></div>
-{split_table(splits, "Distribution difference on the winning strategy")}
+{split}
 </section>"""
 
 
@@ -1277,8 +1381,7 @@ def page_body(
         f"<strong>Experiment 021 · {html.escape(run_dir.name)}</strong></section>"
         + f'<h2 class="question-format-heading">'
         f"{html.escape(base.label(format_name))}</h2>"
-        + untrusted_section(rows, compute, format_name)
-        + caution_section(rows, compute, format_name)
+        + trust_section(rows, compute, format_name)
         + usefulness_table(rows, compute, format_name)
         + precise_peer_table(rows, compute, format_name)
         + padded_table(rows, compute, format_name)
@@ -1302,21 +1405,25 @@ def read_manifest(path: Path) -> dict[str, str]:
     return values
 
 
-def mark_caution_navigation(
-    output_dir: Path, compute: str, caution: set[str]
-) -> int:
+def mark_navigation(output_dir: Path, compute: str, tiers: dict[str, str]) -> int:
     """Tag the subnav links of distribution-sensitive formats.
 
     The navigation is rendered by the base report, which has no access to the
     timing data, so the marker is applied afterwards across every page that
     carries the conversion subnav -- format pages and the overview alike.
     """
-    if not caution:
-        return 0
+    attribute = {
+        "red": 'data-untrusted="true"',
+        "caution": 'data-caution="true"',
+        "caution-subnormal": 'data-caution="true"',
+    }
     targets = [
-        base.compute_conversion_format_filename(compute, format_name)
-        for format_name in caution
+        (base.compute_conversion_format_filename(compute, name), attribute[tier])
+        for name, tier in tiers.items()
+        if tier in attribute
     ]
+    if not targets:
+        return 0
     touched = 0
     pages = [output_dir / base.compute_conversion_overview_filename(compute)]
     pages += [
@@ -1337,10 +1444,9 @@ def mark_caution_navigation(
         # those cells too.
         navigation = match.group(0)
         updated = navigation
-        for filename in targets:
+        for filename, attribute in targets:
             updated = updated.replace(
-                f'<a href="{filename}"',
-                f'<a data-caution="true" href="{filename}"',
+                f'<a href="{filename}"', f"<a {attribute} href=\"{filename}\""
             )
         if updated != navigation:
             page.write_text(
@@ -1352,7 +1458,7 @@ def mark_caution_navigation(
 
 
 def update_overview_cards(
-    output_dir: Path, compute: str, caution: set[str] | None = None
+    output_dir: Path, compute: str, tiers: dict[str, str]
 ) -> None:
     overview = output_dir / base.compute_conversion_overview_filename(compute)
     document = overview.read_text(encoding="utf-8")
@@ -1362,18 +1468,19 @@ def update_overview_cards(
             rf'<a class="report-link pending-report-link" href="{re.escape(filename)}">'
             r'(?P<label><strong>.*?</strong>)<span>.*?</span></a>'
         )
-        untrusted = base.format_is_untrusted(format_name)
-        cautioned = bool(caution) and format_name in caution
-        marker = ' data-untrusted="true"' if untrusted else (
-            ' data-caution="true"' if cautioned else ""
+        tier = tiers.get(format_name, "clean")
+        marker = (
+            ' data-untrusted="true"'
+            if tier == "red"
+            else ' data-caution="true"'
+            if tier.startswith("caution")
+            else ""
         )
-        caption = (
-            "Data does not fit this format -- see the page"
-            if untrusted
-            else "Distribution-sensitive -- see the page"
-            if cautioned
-            else "Unified H200 question report"
-        )
+        caption = {
+            "red": "Branchy winner on subnormal data -- see the page",
+            "caution-subnormal": "Data below this format's normal range -- see the page",
+            "caution": "Distribution-sensitive -- see the page",
+        }.get(tier, "Unified H200 question report")
         replacement = (
             f'<a class="report-link"{marker} href="{filename}">'
             r'\g<label>' + f"<span>{caption}</span></a>"
@@ -1499,7 +1606,7 @@ def main() -> None:
     interactive.mkdir(parents=True, exist_ok=True)
     page_count = 0
     for compute in COMPUTES:
-        caution_formats: set[str] = set()
+        tiers: dict[str, str] = {}
         formats = compute_formats(compute)
         for index, format_name in enumerate(formats, start=1):
             print(
@@ -1544,15 +1651,15 @@ def main() -> None:
             )
             (output_dir / filename).write_text(document, encoding="utf-8")
             page_count += 1
-            if not base.format_is_untrusted(format_name) and worst_split(
-                page_splits(rows, compute, format_name)
-            ) >= CAUTION_FACTOR:
-                caution_formats.add(format_name)
-        update_overview_cards(output_dir, compute, caution_formats)
-        marked = mark_caution_navigation(output_dir, compute, caution_formats)
+            tiers[format_name] = page_tier(rows, compute, format_name)
+        update_overview_cards(output_dir, compute, tiers)
+        marked = mark_navigation(output_dir, compute, tiers)
+        counts = Counter(tiers.values())
         print(
-            f"  {compute}: {len(caution_formats)} distribution-sensitive formats "
-            f"marked across {marked} pages",
+            f"  {compute}: red {counts['red']}, "
+            f"caution-subnormal {counts['caution-subnormal']}, "
+            f"caution {counts['caution']}, clean {counts['clean']} "
+            f"(marked across {marked} pages)",
             flush=True,
         )
 

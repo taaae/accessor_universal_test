@@ -553,19 +553,6 @@ def format_layout_bits(name: str) -> tuple[int, int]:
     return int(match.group(1)), int(match.group(2))
 
 
-# Below three exponent bits an IEEE-like format cannot hold the benchmark's
-# input: E0 is fixed point in [0,1) and clamps a third of N(0,1), while E1 and
-# E2 put their smallest normal at 2.0 and 1.0, so nearly every value decodes
-# through the subnormal path.  Their timings describe one code path on data the
-# format cannot represent, so the pages say so and the links are struck through.
-UNTRUSTED_MAX_EXPONENT_BITS = 2
-
-
-def format_is_untrusted(name: str) -> bool:
-    exponent_bits, _ = format_layout_bits(name)
-    return exponent_bits <= UNTRUSTED_MAX_EXPONENT_BITS
-
-
 def format_total_bits(name: str) -> int:
     exponent_bits, mantissa_bits = format_layout_bits(name)
     return 1 + exponent_bits + mantissa_bits
@@ -3211,12 +3198,10 @@ def conversion_navigation(current: str, compute: str = "fp64") -> str:
                 if filename == current
                 else ""
             )
-            untrusted = (
-                ' data-untrusted="true"' if format_is_untrusted(format_name) else ""
-            )
+            # Trust markers are data-derived and applied by the question-report
+            # builder afterwards; this module never reads timing data.
             links.append(
-                f'<a href="{filename}"{active}{untrusted}>'
-                f"{html.escape(label(format_name))}</a>"
+                f'<a href="{filename}"{active}>{html.escape(label(format_name))}</a>'
             )
         group_label_id = f"conversion-{compute}-formats-{storage_bits}-bit"
         groups.append(
