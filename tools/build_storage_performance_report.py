@@ -3230,6 +3230,20 @@ def page_document(
     all_strategy_run_name: str,
     expanded_strategy_run_name: str,
 ) -> str:
+    question_note_script = ""
+    if "question-note-toggle" in body:
+        question_note_script = """
+<script>
+for (const toggle of document.querySelectorAll('.question-note-toggle')) {
+  toggle.addEventListener('click', () => {
+    const note = document.getElementById(toggle.getAttribute('aria-controls'));
+    if (!note) return;
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!open));
+    note.hidden = open;
+  });
+}
+</script>"""
     performance_frame_script = ""
     if "data-performance-chart" in body:
         performance_frame_script = """
@@ -3262,7 +3276,7 @@ for (const frame of document.querySelectorAll('iframe[data-performance-chart]'))
 <h1>{html.escape(title)}</h1>
 <p class="lead">{html.escape(intro)}</p>
 {body}
-</main>
+</main>{question_note_script}
 <footer><div class="shell">Performance: <code>{html.escape(performance_run_name)}</code> · Accuracy: <code>{html.escape(accuracy_run_name)}</code> · Conversion strategies: <code>{html.escape(strategy_run_name)}</code> + <code>{html.escape(all_strategy_run_name)}</code> + <code>{html.escape(expanded_strategy_run_name)}</code></div></footer>{performance_frame_script}
 </body>
 </html>
@@ -4122,6 +4136,11 @@ pre code { font-size: 0.9rem; }
 .access-width-table { width: 100%; }
 .access-width-table th:first-child { text-align: right; width: 44px; }
 .table-wrap { overflow-x: auto; }
+.question-note-toggle { background: none; border: 0; color: var(--link); cursor: pointer; font: inherit; font-size: 0.7em; line-height: 1; padding: 0 0 0 3px; vertical-align: super; }
+.question-note-toggle:hover, .question-note-toggle:focus-visible { text-decoration: underline; }
+.question-note-toggle[aria-expanded="true"] { color: var(--fg); }
+.question-note { background: var(--surface); border-left: 3px solid var(--border); color: var(--muted); margin: 0 0 14px; max-width: 78ch; padding: 10px 14px; }
+.question-note[hidden] { display: none; }
 .strategy-table { border-collapse: collapse; width: min(100%, 980px); }
 .strategy-table th, .strategy-table td { border-bottom: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
 .strategy-table th { white-space: nowrap; width: 120px; }

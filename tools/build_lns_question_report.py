@@ -16,6 +16,7 @@ import csv
 import html
 import math
 import os
+import re
 import statistics
 from collections import defaultdict
 from dataclasses import dataclass
@@ -371,10 +372,34 @@ def ratio_cell(value: float | None) -> str:
     return f'<td class="{css}">{value:.3f}×</td>'
 
 
-def question_table(title: str, headings: Sequence[str], body: Sequence[str]) -> str:
+def note_id(title: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
+    return f"note-{slug}"
+
+
+def question_table(
+    title: str,
+    headings: Sequence[str],
+    body: Sequence[str],
+    note: str | None = None,
+) -> str:
     header = "".join(f"<th>{html.escape(item)}</th>" for item in headings)
+    marker = ""
+    note_block = ""
+    if note:
+        identifier = note_id(title)
+        marker = (
+            '<button class="question-note-toggle" type="button" '
+            f'aria-expanded="false" aria-controls="{identifier}" '
+            'aria-label="What exactly is compared">*</button>'
+        )
+        note_block = (
+            f'<p class="question-note" id="{identifier}" hidden>'
+            f"{html.escape(note)}</p>"
+        )
     return f"""<section class="text-section question-section">
-<h2>{html.escape(title)}</h2>
+<h2>{html.escape(title)}{marker}</h2>
+{note_block}
 <div class="table-wrap"><table class="strategy-table question-table">
 <thead><tr>{header}</tr></thead><tbody>{''.join(body)}</tbody></table></div>
 </section>"""
@@ -417,6 +442,13 @@ def usefulness_table(index: LnsIndex, compute: str, format_name: str) -> str:
         "Is this type even useful?",
         ("Case", f"Speedup over raw {compute.upper()}"),
         body,
+        note=(
+            "Every figure here and in the sections below is a geometric mean "
+            "over both input distributions at the two largest N. Each row is "
+            "the fastest strategy overall for that kernel and scope -- either "
+            "layout, ordinary or fused multiplication; the baseline is raw "
+            f"{compute.upper()} read one value per thread."
+        ),
     )
 
 

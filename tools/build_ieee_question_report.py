@@ -518,6 +518,14 @@ def usefulness_table(
         "Is this type even useful?",
         ("Case", f"Speedup over raw {compute.upper()}"),
         body,
+        note=(
+            "Every figure here and in the sections below is a geometric mean "
+            "over both input distributions at the two largest N. Each row is "
+            "the fastest strategy for that kernel, layout and access scope; "
+            "the baseline is raw "
+            f"{compute.upper()} read one value per thread, not its fastest "
+            "packed variant."
+        ),
     )
 
 
@@ -554,6 +562,12 @@ def precise_peer_table(
         "Is there a more precise type that is faster?",
         ("Case", "Fastest more-precise type", "Current type speedup"),
         body,
+        note=(
+            "x1 rows face the fastest x1 strategy of any more precise type, "
+            "dense or padded. Best rows face its fastest strategy overall. "
+            "More precise means at least as many exponent and mantissa bits, "
+            "and more of one."
+        ),
     )
 
 
@@ -665,6 +679,11 @@ def packing_table(
         "How much does packing improve performance?",
         ("Case", "Best packet speedup over x1"),
         body,
+        note=(
+            "The fastest per-thread packet strategy against scalar "
+            "single-value access, same layout. Cooperative shuffle is "
+            "excluded -- it only appears in the Best rows above."
+        ),
     )
 
 
@@ -753,12 +772,34 @@ def explanations_section(
     )
 
 
+def note_id(title: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
+    return f"note-{slug}"
+
+
 def question_table(
-    title: str, headings: Sequence[str], body: Sequence[str]
+    title: str,
+    headings: Sequence[str],
+    body: Sequence[str],
+    note: str | None = None,
 ) -> str:
     header = "".join(f"<th>{html.escape(item)}</th>" for item in headings)
+    marker = ""
+    note_block = ""
+    if note:
+        identifier = note_id(title)
+        marker = (
+            '<button class="question-note-toggle" type="button" '
+            f'aria-expanded="false" aria-controls="{identifier}" '
+            'aria-label="What exactly is compared">*</button>'
+        )
+        note_block = (
+            f'<p class="question-note" id="{identifier}" hidden>'
+            f"{html.escape(note)}</p>"
+        )
     return f"""<section class="text-section question-section">
-<h2>{html.escape(title)}</h2>
+<h2>{html.escape(title)}{marker}</h2>
+{note_block}
 <div class="table-wrap"><table class="strategy-table question-table">
 <thead><tr>{header}</tr></thead><tbody>{''.join(body)}</tbody></table></div>
 </section>"""
