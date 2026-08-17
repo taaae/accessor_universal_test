@@ -1,0 +1,76 @@
+LNS strategy benchmark: lns32_r20
+GPU: NVIDIA H200 NVL (sm_90)
+uniform_0_1
+  lns32_r20 -> fp64
+    decoder validation passed
+    lns32_r20/fp64/ordinary/padded/scalar/x1/reference_exp2
+    lns32_r20/fp64/fused/padded/scalar/x1/reference_exp2
+    lns32_r20/fp64/ordinary/padded/scalar/x1/ex2_approx
+    lns32_r20/fp64/ordinary/padded/thread_packet/x2/ex2_approx
+    lns32_r20/fp64/ordinary/padded/thread_packet/x4/ex2_approx
+    lns32_r20/fp64/ordinary/padded/thread_packet/x8/ex2_approx
+    lns32_r20/fp64/fused/padded/scalar/x1/ex2_approx
+    lns32_r20/fp64/fused/padded/thread_packet/x2/ex2_approx
+    lns32_r20/fp64/fused/padded/thread_packet/x4/ex2_approx
+    lns32_r20/fp64/fused/padded/thread_packet/x8/ex2_approx
+    lns32_r20/fp64/ordinary/padded/scalar/x1/split_linear
+    lns32_r20/fp64/ordinary/padded/thread_packet/x2/split_linear
+    lns32_r20/fp64/ordinary/padded/thread_packet/x4/split_linear
+    lns32_r20/fp64/ordinary/padded/thread_packet/x8/split_linear
+    lns32_r20/fp64/fused/padded/scalar/x1/split_linear
+    lns32_r20/fp64/fused/padded/thread_packet/x2/split_linear
+    lns32_r20/fp64/fused/padded/thread_packet/x4/split_linear
+    lns32_r20/fp64/fused/padded/thread_packet/x8/split_linear
+    lns32_r20/fp64/ordinary/padded/scalar/x1/split_quadratic
+    lns32_r20/fp64/ordinary/padded/thread_packet/x2/split_quadratic
+    lns32_r20/fp64/ordinary/padded/thread_packet/x4/split_quadratic
+    lns32_r20/fp64/ordinary/padded/thread_packet/x8/split_quadratic
+    lns32_r20/fp64/fused/padded/scalar/x1/split_quadratic
+    lns32_r20/fp64/fused/padded/thread_packet/x2/split_quadratic
+    lns32_r20/fp64/fused/padded/thread_packet/x4/split_quadratic
+    lns32_r20/fp64/fused/padded/thread_packet/x8/split_quadratic
+    lns32_r20/fp64/ordinary/padded/scalar/x1/split_cubic
+    lns32_r20/fp64/ordinary/padded/thread_packet/x2/split_cubic
+    lns32_r20/fp64/ordinary/padded/thread_packet/x4/split_cubic
+    lns32_r20/fp64/ordinary/padded/thread_packet/x8/split_cubic
+    lns32_r20/fp64/fused/padded/scalar/x1/split_cubic
+    lns32_r20/fp64/fused/padded/thread_packet/x2/split_cubic
+    lns32_r20/fp64/fused/padded/thread_packet/x4/split_cubic
+    lns32_r20/fp64/fused/padded/thread_packet/x8/split_cubic
+normal_0_1
+  lns32_r20 -> fp64
+    lns32_r20/fp64/ordinary/padded/scalar/x1/reference_exp2
+    lns32_r20/fp64/fused/padded/scalar/x1/reference_exp2
+    lns32_r20/fp64/ordinary/padded/scalar/x1/ex2_approx
+    lns32_r20/fp64/ordinary/padded/thread_packet/x2/ex2_approx
+    lns32_r20/fp64/ordinary/padded/thread_packet/x4/ex2_approx
+    lns32_r20/fp64/ordinary/padded/thread_packet/x8/ex2_approx
+    lns32_r20/fp64/fused/padded/scalar/x1/ex2_approx
+    lns32_r20/fp64/fused/padded/thread_packet/x2/ex2_approx
+    lns32_r20/fp64/fused/padded/thread_packet/x4/ex2_approx
+    lns32_r20/fp64/fused/padded/thread_packet/x8/ex2_approx
+    lns32_r20/fp64/ordinary/padded/scalar/x1/split_linear
+    lns32_r20/fp64/ordinary/padded/thread_packet/x2/split_linear
+    lns32_r20/fp64/ordinary/padded/thread_packet/x4/split_linear
+    lns32_r20/fp64/ordinary/padded/thread_packet/x8/split_linear
+    lns32_r20/fp64/fused/padded/scalar/x1/split_linear
+    lns32_r20/fp64/fused/padded/thread_packet/x2/split_linear
+    lns32_r20/fp64/fused/padded/thread_packet/x4/split_linear
+    lns32_r20/fp64/fused/padded/thread_packet/x8/split_linear
+    lns32_r20/fp64/ordinary/padded/scalar/x1/split_quadratic
+    lns32_r20/fp64/ordinary/padded/thread_packet/x2/split_quadratic
+    lns32_r20/fp64/ordinary/padded/thread_packet/x4/split_quadratic
+    lns32_r20/fp64/ordinary/padded/thread_packet/x8/split_quadratic
+    lns32_r20/fp64/fused/padded/scalar/x1/split_quadratic
+    lns32_r20/fp64/fused/padded/thread_packet/x2/split_quadratic
+    lns32_r20/fp64/fused/padded/thread_packet/x4/split_quadratic
+    lns32_r20/fp64/fused/padded/thread_packet/x8/split_quadratic
+    lns32_r20/fp64/ordinary/padded/scalar/x1/split_cubic
+    lns32_r20/fp64/ordinary/padded/thread_packet/x2/split_cubic
+    lns32_r20/fp64/ordinary/padded/thread_packet/x4/split_cubic
+    lns32_r20/fp64/ordinary/padded/thread_packet/x8/split_cubic
+    lns32_r20/fp64/fused/padded/scalar/x1/split_cubic
+    lns32_r20/fp64/fused/padded/thread_packet/x2/split_cubic
+    lns32_r20/fp64/fused/padded/thread_packet/x4/split_cubic
+    lns32_r20/fp64/fused/padded/thread_packet/x8/split_cubic
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/022_lns_strategy_performance/run_20260816T211720Z/smoke/timing_samples_lns32_r20.csv

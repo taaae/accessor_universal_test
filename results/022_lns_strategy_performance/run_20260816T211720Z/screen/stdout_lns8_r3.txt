@@ -1,0 +1,9 @@
+LNS strategy benchmark: lns8_r3
+GPU: NVIDIA H200 NVL (sm_90)
+uniform_0_1
+  lns8_r3 -> fp32
+  lns8_r3 -> fp64
+normal_0_1
+  lns8_r3 -> fp32
+  lns8_r3 -> fp64
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/022_lns_strategy_performance/run_20260816T211720Z/screen/timing_samples_lns8_r3.csv

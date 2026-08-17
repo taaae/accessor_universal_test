@@ -1,0 +1,29 @@
+experiment=022_lns_strategy_performance
+started_utc=2026-08-16T21:17:20Z
+git_commit=00161c7852c492fde36eab4f9d545284a2fbcafd
+formats=lns4_r1 lns6_r2 lns8_r2 lns8_r3 lns8_r4 lns8_r5 lns10_r4 lns12_r6 lns16_r4 lns16_r7 lns16_r10 lns16_r11 lns16_r12 lns16_r13 lns32_r20 lns32_r23 lns32_r28
+arithmetic_types=fp32,fp64
+multiply_methods=ordinary,fused
+storage_layouts=dense,padded
+access_methods=scalar,thread_packet,cooperative_shuffle
+distributions=uniform_0_1,normal_0_1
+screen_dot_powers=24
+screen_gemv_powers=14
+full_dot_powers=12,16,20,24,27
+full_gemv_powers=8,10,12,14,16
+gemv_rows=1024
+base_seed=2611923443488327891
+stop_after=full
+smoke_timeout_seconds=600
+screen_timeout_seconds=1800
+full_timeout_seconds=5400
+git_status_begin
+?? results/022_lns_strategy_performance/run_20260816T210532Z/
+?? results/022_lns_strategy_performance/run_20260816T211720Z/
+?? results/022_lns_strategy_performance/slurm-443965.out
+?? results/022_lns_strategy_performance/slurm-443968.out
+git_status_end
+finished_utc=2026-08-16T21:43:52Z
+wall_time_seconds=1592
+final_stage=complete
+exit_status=0

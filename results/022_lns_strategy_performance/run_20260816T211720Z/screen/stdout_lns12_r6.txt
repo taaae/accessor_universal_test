@@ -1,0 +1,9 @@
+LNS strategy benchmark: lns12_r6
+GPU: NVIDIA H200 NVL (sm_90)
+uniform_0_1
+  lns12_r6 -> fp32
+  lns12_r6 -> fp64
+normal_0_1
+  lns12_r6 -> fp32
+  lns12_r6 -> fp64
+Wrote /storage/home/timofeirusanov/accessor_universal_test/results/022_lns_strategy_performance/run_20260816T211720Z/screen/timing_samples_lns12_r6.csv
