@@ -486,13 +486,8 @@ def page_layouts(compute: str, format_name: str) -> tuple[str, ...]:
     return LAYOUTS if padded_is_distinct(compute, format_name) else ("dense",)
 
 
-def row_label(kernel: str, layout: str, scope: str) -> str:
-    scope_label = "x1" if scope == "x1" else "Best"
-    return f"{kernel.upper()} {layout.title()} {scope_label}"
-
-
 def case_label(kernel: str, scope: str) -> str:
-    """Row label where dense and padded are merged into one best-of."""
+    """Every question table keys its rows on kernel and access scope only."""
     return f"{kernel.upper()} {'x1' if scope == 'x1' else 'Best'}"
 
 
@@ -743,21 +738,20 @@ def explanations_section(
     blocks = []
     for kernel in KERNELS:
         for scope in SCOPES:
-            for layout in page_layouts(compute, format_name):
-                selection = best_selection(
-                    rows, compute, format_name, kernel, layout, scope
-                )
-                if selection is None:
-                    continue
-                explanation, pipeline = access_explanation(selection.row)
-                blocks.append(
-                    '<article class="strategy-explanation">'
-                    f"<h3>{row_label(kernel, layout, scope)}</h3>"
-                    f"<p><code>{html.escape(selection.strategy_id)}</code></p>"
-                    f"<p>{html.escape(explanation)}</p>"
-                    f'<p class="strategy-pipeline">{html.escape(pipeline)}</p>'
-                    "</article>"
-                )
+            # One entry per row of the usefulness table: the overall winner,
+            # whichever layout it happens to use.
+            selection = best_any_layout(rows, compute, format_name, kernel, scope)
+            if selection is None:
+                continue
+            explanation, pipeline = access_explanation(selection.row)
+            blocks.append(
+                '<article class="strategy-explanation">'
+                f"<h3>{case_label(kernel, scope)}</h3>"
+                f"<p><code>{html.escape(selection.strategy_id)}</code></p>"
+                f"<p>{html.escape(explanation)}</p>"
+                f'<p class="strategy-pipeline">{html.escape(pipeline)}</p>'
+                "</article>"
+            )
     return (
         '<section class="text-section question-section"><h2>'
         "Best strategies explained</h2>"
