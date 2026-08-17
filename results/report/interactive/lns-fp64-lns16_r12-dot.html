@@ -17,8 +17,8 @@ svg { display:block; height:auto; width:100%; } [data-series].hidden { display:n
 <fieldset><legend>Storage layout</legend><div class="options"><label class="filter-option"><input type="checkbox" data-filter="layout" value="padded" checked><span>Padded</span></label></div></fieldset>
 <fieldset><legend>Multiplication</legend><div class="options"><label class="filter-option"><input type="checkbox" data-filter="multiply" value="fused" checked><span>Fused</span></label><label class="filter-option"><input type="checkbox" data-filter="multiply" value="ordinary" checked><span>Ordinary</span></label></div></fieldset>
 <fieldset><legend>Access</legend><div class="options"><label class="filter-option"><input type="checkbox" data-filter="access" value="scalar-x1" checked><span>Scalar x1</span></label><label class="filter-option"><input type="checkbox" data-filter="access" value="thread_packet-x2" checked><span>Packet x2</span></label><label class="filter-option"><input type="checkbox" data-filter="access" value="thread_packet-x4" checked><span>Packet x4</span></label><label class="filter-option"><input type="checkbox" data-filter="access" value="thread_packet-x8" checked><span>Packet x8</span></label></div></fieldset>
-<fieldset><legend>Decoder</legend><div class="options"><label class="filter-option"><input type="checkbox" data-filter="decoder" value="ex2_approx" checked><span>Hardware ex2.approx</span></label><label class="filter-option"><input type="checkbox" data-filter="decoder" value="fraction_lut_shared" checked><span>Fraction lookup · shared memory</span></label><label class="filter-option"><input type="checkbox" data-filter="decoder" value="raw" checked><span>Raw arithmetic baseline</span></label><label class="filter-option"><input type="checkbox" data-filter="decoder" value="reference_exp2" checked><span>Reference exp2</span></label></div></fieldset>
-<details><summary>Individual strategies</summary><div class="options"><label class="filter-option"><input type="checkbox" data-filter="strategy" value="raw_fp64" checked><span>Raw FP64 baseline</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="fused/padded/scalar/x1/ex2_approx" checked><span>fused · Padded · x1 · Hardware ex2.approx</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="fused/padded/scalar/x1/reference_exp2" checked><span>fused · Padded · x1 · Reference exp2</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="fused/padded/thread_packet/x2/ex2_approx" checked><span>fused · Padded · packet x2 · Hardware ex2.approx</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="fused/padded/thread_packet/x2/fraction_lut_shared" checked><span>fused · Padded · packet x2 · Fraction lookup · shared memory</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="fused/padded/thread_packet/x4/ex2_approx" checked><span>fused · Padded · packet x4 · Hardware ex2.approx</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="fused/padded/thread_packet/x4/fraction_lut_shared" checked><span>fused · Padded · packet x4 · Fraction lookup · shared memory</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="fused/padded/thread_packet/x8/ex2_approx" checked><span>fused · Padded · packet x8 · Hardware ex2.approx</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="fused/padded/thread_packet/x8/fraction_lut_shared" checked><span>fused · Padded · packet x8 · Fraction lookup · shared memory</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="ordinary/padded/scalar/x1/ex2_approx" checked><span>ordinary · Padded · x1 · Hardware ex2.approx</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="ordinary/padded/scalar/x1/fraction_lut_shared" checked><span>ordinary · Padded · x1 · Fraction lookup · shared memory</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="ordinary/padded/scalar/x1/reference_exp2" checked><span>ordinary · Padded · x1 · Reference exp2</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="ordinary/padded/thread_packet/x2/ex2_approx" checked><span>ordinary · Padded · packet x2 · Hardware ex2.approx</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="ordinary/padded/thread_packet/x2/fraction_lut_shared" checked><span>ordinary · Padded · packet x2 · Fraction lookup · shared memory</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="ordinary/padded/thread_packet/x4/ex2_approx" checked><span>ordinary · Padded · packet x4 · Hardware ex2.approx</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="ordinary/padded/thread_packet/x4/fraction_lut_shared" checked><span>ordinary · Padded · packet x4 · Fraction lookup · shared memory</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="ordinary/padded/thread_packet/x8/ex2_approx" checked><span>ordinary · Padded · packet x8 · Hardware ex2.approx</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="ordinary/padded/thread_packet/x8/fraction_lut_shared" checked><span>ordinary · Padded · packet x8 · Fraction lookup · shared memory</span></label></div></details>
+<fieldset><legend>Decoder</legend><div class="options"><label class="filter-option"><input type="checkbox" data-filter="decoder" value="ex2_approx" checked><span>Hardware ex2.approx</span></label><label class="filter-option"><input type="checkbox" data-filter="decoder" value="fraction_lut_shared" checked><span>Fraction lookup · shared memory</span></label><label class="filter-option"><input type="checkbox" data-filter="decoder" value="fused_sum_lut_global" checked><span>Fused product lookup · cached global</span></label><label class="filter-option"><input type="checkbox" data-filter="decoder" value="raw" checked><span>Raw arithmetic baseline</span></label><label class="filter-option"><input type="checkbox" data-filter="decoder" value="reference_exp2" checked><span>Reference exp2</span></label></div></fieldset>
+<details><summary>Individual strategies</summary><div class="options"><label class="filter-option"><input type="checkbox" data-filter="strategy" value="raw_fp64" checked><span>Raw FP64 baseline</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="fused/padded/scalar/x1/ex2_approx" checked><span>fused · Padded · x1 · Hardware ex2.approx</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="fused/padded/scalar/x1/fused_sum_lut_global" checked><span>fused · Padded · x1 · Fused product lookup · cached global</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="fused/padded/scalar/x1/reference_exp2" checked><span>fused · Padded · x1 · Reference exp2</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="fused/padded/thread_packet/x2/ex2_approx" checked><span>fused · Padded · packet x2 · Hardware ex2.approx</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="fused/padded/thread_packet/x2/fused_sum_lut_global" checked><span>fused · Padded · packet x2 · Fused product lookup · cached global</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="fused/padded/thread_packet/x4/ex2_approx" checked><span>fused · Padded · packet x4 · Hardware ex2.approx</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="fused/padded/thread_packet/x4/fused_sum_lut_global" checked><span>fused · Padded · packet x4 · Fused product lookup · cached global</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="fused/padded/thread_packet/x8/ex2_approx" checked><span>fused · Padded · packet x8 · Hardware ex2.approx</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="fused/padded/thread_packet/x8/fused_sum_lut_global" checked><span>fused · Padded · packet x8 · Fused product lookup · cached global</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="ordinary/padded/scalar/x1/ex2_approx" checked><span>ordinary · Padded · x1 · Hardware ex2.approx</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="ordinary/padded/scalar/x1/fraction_lut_shared" checked><span>ordinary · Padded · x1 · Fraction lookup · shared memory</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="ordinary/padded/scalar/x1/reference_exp2" checked><span>ordinary · Padded · x1 · Reference exp2</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="ordinary/padded/thread_packet/x2/ex2_approx" checked><span>ordinary · Padded · packet x2 · Hardware ex2.approx</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="ordinary/padded/thread_packet/x2/fraction_lut_shared" checked><span>ordinary · Padded · packet x2 · Fraction lookup · shared memory</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="ordinary/padded/thread_packet/x4/ex2_approx" checked><span>ordinary · Padded · packet x4 · Hardware ex2.approx</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="ordinary/padded/thread_packet/x4/fraction_lut_shared" checked><span>ordinary · Padded · packet x4 · Fraction lookup · shared memory</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="ordinary/padded/thread_packet/x8/ex2_approx" checked><span>ordinary · Padded · packet x8 · Hardware ex2.approx</span></label><label class="filter-option"><input type="checkbox" data-filter="strategy" value="ordinary/padded/thread_packet/x8/fraction_lut_shared" checked><span>ordinary · Padded · packet x8 · Fraction lookup · shared memory</span></label></div></details>
 </section><p class="status" aria-live="polite"></p><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="985.628437pt" height="510.698437pt" viewBox="0 0 985.628437 510.698437" xmlns="http://www.w3.org/2000/svg" version="1.1">
  <metadata>
   <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
@@ -676,8 +676,8 @@ z
    <g id="matplotlib.axis_2">
     <g id="ytick_1">
      <g id="line2d_17">
-      <path d="M 49.350781 397.538396 
-L 978.428437 397.538396 
+      <path d="M 49.350781 397.474434 
+L 978.428437 397.474434 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke: #d7dce2; stroke-opacity: 0.8; stroke-width: 0.6; stroke-linecap: square"/>
      </g>
      <g id="line2d_18">
@@ -687,12 +687,12 @@ L -3.5 0
 " style="stroke: #000000; stroke-width: 0.8"/>
       </defs>
       <g>
-       <use xlink:href="#m1bf198e4d5" x="49.350781" y="397.538396" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#m1bf198e4d5" x="49.350781" y="397.474434" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_10">
       <!-- $\mathdefault{10^{-2}}$ -->
-      <g transform="translate(21.200781 401.768396) scale(0.09 -0.09)">
+      <g transform="translate(21.200781 401.704434) scale(0.09 -0.09)">
        <defs>
         <path id="DejaVuSans-c9c" d="M 678 2272 
 L 4684 2272 
@@ -711,18 +711,18 @@ z
     </g>
     <g id="ytick_2">
      <g id="line2d_19">
-      <path d="M 49.350781 219.300718 
-L 978.428437 219.300718 
+      <path d="M 49.350781 219.229826 
+L 978.428437 219.229826 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke: #d7dce2; stroke-opacity: 0.8; stroke-width: 0.6; stroke-linecap: square"/>
      </g>
      <g id="line2d_20">
       <g>
-       <use xlink:href="#m1bf198e4d5" x="49.350781" y="219.300718" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#m1bf198e4d5" x="49.350781" y="219.229826" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_11">
       <!-- $\mathdefault{10^{-1}}$ -->
-      <g transform="translate(21.200781 223.485718) scale(0.09 -0.09)">
+      <g transform="translate(21.200781 223.414826) scale(0.09 -0.09)">
        <use xlink:href="#DejaVuSans-14" transform="translate(0 0.665625)"/>
        <use xlink:href="#DejaVuSans-13" transform="translate(63.623047 0.665625)"/>
        <use xlink:href="#DejaVuSans-c9c" transform="translate(128.203125 41.965625) scale(0.7)"/>
@@ -732,18 +732,18 @@ L 978.428437 219.300718
     </g>
     <g id="ytick_3">
      <g id="line2d_21">
-      <path d="M 49.350781 41.063039 
-L 978.428437 41.063039 
+      <path d="M 49.350781 40.985217 
+L 978.428437 40.985217 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke: #d7dce2; stroke-opacity: 0.8; stroke-width: 0.6; stroke-linecap: square"/>
      </g>
      <g id="line2d_22">
       <g>
-       <use xlink:href="#m1bf198e4d5" x="49.350781" y="41.063039" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#m1bf198e4d5" x="49.350781" y="40.985217" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_12">
       <!-- $\mathdefault{10^{0}}$ -->
-      <g transform="translate(26.510781 45.293039) scale(0.09 -0.09)">
+      <g transform="translate(26.510781 45.215217) scale(0.09 -0.09)">
        <use xlink:href="#DejaVuSans-14" transform="translate(0 0.746875)"/>
        <use xlink:href="#DejaVuSans-13" transform="translate(63.623047 0.746875)"/>
        <use xlink:href="#DejaVuSans-13" transform="translate(128.203125 42.046875) scale(0.7)"/>
@@ -758,154 +758,154 @@ L -2 0
 " style="stroke: #000000; stroke-width: 0.6"/>
       </defs>
       <g>
-       <use xlink:href="#m0572ad5106" x="49.350781" y="468.4663" style="stroke: #000000; stroke-width: 0.6"/>
+       <use xlink:href="#m0572ad5106" x="49.350781" y="468.405095" style="stroke: #000000; stroke-width: 0.6"/>
       </g>
      </g>
     </g>
     <g id="ytick_5">
      <g id="line2d_24">
       <g>
-       <use xlink:href="#m0572ad5106" x="49.350781" y="451.193284" style="stroke: #000000; stroke-width: 0.6"/>
+       <use xlink:href="#m0572ad5106" x="49.350781" y="451.131408" style="stroke: #000000; stroke-width: 0.6"/>
       </g>
      </g>
     </g>
     <g id="ytick_6">
      <g id="line2d_25">
       <g>
-       <use xlink:href="#m0572ad5106" x="49.350781" y="437.080203" style="stroke: #000000; stroke-width: 0.6"/>
+       <use xlink:href="#m0572ad5106" x="49.350781" y="437.017778" style="stroke: #000000; stroke-width: 0.6"/>
       </g>
      </g>
     </g>
     <g id="ytick_7">
      <g id="line2d_26">
       <g>
-       <use xlink:href="#m0572ad5106" x="49.350781" y="425.147762" style="stroke: #000000; stroke-width: 0.6"/>
+       <use xlink:href="#m0572ad5106" x="49.350781" y="425.084874" style="stroke: #000000; stroke-width: 0.6"/>
       </g>
      </g>
     </g>
     <g id="ytick_8">
      <g id="line2d_27">
       <g>
-       <use xlink:href="#m0572ad5106" x="49.350781" y="414.811412" style="stroke: #000000; stroke-width: 0.6"/>
+       <use xlink:href="#m0572ad5106" x="49.350781" y="414.748122" style="stroke: #000000; stroke-width: 0.6"/>
       </g>
      </g>
     </g>
     <g id="ytick_9">
      <g id="line2d_28">
       <g>
-       <use xlink:href="#m0572ad5106" x="49.350781" y="405.694105" style="stroke: #000000; stroke-width: 0.6"/>
+       <use xlink:href="#m0572ad5106" x="49.350781" y="405.63046" style="stroke: #000000; stroke-width: 0.6"/>
       </g>
      </g>
     </g>
     <g id="ytick_10">
      <g id="line2d_29">
       <g>
-       <use xlink:href="#m0572ad5106" x="49.350781" y="343.883509" style="stroke: #000000; stroke-width: 0.6"/>
+       <use xlink:href="#m0572ad5106" x="49.350781" y="343.81746" style="stroke: #000000; stroke-width: 0.6"/>
       </g>
      </g>
     </g>
     <g id="ytick_11">
      <g id="line2d_30">
       <g>
-       <use xlink:href="#m0572ad5106" x="49.350781" y="312.497411" style="stroke: #000000; stroke-width: 0.6"/>
+       <use xlink:href="#m0572ad5106" x="49.350781" y="312.430143" style="stroke: #000000; stroke-width: 0.6"/>
       </g>
      </g>
     </g>
     <g id="ytick_12">
      <g id="line2d_31">
       <g>
-       <use xlink:href="#m0572ad5106" x="49.350781" y="290.228621" style="stroke: #000000; stroke-width: 0.6"/>
+       <use xlink:href="#m0572ad5106" x="49.350781" y="290.160487" style="stroke: #000000; stroke-width: 0.6"/>
       </g>
      </g>
     </g>
     <g id="ytick_13">
      <g id="line2d_32">
       <g>
-       <use xlink:href="#m0572ad5106" x="49.350781" y="272.955605" style="stroke: #000000; stroke-width: 0.6"/>
+       <use xlink:href="#m0572ad5106" x="49.350781" y="272.886799" style="stroke: #000000; stroke-width: 0.6"/>
       </g>
      </g>
     </g>
     <g id="ytick_14">
      <g id="line2d_33">
       <g>
-       <use xlink:href="#m0572ad5106" x="49.350781" y="258.842524" style="stroke: #000000; stroke-width: 0.6"/>
+       <use xlink:href="#m0572ad5106" x="49.350781" y="258.773169" style="stroke: #000000; stroke-width: 0.6"/>
       </g>
      </g>
     </g>
     <g id="ytick_15">
      <g id="line2d_34">
       <g>
-       <use xlink:href="#m0572ad5106" x="49.350781" y="246.910083" style="stroke: #000000; stroke-width: 0.6"/>
+       <use xlink:href="#m0572ad5106" x="49.350781" y="246.840265" style="stroke: #000000; stroke-width: 0.6"/>
       </g>
      </g>
     </g>
     <g id="ytick_16">
      <g id="line2d_35">
       <g>
-       <use xlink:href="#m0572ad5106" x="49.350781" y="236.573733" style="stroke: #000000; stroke-width: 0.6"/>
+       <use xlink:href="#m0572ad5106" x="49.350781" y="236.503513" style="stroke: #000000; stroke-width: 0.6"/>
       </g>
      </g>
     </g>
     <g id="ytick_17">
      <g id="line2d_36">
       <g>
-       <use xlink:href="#m0572ad5106" x="49.350781" y="227.456427" style="stroke: #000000; stroke-width: 0.6"/>
+       <use xlink:href="#m0572ad5106" x="49.350781" y="227.385852" style="stroke: #000000; stroke-width: 0.6"/>
       </g>
      </g>
     </g>
     <g id="ytick_18">
      <g id="line2d_37">
       <g>
-       <use xlink:href="#m0572ad5106" x="49.350781" y="165.64583" style="stroke: #000000; stroke-width: 0.6"/>
+       <use xlink:href="#m0572ad5106" x="49.350781" y="165.572852" style="stroke: #000000; stroke-width: 0.6"/>
       </g>
      </g>
     </g>
     <g id="ytick_19">
      <g id="line2d_38">
       <g>
-       <use xlink:href="#m0572ad5106" x="49.350781" y="134.259733" style="stroke: #000000; stroke-width: 0.6"/>
+       <use xlink:href="#m0572ad5106" x="49.350781" y="134.185534" style="stroke: #000000; stroke-width: 0.6"/>
       </g>
      </g>
     </g>
     <g id="ytick_20">
      <g id="line2d_39">
       <g>
-       <use xlink:href="#m0572ad5106" x="49.350781" y="111.990942" style="stroke: #000000; stroke-width: 0.6"/>
+       <use xlink:href="#m0572ad5106" x="49.350781" y="111.915878" style="stroke: #000000; stroke-width: 0.6"/>
       </g>
      </g>
     </g>
     <g id="ytick_21">
      <g id="line2d_40">
       <g>
-       <use xlink:href="#m0572ad5106" x="49.350781" y="94.717926" style="stroke: #000000; stroke-width: 0.6"/>
+       <use xlink:href="#m0572ad5106" x="49.350781" y="94.642191" style="stroke: #000000; stroke-width: 0.6"/>
       </g>
      </g>
     </g>
     <g id="ytick_22">
      <g id="line2d_41">
       <g>
-       <use xlink:href="#m0572ad5106" x="49.350781" y="80.604845" style="stroke: #000000; stroke-width: 0.6"/>
+       <use xlink:href="#m0572ad5106" x="49.350781" y="80.528561" style="stroke: #000000; stroke-width: 0.6"/>
       </g>
      </g>
     </g>
     <g id="ytick_23">
      <g id="line2d_42">
       <g>
-       <use xlink:href="#m0572ad5106" x="49.350781" y="68.672405" style="stroke: #000000; stroke-width: 0.6"/>
+       <use xlink:href="#m0572ad5106" x="49.350781" y="68.595656" style="stroke: #000000; stroke-width: 0.6"/>
       </g>
      </g>
     </g>
     <g id="ytick_24">
      <g id="line2d_43">
       <g>
-       <use xlink:href="#m0572ad5106" x="49.350781" y="58.336055" style="stroke: #000000; stroke-width: 0.6"/>
+       <use xlink:href="#m0572ad5106" x="49.350781" y="58.258904" style="stroke: #000000; stroke-width: 0.6"/>
       </g>
      </g>
     </g>
     <g id="ytick_25">
      <g id="line2d_44">
       <g>
-       <use xlink:href="#m0572ad5106" x="49.350781" y="49.218748" style="stroke: #000000; stroke-width: 0.6"/>
+       <use xlink:href="#m0572ad5106" x="49.350781" y="49.141243" style="stroke: #000000; stroke-width: 0.6"/>
       </g>
      </g>
     </g>
@@ -1108,11 +1108,11 @@ z
     </g>
    </g>
    <g id="lns-series-0" data-series="true" data-distribution="uniform_0_1" data-layout="baseline" data-multiply="baseline" data-access="baseline-x1" data-decoder="raw" data-strategy="raw_fp64"><title>Raw FP64 baseline</title>
-    <path d="M 91.581584 451.54468 
-L 316.812531 446.167827 
-L 542.043478 414.91276 
-L 767.274425 233.861288 
-L 936.197635 80.511763 
+    <path d="M 91.581584 451.530106 
+L 316.812531 446.100884 
+L 542.043478 414.788746 
+L 767.274425 233.756318 
+L 936.197635 80.398375 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke: #222222; stroke-opacity: 0.86; stroke-width: 2.5; stroke-linecap: square"/>
     <defs>
      <path id="m80e9e9dfb7" d="M -0 2.828427 
@@ -1123,19 +1123,19 @@ z
 " style="stroke: #222222; stroke-opacity: 0.86; stroke-linejoin: miter"/>
     </defs>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#m80e9e9dfb7" x="91.581584" y="451.54468" style="fill: #222222; fill-opacity: 0.86; stroke: #222222; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m80e9e9dfb7" x="316.812531" y="446.167827" style="fill: #222222; fill-opacity: 0.86; stroke: #222222; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m80e9e9dfb7" x="542.043478" y="414.91276" style="fill: #222222; fill-opacity: 0.86; stroke: #222222; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m80e9e9dfb7" x="767.274425" y="233.861288" style="fill: #222222; fill-opacity: 0.86; stroke: #222222; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m80e9e9dfb7" x="936.197635" y="80.511763" style="fill: #222222; fill-opacity: 0.86; stroke: #222222; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#m80e9e9dfb7" x="91.581584" y="451.530106" style="fill: #222222; fill-opacity: 0.86; stroke: #222222; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#m80e9e9dfb7" x="316.812531" y="446.100884" style="fill: #222222; fill-opacity: 0.86; stroke: #222222; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#m80e9e9dfb7" x="542.043478" y="414.788746" style="fill: #222222; fill-opacity: 0.86; stroke: #222222; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#m80e9e9dfb7" x="767.274425" y="233.756318" style="fill: #222222; fill-opacity: 0.86; stroke: #222222; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#m80e9e9dfb7" x="936.197635" y="80.398375" style="fill: #222222; fill-opacity: 0.86; stroke: #222222; stroke-opacity: 0.86; stroke-linejoin: miter"/>
     </g>
    </g>
    <g id="lns-series-1" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="fused" data-access="scalar-x1" data-decoder="ex2_approx" data-strategy="fused/padded/scalar/x1/ex2_approx"><title>fused · Padded · x1 · Hardware ex2.approx</title>
-    <path d="M 91.581584 448.151109 
-L 316.812531 444.627119 
-L 542.043478 402.211386 
-L 767.274425 225.64493 
-L 936.197635 71.409279 
+    <path d="M 91.581584 448.332206 
+L 316.812531 443.686885 
+L 542.043478 400.836653 
+L 767.274425 225.77256 
+L 936.197635 71.259667 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 1.65,2.7225; stroke-dashoffset: 0; stroke: #0072b2; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <defs>
      <path id="mf9240f72e7" d="M 0 -2 
@@ -1145,19 +1145,41 @@ z
 " style="stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
     </defs>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#mf9240f72e7" x="91.581584" y="448.151109" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="316.812531" y="444.627119" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="542.043478" y="402.211386" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="767.274425" y="225.64493" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="936.197635" y="71.409279" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="91.581584" y="448.332206" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="316.812531" y="443.686885" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="542.043478" y="400.836653" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="767.274425" y="225.77256" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="936.197635" y="71.259667" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
     </g>
    </g>
-   <g id="lns-series-2" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="fused" data-access="scalar-x1" data-decoder="reference_exp2" data-strategy="fused/padded/scalar/x1/reference_exp2"><title>fused · Padded · x1 · Reference exp2</title>
-    <path d="M 91.581584 446.450975 
-L 316.812531 442.972848 
-L 542.043478 389.795859 
-L 767.274425 214.696927 
-L 936.197635 59.925018 
+   <g id="lns-series-2" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="fused" data-access="scalar-x1" data-decoder="fused_sum_lut_global" data-strategy="fused/padded/scalar/x1/fused_sum_lut_global"><title>fused · Padded · x1 · Fused product lookup · cached global</title>
+    <path d="M 91.581584 443.214757 
+L 316.812531 433.689935 
+L 542.043478 381.291997 
+L 767.274425 211.715055 
+L 936.197635 56.977705 
+" clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 1.65,2.7225; stroke-dashoffset: 0; stroke: #a63603; stroke-opacity: 0.86; stroke-width: 1.65"/>
+    <defs>
+     <path id="mffc3b505c6" d="M 0 -2 
+L -2 2 
+L 2 2 
+z
+" style="stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+    </defs>
+    <g clip-path="url(#pd84ec2b9c1)">
+     <use xlink:href="#mffc3b505c6" x="91.581584" y="443.214757" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="316.812531" y="433.689935" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="542.043478" y="381.291997" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="767.274425" y="211.715055" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="936.197635" y="56.977705" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+    </g>
+   </g>
+   <g id="lns-series-3" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="fused" data-access="scalar-x1" data-decoder="reference_exp2" data-strategy="fused/padded/scalar/x1/reference_exp2"><title>fused · Padded · x1 · Reference exp2</title>
+    <path d="M 91.581584 446.817324 
+L 316.812531 443.290321 
+L 542.043478 389.003739 
+L 767.274425 214.628203 
+L 936.197635 59.715455 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 1.65,2.7225; stroke-dashoffset: 0; stroke: #6c757d; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <defs>
      <path id="m84cc5938f9" d="M 0 -2 
@@ -1167,116 +1189,109 @@ z
 " style="stroke: #6c757d; stroke-opacity: 0.86; stroke-linejoin: miter"/>
     </defs>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#m84cc5938f9" x="91.581584" y="446.450975" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m84cc5938f9" x="316.812531" y="442.972848" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m84cc5938f9" x="542.043478" y="389.795859" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m84cc5938f9" x="767.274425" y="214.696927" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m84cc5938f9" x="936.197635" y="59.925018" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#m84cc5938f9" x="91.581584" y="446.817324" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#m84cc5938f9" x="316.812531" y="443.290321" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#m84cc5938f9" x="542.043478" y="389.003739" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#m84cc5938f9" x="767.274425" y="214.628203" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#m84cc5938f9" x="936.197635" y="59.715455" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86; stroke-linejoin: miter"/>
     </g>
    </g>
-   <g id="lns-series-3" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x2" data-decoder="ex2_approx" data-strategy="fused/padded/thread_packet/x2/ex2_approx"><title>fused · Padded · packet x2 · Hardware ex2.approx</title>
-    <path d="M 91.581584 446.22093 
-L 316.812531 442.80384 
-L 542.043478 400.4747 
-L 767.274425 238.859131 
-L 936.197635 86.076101 
+   <g id="lns-series-4" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x2" data-decoder="ex2_approx" data-strategy="fused/padded/thread_packet/x2/ex2_approx"><title>fused · Padded · packet x2 · Hardware ex2.approx</title>
+    <path d="M 91.581584 446.558665 
+L 316.812531 441.595252 
+L 542.043478 399.846861 
+L 767.274425 238.08488 
+L 936.197635 85.737573 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 6.105,2.64; stroke-dashoffset: 0; stroke: #0072b2; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#mf9240f72e7" x="91.581584" y="446.22093" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="316.812531" y="442.80384" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="542.043478" y="400.4747" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="767.274425" y="238.859131" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="936.197635" y="86.076101" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="91.581584" y="446.558665" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="316.812531" y="441.595252" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="542.043478" y="399.846861" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="767.274425" y="238.08488" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="936.197635" y="85.737573" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
     </g>
    </g>
-   <g id="lns-series-4" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x2" data-decoder="fraction_lut_shared" data-strategy="fused/padded/thread_packet/x2/fraction_lut_shared"><title>fused · Padded · packet x2 · Fraction lookup · shared memory</title>
-    <path d="M 91.581584 410.249553 
-L 316.812531 406.436571 
-L 542.043478 370.81426 
-L 767.274425 217.142408 
-L 936.197635 67.469336 
-" clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 6.105,2.64; stroke-dashoffset: 0; stroke: #56b4e9; stroke-opacity: 0.86; stroke-width: 1.65"/>
-    <defs>
-     <path id="m99c5ff57c6" d="M 0 -2 
-L -2 2 
-L 2 2 
-z
-" style="stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-    </defs>
+   <g id="lns-series-5" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x2" data-decoder="fused_sum_lut_global" data-strategy="fused/padded/thread_packet/x2/fused_sum_lut_global"><title>fused · Padded · packet x2 · Fused product lookup · cached global</title>
+    <path d="M 91.581584 439.912916 
+L 316.812531 433.595643 
+L 542.043478 382.409017 
+L 767.274425 224.768294 
+L 936.197635 71.741288 
+" clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 6.105,2.64; stroke-dashoffset: 0; stroke: #a63603; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#m99c5ff57c6" x="91.581584" y="410.249553" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="316.812531" y="406.436571" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="542.043478" y="370.81426" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="767.274425" y="217.142408" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="936.197635" y="67.469336" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="91.581584" y="439.912916" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="316.812531" y="433.595643" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="542.043478" y="382.409017" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="767.274425" y="224.768294" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="936.197635" y="71.741288" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
     </g>
    </g>
-   <g id="lns-series-5" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x4" data-decoder="ex2_approx" data-strategy="fused/padded/thread_packet/x4/ex2_approx"><title>fused · Padded · packet x4 · Hardware ex2.approx</title>
-    <path d="M 91.581584 439.594249 
-L 316.812531 436.523027 
-L 542.043478 402.316769 
-L 767.274425 249.69441 
-L 936.197635 97.079616 
+   <g id="lns-series-6" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x4" data-decoder="ex2_approx" data-strategy="fused/padded/thread_packet/x4/ex2_approx"><title>fused · Padded · packet x4 · Hardware ex2.approx</title>
+    <path d="M 91.581584 439.938683 
+L 316.812531 436.854499 
+L 542.043478 401.678693 
+L 767.274425 249.474945 
+L 936.197635 97.188731 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 10.56,2.64,1.65,2.64; stroke-dashoffset: 0; stroke: #0072b2; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#mf9240f72e7" x="91.581584" y="439.594249" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="316.812531" y="436.523027" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="542.043478" y="402.316769" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="767.274425" y="249.69441" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="936.197635" y="97.079616" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="91.581584" y="439.938683" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="316.812531" y="436.854499" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="542.043478" y="401.678693" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="767.274425" y="249.474945" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="936.197635" y="97.188731" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
     </g>
    </g>
-   <g id="lns-series-6" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x4" data-decoder="fraction_lut_shared" data-strategy="fused/padded/thread_packet/x4/fraction_lut_shared"><title>fused · Padded · packet x4 · Fraction lookup · shared memory</title>
-    <path d="M 91.581584 406.378891 
-L 316.812531 402.445602 
-L 542.043478 371.801131 
-L 767.274425 220.987942 
-L 936.197635 71.73576 
-" clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 10.56,2.64,1.65,2.64; stroke-dashoffset: 0; stroke: #56b4e9; stroke-opacity: 0.86; stroke-width: 1.65"/>
+   <g id="lns-series-7" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x4" data-decoder="fused_sum_lut_global" data-strategy="fused/padded/thread_packet/x4/fused_sum_lut_global"><title>fused · Padded · packet x4 · Fused product lookup · cached global</title>
+    <path d="M 91.581584 430.940529 
+L 316.812531 428.104095 
+L 542.043478 383.889549 
+L 767.274425 235.517095 
+L 936.197635 84.082958 
+" clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 10.56,2.64,1.65,2.64; stroke-dashoffset: 0; stroke: #a63603; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#m99c5ff57c6" x="91.581584" y="406.378891" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="316.812531" y="402.445602" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="542.043478" y="371.801131" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="767.274425" y="220.987942" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="936.197635" y="71.73576" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="91.581584" y="430.940529" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="316.812531" y="428.104095" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="542.043478" y="383.889549" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="767.274425" y="235.517095" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="936.197635" y="84.082958" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
     </g>
    </g>
-   <g id="lns-series-7" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x8" data-decoder="ex2_approx" data-strategy="fused/padded/thread_packet/x8/ex2_approx"><title>fused · Padded · packet x8 · Hardware ex2.approx</title>
-    <path d="M 91.581584 428.038141 
-L 316.812531 426.660193 
-L 542.043478 401.244347 
-L 767.274425 252.43296 
-L 936.197635 101.221923 
+   <g id="lns-series-8" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x8" data-decoder="ex2_approx" data-strategy="fused/padded/thread_packet/x8/ex2_approx"><title>fused · Padded · packet x8 · Hardware ex2.approx</title>
+    <path d="M 91.581584 428.387199 
+L 316.812531 426.782545 
+L 542.043478 399.896344 
+L 767.274425 252.228689 
+L 936.197635 101.099265 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke: #0072b2; stroke-opacity: 0.86; stroke-width: 1.65; stroke-linecap: square"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#mf9240f72e7" x="91.581584" y="428.038141" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="316.812531" y="426.660193" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="542.043478" y="401.244347" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="767.274425" y="252.43296" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="936.197635" y="101.221923" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="91.581584" y="428.387199" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="316.812531" y="426.782545" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="542.043478" y="399.896344" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="767.274425" y="252.228689" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="936.197635" y="101.099265" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
     </g>
    </g>
-   <g id="lns-series-8" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x8" data-decoder="fraction_lut_shared" data-strategy="fused/padded/thread_packet/x8/fraction_lut_shared"><title>fused · Padded · packet x8 · Fraction lookup · shared memory</title>
-    <path d="M 91.581584 395.844584 
-L 316.812531 395.014966 
-L 542.043478 371.107997 
-L 767.274425 223.483707 
-L 936.197635 74.417184 
-" clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke: #56b4e9; stroke-opacity: 0.86; stroke-width: 1.65; stroke-linecap: square"/>
+   <g id="lns-series-9" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x8" data-decoder="fused_sum_lut_global" data-strategy="fused/padded/thread_packet/x8/fused_sum_lut_global"><title>fused · Padded · packet x8 · Fused product lookup · cached global</title>
+    <path d="M 91.581584 415.331393 
+L 316.812531 413.292294 
+L 542.043478 385.721441 
+L 767.274425 240.975159 
+L 936.197635 90.01359 
+" clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke: #a63603; stroke-opacity: 0.86; stroke-width: 1.65; stroke-linecap: square"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#m99c5ff57c6" x="91.581584" y="395.844584" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="316.812531" y="395.014966" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="542.043478" y="371.107997" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="767.274425" y="223.483707" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="936.197635" y="74.417184" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="91.581584" y="415.331393" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="316.812531" y="413.292294" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="542.043478" y="385.721441" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="767.274425" y="240.975159" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="936.197635" y="90.01359" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
     </g>
    </g>
-   <g id="lns-series-9" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="ordinary" data-access="scalar-x1" data-decoder="ex2_approx" data-strategy="ordinary/padded/scalar/x1/ex2_approx"><title>ordinary · Padded · x1 · Hardware ex2.approx</title>
-    <path d="M 91.581584 448.13712 
-L 316.812531 444.342335 
-L 542.043478 403.283453 
-L 767.274425 227.7103 
-L 936.197635 73.086575 
+   <g id="lns-series-10" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="ordinary" data-access="scalar-x1" data-decoder="ex2_approx" data-strategy="ordinary/padded/scalar/x1/ex2_approx"><title>ordinary · Padded · x1 · Hardware ex2.approx</title>
+    <path d="M 91.581584 448.52842 
+L 316.812531 443.353586 
+L 542.043478 402.061108 
+L 767.274425 227.407045 
+L 936.197635 72.83233 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 1.65,2.7225; stroke-dashoffset: 0; stroke: #0072b2; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <defs>
      <path id="m5ca1e609e6" d="M 0 2 
@@ -1292,19 +1307,19 @@ z
 " style="stroke: #0072b2; stroke-opacity: 0.86"/>
     </defs>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#m5ca1e609e6" x="91.581584" y="448.13712" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="316.812531" y="444.342335" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="542.043478" y="403.283453" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="767.274425" y="227.7103" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="936.197635" y="73.086575" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="91.581584" y="448.52842" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="316.812531" y="443.353586" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="542.043478" y="402.061108" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="767.274425" y="227.407045" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="936.197635" y="72.83233" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
     </g>
    </g>
-   <g id="lns-series-10" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="ordinary" data-access="scalar-x1" data-decoder="fraction_lut_shared" data-strategy="ordinary/padded/scalar/x1/fraction_lut_shared"><title>ordinary · Padded · x1 · Fraction lookup · shared memory</title>
-    <path d="M 91.581584 411.84348 
-L 316.812531 406.951972 
-L 542.043478 365.181043 
-L 767.274425 203.118413 
-L 936.197635 51.743717 
+   <g id="lns-series-11" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="ordinary" data-access="scalar-x1" data-decoder="fraction_lut_shared" data-strategy="ordinary/padded/scalar/x1/fraction_lut_shared"><title>ordinary · Padded · x1 · Fraction lookup · shared memory</title>
+    <path d="M 91.581584 411.318681 
+L 316.812531 406.000339 
+L 542.043478 364.367968 
+L 767.274425 202.963718 
+L 936.197635 51.586887 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 1.65,2.7225; stroke-dashoffset: 0; stroke: #56b4e9; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <defs>
      <path id="mc324042e6a" d="M 0 2 
@@ -1320,18 +1335,18 @@ z
 " style="stroke: #56b4e9; stroke-opacity: 0.86"/>
     </defs>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#mc324042e6a" x="91.581584" y="411.84348" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="316.812531" y="406.951972" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="542.043478" y="365.181043" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="767.274425" y="203.118413" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="936.197635" y="51.743717" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="91.581584" y="411.318681" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="316.812531" y="406.000339" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="542.043478" y="364.367968" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="767.274425" y="202.963718" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="936.197635" y="51.586887" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
     </g>
    </g>
-   <g id="lns-series-11" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="ordinary" data-access="scalar-x1" data-decoder="reference_exp2" data-strategy="ordinary/padded/scalar/x1/reference_exp2"><title>ordinary · Padded · x1 · Reference exp2</title>
-    <path d="M 91.581584 446.359725 
-L 316.812531 441.23826 
-L 542.043478 376.616602 
-L 767.274425 200.165071 
+   <g id="lns-series-12" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="ordinary" data-access="scalar-x1" data-decoder="reference_exp2" data-strategy="ordinary/padded/scalar/x1/reference_exp2"><title>ordinary · Padded · x1 · Reference exp2</title>
+    <path d="M 91.581584 446.748624 
+L 316.812531 440.515442 
+L 542.043478 375.779953 
+L 767.274425 199.488884 
 L 936.197635 44.927351 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 1.65,2.7225; stroke-dashoffset: 0; stroke: #6c757d; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <defs>
@@ -1348,371 +1363,386 @@ z
 " style="stroke: #6c757d; stroke-opacity: 0.86"/>
     </defs>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#mac300cdc1d" x="91.581584" y="446.359725" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86"/>
-     <use xlink:href="#mac300cdc1d" x="316.812531" y="441.23826" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86"/>
-     <use xlink:href="#mac300cdc1d" x="542.043478" y="376.616602" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86"/>
-     <use xlink:href="#mac300cdc1d" x="767.274425" y="200.165071" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86"/>
+     <use xlink:href="#mac300cdc1d" x="91.581584" y="446.748624" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86"/>
+     <use xlink:href="#mac300cdc1d" x="316.812531" y="440.515442" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86"/>
+     <use xlink:href="#mac300cdc1d" x="542.043478" y="375.779953" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86"/>
+     <use xlink:href="#mac300cdc1d" x="767.274425" y="199.488884" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86"/>
      <use xlink:href="#mac300cdc1d" x="936.197635" y="44.927351" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86"/>
     </g>
    </g>
-   <g id="lns-series-12" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x2" data-decoder="ex2_approx" data-strategy="ordinary/padded/thread_packet/x2/ex2_approx"><title>ordinary · Padded · packet x2 · Hardware ex2.approx</title>
-    <path d="M 91.581584 444.564159 
-L 316.812531 442.784506 
-L 542.043478 404.351104 
-L 767.274425 241.125004 
-L 936.197635 88.45725 
+   <g id="lns-series-13" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x2" data-decoder="ex2_approx" data-strategy="ordinary/padded/thread_packet/x2/ex2_approx"><title>ordinary · Padded · packet x2 · Hardware ex2.approx</title>
+    <path d="M 91.581584 444.878556 
+L 316.812531 440.960899 
+L 542.043478 403.315396 
+L 767.274425 241.517751 
+L 936.197635 88.535641 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 6.105,2.64; stroke-dashoffset: 0; stroke: #0072b2; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#m5ca1e609e6" x="91.581584" y="444.564159" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="316.812531" y="442.784506" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="542.043478" y="404.351104" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="767.274425" y="241.125004" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="936.197635" y="88.45725" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="91.581584" y="444.878556" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="316.812531" y="440.960899" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="542.043478" y="403.315396" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="767.274425" y="241.517751" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="936.197635" y="88.535641" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
     </g>
    </g>
-   <g id="lns-series-13" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x2" data-decoder="fraction_lut_shared" data-strategy="ordinary/padded/thread_packet/x2/fraction_lut_shared"><title>ordinary · Padded · packet x2 · Fraction lookup · shared memory</title>
-    <path d="M 91.581584 408.601435 
-L 316.812531 404.390828 
-L 542.043478 365.450809 
-L 767.274425 205.773273 
-L 936.197635 55.096567 
+   <g id="lns-series-14" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x2" data-decoder="fraction_lut_shared" data-strategy="ordinary/padded/thread_packet/x2/fraction_lut_shared"><title>ordinary · Padded · packet x2 · Fraction lookup · shared memory</title>
+    <path d="M 91.581584 409.138738 
+L 316.812531 404.930265 
+L 542.043478 364.330375 
+L 767.274425 205.953807 
+L 936.197635 54.908318 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 6.105,2.64; stroke-dashoffset: 0; stroke: #56b4e9; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#mc324042e6a" x="91.581584" y="408.601435" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="316.812531" y="404.390828" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="542.043478" y="365.450809" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="767.274425" y="205.773273" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="936.197635" y="55.096567" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="91.581584" y="409.138738" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="316.812531" y="404.930265" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="542.043478" y="364.330375" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="767.274425" y="205.953807" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="936.197635" y="54.908318" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
     </g>
    </g>
-   <g id="lns-series-14" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x4" data-decoder="ex2_approx" data-strategy="ordinary/padded/thread_packet/x4/ex2_approx"><title>ordinary · Padded · packet x4 · Hardware ex2.approx</title>
-    <path d="M 91.581584 438.103285 
-L 316.812531 436.467656 
-L 542.043478 405.879316 
-L 767.274425 254.215649 
-L 936.197635 102.135965 
+   <g id="lns-series-15" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x4" data-decoder="ex2_approx" data-strategy="ordinary/padded/thread_packet/x4/ex2_approx"><title>ordinary · Padded · packet x4 · Hardware ex2.approx</title>
+    <path d="M 91.581584 438.371212 
+L 316.812531 436.809388 
+L 542.043478 404.083614 
+L 767.274425 253.846902 
+L 936.197635 101.880133 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 10.56,2.64,1.65,2.64; stroke-dashoffset: 0; stroke: #0072b2; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#m5ca1e609e6" x="91.581584" y="438.103285" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="316.812531" y="436.467656" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="542.043478" y="405.879316" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="767.274425" y="254.215649" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="936.197635" y="102.135965" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="91.581584" y="438.371212" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="316.812531" y="436.809388" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="542.043478" y="404.083614" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="767.274425" y="253.846902" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="936.197635" y="101.880133" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
     </g>
    </g>
-   <g id="lns-series-15" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x4" data-decoder="fraction_lut_shared" data-strategy="ordinary/padded/thread_packet/x4/fraction_lut_shared"><title>ordinary · Padded · packet x4 · Fraction lookup · shared memory</title>
-    <path d="M 91.581584 402.665295 
-L 316.812531 399.875872 
-L 542.043478 365.672518 
-L 767.274425 208.869038 
-L 936.197635 57.862952 
+   <g id="lns-series-16" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x4" data-decoder="fraction_lut_shared" data-strategy="ordinary/padded/thread_packet/x4/fraction_lut_shared"><title>ordinary · Padded · packet x4 · Fraction lookup · shared memory</title>
+    <path d="M 91.581584 403.011781 
+L 316.812531 400.006339 
+L 542.043478 365.292226 
+L 767.274425 208.481888 
+L 936.197635 57.801986 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 10.56,2.64,1.65,2.64; stroke-dashoffset: 0; stroke: #56b4e9; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#mc324042e6a" x="91.581584" y="402.665295" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="316.812531" y="399.875872" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="542.043478" y="365.672518" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="767.274425" y="208.869038" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="936.197635" y="57.862952" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="91.581584" y="403.011781" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="316.812531" y="400.006339" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="542.043478" y="365.292226" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="767.274425" y="208.481888" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="936.197635" y="57.801986" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
     </g>
    </g>
-   <g id="lns-series-16" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x8" data-decoder="ex2_approx" data-strategy="ordinary/padded/thread_packet/x8/ex2_approx"><title>ordinary · Padded · packet x8 · Hardware ex2.approx</title>
-    <path d="M 91.581584 425.357428 
-L 316.812531 424.742983 
-L 542.043478 404.154002 
-L 767.274425 258.272738 
-L 936.197635 107.54737 
+   <g id="lns-series-17" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x8" data-decoder="ex2_approx" data-strategy="ordinary/padded/thread_packet/x8/ex2_approx"><title>ordinary · Padded · packet x8 · Hardware ex2.approx</title>
+    <path d="M 91.581584 425.702732 
+L 316.812531 424.383788 
+L 542.043478 403.462675 
+L 767.274425 257.772229 
+L 936.197635 107.196014 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke: #0072b2; stroke-opacity: 0.86; stroke-width: 1.65; stroke-linecap: square"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#m5ca1e609e6" x="91.581584" y="425.357428" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="316.812531" y="424.742983" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="542.043478" y="404.154002" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="767.274425" y="258.272738" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="936.197635" y="107.54737" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="91.581584" y="425.702732" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="316.812531" y="424.383788" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="542.043478" y="403.462675" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="767.274425" y="257.772229" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="936.197635" y="107.196014" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
     </g>
    </g>
-   <g id="lns-series-17" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x8" data-decoder="fraction_lut_shared" data-strategy="ordinary/padded/thread_packet/x8/fraction_lut_shared"><title>ordinary · Padded · packet x8 · Fraction lookup · shared memory</title>
-    <path d="M 91.581584 391.674619 
-L 316.812531 389.965642 
-L 542.043478 365.409176 
-L 767.274425 209.329065 
-L 936.197635 59.975446 
+   <g id="lns-series-18" data-series="true" data-distribution="uniform_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x8" data-decoder="fraction_lut_shared" data-strategy="ordinary/padded/thread_packet/x8/fraction_lut_shared"><title>ordinary · Padded · packet x8 · Fraction lookup · shared memory</title>
+    <path d="M 91.581584 391.824839 
+L 316.812531 390.318407 
+L 542.043478 364.406693 
+L 767.274425 210.167461 
+L 936.197635 59.69353 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke: #56b4e9; stroke-opacity: 0.86; stroke-width: 1.65; stroke-linecap: square"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#mc324042e6a" x="91.581584" y="391.674619" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="316.812531" y="389.965642" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="542.043478" y="365.409176" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="767.274425" y="209.329065" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="936.197635" y="59.975446" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="91.581584" y="391.824839" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="316.812531" y="390.318407" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="542.043478" y="364.406693" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="767.274425" y="210.167461" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="936.197635" y="59.69353" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
     </g>
    </g>
-   <g id="lns-series-18" data-series="true" data-distribution="normal_0_1" data-layout="baseline" data-multiply="baseline" data-access="baseline-x1" data-decoder="raw" data-strategy="raw_fp64"><title>Raw FP64 baseline</title>
-    <path d="M 91.581584 451.539497 
-L 316.812531 446.177532 
-L 542.043478 414.944465 
-L 767.274425 233.813466 
-L 936.197635 80.505992 
+   <g id="lns-series-19" data-series="true" data-distribution="normal_0_1" data-layout="baseline" data-multiply="baseline" data-access="baseline-x1" data-decoder="raw" data-strategy="raw_fp64"><title>Raw FP64 baseline</title>
+    <path d="M 91.581584 451.54468 
+L 316.812531 446.116873 
+L 542.043478 414.847692 
+L 767.274425 233.719056 
+L 936.197635 80.39326 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke: #222222; stroke-opacity: 0.86; stroke-width: 2.5; stroke-linecap: square"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#m80e9e9dfb7" x="91.581584" y="451.539497" style="fill: #222222; fill-opacity: 0.86; stroke: #222222; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m80e9e9dfb7" x="316.812531" y="446.177532" style="fill: #222222; fill-opacity: 0.86; stroke: #222222; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m80e9e9dfb7" x="542.043478" y="414.944465" style="fill: #222222; fill-opacity: 0.86; stroke: #222222; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m80e9e9dfb7" x="767.274425" y="233.813466" style="fill: #222222; fill-opacity: 0.86; stroke: #222222; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m80e9e9dfb7" x="936.197635" y="80.505992" style="fill: #222222; fill-opacity: 0.86; stroke: #222222; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#m80e9e9dfb7" x="91.581584" y="451.54468" style="fill: #222222; fill-opacity: 0.86; stroke: #222222; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#m80e9e9dfb7" x="316.812531" y="446.116873" style="fill: #222222; fill-opacity: 0.86; stroke: #222222; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#m80e9e9dfb7" x="542.043478" y="414.847692" style="fill: #222222; fill-opacity: 0.86; stroke: #222222; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#m80e9e9dfb7" x="767.274425" y="233.719056" style="fill: #222222; fill-opacity: 0.86; stroke: #222222; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#m80e9e9dfb7" x="936.197635" y="80.39326" style="fill: #222222; fill-opacity: 0.86; stroke: #222222; stroke-opacity: 0.86; stroke-linejoin: miter"/>
     </g>
    </g>
-   <g id="lns-series-19" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="fused" data-access="scalar-x1" data-decoder="ex2_approx" data-strategy="fused/padded/scalar/x1/ex2_approx"><title>fused · Padded · x1 · Hardware ex2.approx</title>
-    <path d="M 91.581584 448.953064 
-L 316.812531 444.460173 
-L 542.043478 402.016962 
-L 767.274425 225.534626 
-L 936.197635 71.535776 
+   <g id="lns-series-20" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="fused" data-access="scalar-x1" data-decoder="ex2_approx" data-strategy="fused/padded/scalar/x1/ex2_approx"><title>fused · Padded · x1 · Hardware ex2.approx</title>
+    <path d="M 91.581584 448.534685 
+L 316.812531 444.745616 
+L 542.043478 401.336997 
+L 767.274425 225.174717 
+L 936.197635 71.287858 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 1.65,2.7225; stroke-dashoffset: 0; stroke: #0072b2; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#mf9240f72e7" x="91.581584" y="448.953064" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="316.812531" y="444.460173" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="542.043478" y="402.016962" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="767.274425" y="225.534626" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="936.197635" y="71.535776" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="91.581584" y="448.534685" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="316.812531" y="444.745616" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="542.043478" y="401.336997" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="767.274425" y="225.174717" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="936.197635" y="71.287858" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
     </g>
    </g>
-   <g id="lns-series-20" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="fused" data-access="scalar-x1" data-decoder="reference_exp2" data-strategy="fused/padded/scalar/x1/reference_exp2"><title>fused · Padded · x1 · Reference exp2</title>
-    <path d="M 91.581584 446.434633 
-L 316.812531 442.970337 
-L 542.043478 389.775973 
-L 767.274425 214.698677 
-L 936.197635 59.948094 
+   <g id="lns-series-21" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="fused" data-access="scalar-x1" data-decoder="fused_sum_lut_global" data-strategy="fused/padded/scalar/x1/fused_sum_lut_global"><title>fused · Padded · x1 · Fused product lookup · cached global</title>
+    <path d="M 91.581584 443.220754 
+L 316.812531 435.448203 
+L 542.043478 382.626933 
+L 767.274425 210.934964 
+L 936.197635 56.024238 
+" clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 1.65,2.7225; stroke-dashoffset: 0; stroke: #a63603; stroke-opacity: 0.86; stroke-width: 1.65"/>
+    <g clip-path="url(#pd84ec2b9c1)">
+     <use xlink:href="#mffc3b505c6" x="91.581584" y="443.220754" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="316.812531" y="435.448203" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="542.043478" y="382.626933" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="767.274425" y="210.934964" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="936.197635" y="56.024238" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+    </g>
+   </g>
+   <g id="lns-series-22" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="fused" data-access="scalar-x1" data-decoder="reference_exp2" data-strategy="fused/padded/scalar/x1/reference_exp2"><title>fused · Padded · x1 · Reference exp2</title>
+    <path d="M 91.581584 446.827346 
+L 316.812531 443.291641 
+L 542.043478 389.153469 
+L 767.274425 214.527516 
+L 936.197635 59.722715 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 1.65,2.7225; stroke-dashoffset: 0; stroke: #6c757d; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#m84cc5938f9" x="91.581584" y="446.434633" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m84cc5938f9" x="316.812531" y="442.970337" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m84cc5938f9" x="542.043478" y="389.775973" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m84cc5938f9" x="767.274425" y="214.698677" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m84cc5938f9" x="936.197635" y="59.948094" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#m84cc5938f9" x="91.581584" y="446.827346" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#m84cc5938f9" x="316.812531" y="443.291641" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#m84cc5938f9" x="542.043478" y="389.153469" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#m84cc5938f9" x="767.274425" y="214.527516" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#m84cc5938f9" x="936.197635" y="59.722715" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86; stroke-linejoin: miter"/>
     </g>
    </g>
-   <g id="lns-series-21" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x2" data-decoder="ex2_approx" data-strategy="fused/padded/thread_packet/x2/ex2_approx"><title>fused · Padded · packet x2 · Hardware ex2.approx</title>
-    <path d="M 91.581584 446.228477 
-L 316.812531 442.828329 
-L 542.043478 400.578105 
-L 767.274425 238.500684 
-L 936.197635 86.123046 
+   <g id="lns-series-23" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x2" data-decoder="ex2_approx" data-strategy="fused/padded/thread_packet/x2/ex2_approx"><title>fused · Padded · packet x2 · Hardware ex2.approx</title>
+    <path d="M 91.581584 446.514025 
+L 316.812531 442.422757 
+L 542.043478 399.939839 
+L 767.274425 238.933951 
+L 936.197635 86.078841 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 6.105,2.64; stroke-dashoffset: 0; stroke: #0072b2; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#mf9240f72e7" x="91.581584" y="446.228477" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="316.812531" y="442.828329" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="542.043478" y="400.578105" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="767.274425" y="238.500684" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="936.197635" y="86.123046" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="91.581584" y="446.514025" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="316.812531" y="442.422757" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="542.043478" y="399.939839" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="767.274425" y="238.933951" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="936.197635" y="86.078841" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
     </g>
    </g>
-   <g id="lns-series-22" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x2" data-decoder="fraction_lut_shared" data-strategy="fused/padded/thread_packet/x2/fraction_lut_shared"><title>fused · Padded · packet x2 · Fraction lookup · shared memory</title>
-    <path d="M 91.581584 410.049205 
-L 316.812531 406.428861 
-L 542.043478 370.748272 
-L 767.274425 216.896656 
-L 936.197635 67.463318 
-" clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 6.105,2.64; stroke-dashoffset: 0; stroke: #56b4e9; stroke-opacity: 0.86; stroke-width: 1.65"/>
+   <g id="lns-series-24" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x2" data-decoder="fused_sum_lut_global" data-strategy="fused/padded/thread_packet/x2/fused_sum_lut_global"><title>fused · Padded · packet x2 · Fused product lookup · cached global</title>
+    <path d="M 91.581584 439.899311 
+L 316.812531 433.487256 
+L 542.043478 384.190362 
+L 767.274425 223.959395 
+L 936.197635 70.853345 
+" clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 6.105,2.64; stroke-dashoffset: 0; stroke: #a63603; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#m99c5ff57c6" x="91.581584" y="410.049205" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="316.812531" y="406.428861" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="542.043478" y="370.748272" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="767.274425" y="216.896656" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="936.197635" y="67.463318" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="91.581584" y="439.899311" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="316.812531" y="433.487256" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="542.043478" y="384.190362" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="767.274425" y="223.959395" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="936.197635" y="70.853345" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
     </g>
    </g>
-   <g id="lns-series-23" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x4" data-decoder="ex2_approx" data-strategy="fused/padded/thread_packet/x4/ex2_approx"><title>fused · Padded · packet x4 · Hardware ex2.approx</title>
-    <path d="M 91.581584 439.612237 
-L 316.812531 437.015898 
-L 542.043478 402.298458 
-L 767.274425 249.035432 
-L 936.197635 97.249835 
+   <g id="lns-series-25" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x4" data-decoder="ex2_approx" data-strategy="fused/padded/thread_packet/x4/ex2_approx"><title>fused · Padded · packet x4 · Hardware ex2.approx</title>
+    <path d="M 91.581584 440.137742 
+L 316.812531 437.042077 
+L 542.043478 401.793994 
+L 767.274425 248.868989 
+L 936.197635 97.089697 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 10.56,2.64,1.65,2.64; stroke-dashoffset: 0; stroke: #0072b2; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#mf9240f72e7" x="91.581584" y="439.612237" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="316.812531" y="437.015898" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="542.043478" y="402.298458" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="767.274425" y="249.035432" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="936.197635" y="97.249835" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="91.581584" y="440.137742" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="316.812531" y="437.042077" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="542.043478" y="401.793994" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="767.274425" y="248.868989" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="936.197635" y="97.089697" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
     </g>
    </g>
-   <g id="lns-series-24" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x4" data-decoder="fraction_lut_shared" data-strategy="fused/padded/thread_packet/x4/fraction_lut_shared"><title>fused · Padded · packet x4 · Fraction lookup · shared memory</title>
-    <path d="M 91.581584 405.819758 
-L 316.812531 402.60123 
-L 542.043478 371.610665 
-L 767.274425 220.892002 
-L 936.197635 72.028914 
-" clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 10.56,2.64,1.65,2.64; stroke-dashoffset: 0; stroke: #56b4e9; stroke-opacity: 0.86; stroke-width: 1.65"/>
+   <g id="lns-series-26" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x4" data-decoder="fused_sum_lut_global" data-strategy="fused/padded/thread_packet/x4/fused_sum_lut_global"><title>fused · Padded · packet x4 · Fused product lookup · cached global</title>
+    <path d="M 91.581584 430.952331 
+L 316.812531 428.08779 
+L 542.043478 385.078895 
+L 767.274425 235.31854 
+L 936.197635 82.938174 
+" clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 10.56,2.64,1.65,2.64; stroke-dashoffset: 0; stroke: #a63603; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#m99c5ff57c6" x="91.581584" y="405.819758" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="316.812531" y="402.60123" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="542.043478" y="371.610665" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="767.274425" y="220.892002" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="936.197635" y="72.028914" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="91.581584" y="430.952331" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="316.812531" y="428.08779" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="542.043478" y="385.078895" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="767.274425" y="235.31854" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="936.197635" y="82.938174" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
     </g>
    </g>
-   <g id="lns-series-25" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x8" data-decoder="ex2_approx" data-strategy="fused/padded/thread_packet/x8/ex2_approx"><title>fused · Padded · packet x8 · Hardware ex2.approx</title>
-    <path d="M 91.581584 427.851067 
-L 316.812531 426.489883 
-L 542.043478 400.764662 
-L 767.274425 252.159045 
-L 936.197635 100.982104 
+   <g id="lns-series-27" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x8" data-decoder="ex2_approx" data-strategy="fused/padded/thread_packet/x8/ex2_approx"><title>fused · Padded · packet x8 · Hardware ex2.approx</title>
+    <path d="M 91.581584 428.387021 
+L 316.812531 426.898785 
+L 542.043478 400.105556 
+L 767.274425 252.09587 
+L 936.197635 100.867228 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke: #0072b2; stroke-opacity: 0.86; stroke-width: 1.65; stroke-linecap: square"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#mf9240f72e7" x="91.581584" y="427.851067" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="316.812531" y="426.489883" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="542.043478" y="400.764662" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="767.274425" y="252.159045" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#mf9240f72e7" x="936.197635" y="100.982104" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="91.581584" y="428.387021" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="316.812531" y="426.898785" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="542.043478" y="400.105556" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="767.274425" y="252.09587" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mf9240f72e7" x="936.197635" y="100.867228" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86; stroke-linejoin: miter"/>
     </g>
    </g>
-   <g id="lns-series-26" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x8" data-decoder="fraction_lut_shared" data-strategy="fused/padded/thread_packet/x8/fraction_lut_shared"><title>fused · Padded · packet x8 · Fraction lookup · shared memory</title>
-    <path d="M 91.581584 395.975196 
-L 316.812531 394.941394 
-L 542.043478 371.138498 
-L 767.274425 223.442052 
-L 936.197635 74.434032 
-" clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke: #56b4e9; stroke-opacity: 0.86; stroke-width: 1.65; stroke-linecap: square"/>
+   <g id="lns-series-28" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="fused" data-access="thread_packet-x8" data-decoder="fused_sum_lut_global" data-strategy="fused/padded/thread_packet/x8/fused_sum_lut_global"><title>fused · Padded · packet x8 · Fused product lookup · cached global</title>
+    <path d="M 91.581584 414.521767 
+L 316.812531 413.263982 
+L 542.043478 385.423374 
+L 767.274425 240.018845 
+L 936.197635 88.654448 
+" clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke: #a63603; stroke-opacity: 0.86; stroke-width: 1.65; stroke-linecap: square"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#m99c5ff57c6" x="91.581584" y="395.975196" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="316.812531" y="394.941394" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="542.043478" y="371.138498" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="767.274425" y="223.442052" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
-     <use xlink:href="#m99c5ff57c6" x="936.197635" y="74.434032" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="91.581584" y="414.521767" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="316.812531" y="413.263982" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="542.043478" y="385.423374" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="767.274425" y="240.018845" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
+     <use xlink:href="#mffc3b505c6" x="936.197635" y="88.654448" style="fill: #ffffff; fill-opacity: 0.86; stroke: #a63603; stroke-opacity: 0.86; stroke-linejoin: miter"/>
     </g>
    </g>
-   <g id="lns-series-27" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="ordinary" data-access="scalar-x1" data-decoder="ex2_approx" data-strategy="ordinary/padded/scalar/x1/ex2_approx"><title>ordinary · Padded · x1 · Hardware ex2.approx</title>
-    <path d="M 91.581584 448.157646 
-L 316.812531 444.435922 
-L 542.043478 403.315321 
-L 767.274425 227.443173 
-L 936.197635 73.188606 
+   <g id="lns-series-29" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="ordinary" data-access="scalar-x1" data-decoder="ex2_approx" data-strategy="ordinary/padded/scalar/x1/ex2_approx"><title>ordinary · Padded · x1 · Hardware ex2.approx</title>
+    <path d="M 91.581584 448.51623 
+L 316.812531 443.815024 
+L 542.043478 401.842559 
+L 767.274425 227.17371 
+L 936.197635 72.988176 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 1.65,2.7225; stroke-dashoffset: 0; stroke: #0072b2; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#m5ca1e609e6" x="91.581584" y="448.157646" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="316.812531" y="444.435922" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="542.043478" y="403.315321" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="767.274425" y="227.443173" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="936.197635" y="73.188606" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="91.581584" y="448.51623" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="316.812531" y="443.815024" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="542.043478" y="401.842559" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="767.274425" y="227.17371" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="936.197635" y="72.988176" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
     </g>
    </g>
-   <g id="lns-series-28" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="ordinary" data-access="scalar-x1" data-decoder="fraction_lut_shared" data-strategy="ordinary/padded/scalar/x1/fraction_lut_shared"><title>ordinary · Padded · x1 · Fraction lookup · shared memory</title>
-    <path d="M 91.581584 411.851738 
-L 316.812531 407.05259 
-L 542.043478 365.184613 
-L 767.274425 203.474152 
-L 936.197635 51.83397 
+   <g id="lns-series-30" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="ordinary" data-access="scalar-x1" data-decoder="fraction_lut_shared" data-strategy="ordinary/padded/scalar/x1/fraction_lut_shared"><title>ordinary · Padded · x1 · Fraction lookup · shared memory</title>
+    <path d="M 91.581584 411.281214 
+L 316.812531 406.810964 
+L 542.043478 364.586197 
+L 767.274425 203.681862 
+L 936.197635 51.713557 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 1.65,2.7225; stroke-dashoffset: 0; stroke: #56b4e9; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#mc324042e6a" x="91.581584" y="411.851738" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="316.812531" y="407.05259" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="542.043478" y="365.184613" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="767.274425" y="203.474152" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="936.197635" y="51.83397" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="91.581584" y="411.281214" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="316.812531" y="406.810964" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="542.043478" y="364.586197" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="767.274425" y="203.681862" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="936.197635" y="51.713557" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
     </g>
    </g>
-   <g id="lns-series-29" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="ordinary" data-access="scalar-x1" data-decoder="reference_exp2" data-strategy="ordinary/padded/scalar/x1/reference_exp2"><title>ordinary · Padded · x1 · Reference exp2</title>
-    <path d="M 91.581584 446.175125 
-L 316.812531 441.154302 
-L 542.043478 376.269435 
-L 767.274425 200.259789 
-L 936.197635 45.235382 
+   <g id="lns-series-31" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="ordinary" data-access="scalar-x1" data-decoder="reference_exp2" data-strategy="ordinary/padded/scalar/x1/reference_exp2"><title>ordinary · Padded · x1 · Reference exp2</title>
+    <path d="M 91.581584 446.751353 
+L 316.812531 441.31828 
+L 542.043478 375.772457 
+L 767.274425 199.795918 
+L 936.197635 44.98716 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 1.65,2.7225; stroke-dashoffset: 0; stroke: #6c757d; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#mac300cdc1d" x="91.581584" y="446.175125" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86"/>
-     <use xlink:href="#mac300cdc1d" x="316.812531" y="441.154302" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86"/>
-     <use xlink:href="#mac300cdc1d" x="542.043478" y="376.269435" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86"/>
-     <use xlink:href="#mac300cdc1d" x="767.274425" y="200.259789" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86"/>
-     <use xlink:href="#mac300cdc1d" x="936.197635" y="45.235382" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86"/>
+     <use xlink:href="#mac300cdc1d" x="91.581584" y="446.751353" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86"/>
+     <use xlink:href="#mac300cdc1d" x="316.812531" y="441.31828" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86"/>
+     <use xlink:href="#mac300cdc1d" x="542.043478" y="375.772457" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86"/>
+     <use xlink:href="#mac300cdc1d" x="767.274425" y="199.795918" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86"/>
+     <use xlink:href="#mac300cdc1d" x="936.197635" y="44.98716" style="fill: #ffffff; fill-opacity: 0.86; stroke: #6c757d; stroke-opacity: 0.86"/>
     </g>
    </g>
-   <g id="lns-series-30" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x2" data-decoder="ex2_approx" data-strategy="ordinary/padded/thread_packet/x2/ex2_approx"><title>ordinary · Padded · packet x2 · Hardware ex2.approx</title>
-    <path d="M 91.581584 444.579433 
-L 316.812531 442.784801 
-L 542.043478 404.312846 
-L 767.274425 241.833385 
-L 936.197635 88.882534 
+   <g id="lns-series-32" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x2" data-decoder="ex2_approx" data-strategy="ordinary/padded/thread_packet/x2/ex2_approx"><title>ordinary · Padded · packet x2 · Hardware ex2.approx</title>
+    <path d="M 91.581584 444.88834 
+L 316.812531 441.568546 
+L 542.043478 403.404221 
+L 767.274425 241.704665 
+L 936.197635 88.566553 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 6.105,2.64; stroke-dashoffset: 0; stroke: #0072b2; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#m5ca1e609e6" x="91.581584" y="444.579433" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="316.812531" y="442.784801" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="542.043478" y="404.312846" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="767.274425" y="241.833385" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="936.197635" y="88.882534" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="91.581584" y="444.88834" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="316.812531" y="441.568546" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="542.043478" y="403.404221" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="767.274425" y="241.704665" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="936.197635" y="88.566553" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
     </g>
    </g>
-   <g id="lns-series-31" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x2" data-decoder="fraction_lut_shared" data-strategy="ordinary/padded/thread_packet/x2/fraction_lut_shared"><title>ordinary · Padded · packet x2 · Fraction lookup · shared memory</title>
-    <path d="M 91.581584 408.798561 
-L 316.812531 404.557957 
-L 542.043478 365.633018 
-L 767.274425 205.079548 
-L 936.197635 54.904947 
+   <g id="lns-series-33" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x2" data-decoder="fraction_lut_shared" data-strategy="ordinary/padded/thread_packet/x2/fraction_lut_shared"><title>ordinary · Padded · packet x2 · Fraction lookup · shared memory</title>
+    <path d="M 91.581584 409.149477 
+L 316.812531 404.933012 
+L 542.043478 364.723384 
+L 767.274425 205.632152 
+L 936.197635 54.898623 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 6.105,2.64; stroke-dashoffset: 0; stroke: #56b4e9; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#mc324042e6a" x="91.581584" y="408.798561" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="316.812531" y="404.557957" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="542.043478" y="365.633018" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="767.274425" y="205.079548" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="936.197635" y="54.904947" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="91.581584" y="409.149477" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="316.812531" y="404.933012" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="542.043478" y="364.723384" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="767.274425" y="205.632152" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="936.197635" y="54.898623" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
     </g>
    </g>
-   <g id="lns-series-32" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x4" data-decoder="ex2_approx" data-strategy="ordinary/padded/thread_packet/x4/ex2_approx"><title>ordinary · Padded · packet x4 · Hardware ex2.approx</title>
-    <path d="M 91.581584 438.811506 
-L 316.812531 436.4586 
-L 542.043478 406.260307 
-L 767.274425 254.419536 
-L 936.197635 102.179599 
+   <g id="lns-series-34" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x4" data-decoder="ex2_approx" data-strategy="ordinary/padded/thread_packet/x4/ex2_approx"><title>ordinary · Padded · packet x4 · Hardware ex2.approx</title>
+    <path d="M 91.581584 438.399672 
+L 316.812531 436.834514 
+L 542.043478 404.5484 
+L 767.274425 254.044579 
+L 936.197635 102.071588 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 10.56,2.64,1.65,2.64; stroke-dashoffset: 0; stroke: #0072b2; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#m5ca1e609e6" x="91.581584" y="438.811506" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="316.812531" y="436.4586" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="542.043478" y="406.260307" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="767.274425" y="254.419536" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="936.197635" y="102.179599" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="91.581584" y="438.399672" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="316.812531" y="436.834514" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="542.043478" y="404.5484" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="767.274425" y="254.044579" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="936.197635" y="102.071588" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
     </g>
    </g>
-   <g id="lns-series-33" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x4" data-decoder="fraction_lut_shared" data-strategy="ordinary/padded/thread_packet/x4/fraction_lut_shared"><title>ordinary · Padded · packet x4 · Fraction lookup · shared memory</title>
-    <path d="M 91.581584 402.669217 
-L 316.812531 400.58468 
-L 542.043478 365.906392 
-L 767.274425 208.113918 
-L 936.197635 57.924039 
+   <g id="lns-series-35" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x4" data-decoder="fraction_lut_shared" data-strategy="ordinary/padded/thread_packet/x4/fraction_lut_shared"><title>ordinary · Padded · packet x4 · Fraction lookup · shared memory</title>
+    <path d="M 91.581584 402.818117 
+L 316.812531 399.869418 
+L 542.043478 365.21404 
+L 767.274425 208.772908 
+L 936.197635 57.792103 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke-dasharray: 10.56,2.64,1.65,2.64; stroke-dashoffset: 0; stroke: #56b4e9; stroke-opacity: 0.86; stroke-width: 1.65"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#mc324042e6a" x="91.581584" y="402.669217" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="316.812531" y="400.58468" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="542.043478" y="365.906392" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="767.274425" y="208.113918" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="936.197635" y="57.924039" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="91.581584" y="402.818117" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="316.812531" y="399.869418" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="542.043478" y="365.21404" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="767.274425" y="208.772908" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="936.197635" y="57.792103" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
     </g>
    </g>
-   <g id="lns-series-34" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x8" data-decoder="ex2_approx" data-strategy="ordinary/padded/thread_packet/x8/ex2_approx"><title>ordinary · Padded · packet x8 · Hardware ex2.approx</title>
-    <path d="M 91.581584 425.360569 
-L 316.812531 424.300499 
-L 542.043478 404.116137 
-L 767.274425 258.052565 
-L 936.197635 107.511646 
+   <g id="lns-series-36" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x8" data-decoder="ex2_approx" data-strategy="ordinary/padded/thread_packet/x8/ex2_approx"><title>ordinary · Padded · packet x8 · Hardware ex2.approx</title>
+    <path d="M 91.581584 425.713108 
+L 316.812531 424.404014 
+L 542.043478 403.336229 
+L 767.274425 257.830053 
+L 936.197635 107.640918 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke: #0072b2; stroke-opacity: 0.86; stroke-width: 1.65; stroke-linecap: square"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#m5ca1e609e6" x="91.581584" y="425.360569" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="316.812531" y="424.300499" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="542.043478" y="404.116137" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="767.274425" y="258.052565" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
-     <use xlink:href="#m5ca1e609e6" x="936.197635" y="107.511646" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="91.581584" y="425.713108" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="316.812531" y="424.404014" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="542.043478" y="403.336229" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="767.274425" y="257.830053" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
+     <use xlink:href="#m5ca1e609e6" x="936.197635" y="107.640918" style="fill: #ffffff; fill-opacity: 0.86; stroke: #0072b2; stroke-opacity: 0.86"/>
     </g>
    </g>
-   <g id="lns-series-35" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x8" data-decoder="fraction_lut_shared" data-strategy="ordinary/padded/thread_packet/x8/fraction_lut_shared"><title>ordinary · Padded · packet x8 · Fraction lookup · shared memory</title>
-    <path d="M 91.581584 391.481164 
-L 316.812531 389.804609 
-L 542.043478 365.241117 
-L 767.274425 209.130554 
-L 936.197635 59.985725 
+   <g id="lns-series-37" data-series="true" data-distribution="normal_0_1" data-layout="padded" data-multiply="ordinary" data-access="thread_packet-x8" data-decoder="fraction_lut_shared" data-strategy="ordinary/padded/thread_packet/x8/fraction_lut_shared"><title>ordinary · Padded · packet x8 · Fraction lookup · shared memory</title>
+    <path d="M 91.581584 391.832496 
+L 316.812531 390.136774 
+L 542.043478 364.568188 
+L 767.274425 209.84897 
+L 936.197635 59.902789 
 " clip-path="url(#pd84ec2b9c1)" style="fill: none; stroke: #56b4e9; stroke-opacity: 0.86; stroke-width: 1.65; stroke-linecap: square"/>
     <g clip-path="url(#pd84ec2b9c1)">
-     <use xlink:href="#mc324042e6a" x="91.581584" y="391.481164" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="316.812531" y="389.804609" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="542.043478" y="365.241117" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="767.274425" y="209.130554" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
-     <use xlink:href="#mc324042e6a" x="936.197635" y="59.985725" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="91.581584" y="391.832496" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="316.812531" y="390.136774" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="542.043478" y="364.568188" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="767.274425" y="209.84897" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
+     <use xlink:href="#mc324042e6a" x="936.197635" y="59.902789" style="fill: #ffffff; fill-opacity: 0.86; stroke: #56b4e9; stroke-opacity: 0.86"/>
     </g>
    </g>
    <g id="patch_3">
