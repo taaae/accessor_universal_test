@@ -18,6 +18,7 @@ import statistics
 from pathlib import Path
 from typing import Sequence
 
+import build_ieee_question_report as ieee
 import build_storage_performance_report as base
 
 
@@ -224,6 +225,47 @@ def e0_section(run_dir: Path) -> str:
     )
 
 
+def e1_section() -> str:
+    """E1 is an integer format, but both test distributions sit inside its
+    subnormal range, so its measured margins say more about the data than the
+    format."""
+    shares = ieee.subnormal_shares("e1m1")
+    threshold = ieee.smallest_normal(1)
+    return (
+        '<section class="text-section"><h2>E1 &mdash; unreliable</h2>'
+        "<p>The test data sits almost entirely in E1&rsquo;s subnormal range.</p>"
+        '<div class="table-wrap"><table class="strategy-table">'
+        "<thead><tr><th></th><th>uniform(0,1)</th><th>normal(0,1)</th></tr></thead>"
+        f"<tbody><tr><td>share below smallest normal ({threshold:g})</td>"
+        f"<td>{shares[0]:.0%}</td><td>{shares[1]:.1%}</td></tr></tbody>"
+        "</table></div>"
+        "<details><summary>What this breaks</summary>"
+        "<p>E1 has one exponent bit, so the bias is 0: subnormals span "
+        "[0,&nbsp;2) and the single normal binade spans [2,&nbsp;4), both in "
+        "steps of 2<sup>1&minus;M</sup>.  The code space is one uniform ramp, "
+        "which is what lets <code>e1_integer</code> decode it branchlessly as "
+        "<code>magnitude &times; 2<sup>1&minus;M</sup></code> &mdash; the "
+        "exponent bit is just the high bit of the magnitude field.  E1 is an "
+        "integer format in the same sense E0 is.</p>"
+        "<p><code>e1_integer</code> measures 1.20&ndash;1.64x faster than "
+        "<code>direct_branchy</code>, but that margin is bought by the table "
+        "above.  <code>direct_branchy</code> renormalizes subnormals &mdash; "
+        "leading-bit search, variable shift, exponent reassembly &mdash; and "
+        "with 95&ndash;100% of values below the smallest normal it takes that "
+        "path on essentially every value.  On data inside [2,&nbsp;4) it would "
+        "take the cheap path instead and the gap would shrink.  Neither "
+        "distribution puts meaningful mass there, so this run cannot say by "
+        "how much.</p>"
+        "<p><code>e1_integer</code>&rsquo;s own times are identical across the "
+        "two distributions to four digits &mdash; it is genuinely "
+        "data-independent.  The sensitivity lives entirely in its competitor.</p>"
+        "<p>E1M0 is separately degenerate: 1 sign bit, 1 exponent bit, no "
+        "mantissa, so it encodes only &plusmn;0 and &plusmn;inf and no finite "
+        "nonzero values.  <code>e1_integer</code> does not apply to it.</p>"
+        "</details></section>"
+    )
+
+
 def body(run_dir: Path | None) -> str:
     blocks = []
     for heading, paragraphs in SECTIONS:
@@ -237,6 +279,7 @@ def body(run_dir: Path | None) -> str:
         )
     if run_dir is not None:
         blocks.append(e0_section(run_dir))
+    blocks.append(e1_section())
     return "".join(blocks)
 
 
@@ -263,7 +306,7 @@ def main() -> None:
         expanded_strategy_run_name=manifest.get("expanded_strategy_run", "unknown"),
     )
     (output_dir / FILENAME).write_text(document, encoding="utf-8")
-    print(f"Wrote {FILENAME} with {len(SECTIONS) + 1} finding sections")
+    print(f"Wrote {FILENAME} with {len(SECTIONS) + 2} finding sections")
 
 
 if __name__ == "__main__":
