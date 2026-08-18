@@ -391,6 +391,7 @@ PAGES = (
     ("conversion-strategies.html", "IEEE → FP64"),
     ("lns-fp32.html", "LNS → FP32"),
     ("lns-fp64.html", "LNS → FP64"),
+    ("ieee-lns-summary.html", "IEEE, LNS summary"),
 )
 
 ACCURACY_PAGES = (

@@ -41,3 +41,6 @@ uv run python tools/build_ieee_question_report.py \
 uv run python tools/build_lns_question_report.py \
     --output-dir results/report \
     --formats "${LNS_FORMATS:-}"
+
+uv run python tools/build_summary_report.py \
+    --output-dir results/report

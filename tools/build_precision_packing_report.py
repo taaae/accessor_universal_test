@@ -12,6 +12,8 @@ import re
 import statistics
 from collections import defaultdict
 from pathlib import Path
+
+import build_storage_performance_report as base
 from typing import Iterable
 
 
@@ -700,27 +702,13 @@ renderAll();
 
 
 def navigation_html() -> str:
-    entries = (
-        ("index.html", "Overview"),
-        ("total-performance.html", "Total performance"),
-        ("same-bit-formats.html", "Same-bit formats"),
-        ("packing.html", "Packed vs unpacked"),
-        ("roofline.html", "Roofline"),
-        ("conversion.html", "Conversion"),
-        ("bottlenecks.html", "Bottlenecks"),
-        ("accuracy.html", "Accuracy"),
-        ("methodology.html", "Methodology"),
-        ("general-info.html", "General info"),
-        (PAGE_NAME, PAGE_LABEL),
-        ("conversion-fp32.html", "Storage → FP32 arithmetic"),
-        ("conversion-strategies.html", "Storage → FP64 arithmetic"),
-    )
-    return "".join(
-        f'<a href="{filename}"'
-        + (' aria-current="page" class="active"' if filename == PAGE_NAME else "")
-        + f">{html.escape(label)}</a>"
-        for filename, label in entries
-    )
+    """Delegate to the shared page list.
+
+    This module used to keep its own copy, which silently went stale: it still
+    named the conversion sections by their old labels and never gained the LNS
+    or summary pages.
+    """
+    return base.navigation(PAGE_NAME)
 
 
 def report_document(data: dict[str, object]) -> str:
