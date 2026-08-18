@@ -19,22 +19,10 @@ import build_storage_performance_report as base
 
 FILENAME = "ieee-lns-summary.html"
 
-INTRO = (
-    "What the measurements imply for a memory accessor: which storage formats "
-    "earn their place, which decode strategy each should use, and where a "
-    "result is too fragile to build on."
-)
+INTRO = ""
 
-# Each entry is (heading, [paragraphs...]).  Empty for now; findings land here
-# one at a time as they are established, so the page never states more than the
-# data supports.
+# Each entry is (heading, [paragraphs...]).  Filled in as findings are settled.
 SECTIONS: Sequence[tuple[str, Sequence[str]]] = ()
-
-PLACEHOLDER = (
-    "Nothing has been promoted here yet. Conclusions are added one at a time, "
-    "each backed by a specific measurement in the per-format pages, so that "
-    "this page never runs ahead of the evidence."
-)
 
 
 def parse_args() -> argparse.Namespace:
@@ -55,11 +43,6 @@ def read_manifest(path: Path) -> dict[str, str]:
 
 
 def body() -> str:
-    if not SECTIONS:
-        return (
-            '<section class="text-section"><h2>Findings</h2>'
-            f"<p>{html.escape(PLACEHOLDER)}</p></section>"
-        )
     blocks = []
     for heading, paragraphs in SECTIONS:
         rendered = "".join(f"<p>{paragraph}</p>" for paragraph in paragraphs)
