@@ -352,6 +352,85 @@ def shift_section(run_dir: Path) -> str:
     )
 
 
+# Decoders that reach the hardware converter for a native format.  `generic`
+# is short-circuited to `decode_native_scalar` for exactly these types.
+NATIVE_DECODERS = {"native_scalar", "native_packed", "generic"}
+# Native formats in the order they are reported, widest range last.
+NATIVE_ORDER = (
+    "fp4_e2m1", "fp8_e4m3", "fp8_e5m2", "fp16_e5m10", "bf16_e8m7", "fp32_e8m23",
+)
+# Gaps inside this band are reported as ties rather than as a winner: the
+# sample counts here do not resolve differences that small.
+TIE_BAND = 0.025
+
+
+def native_table(
+    full: dict, screen: dict, compute: str, kernel: str, scope: str, widths: dict
+) -> str:
+    body_rows = []
+    for name in NATIVE_ORDER:
+        ranking = ranked_decoders(full, screen, compute, name, kernel, scope)
+        scores = dict(ranking)
+        native = min(
+            (v for k, v in scores.items() if k in NATIVE_DECODERS), default=None
+        )
+        other = [(k, v) for k, v in ranking if k not in NATIVE_DECODERS]
+        if native is None or not other:
+            continue
+        rival, rival_ms = other[0]
+        gap = rival_ms / native
+        if abs(gap - 1) < TIE_BAND:
+            note = "tie"
+        elif gap < 1:
+            note = "native loses"
+        else:
+            note = ""
+        cells = [
+            base.label(name), str(widths[name][1]), f"{native:.4f}",
+            f"<code>{rival}</code>", f"{rival_ms:.4f}", f"{gap:.3f}x", note,
+        ]
+        body_rows.append("<tr>" + "".join(f"<td>{c}</td>" for c in cells) + "</tr>")
+    headings = ("type", "bits", "native", "best non-native", "ms", "gap", "note")
+    header = "".join(f"<th>{h}</th>" for h in headings)
+    return (
+        f"<h4>{kernel.upper()} {scope} &rarr; {compute.upper()}</h4>"
+        '<div class="table-wrap"><table class="strategy-table">'
+        f"<thead><tr>{header}</tr></thead><tbody>{''.join(body_rows)}</tbody>"
+        "</table></div>"
+    )
+
+
+def native_section(run_dir: Path) -> str:
+    full = read_stage(run_dir / "unified_core/full/timing_summary.csv")
+    screen = read_stage(run_dir / "unified_core/screen/timing_summary.csv")
+    widths: dict[str, tuple[int, int]] = {}
+    with (run_dir / "unified_core/full/timing_summary.csv").open(encoding="utf-8") as h:
+        for row in csv.DictReader(h):
+            widths[row["format"]] = (int(row["exponent_bits"]), int(row["bits"]))
+    blocks = [
+        native_table(full, screen, compute, kernel, scope, widths)
+        for scope in ("x1", "best")
+        for compute in ("fp32", "fp64")
+        for kernel in ("dot", "gemv")
+    ]
+    return (
+        '<section class="text-section">'
+        "<h2>Native: FP4, FP8 (E4M3, E5M2), FP16, BF16, FP32</h2>"
+        "<p>Native conversion wins overall, but not for FP4 &mdash; there "
+        "<code>full_lut_shared</code> is the best.  For FP8 "
+        "<code>full_lut_shared</code> also wins occasionally.  For BF16 and "
+        "FP32 in FP32 cases the bit shift often shows the same performance.</p>"
+        "<details><summary>Native vs the best decoder that is not native "
+        "&mdash; 8 tables</summary>"
+        "<p>Times at a single size (DOT 2<sup>24</sup>, GEMV 2<sup>14</sup>), "
+        "geometric mean over both distributions.  <em>native</em> is the best "
+        "of <code>native_scalar</code>, <code>native_packed</code> and "
+        "<code>generic</code>, which all dispatch to the hardware converter "
+        "for these formats.  Gaps within 2.5% are marked as ties.</p>"
+        f"{''.join(blocks)}</details></section>"
+    )
+
+
 def body(run_dir: Path | None) -> str:
     blocks = []
     for heading, paragraphs in SECTIONS:
@@ -368,6 +447,7 @@ def body(run_dir: Path | None) -> str:
     blocks.append(e1_section())
     if run_dir is not None:
         blocks.append(shift_section(run_dir))
+        blocks.append(native_section(run_dir))
     return "".join(blocks)
 
 
@@ -394,7 +474,7 @@ def main() -> None:
         expanded_strategy_run_name=manifest.get("expanded_strategy_run", "unknown"),
     )
     (output_dir / FILENAME).write_text(document, encoding="utf-8")
-    print(f"Wrote {FILENAME} with {len(SECTIONS) + 3} finding sections")
+    print(f"Wrote {FILENAME} with {len(SECTIONS) + 4} finding sections")
 
 
 if __name__ == "__main__":
