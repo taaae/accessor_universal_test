@@ -107,7 +107,28 @@ Worth building:
 Do not hardcode the ceiling.  Read `cudaDevAttrMaxSharedMemoryPerBlockOptin`
 at startup and gate the strategy on it, so the build adapts instead of aborting.
 
-## 3. Run
+## 3. Analysis queued for the summary page
+
+Raised 2026-08-18, to work through next.  These are report questions, not code
+changes: the measurements already exist in the newest run.
+
+- **Padded vs dense** &mdash; is dense worth using at all when the bit count is
+  not divisible by 8?  Every table so far reports whichever layout was faster
+  and hides the other; the E0 numbers hinted the layout gap can exceed the
+  decoder gap (`fixed_integer` padded to dense was 1.69x at 16 bits), so this
+  may matter more than the decoder choice.
+- **Packing** &mdash; is `thread_packet` ever worse than `scalar/x1`?  And does
+  `cooperative_shuffle` ever beat a plain packet?  Nothing in the study so far
+  has shown a shuffle strategy winning, so a clean negative result would let us
+  drop it from future runs.
+- **Which IEEE types are actually useful** &mdash; the ones faster than *every*
+  wider type.  Partly answered already: `faster_precise_peer` in
+  `tools/build_ieee_question_report.py` computes the fastest more-precise type
+  per format, and the per-format pages ask "Is there a more precise type that
+  is faster?".  What is missing is the cross-format roll-up: the set of types
+  that survive the test everywhere, as one list.
+
+## 4. Run
 
 Follow `CLUSTER_RULES.md`: check `sinfo`/`squeue` immediately before submitting,
 finite `--time`, ask for approval before `sbatch`, check the job one minute
