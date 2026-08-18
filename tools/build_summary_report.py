@@ -266,6 +266,92 @@ def e1_section() -> str:
     )
 
 
+# Decoders that compile to the exponent-width fast path.  E8 formats keep the
+# general `storage::decode`, so `generic` is only a shift for E11.
+SHIFT_DECODERS = {
+    8: {"direct_branchy", "direct_masked"},
+    11: {"direct_branchy", "direct_masked", "generic"},
+}
+NATIVE_FORMATS = {
+    "fp4_e2m1", "fp8_e4m3", "fp8_e5m2", "fp16_e5m10", "bf16_e8m7",
+    "fp32_e8m23", "raw_fp32", "raw_fp64",
+}
+
+
+def shift_table(
+    full: dict, screen: dict, exponent: int, compute: str, kernel: str, scope: str,
+    widths: dict,
+) -> str:
+    shift_kinds = SHIFT_DECODERS[exponent]
+    names = sorted(
+        (
+            name
+            for (arith, name, _, _) in full
+            if arith == compute
+            and widths.get(name, (None,))[0] == exponent
+            and name not in NATIVE_FORMATS
+        ),
+        key=lambda name: widths[name][1],
+    )
+    body_rows = []
+    for name in dict.fromkeys(names):
+        ranking = ranked_decoders(full, screen, compute, name, kernel, scope)
+        scores = dict(ranking)
+        shift = min((v for k, v in scores.items() if k in shift_kinds), default=None)
+        other = [(k, v) for k, v in ranking if k not in shift_kinds]
+        if shift is None or not other:
+            continue
+        rival, rival_ms = other[0]
+        cells = [
+            base.label(name), str(widths[name][1]), f"{shift:.4f}",
+            f"<code>{rival}</code>", f"{rival_ms:.4f}", f"{rival_ms / shift:.3f}x",
+            "shift loses" if rival_ms < shift else "",
+        ]
+        body_rows.append("<tr>" + "".join(f"<td>{c}</td>" for c in cells) + "</tr>")
+    headings = ("type", "bits", "shift", "best non-shift", "ms", "gap", "note")
+    header = "".join(f"<th>{h}</th>" for h in headings)
+    return (
+        f"<h4>{kernel.upper()} {scope}</h4>"
+        '<div class="table-wrap"><table class="strategy-table">'
+        f"<thead><tr>{header}</tr></thead><tbody>{''.join(body_rows)}</tbody>"
+        "</table></div>"
+    )
+
+
+def shift_section(run_dir: Path) -> str:
+    full = read_stage(run_dir / "unified_core/full/timing_summary.csv")
+    screen = read_stage(run_dir / "unified_core/screen/timing_summary.csv")
+    widths: dict[str, tuple[int, int]] = {}
+    with (run_dir / "unified_core/full/timing_summary.csv").open(encoding="utf-8") as h:
+        for row in csv.DictReader(h):
+            widths[row["format"]] = (int(row["exponent_bits"]), int(row["bits"]))
+    layout = (
+        "FP32   S EEEEEEEE MMMMMMMMMMMMMMMMMMMMMMM\n"
+        "FP64   S EEEEEEEEEEE " + "M" * 52
+    )
+    blocks = []
+    for exponent, compute in ((8, "fp32"), (11, "fp64")):
+        blocks.append(f"<h3>E{exponent} &rarr; {compute.upper()}</h3>")
+        for scope in ("x1", "best"):
+            for kernel in ("dot", "gemv"):
+                blocks.append(
+                    shift_table(full, screen, exponent, compute, kernel, scope, widths)
+                )
+    return (
+        '<section class="text-section">'
+        "<h2>Shifters: E8 &rarr; FP32, E11 &rarr; FP64</h2>"
+        f"{code(layout)}"
+        "<p>Matching the target&rsquo;s exponent width matches its bias too, so "
+        "decoding is one left shift &mdash; the same number moved into a bigger "
+        "container.</p>"
+        "<details><summary>Shift vs the best decoder that is not a shift "
+        "&mdash; 8 tables</summary>"
+        "<p>Times at a single size (DOT 2<sup>24</sup>, GEMV 2<sup>14</sup>), "
+        "geometric mean over both distributions.  Native formats are excluded.</p>"
+        f"{''.join(blocks)}</details></section>"
+    )
+
+
 def body(run_dir: Path | None) -> str:
     blocks = []
     for heading, paragraphs in SECTIONS:
@@ -280,6 +366,8 @@ def body(run_dir: Path | None) -> str:
     if run_dir is not None:
         blocks.append(e0_section(run_dir))
     blocks.append(e1_section())
+    if run_dir is not None:
+        blocks.append(shift_section(run_dir))
     return "".join(blocks)
 
 
@@ -306,7 +394,7 @@ def main() -> None:
         expanded_strategy_run_name=manifest.get("expanded_strategy_run", "unknown"),
     )
     (output_dir / FILENAME).write_text(document, encoding="utf-8")
-    print(f"Wrote {FILENAME} with {len(SECTIONS) + 2} finding sections")
+    print(f"Wrote {FILENAME} with {len(SECTIONS) + 3} finding sections")
 
 
 if __name__ == "__main__":
