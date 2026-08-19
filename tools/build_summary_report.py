@@ -475,117 +475,6 @@ def narrow_section(run_dir: Path) -> str:
     cells = narrow_cells(full, screen, widths)
     total = len(cells)
     wins = collections.Counter(
-        winner for (*_, ranking) in cells if (winner := ranking[0][0]) in FULL_LUTS
-    )
-    lost = [cell for cell in cells if cell[5][0][0] not in FULL_LUTS]
-
-    rate_rows = "".join(
-        f"<tr><td><code>{name}</code></td><td>{count}</td>"
-        f"<td>{count / total:.0%}</td></tr>"
-        for name, count in wins.most_common()
-    ) + (
-        f"<tr><td>neither</td><td>{len(lost)}</td>"
-        f"<td>{len(lost) / total:.0%}</td></tr>"
-    )
-
-    by_width: dict[int, collections.Counter] = collections.defaultdict(
-        collections.Counter
-    )
-    formats: dict[int, set[str]] = collections.defaultdict(set)
-    for name, bits, _, _, _, ranking in cells:
-        winner = ranking[0][0]
-        by_width[bits][winner if winner in FULL_LUTS else "other"] += 1
-        formats[bits].add(base.label(name))
-    width_rows = "".join(
-        f"<tr><td>{bits}</td><td>{by_width[bits]['full_lut_shared']}</td>"
-        f"<td>{by_width[bits]['full_lut_global']}</td>"
-        f"<td>{by_width[bits]['other']}</td>"
-        f"<td>{', '.join(sorted(formats[bits]))}</td></tr>"
-        for bits in sorted(by_width)
-    )
-
-    detail = []
-    for name, bits, compute, kernel, scope, ranking in lost:
-        best = ranking[0][1]
-        rows = "".join(
-            f"<tr><td>{rank}</td><td><code>{decoder}</code></td>"
-            f"<td>{score:.4f}</td><td>{score / best:.3f}x</td></tr>"
-            for rank, (decoder, score) in enumerate(ranking, 1)
-        )
-        detail.append(
-            f"<h4>{base.label(name)} &mdash; {kernel.upper()} {scope} "
-            f"&rarr; {compute.upper()}</h4>"
-            '<div class="table-wrap"><table class="strategy-table">'
-            "<thead><tr><th>rank</th><th>decoder</th><th>ms</th>"
-            "<th>vs best</th></tr></thead>"
-            f"<tbody>{rows}</tbody></table></div>"
-        )
-
-    return (
-        '<section class="text-section"><h2>&le; 14 bit width</h2>'
-        "<p><code>full_lut_shared</code> and <code>full_lut_global</code> "
-        "dominate.  Only at the widest 14 bits (E5M8) does another strategy "
-        "win.</p>"
-        "<h3>Win rate</h3>"
-        '<div class="table-wrap"><table class="strategy-table">'
-        "<thead><tr><th>decoder</th><th>cells</th><th>share</th></tr></thead>"
-        f"<tbody>{rate_rows}</tbody></table></div>"
-        f"<p>A full LUT wins {sum(wins.values())} of {total} &mdash; "
-        f"{100 * sum(wins.values()) / total:.1f}%.</p>"
-        "<h3>By width</h3>"
-        '<div class="table-wrap"><table class="strategy-table">'
-        "<thead><tr><th>bits</th><th>shared</th><th>global</th><th>other</th>"
-        "<th>formats</th></tr></thead>"
-        f"<tbody>{width_rows}</tbody></table></div>"
-        f"<details><summary>The {len(lost)} cells a full LUT lost</summary>"
-        f"{''.join(detail)}</details></section>"
-    )
-
-
-FULL_LUTS = ("full_lut_shared", "full_lut_global")
-
-
-def narrow_cells(full: dict, screen: dict, widths: dict) -> list[tuple]:
-    """Every cell left once the special-cased families are removed.
-
-    E0/E1/E2 have their own sections, the shifters decode with one instruction,
-    and native formats have a hardware converter -- none of them tests whether
-    a table is the right choice.  What remains is the general case.
-    """
-    cells = []
-    for compute in ("fp32", "fp64"):
-        names = sorted(
-            {name for (arith, name, _, _) in full if arith == compute},
-            key=lambda name: widths[name][1],
-        )
-        for name in dict.fromkeys(names):
-            exponent, bits = widths[name]
-            if name in NATIVE_FORMATS or exponent < 3 or bits > MAX_LUT_BITS:
-                continue
-            if exponent == 8 and compute == "fp32":
-                continue
-            if exponent == 11 and compute == "fp64":
-                continue
-            for scope in ("x1", "best"):
-                for kernel in ("dot", "gemv"):
-                    ranking = ranked_decoders(
-                        full, screen, compute, name, kernel, scope
-                    )
-                    if ranking:
-                        cells.append((name, bits, compute, kernel, scope, ranking))
-    return cells
-
-
-def narrow_section(run_dir: Path) -> str:
-    full = read_stage(run_dir / "unified_core/full/timing_summary.csv")
-    screen = read_stage(run_dir / "unified_core/screen/timing_summary.csv")
-    widths: dict[str, tuple[int, int]] = {}
-    with (run_dir / "unified_core/full/timing_summary.csv").open(encoding="utf-8") as h:
-        for row in csv.DictReader(h):
-            widths[row["format"]] = (int(row["exponent_bits"]), int(row["bits"]))
-    cells = narrow_cells(full, screen, widths)
-    total = len(cells)
-    wins = collections.Counter(
         ranking[0][0] for (*_, ranking) in cells if ranking[0][0] in FULL_LUTS
     )
     lost = [cell for cell in cells if cell[5][0][0] not in FULL_LUTS]
@@ -790,8 +679,6 @@ def body(run_dir: Path | None) -> str:
         blocks.append(native_section(run_dir))
         blocks.append(narrow_section(run_dir))
         blocks.append(layout_section(run_dir))
-        blocks.append(narrow_section(run_dir))
-        blocks.append(layout_section(run_dir))
     return "".join(blocks)
 
 
@@ -818,7 +705,7 @@ def main() -> None:
         expanded_strategy_run_name=manifest.get("expanded_strategy_run", "unknown"),
     )
     (output_dir / FILENAME).write_text(document, encoding="utf-8")
-    print(f"Wrote {FILENAME} with {len(SECTIONS) + 6} finding sections")
+    print(f"Wrote {FILENAME} with {body(newest_strategy_run(STRATEGY_ROOT)).count(chr(60) + 'section')} sections")
 
 
 if __name__ == "__main__":
