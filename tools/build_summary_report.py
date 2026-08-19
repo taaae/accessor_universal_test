@@ -653,6 +653,124 @@ def narrow_section(run_dir: Path) -> str:
     )
 
 
+# Dense beats padded by more than this, or the cell is not worth listing.
+LAYOUT_TIE_BAND = 0.025
+
+
+def layout_best(
+    full: dict, screen: dict, compute: str, name: str, kernel: str, scope: str
+) -> dict[str, tuple[float, str]]:
+    """Fastest variant per storage layout, with the variant that achieved it."""
+    out: dict[str, tuple[float, str]] = {}
+    for key in set(full) | set(screen):
+        if key[:3] != (compute, name, kernel):
+            continue
+        layout, access, lanes, decoder = key[3].split("/")
+        if scope == "x1" and not (access == "scalar" and lanes == "x1"):
+            continue
+        score = variant_score(full[key] if key in full else screen[key])
+        if score is None:
+            continue
+        if layout not in out or score < out[layout][0]:
+            out[layout] = (score, f"{access}/{lanes}/{decoder}")
+    return out
+
+
+def dense_wins(full: dict, screen: dict, widths: dict) -> list[tuple]:
+    """Cells where the dense layout beat padded by more than the tie band.
+
+    Byte-aligned widths are skipped: their "padded" runs are the same bytes in
+    memory under another label, so the comparison measures the loader alone.
+    """
+    found = []
+    for compute in ("fp32", "fp64"):
+        names = sorted(
+            {name for (arith, name, _, _) in full if arith == compute},
+            key=lambda name: widths[name][1],
+        )
+        known = set(ieee.compute_formats(compute))
+        for name in dict.fromkeys(names):
+            # `raw_fp32`/`raw_fp64` are anchor series, not storage formats.
+            if name not in known or not ieee.padded_is_distinct(compute, name):
+                continue
+            for scope in ("x1", "best"):
+                for kernel in ("dot", "gemv"):
+                    best = layout_best(full, screen, compute, name, kernel, scope)
+                    dense, padded = best.get("dense"), best.get("padded")
+                    if not dense or not padded:
+                        continue
+                    gap = padded[0] / dense[0]
+                    if gap - 1 >= LAYOUT_TIE_BAND:
+                        found.append(
+                            (name, widths[name][1], compute, kernel, scope,
+                             dense[0], padded[0], gap, dense[1])
+                        )
+    return sorted(found, key=lambda row: (row[1], row[2], row[4], -row[7]))
+
+
+def layout_section(run_dir: Path) -> str:
+    full = read_stage(run_dir / "unified_core/full/timing_summary.csv")
+    screen = read_stage(run_dir / "unified_core/screen/timing_summary.csv")
+    widths: dict[str, tuple[int, int]] = {}
+    with (run_dir / "unified_core/full/timing_summary.csv").open(encoding="utf-8") as h:
+        for row in csv.DictReader(h):
+            widths[row["format"]] = (int(row["exponent_bits"]), int(row["bits"]))
+    wins = dense_wins(full, screen, widths)
+    win_rows = "".join(
+        "<tr>"
+        f"<td>{base.label(name)}</td><td>{bits}</td><td>{compute.upper()}</td>"
+        f"<td>{kernel.upper()}</td><td>{scope}</td>"
+        f"<td>{dense:.4f}</td><td>{padded:.4f}</td><td>{gap:.3f}x</td>"
+        f"<td><code>{via}</code></td></tr>"
+        for name, bits, compute, kernel, scope, dense, padded, gap, via in wins
+    )
+    container_rows = "".join(
+        f"<tr><td>{label}</td><td><code>{container}</code></td>"
+        f"<td>{size}</td><td>{waste}</td></tr>"
+        for label, container, size, waste in (
+            ("2&ndash;8", "uint8_t", "1", "0&ndash;75%"),
+            ("9&ndash;16", "uint16_t", "2", "0&ndash;44%"),
+            ("17&ndash;32", "uint32_t", "4", "0&ndash;47%"),
+        )
+    )
+    return (
+        '<section class="text-section"><h2>Dense vs padded</h2>'
+        "<p>Dense packs values back to back and reads them out of a 32-bit "
+        "word pair:</p>"
+        + code(
+            """// one value, any width
+bit   = index * Bits;
+pair  = words[bit / 32] | (words[bit / 32 + 1] << 32);   // two loads
+value = (pair >> (bit % 32)) & mask;                     // shift + mask"""
+        )
+        + "<p>Padded gives every value its own container and reads it "
+        "directly:</p>"
+        + code(
+            """// one value, container is uint8_t / uint16_t / uint32_t
+value = data[index] & mask;                              // one load"""
+        )
+        + "<p>The container is the smallest of 1, 2 or 4 bytes that holds the "
+        "format:</p>"
+        '<div class="table-wrap"><table class="strategy-table">'
+        "<thead><tr><th>format bits</th><th>container</th>"
+        "<th>bytes/value</th><th>wasted</th></tr></thead>"
+        f"<tbody>{container_rows}</tbody></table></div>"
+        "<p>At small widths the kernel is limited by per-value memory "
+        "instructions, not by bytes.  Spending extra bandwidth to halve the "
+        "load count is a good trade.</p>"
+        "<p>For GEMV padded always wins.  For DOT dense wins only where the "
+        "container would waste a lot: 9 and 10 bits unpacked, marginally at "
+        "12, and 17&ndash;28 bits once packing is available &mdash; and every "
+        "one of those wide wins is a shift decoder.</p>"
+        f"<details><summary>The {len(wins)} cells where dense won</summary>"
+        '<div class="table-wrap"><table class="strategy-table">'
+        "<thead><tr><th>type</th><th>bits</th><th>cmp</th><th>kernel</th>"
+        "<th>scope</th><th>dense</th><th>padded</th><th>gap</th>"
+        "<th>dense via</th></tr></thead>"
+        f"<tbody>{win_rows}</tbody></table></div></details></section>"
+    )
+
+
 def body(run_dir: Path | None) -> str:
     blocks = []
     for heading, paragraphs in SECTIONS:
@@ -671,7 +789,9 @@ def body(run_dir: Path | None) -> str:
         blocks.append(shift_section(run_dir))
         blocks.append(native_section(run_dir))
         blocks.append(narrow_section(run_dir))
+        blocks.append(layout_section(run_dir))
         blocks.append(narrow_section(run_dir))
+        blocks.append(layout_section(run_dir))
     return "".join(blocks)
 
 
@@ -698,7 +818,7 @@ def main() -> None:
         expanded_strategy_run_name=manifest.get("expanded_strategy_run", "unknown"),
     )
     (output_dir / FILENAME).write_text(document, encoding="utf-8")
-    print(f"Wrote {FILENAME} with {len(SECTIONS) + 5} finding sections")
+    print(f"Wrote {FILENAME} with {len(SECTIONS) + 6} finding sections")
 
 
 if __name__ == "__main__":
