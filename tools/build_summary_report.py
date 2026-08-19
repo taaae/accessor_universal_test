@@ -660,6 +660,84 @@ value = data[index] & mask;                              // one load"""
     )
 
 
+def simple_table(headings: Sequence[str], rows: Sequence[Sequence[str]]) -> str:
+    header = "".join(f"<th>{h}</th>" for h in headings)
+    body_rows = "".join(
+        "<tr>" + "".join(f"<td>{c}</td>" for c in row) + "</tr>" for row in rows
+    )
+    return (
+        '<div class="table-wrap"><table class="strategy-table">'
+        f"<thead><tr>{header}</tr></thead><tbody>{body_rows}</tbody>"
+        "</table></div>"
+    )
+
+
+def packing_section() -> str:
+    """Packing and shuffle.
+
+    Hardcoded rather than generated: the result is a clean sweep, so there is
+    nothing here that a re-run would refine, and the prose carries as many
+    figures as the tables do.
+    """
+    return (
+        '<section class="text-section"><h2>Packing and shuffle</h2>'
+        "<p>Packing always wins, x8 usually better.</p>"
+        "<details><summary>Every winner is a packet</summary>"
+        "<p>Across 284 best-scope cells (every format &times; compute &times; "
+        "kernel):</p>"
+        + simple_table(
+            ("winning access method", "cells", "share"),
+            (
+                ("<code>thread_packet</code>", "284", "100%"),
+                ("<code>scalar</code> (x1)", "0", "0%"),
+                ("<code>cooperative_shuffle</code>", "0", "0%"),
+            ),
+        )
+        + simple_table(
+            ("winning packet width", "cells", "share"),
+            (("x8", "254", "89%"), ("x4", "30", "11%"),
+             ("x2", "0", "0%"), ("x1", "0", "0%")),
+        )
+        + "<h3>x1 never wins &mdash; not once, not even close</h3>"
+        "<p>Packing beats <code>scalar/x1</code> in every cell, median 1.536x, "
+        "range 1.056x&ndash;2.884x.  Zero cells where x1 is within 2.5% of the "
+        "best.</p>"
+        "<p>The narrowest margins are all 14&ndash;16 bit FP64 GEMV &mdash; "
+        "E7M8 1.056x, E2M13 1.059x, E6M9 1.078x.  That is the regime where the "
+        "container is already 2&ndash;4 bytes so a packet load is not gathering "
+        "much more per instruction.</p>"
+        "<h3>Shuffle never wins, and is not close</h3>"
+        "<p><code>cooperative_shuffle</code> exists in 258 cells and loses all "
+        "of them:</p>"
+        + simple_table(
+            ("", "vs best"),
+            (("best case", "1.220x behind"), ("median", "2.027x behind"),
+             ("worst", "5.013x behind")),
+        )
+        + "<p>Its closest approach anywhere is E2M11 at 14 bits, FP64 GEMV, "
+        "still 1.22x off.  Median means it is typically half the speed of the "
+        "winner.</p>"
+        "<h3>x4 beats x8 only marginally, and almost only at 8 bits</h3>"
+        "<p>24 of the 30 x4 wins are 8-bit formats, and the margins are "
+        "tiny:</p>"
+        + simple_table(
+            ("gap over x8", "count"),
+            (("&lt; 1.02x", "17"), ("1.02x &ndash; 1.05x", "12"),
+             ("&gt; 1.05x", "1 (E8M8, 1.063x)")),
+        )
+        + "<p>Half of them are inside 1.5%, i.e. ties.  The largest is E8M8 at "
+        "17 bits FP32 DOT (1.063x), and there are four FP64 GEMV 8-bit cases "
+        "around 1.04&ndash;1.05x.  Everything else is noise-level.</p>"
+        "<h3>Practical reading</h3>"
+        "<p>Always pack, always x8.  The rule costs at most 1.063x in the "
+        "single worst cell and typically nothing, while not packing costs 1.5x "
+        "on median.  x2 and x1 are never right, and "
+        "<code>cooperative_shuffle</code> is never right by a wide "
+        "margin.</p>"
+        "</details></section>"
+    )
+
+
 def body(run_dir: Path | None) -> str:
     blocks = []
     for heading, paragraphs in SECTIONS:
@@ -679,6 +757,7 @@ def body(run_dir: Path | None) -> str:
         blocks.append(native_section(run_dir))
         blocks.append(narrow_section(run_dir))
         blocks.append(layout_section(run_dir))
+    blocks.append(packing_section())
     return "".join(blocks)
 
 
