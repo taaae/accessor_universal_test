@@ -751,127 +751,120 @@ def useful_types_section() -> str:
     return (
         '<section class="text-section"><h2>Useful IEEE types</h2>'
         "<details><summary>FP32, x1 case</summary>"
-        "<p>All ratios are against raw FP32 (DOT 0.0699 ms, GEMV 0.0338 ms).  "
-        "Below 1 is faster.</p>"
+        "<p>raw_fp32 costs 0.0699 ms in DOT and 0.0340 ms in GEMV, at 4 bytes "
+        "per value.  Every ratio compares against that; under 1 is faster.  "
+        "63 formats.</p>"
+        "<p>Padded containers come in 1, 2 or 4 bytes.  A format wider than 16 "
+        "bits lands in the same 4-byte slot as raw and moves identical data, so "
+        "it can only lose.  Everything narrower has bandwidth to trade against "
+        "decode cost.</p>"
 
-        "<h3>Useful</h3>"
-        "<h4>Native, excluding FP4 &mdash; 4 types</h4>"
-        "<p>Hardware conversion.  Contains the two fastest cells in the "
-        "study.</p>"
-        + simple_table(ratio, (
-            ("E5M2 aka FP8", "8", "0.443x", "0.603x"),
-            ("E4M3 aka FP8", "8", "0.445x", "0.601x"),
-            ("E5M10 aka FP16", "16", "0.943x", "0.547x"),
-            ("E8M7 aka BF16", "16", "0.943x", "0.552x"),
-        ))
-        + "<h4>E8 below 16 bits &mdash; 4 types</h4>"
-        "<p>Decode is a single shift.  GEMV is flat at 0.0187 ms across all "
-        "four, so width is free there.</p>"
-        + simple_table(ratio, (
-            ("E8M0", "9", "0.512x", "0.549x"),
-            ("E8M1", "10", "0.617x", "0.551x"),
-            ("E8M3", "12", "0.908x", "0.553x"),
-            ("E8M5", "14", "0.947x", "0.552x"),
-        ))
-        + "<h4>E0M15, E1M14 &mdash; 2 types</h4>"
-        "<p>Integer decoders that survive at 16 bits.  Structurally they fall "
-        "in the &ldquo;14/16 bits, not E8, not native&rdquo; group below, but "
-        "they beat raw in both kernels and nothing wider beats them.</p>"
-        + simple_table(ratio, (
-            ("E0M15", "16", "0.978x", "0.932x"),
-            ("E1M14", "16", "0.968x", "0.938x"),
-        ))
+        "<h3>Useful, 21 formats</h3>"
+        "<h4>Native, excluding FP4, 4 formats</h4>"
+        + simple_table(("type", "bits", "DOT", "GEMV"),
+            (("E5M2 aka FP8", "8", "0.443x", "0.601x"),
+             ("E4M3 aka FP8", "8", "0.445x", "0.599x"),
+             ("E5M10 aka FP16", "16", "0.943x", "0.544x"),
+             ("E8M7 aka BF16", "16", "0.951x", "0.550x")))
+        + "<p>FP4 is excluded: it shares FP8&rsquo;s 1-byte container and loses "
+        "to it.</p>"
+        "<h4>E8 shift, below 16 bits, 4 formats</h4>"
+        "<p>E8 shares FP32&rsquo;s exponent width and bias, so decoding is one "
+        "left shift.  GEMV sits at 0.55x for all four regardless of width.</p>"
+        + simple_table(("type", "bits", "DOT", "GEMV"),
+            (("E8M0", "9", "0.512x", "0.549x"), ("E8M1", "10", "0.617x", "0.551x"),
+             ("E8M3", "12", "0.908x", "0.550x"), ("E8M5", "14", "0.954x", "0.549x")))
+        + "<h4>8-bit, DOT-favoured, 6 formats</h4>"
+        "<p>Padded in both kernels, since a 1-byte container wastes nothing.  "
+        "GEMV always wins with the table; DOT switches to an integer decoder "
+        "where one applies.</p>"
+        + simple_table(
+            ("type", "DOT", "DOT decoder", "GEMV", "GEMV decoder",
+             "vs peer, DOT", "vs peer, GEMV"),
+            (("E0M7", "0.459x", "<code>fixed_integer</code>", "0.657x",
+              "<code>full_lut_shared</code>", "1.21x", "0.83x"),
+             ("E1M6", "0.457x", "<code>e1_integer</code>", "0.637x",
+              "<code>full_lut_shared</code>", "1.55x", "0.85x"),
+             ("E2M5", "0.476x", "<code>full_lut_shared</code>", "0.639x",
+              "<code>full_lut_shared</code>", "1.49x", "0.85x"),
+             ("E3M4", "0.473x", "<code>full_lut_shared</code>", "0.638x",
+              "<code>full_lut_shared</code>", "1.25x", "0.85x"),
+             ("E6M1", "0.474x", "<code>full_lut_shared</code>", "0.620x",
+              "<code>full_lut_shared</code>", "1.30x", "0.88x"),
+             ("E7M0", "0.474x", "<code>full_lut_shared</code>", "0.620x",
+              "<code>full_lut_shared</code>", "1.08x", "0.88x")))
+        + "<h4>9 and 10 bits, dense DOT, 4 formats</h4>"
+        "<p>Padding to 2 bytes wastes 38 to 44 percent, which DOT cannot "
+        "afford, so all four switch to dense there.  GEMV keeps padded and "
+        "loses to FP16.</p>"
+        + simple_table(
+            ("type", "bits", "DOT", "DOT decoder", "GEMV", "GEMV decoder",
+             "vs peer, DOT", "vs peer, GEMV"),
+            (("E0M8", "9", "0.556x", "<code>fixed_integer</code>", "0.749x",
+              "<code>full_lut_shared</code>", "1.70x", "0.73x"),
+             ("E4M4", "9", "0.591x", "<code>full_lut_shared</code>", "0.899x",
+              "<code>full_lut_shared</code>", "1.17x", "0.60x"),
+             ("E5M4", "10", "0.690x", "<code>full_lut_shared</code>", "0.799x",
+              "<code>full_lut_shared</code>", "1.37x", "0.68x"),
+             ("E2M7", "10", "0.707x", "<code>full_lut_shared</code>", "0.780x",
+              "<code>full_lut_shared</code>", "1.33x", "0.70x")))
+        + "<p>Both DOT-favoured groups tell the same story.  Each format beats "
+        "its best more-precise peer in DOT by 1.08x to 1.70x, then loses GEMV "
+        "by 0.60x to 0.88x.  FP16 is the peer that beats eight of the ten.</p>"
+        "<h4>E0M11, 1 format</h4>"
+        + simple_table(
+            ("type", "bits", "DOT", "DOT decoder", "GEMV", "GEMV decoder"),
+            (("E0M11", "12", "0.953x", "<code>fixed_integer</code>", "0.838x",
+              "<code>full_lut_shared</code>"),))
+        + "<p>The only format outside the useless set that is not beaten in "
+        "GEMV.  Its only more-precise peers are E0M15 and E1M14, both 16-bit "
+        "formats with neither hardware conversion nor a full LUT available, so "
+        "it wins GEMV by 1.11x.  DOT is a tie at 1.02x.</p>"
+        "<h4>Integer at 16 bits, 2 formats</h4>"
+        + simple_table(("type", "bits", "DOT", "GEMV", "decoder"),
+            (("E0M15", "16", "0.978x", "0.932x", "<code>fixed_integer</code>"),
+             ("E1M14", "16", "0.969x", "0.933x", "<code>e1_integer</code>")))
+        + "<p>The only 16-bit formats without hardware conversion or a shift "
+        "that still beat raw.  <code>fixed_integer</code> and "
+        "<code>e1_integer</code> never branch on subnormals, which is what "
+        "sinks every other non-native format at this width.</p>"
 
-        + "<h3>Parity only</h3>"
-        "<h4>E8 above 16 bits &mdash; 5 types</h4>"
-        "<p>Same 4-byte container as raw, free decode.  Nothing gained, "
-        "nothing lost.</p>"
-        + simple_table(ratio, (
-            ("E8M8", "17", "1.001x", "1.003x"),
-            ("E8M11", "20", "0.998x", "1.002x"),
-            ("E8M15", "24", "1.001x", "1.004x"),
-            ("E8M19", "28", "1.002x", "1.004x"),
-            ("E8M23 aka FP32", "32", "1.006x", "1.003x"),
-        ))
+        "<h3>Parity only, 5 formats</h3>"
+        "<p>E8 above 16 bits sits in raw&rsquo;s own 4-byte container with free "
+        "decode.  Nothing gained, nothing lost.</p>"
+        + simple_table(("type", "bits", "DOT", "GEMV"),
+            (("E8M8", "17", "1.005x", "1.000x"), ("E8M11", "20", "0.999x", "1.002x"),
+             ("E8M15", "24", "1.004x", "1.001x"), ("E8M19", "28", "1.002x", "1.001x"),
+             ("E8M23 aka FP32", "32", "1.006x", "1.001x")))
 
-        + "<h3>Useless &mdash; beaten by a bigger type</h3>"
-        "<h4>Below 8 bits &mdash; 21 types</h4>"
+        + "<h3>Useless, 37 formats</h3>"
+        "<h4>Redundant, below 8 bits, 21 formats</h4>"
         "<p>All pad to the same 1-byte container as the 8-bit formats, so they "
-        "move identical bytes with worse decoders.  Dominated in both kernels, "
-        "mostly by FP8 E5M2.</p>"
-        + simple_table(("bits", "types"), (
-            ("2", "E0M1, E1M0"),
-            ("3", "E0M2, E1M1, E2M0"),
-            ("4", "E0M3, E1M2, FP4 (E2M1), E3M0"),
-            ("5", "E0M4, E2M2, E4M0"),
-            ("6", "E0M5, E1M4, E2M3, E3M2, E4M1, E5M0"),
-            ("7", "E0M6, E3M3, E5M1"),
-        ))
-
-        + "<h3>Useless &mdash; beaten by raw FP32</h3>"
-        "<h4>Above 16 bits, not E8 &mdash; 8 types</h4>"
-        "<p>Padded container is <code>uint32_t</code> &mdash; raw FP32&rsquo;s "
-        "exact footprint &mdash; plus decode cost.</p>"
-        + simple_table(ratio, (
-            ("E2M14", "17", "1.246x", "1.809x"),
-            ("E5M11", "17", "1.114x", "1.291x"),
-            ("E2M17", "20", "1.245x", "1.806x"),
-            ("E5M14", "20", "1.119x", "1.292x"),
-            ("E0M23", "24", "1.010x", "1.056x"),
-            ("E5M18", "24", "1.126x", "1.292x"),
-            ("E4M23", "28", "1.192x", "1.548x"),
-            ("E5M22", "28", "1.121x", "1.293x"),
-        ))
-        + "<h4>14 and 16 bits, not E8, not native &mdash; 7 types</h4>"
+        "move identical bytes with worse decoders.</p>"
+        + simple_table(("bits", "types"),
+            (("2", "E0M1, E1M0"), ("3", "E0M2, E1M1, E2M0"),
+             ("4", "E0M3, E1M2, FP4 (E2M1), E3M0"), ("5", "E0M4, E2M2, E4M0"),
+             ("6", "E0M5, E1M4, E2M3, E3M2, E4M1, E5M0"),
+             ("7", "E0M6, E3M3, E5M1")))
+        + "<h4>Redundant, E5M6, 1 format</h4>"
+        "<p>12 bits, beaten by FP16 in both kernels at 0.93x DOT and 0.61x "
+        "GEMV.  Wider, more precise, faster.</p>"
+        "<h4>Loses to raw, above 16 bits and not E8, 8 formats</h4>"
+        + simple_table(("type", "bits", "DOT", "GEMV"),
+            (("E0M23", "24", "1.010x", "1.051x"), ("E5M11", "17", "1.114x", "1.286x"),
+             ("E5M14", "20", "1.119x", "1.285x"), ("E5M22", "28", "1.122x", "1.287x"),
+             ("E5M18", "24", "1.126x", "1.285x"), ("E4M23", "28", "1.192x", "1.542x"),
+             ("E2M14", "17", "1.246x", "1.801x"), ("E2M17", "20", "1.246x", "1.802x")))
+        + "<h4>Loses to raw, 14 and 16 bits, 7 formats</h4>"
         "<p>Half raw&rsquo;s bytes, but no cheap decoder exists at these "
-        "widths &mdash; <code>full_lut</code> is unbuilt at 16 bits and "
-        "collapses at 14.</p>"
-        + simple_table(ratio, (
-            ("E2M11", "14", "1.130x", "1.438x"),
-            ("E5M8", "14", "1.081x", "1.197x"),
-            ("E2M13", "16", "1.191x", "1.641x"),
-            ("E3M12", "16", "1.275x", "1.833x"),
-            ("E4M11", "16", "1.121x", "1.433x"),
-            ("E6M9", "16", "1.070x", "1.123x"),
-            ("E7M8", "16", "1.065x", "1.140x"),
-        ))
-
-        + "<h3>Remaining &mdash; 12 types</h3>"
-        "<p>Totals: 4 + 4 + 2 + 5 + 21 + 8 + 7 + 12 = 63.</p>"
-        "<h4>vs fastest more-precise peer, DOT x1</h4>"
-        + simple_table(timed, (
-            ("E0M7", "8", "0.0320", "E0M8", "9", "0.0375", "1.170x"),
-            ("E1M6", "8", "0.0319", "E2M7", "10", "0.0432", "1.354x"),
-            ("E2M5", "8", "0.0332", "E2M7", "10", "0.0432", "1.300x"),
-            ("E3M4", "8", "0.0330", "E4M4", "9", "0.0395", "1.197x"),
-            ("E6M1", "8", "0.0329", "E8M1", "10", "0.0421", "1.280x"),
-            ("E7M0", "8", "0.0331", "E8M0", "9", "0.0345", "1.041x"),
-            ("E0M8", "9", "0.0375", "E0M11", "12", "0.0633", "1.687x"),
-            ("E4M4", "9", "0.0395", "E5M4", "10", "0.0437", "1.105x"),
-            ("E2M7", "10", "0.0432", "BF16", "16", "0.0659", "1.525x"),
-            ("E5M4", "10", "0.0437", "BF16", "16", "0.0659", "1.508x"),
-            ("E0M11", "12", "0.0633", "E0M15", "16", "0.0675", "1.067x"),
-            ("E5M6", "12", "0.0683", "BF16", "16", "0.0659", "0.964x"),
-        ))
-        + "<h4>vs fastest more-precise peer, GEMV x1</h4>"
-        + simple_table(timed, (
-            ("E0M7", "8", "0.0222", "FP16", "16", "0.0185", "0.832x"),
-            ("E1M6", "8", "0.0216", "FP16", "16", "0.0185", "0.855x"),
-            ("E2M5", "8", "0.0217", "FP16", "16", "0.0185", "0.854x"),
-            ("E3M4", "8", "0.0217", "FP16", "16", "0.0185", "0.853x"),
-            ("E6M1", "8", "0.0211", "E8M5", "14", "0.0187", "0.887x"),
-            ("E7M0", "8", "0.0210", "E8M0", "9", "0.0187", "0.890x"),
-            ("E0M8", "9", "0.0254", "FP16", "16", "0.0185", "0.727x"),
-            ("E4M4", "9", "0.0277", "FP16", "16", "0.0185", "0.667x"),
-            ("E2M7", "10", "0.0265", "FP16", "16", "0.0185", "0.697x"),
-            ("E5M4", "10", "0.0271", "FP16", "16", "0.0185", "0.682x"),
-            ("E0M11", "12", "0.0285", "E0M15", "16", "0.0317", "1.114x"),
-            ("E5M6", "12", "0.0282", "FP16", "16", "0.0185", "0.657x"),
-        ))
-        + "<p>These twelve are DOT-only formats.  Eleven beat their best "
-        "more-precise peer in DOT (1.04x&ndash;1.69x) but ten lose in GEMV, "
-        "mostly to FP16.  E5M6 fails both and should probably join the useless "
-        "set.  E0M11 is the only one that wins both.</p>"
+        "widths.  <code>full_lut</code> is unbuilt at 16 bits and collapses at "
+        "14.</p>"
+        + simple_table(("type", "bits", "DOT", "GEMV"),
+            (("E7M8", "16", "1.067x", "1.155x"), ("E6M9", "16", "1.078x", "1.123x"),
+             ("E5M8", "14", "1.092x", "1.193x"), ("E2M11", "14", "1.130x", "1.435x"),
+             ("E4M11", "16", "1.132x", "1.425x"), ("E2M13", "16", "1.199x", "1.639x"),
+             ("E3M12", "16", "1.275x", "1.833x")))
+        + "<p>21 + 5 + 37 = 63.</p>"
         "</details>"
         "<details><summary>FP64, x1 case</summary>"
         "<p>raw_fp64 costs 0.0825 ms in DOT and 0.0435 ms in GEMV, at 8 bytes "
