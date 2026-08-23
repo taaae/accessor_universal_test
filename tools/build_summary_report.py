@@ -751,120 +751,30 @@ def useful_types_section() -> str:
     return (
         '<section class="text-section"><h2>Useful IEEE types</h2>'
         "<details><summary>FP32, x1 case</summary>"
-        "<p>raw_fp32 costs 0.0699 ms in DOT and 0.0340 ms in GEMV, at 4 bytes "
-        "per value.  Every ratio compares against that; under 1 is faster.  "
-        "63 formats.</p>"
-        "<p>Padded containers come in 1, 2 or 4 bytes.  A format wider than 16 "
-        "bits lands in the same 4-byte slot as raw and moves identical data, so "
-        "it can only lose.  Everything narrower has bandwidth to trade against "
-        "decode cost.</p>"
-
-        "<h3>Useful, 21 formats</h3>"
-        "<h4>Native, excluding FP4, 4 formats</h4>"
-        + simple_table(("type", "bits", "DOT", "GEMV"),
-            (("E5M2 aka FP8", "8", "0.443x", "0.601x"),
-             ("E4M3 aka FP8", "8", "0.445x", "0.599x"),
-             ("E5M10 aka FP16", "16", "0.943x", "0.544x"),
-             ("E8M7 aka BF16", "16", "0.951x", "0.550x")))
-        + "<p>FP4 is excluded: it shares FP8&rsquo;s 1-byte container and loses "
-        "to it.</p>"
-        "<h4>E8 shift, below 16 bits, 4 formats</h4>"
-        "<p>E8 shares FP32&rsquo;s exponent width and bias, so decoding is one "
-        "left shift.  GEMV sits at 0.55x for all four regardless of width.</p>"
-        + simple_table(("type", "bits", "DOT", "GEMV"),
-            (("E8M0", "9", "0.512x", "0.549x"), ("E8M1", "10", "0.617x", "0.551x"),
-             ("E8M3", "12", "0.908x", "0.550x"), ("E8M5", "14", "0.954x", "0.549x")))
-        + "<h4>8-bit, DOT-favoured, 6 formats</h4>"
-        "<p>Padded in both kernels, since a 1-byte container wastes nothing.  "
-        "GEMV always wins with the table; DOT switches to an integer decoder "
-        "where one applies.</p>"
-        + simple_table(
-            ("type", "DOT", "DOT decoder", "GEMV", "GEMV decoder",
-             "vs peer, DOT", "vs peer, GEMV"),
-            (("E0M7", "0.459x", "<code>fixed_integer</code>", "0.657x",
-              "<code>full_lut_shared</code>", "1.21x", "0.83x"),
-             ("E1M6", "0.457x", "<code>e1_integer</code>", "0.637x",
-              "<code>full_lut_shared</code>", "1.55x", "0.85x"),
-             ("E2M5", "0.476x", "<code>full_lut_shared</code>", "0.639x",
-              "<code>full_lut_shared</code>", "1.49x", "0.85x"),
-             ("E3M4", "0.473x", "<code>full_lut_shared</code>", "0.638x",
-              "<code>full_lut_shared</code>", "1.25x", "0.85x"),
-             ("E6M1", "0.474x", "<code>full_lut_shared</code>", "0.620x",
-              "<code>full_lut_shared</code>", "1.30x", "0.88x"),
-             ("E7M0", "0.474x", "<code>full_lut_shared</code>", "0.620x",
-              "<code>full_lut_shared</code>", "1.08x", "0.88x")))
-        + "<h4>9 and 10 bits, dense DOT, 4 formats</h4>"
-        "<p>Padding to 2 bytes wastes 38 to 44 percent, which DOT cannot "
-        "afford, so all four switch to dense there.  GEMV keeps padded and "
-        "loses to FP16.</p>"
-        + simple_table(
-            ("type", "bits", "DOT", "DOT decoder", "GEMV", "GEMV decoder",
-             "vs peer, DOT", "vs peer, GEMV"),
-            (("E0M8", "9", "0.556x", "<code>fixed_integer</code>", "0.749x",
-              "<code>full_lut_shared</code>", "1.70x", "0.73x"),
-             ("E4M4", "9", "0.591x", "<code>full_lut_shared</code>", "0.899x",
-              "<code>full_lut_shared</code>", "1.17x", "0.60x"),
-             ("E5M4", "10", "0.690x", "<code>full_lut_shared</code>", "0.799x",
-              "<code>full_lut_shared</code>", "1.37x", "0.68x"),
-             ("E2M7", "10", "0.707x", "<code>full_lut_shared</code>", "0.780x",
-              "<code>full_lut_shared</code>", "1.33x", "0.70x")))
-        + "<p>Both DOT-favoured groups tell the same story.  Each format beats "
-        "its best more-precise peer in DOT by 1.08x to 1.70x, then loses GEMV "
-        "by 0.60x to 0.88x.  FP16 is the peer that beats eight of the ten.</p>"
-        "<h4>E0M11, 1 format</h4>"
-        + simple_table(
-            ("type", "bits", "DOT", "DOT decoder", "GEMV", "GEMV decoder"),
-            (("E0M11", "12", "0.953x", "<code>fixed_integer</code>", "0.838x",
-              "<code>full_lut_shared</code>"),))
-        + "<p>The only format outside the useless set that is not beaten in "
-        "GEMV.  Its only more-precise peers are E0M15 and E1M14, both 16-bit "
-        "formats with neither hardware conversion nor a full LUT available, so "
-        "it wins GEMV by 1.11x.  DOT is a tie at 1.02x.</p>"
-        "<h4>Integer at 16 bits, 2 formats</h4>"
-        + simple_table(("type", "bits", "DOT", "GEMV", "decoder"),
-            (("E0M15", "16", "0.978x", "0.932x", "<code>fixed_integer</code>"),
-             ("E1M14", "16", "0.969x", "0.933x", "<code>e1_integer</code>")))
-        + "<p>The only 16-bit formats without hardware conversion or a shift "
-        "that still beat raw.  <code>fixed_integer</code> and "
-        "<code>e1_integer</code> never branch on subnormals, which is what "
-        "sinks every other non-native format at this width.</p>"
-
-        "<h3>Parity only, 5 formats</h3>"
-        "<p>E8 above 16 bits sits in raw&rsquo;s own 4-byte container with free "
-        "decode.  Nothing gained, nothing lost.</p>"
-        + simple_table(("type", "bits", "DOT", "GEMV"),
-            (("E8M8", "17", "1.005x", "1.000x"), ("E8M11", "20", "0.999x", "1.002x"),
-             ("E8M15", "24", "1.004x", "1.001x"), ("E8M19", "28", "1.002x", "1.001x"),
-             ("E8M23 aka FP32", "32", "1.006x", "1.001x")))
-
-        + "<h3>Useless, 37 formats</h3>"
-        "<h4>Redundant, below 8 bits, 21 formats</h4>"
-        "<p>All pad to the same 1-byte container as the 8-bit formats, so they "
-        "move identical bytes with worse decoders.</p>"
-        + simple_table(("bits", "types"),
-            (("2", "E0M1, E1M0"), ("3", "E0M2, E1M1, E2M0"),
-             ("4", "E0M3, E1M2, FP4 (E2M1), E3M0"), ("5", "E0M4, E2M2, E4M0"),
-             ("6", "E0M5, E1M4, E2M3, E3M2, E4M1, E5M0"),
-             ("7", "E0M6, E3M3, E5M1")))
-        + "<h4>Redundant, E5M6, 1 format</h4>"
-        "<p>12 bits, beaten by FP16 in both kernels at 0.93x DOT and 0.61x "
-        "GEMV.  Wider, more precise, faster.</p>"
-        "<h4>Loses to raw, above 16 bits and not E8, 8 formats</h4>"
-        + simple_table(("type", "bits", "DOT", "GEMV"),
-            (("E0M23", "24", "1.010x", "1.051x"), ("E5M11", "17", "1.114x", "1.286x"),
-             ("E5M14", "20", "1.119x", "1.285x"), ("E5M22", "28", "1.122x", "1.287x"),
-             ("E5M18", "24", "1.126x", "1.285x"), ("E4M23", "28", "1.192x", "1.542x"),
-             ("E2M14", "17", "1.246x", "1.801x"), ("E2M17", "20", "1.246x", "1.802x")))
-        + "<h4>Loses to raw, 14 and 16 bits, 7 formats</h4>"
-        "<p>Half raw&rsquo;s bytes, but no cheap decoder exists at these "
-        "widths.  <code>full_lut</code> is unbuilt at 16 bits and collapses at "
-        "14.</p>"
-        + simple_table(("type", "bits", "DOT", "GEMV"),
-            (("E7M8", "16", "1.067x", "1.155x"), ("E6M9", "16", "1.078x", "1.123x"),
-             ("E5M8", "14", "1.092x", "1.193x"), ("E2M11", "14", "1.130x", "1.435x"),
-             ("E4M11", "16", "1.132x", "1.425x"), ("E2M13", "16", "1.199x", "1.639x"),
-             ("E3M12", "16", "1.275x", "1.833x")))
-        + "<p>21 + 5 + 37 = 63.</p>"
+        "<p>Peer is the fastest format carrying at least as much exponent and mantissa, with plain FP32 in the pool.  Ratios are peer time over format time, so above 1 means the format wins.  Anything from 0.97x to 1.03x is a tie and counts as useless.</p>"
+        "<p>E8 shares FP32&rsquo;s exponent width and bias, so its decode is a single left shift.  <code>direct_branchy</code>, <code>exponent_only</code>, <code>native_scalar</code> and <code>full_lut_global</code> all land within 1.2% of each other on those formats, so every E8 strategy is labelled <code>shift</code>.</p>"
+        "<h3>Useful in both kernels, 3 formats</h3>"
+        '<div class="table-wrap"><table class="strategy-table"><thead><tr><th>type</th><th>bits</th><th>peer DOT</th><th>DOT strategy</th><th>DOT</th><th>peer GEMV</th><th>GEMV strategy</th><th>GEMV</th></tr></thead><tbody><tr><td>E5M10 aka FP16</td><td>16</td><td>E8M11</td><td><code>native</code></td><td>1.06x</td><td>raw FP32</td><td><code>native</code></td><td>1.84x</td></tr><tr><td>E8M7 aka BF16</td><td>16</td><td>E8M11</td><td><code>shift</code></td><td>1.05x</td><td>E8M8</td><td><code>shift</code></td><td>1.82x</td></tr><tr><td>E1M14</td><td>16</td><td>raw FP32</td><td><code>e1_integer</code></td><td>1.03x</td><td>raw FP32</td><td><code>e1_integer</code></td><td>1.07x</td></tr></tbody></table></div>'
+        "<h3>Useful in DOT only, 15 formats</h3>"
+        "<h4>Native, 2</h4>"
+        '<div class="table-wrap"><table class="strategy-table"><thead><tr><th>type</th><th>bits</th><th>peer DOT</th><th>DOT strategy</th><th>DOT</th><th>peer GEMV</th><th>GEMV strategy</th><th>GEMV</th></tr></thead><tbody><tr><td>E4M3 aka FP8</td><td>8</td><td>E4M4</td><td><code>native</code></td><td>1.33x</td><td>FP16</td><td><code>native</code></td><td>0.91x</td></tr><tr><td>E5M2 aka FP8</td><td>8</td><td>E5M4</td><td><code>native</code></td><td>1.56x</td><td>FP16</td><td><code>native</code></td><td>0.90x</td></tr></tbody></table></div>'
+        "<h4>Integer, 3</h4>"
+        '<div class="table-wrap"><table class="strategy-table"><thead><tr><th>type</th><th>bits</th><th>peer DOT</th><th>DOT strategy</th><th>DOT</th><th>peer GEMV</th><th>GEMV strategy</th><th>GEMV</th></tr></thead><tbody><tr><td>E0M7</td><td>8</td><td>E0M8</td><td><code>fixed_integer</code></td><td>1.21x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.83x</td></tr><tr><td>E1M6</td><td>8</td><td>E2M7</td><td><code>e1_integer</code></td><td>1.55x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.85x</td></tr><tr><td>E0M8</td><td>9</td><td>FP16</td><td><code>fixed_integer</code></td><td>1.70x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.73x</td></tr></tbody></table></div>'
+        "<h4>Full LUT, 7</h4>"
+        '<div class="table-wrap"><table class="strategy-table"><thead><tr><th>type</th><th>bits</th><th>peer DOT</th><th>DOT strategy</th><th>DOT</th><th>peer GEMV</th><th>GEMV strategy</th><th>GEMV</th></tr></thead><tbody><tr><td>E2M5</td><td>8</td><td>E2M7</td><td><code>full_lut_shared</code></td><td>1.49x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.85x</td></tr><tr><td>E3M4</td><td>8</td><td>E4M4</td><td><code>full_lut_shared</code></td><td>1.25x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.85x</td></tr><tr><td>E6M1</td><td>8</td><td>E8M1</td><td><code>full_lut_shared</code></td><td>1.30x</td><td>E8M5</td><td><code>full_lut_shared</code></td><td>0.88x</td></tr><tr><td>E7M0</td><td>8</td><td>E8M0</td><td><code>full_lut_shared</code></td><td>1.08x</td><td>E8M0</td><td><code>full_lut_shared</code></td><td>0.88x</td></tr><tr><td>E4M4</td><td>9</td><td>E5M4</td><td><code>full_lut_shared</code></td><td>1.17x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.60x</td></tr><tr><td>E2M7</td><td>10</td><td>FP16</td><td><code>full_lut_shared</code></td><td>1.33x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.70x</td></tr><tr><td>E5M4</td><td>10</td><td>FP16</td><td><code>full_lut_shared</code></td><td>1.37x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.68x</td></tr></tbody></table></div>'
+        "<h4>Shift, 3</h4>"
+        '<div class="table-wrap"><table class="strategy-table"><thead><tr><th>type</th><th>bits</th><th>peer DOT</th><th>DOT strategy</th><th>DOT</th><th>peer GEMV</th><th>GEMV strategy</th><th>GEMV</th></tr></thead><tbody><tr><td>E8M0</td><td>9</td><td>E8M1</td><td><code>shift</code></td><td>1.21x</td><td>E8M5</td><td><code>shift</code></td><td>1.00x</td></tr><tr><td>E8M1</td><td>10</td><td>E8M3</td><td><code>shift</code></td><td>1.47x</td><td>E8M5</td><td><code>shift</code></td><td>1.00x</td></tr><tr><td>E8M3</td><td>12</td><td>BF16</td><td><code>shift</code></td><td>1.05x</td><td>E8M5</td><td><code>shift</code></td><td>1.00x</td></tr></tbody></table></div>'
+        "<p>FP16 is the GEMV peer for 8 of these 15 and beats them by 1.10x to 1.67x.  That single format is why the group is DOT only.  The three shift entries tie GEMV rather than losing it, which puts them a tier above the rest.</p>"
+        "<h3>Useful in GEMV only, 2 formats</h3>"
+        '<div class="table-wrap"><table class="strategy-table"><thead><tr><th>type</th><th>bits</th><th>peer DOT</th><th>DOT strategy</th><th>DOT</th><th>peer GEMV</th><th>GEMV strategy</th><th>GEMV</th></tr></thead><tbody><tr><td>E0M11</td><td>12</td><td>E1M14</td><td><code>fixed_integer</code></td><td>1.02x</td><td>E0M15</td><td><code>full_lut_shared</code></td><td>1.11x</td></tr><tr><td>E0M15</td><td>16</td><td>raw FP32</td><td><code>fixed_integer</code></td><td>1.02x</td><td>raw FP32</td><td><code>fixed_integer</code></td><td>1.07x</td></tr></tbody></table></div>'
+        "<h3>E8, the shift family, 10 formats</h3>"
+        "<p>A cross-cutting view.  These rows also appear in the tables above and below.</p>"
+        '<div class="table-wrap"><table class="strategy-table"><thead><tr><th>type</th><th>bits</th><th>peer DOT</th><th>DOT strategy</th><th>DOT</th><th>peer GEMV</th><th>GEMV strategy</th><th>GEMV</th></tr></thead><tbody><tr><td>E8M0</td><td>9</td><td>E8M1</td><td><code>shift</code></td><td>1.21x</td><td>E8M5</td><td><code>shift</code></td><td>1.00x</td></tr><tr><td>E8M1</td><td>10</td><td>E8M3</td><td><code>shift</code></td><td>1.47x</td><td>E8M5</td><td><code>shift</code></td><td>1.00x</td></tr><tr><td>E8M3</td><td>12</td><td>BF16</td><td><code>shift</code></td><td>1.05x</td><td>E8M5</td><td><code>shift</code></td><td>1.00x</td></tr><tr><td>E8M5</td><td>14</td><td>BF16</td><td><code>shift</code></td><td>1.00x</td><td>BF16</td><td><code>shift</code></td><td>1.00x</td></tr><tr><td>E8M7 aka BF16</td><td>16</td><td>E8M11</td><td><code>shift</code></td><td>1.05x</td><td>E8M8</td><td><code>shift</code></td><td>1.82x</td></tr><tr><td>E8M8</td><td>17</td><td>E8M11</td><td><code>shift</code></td><td>0.99x</td><td>raw FP32</td><td><code>shift</code></td><td>1.00x</td></tr><tr><td>E8M11</td><td>20</td><td>raw FP32</td><td><code>shift</code></td><td>1.00x</td><td>raw FP32</td><td><code>shift</code></td><td>1.00x</td></tr><tr><td>E8M15</td><td>24</td><td>raw FP32</td><td><code>shift</code></td><td>1.00x</td><td>raw FP32</td><td><code>shift</code></td><td>1.00x</td></tr><tr><td>E8M19</td><td>28</td><td>raw FP32</td><td><code>shift</code></td><td>1.00x</td><td>raw FP32</td><td><code>shift</code></td><td>1.00x</td></tr><tr><td>E8M23 aka FP32</td><td>32</td><td>raw FP32</td><td><code>shift</code></td><td>0.99x</td><td>raw FP32</td><td><code>shift</code></td><td>1.00x</td></tr></tbody></table></div>'
+        "<p>GEMV is a step function: 0.0187 ms from 9 through 16 bits, 0.0340 from 17 up.  That is the container boundary, and with decode free the time is purely bytes moved.  Every format from E8M0 to E8M5 is interchangeable in GEMV, so take E8M5 and get five more mantissa bits for nothing, or BF16 for seven.</p>"
+        "<h3>Useless, 43 formats</h3>"
+        '<div class="table-wrap"><table class="strategy-table"><thead><tr><th>type</th><th>bits</th><th>peer DOT</th><th>DOT strategy</th><th>DOT</th><th>peer GEMV</th><th>GEMV strategy</th><th>GEMV</th></tr></thead><tbody><tr><td>E8M11</td><td>20</td><td>raw FP32</td><td><code>shift</code></td><td>1.00x</td><td>raw FP32</td><td><code>shift</code></td><td>1.00x</td></tr><tr><td>E8M5</td><td>14</td><td>BF16</td><td><code>shift</code></td><td>1.00x</td><td>BF16</td><td><code>shift</code></td><td>1.00x</td></tr><tr><td>E8M19</td><td>28</td><td>raw FP32</td><td><code>shift</code></td><td>1.00x</td><td>raw FP32</td><td><code>shift</code></td><td>1.00x</td></tr><tr><td>E8M15</td><td>24</td><td>raw FP32</td><td><code>shift</code></td><td>1.00x</td><td>raw FP32</td><td><code>shift</code></td><td>1.00x</td></tr><tr><td>E8M23 aka FP32</td><td>32</td><td>raw FP32</td><td><code>shift</code></td><td>0.99x</td><td>raw FP32</td><td><code>shift</code></td><td>1.00x</td></tr><tr><td>E8M8</td><td>17</td><td>E8M11</td><td><code>shift</code></td><td>0.99x</td><td>raw FP32</td><td><code>shift</code></td><td>1.00x</td></tr><tr><td>E0M23</td><td>24</td><td>raw FP32</td><td><code>fixed_integer</code></td><td>0.99x</td><td>raw FP32</td><td><code>fixed_integer</code></td><td>0.95x</td></tr><tr><td>E7M8</td><td>16</td><td>E8M11</td><td><code>direct_branchy</code></td><td>0.94x</td><td>E8M8</td><td><code>prefix_lut_shared</code></td><td>0.87x</td></tr><tr><td>E6M9</td><td>16</td><td>E8M11</td><td><code>direct_branchy</code></td><td>0.93x</td><td>raw FP32</td><td><code>prefix_lut_shared</code></td><td>0.89x</td></tr><tr><td>E5M11</td><td>17</td><td>E8M11</td><td><code>direct_branchy</code></td><td>0.90x</td><td>raw FP32</td><td><code>prefix_lut_shared</code></td><td>0.78x</td></tr><tr><td>E5M14</td><td>20</td><td>raw FP32</td><td><code>direct_branchy</code></td><td>0.89x</td><td>raw FP32</td><td><code>prefix_lut_shared</code></td><td>0.78x</td></tr><tr><td>E5M18</td><td>24</td><td>raw FP32</td><td><code>direct_branchy</code></td><td>0.89x</td><td>raw FP32</td><td><code>prefix_lut_shared</code></td><td>0.78x</td></tr><tr><td>E5M22</td><td>28</td><td>raw FP32</td><td><code>direct_branchy</code></td><td>0.89x</td><td>raw FP32</td><td><code>prefix_lut_shared</code></td><td>0.78x</td></tr><tr><td>E0M6</td><td>7</td><td>E1M6</td><td><code>fixed_integer</code></td><td>1.01x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.75x</td></tr><tr><td>E3M2</td><td>6</td><td>FP8 E5M2</td><td><code>full_lut_shared</code></td><td>0.92x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.74x</td></tr><tr><td>E3M3</td><td>7</td><td>FP8 E4M3</td><td><code>full_lut_shared</code></td><td>0.92x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.73x</td></tr><tr><td>E2M3</td><td>6</td><td>FP8 E4M3</td><td><code>full_lut_shared</code></td><td>0.92x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.73x</td></tr><tr><td>E1M4</td><td>6</td><td>E1M6</td><td><code>e1_integer</code></td><td>1.00x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.73x</td></tr><tr><td>E4M1</td><td>6</td><td>FP8 E5M2</td><td><code>full_lut_shared</code></td><td>0.92x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.73x</td></tr><tr><td>E5M0</td><td>6</td><td>FP8 E5M2</td><td><code>full_lut_shared</code></td><td>0.92x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.73x</td></tr><tr><td>E5M1</td><td>7</td><td>FP8 E5M2</td><td><code>full_lut_shared</code></td><td>0.91x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.73x</td></tr><tr><td>E0M5</td><td>6</td><td>E0M6</td><td><code>fixed_integer</code></td><td>1.00x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.73x</td></tr><tr><td>E1M1</td><td>3</td><td>FP8 E5M2</td><td><code>e1_integer</code></td><td>0.98x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.73x</td></tr><tr><td>E2M1 aka FP4</td><td>4</td><td>FP8 E5M2</td><td><code>full_lut_shared</code></td><td>0.92x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.73x</td></tr><tr><td>E0M1</td><td>2</td><td>FP8 E5M2</td><td><code>fixed_integer</code></td><td>0.97x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.73x</td></tr><tr><td>E1M0</td><td>2</td><td>FP8 E5M2</td><td><code>direct_branchy</code></td><td>0.96x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.73x</td></tr><tr><td>E2M2</td><td>5</td><td>FP8 E5M2</td><td><code>full_lut_shared</code></td><td>0.93x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.73x</td></tr><tr><td>E2M0</td><td>3</td><td>FP8 E5M2</td><td><code>full_lut_shared</code></td><td>0.92x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.73x</td></tr><tr><td>E0M2</td><td>3</td><td>FP8 E5M2</td><td><code>fixed_integer</code></td><td>0.95x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.73x</td></tr><tr><td>E0M4</td><td>5</td><td>E0M6</td><td><code>fixed_integer</code></td><td>0.99x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.73x</td></tr><tr><td>E1M2</td><td>4</td><td>FP8 E5M2</td><td><code>e1_integer</code></td><td>0.97x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.73x</td></tr><tr><td>E4M0</td><td>5</td><td>FP8 E5M2</td><td><code>full_lut_shared</code></td><td>0.92x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.73x</td></tr><tr><td>E0M3</td><td>4</td><td>FP8 E4M3</td><td><code>fixed_integer</code></td><td>0.97x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.73x</td></tr><tr><td>E3M0</td><td>4</td><td>FP8 E5M2</td><td><code>full_lut_shared</code></td><td>0.92x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.73x</td></tr><tr><td>E4M11</td><td>16</td><td>E8M11</td><td><code>direct_branchy</code></td><td>0.88x</td><td>raw FP32</td><td><code>prefix_lut_shared</code></td><td>0.70x</td></tr><tr><td>E2M11</td><td>14</td><td>E8M11</td><td><code>full_lut_global</code></td><td>0.88x</td><td>raw FP32</td><td><code>subnormal_lut_shared</code></td><td>0.70x</td></tr><tr><td>E4M23</td><td>28</td><td>raw FP32</td><td><code>direct_branchy</code></td><td>0.84x</td><td>raw FP32</td><td><code>prefix_lut_shared</code></td><td>0.65x</td></tr><tr><td>E2M13</td><td>16</td><td>raw FP32</td><td><code>direct_branchy</code></td><td>0.83x</td><td>raw FP32</td><td><code>direct_branchy</code></td><td>0.61x</td></tr><tr><td>E5M6</td><td>12</td><td>FP16</td><td><code>full_lut_global</code></td><td>0.93x</td><td>FP16</td><td><code>full_lut_shared</code></td><td>0.61x</td></tr><tr><td>E2M14</td><td>17</td><td>raw FP32</td><td><code>direct_branchy</code></td><td>0.80x</td><td>raw FP32</td><td><code>direct_branchy</code></td><td>0.56x</td></tr><tr><td>E2M17</td><td>20</td><td>raw FP32</td><td><code>direct_branchy</code></td><td>0.80x</td><td>raw FP32</td><td><code>direct_branchy</code></td><td>0.55x</td></tr><tr><td>E3M12</td><td>16</td><td>raw FP32</td><td><code>direct_branchy</code></td><td>0.78x</td><td>raw FP32</td><td><code>subnormal_lut_global</code></td><td>0.55x</td></tr><tr><td>E5M8</td><td>14</td><td>FP16</td><td><code>full_lut_global</code></td><td>0.86x</td><td>FP16</td><td><code>prefix_lut_shared</code></td><td>0.46x</td></tr></tbody></table></div>'
+        "<p>Three bands.  The first six rows are E8 formats tying raw FP32 or BF16, useless because something more precise costs the same, not because they are slow.  Rows 14 to 34 are the sub-8-bit range, flat at roughly 0.92x DOT and 0.73x GEMV because they share the 1-byte container and the same table decoder.  The last nine are the real failures, 12 to 28 bits with no cheap decoder, ending at E5M8 losing GEMV to FP16 by 0.46x.</p>"
+        "<p>3 + 15 + 2 + 43 = 63, with the E8 table repeating 10 of those rows.</p>"
         "</details>"
         "<details><summary>FP32, best case</summary>"
         "<p>The <code>raw</code> anchor is unusable here: its x8 variant runs 1.85x slower than its x4.  E8M23 stores the same 4-byte floats and reaches 0.0377 ms in DOT and 0.0204 ms in GEMV through <code>padded/x8/direct_branchy</code>, so that is the plain-FP32 reference.  DOT and GEMV columns compare against it; under 1 is faster.</p>"
