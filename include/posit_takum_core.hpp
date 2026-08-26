@@ -97,6 +97,14 @@ AUT_PT_HD AUT_PT_INLINE typename ieee_traits<Float>::uint_type to_bits(Float val
 #endif
 }
 
+template <typename Float> AUT_PT_HD AUT_PT_INLINE Float quiet_nan() {
+  using uint_type = typename ieee_traits<Float>::uint_type;
+  constexpr int p = ieee_traits<Float>::fraction_bits;
+  const auto exponent =
+      ((uint_type{1} << ieee_traits<Float>::exponent_bits) - 1u) << p;
+  return from_bits<Float>(exponent | (uint_type{1} << (p - 1)));
+}
+
 AUT_PT_HD AUT_PT_INLINE std::uint64_t round_shift_right(std::uint64_t value,
                                                         int shift) {
   if (shift <= 0) {
@@ -177,11 +185,7 @@ AUT_PT_HD AUT_PT_INLINE Float decode_posit(std::uint32_t raw) {
     return Float{0};
   }
   if (raw == sign_mask<Bits>()) {
-    using uint_type = typename ieee_traits<Float>::uint_type;
-    constexpr int p = ieee_traits<Float>::fraction_bits;
-    const auto exponent =
-        ((uint_type{1} << ieee_traits<Float>::exponent_bits) - 1u) << p;
-    return from_bits<Float>(exponent | (uint_type{1} << (p - 1)));
+    return quiet_nan<Float>();
   }
 
   const bool sign = (raw & sign_mask<Bits>()) != 0u;
@@ -264,7 +268,7 @@ AUT_PT_HD AUT_PT_INLINE Float decode_linear_takum(std::uint32_t raw) {
     return Float{0};
   }
   if (raw == sign_mask<Bits>()) {
-    return std::numeric_limits<Float>::quiet_NaN();
+    return quiet_nan<Float>();
   }
   const auto fields = split_takum<Bits>(raw);
   const auto significand =
@@ -280,7 +284,7 @@ AUT_PT_HD AUT_PT_INLINE Float decode_log_takum(std::uint32_t raw) {
     return Float{0};
   }
   if (raw == sign_mask<Bits>()) {
-    return std::numeric_limits<Float>::quiet_NaN();
+    return quiet_nan<Float>();
   }
   const auto fields = split_takum<Bits>(raw);
   const double fraction = fields.tail_bits == 0

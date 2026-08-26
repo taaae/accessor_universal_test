@@ -33,4 +33,16 @@ for target in "${targets[@]}"; do
     cmake --build "${build_dir}" --parallel 1 \
         --target "posit_takum_strategy_bench_${target}"
 done
+ieee_targets=(
+    fp8_e4m3_fp32 fp8_e4m3_fp64 fp8_e5m2_fp32 fp8_e5m2_fp64
+    e3m4_fp32 e3m4_fp64 e6m1_fp32 e6m1_fp64
+    e8m5_fp32 e11m2_fp64 e2m11_fp32 e2m11_fp64 e5m8_fp32 e5m8_fp64
+    fp16_e5m10_fp32 fp16_e5m10_fp64 bf16_e8m7_fp32 bf16_e8m7_fp64
+    e11m4_fp64 e3m12_fp32 e3m12_fp64 e6m9_fp32 e6m9_fp64
+    fp32_e8m23_fp32 fp32_e8m23_fp64 e11m20_fp64 e4m27_fp64 e10m21_fp64
+)
+for target in "${ieee_targets[@]}"; do
+    cmake --build "${build_dir}" --parallel 1 \
+        --target "ieee_scalar_strategy_bench_${target}"
+done
 echo "All scalar posit/takum CUDA targets compiled successfully."

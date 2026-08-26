@@ -238,6 +238,63 @@ add_posit_takum_strategy_benchmark(takum_log14 2 14 0)
 add_posit_takum_strategy_benchmark(takum_log16 2 16 0)
 add_posit_takum_strategy_benchmark(takum_log32 2 32 0)
 
+function(add_ieee_scalar_strategy_benchmark name format_id compute strategies q_lower q_upper)
+    set(target "ieee_scalar_strategy_bench_${name}")
+    add_executable(${target} src/ieee_scalar_strategy_bench.cu)
+    target_include_directories(${target} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
+    target_compile_definitions(
+        ${target}
+        PRIVATE
+            AUT_IEEE_FORMAT_ID=${format_id}
+            AUT_IEEE_COMPUTE=${compute}
+            AUT_IEEE_STRATEGY_MASK=${strategies}
+            AUT_IEEE_Q_LOWER=${q_lower}
+            AUT_IEEE_Q_UPPER=${q_upper}
+    )
+    target_compile_options(
+        ${target}
+        PRIVATE
+            "$<$<COMPILE_LANGUAGE:CXX>:-O3>"
+            "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v;--ftz=false>"
+    )
+    set_target_properties(
+        ${target}
+        PROPERTIES
+            CUDA_RUNTIME_LIBRARY Static
+            CUDA_SEPARABLE_COMPILATION OFF
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+    )
+endfunction()
+
+add_ieee_scalar_strategy_benchmark(fp8_e4m3_fp32 1 0 25 -8 8)
+add_ieee_scalar_strategy_benchmark(fp8_e4m3_fp64 1 1 25 -8 8)
+add_ieee_scalar_strategy_benchmark(fp8_e5m2_fp32 2 0 25 -15 15)
+add_ieee_scalar_strategy_benchmark(fp8_e5m2_fp64 2 1 25 -15 15)
+add_ieee_scalar_strategy_benchmark(e3m4_fp32 3 0 24 -5 3)
+add_ieee_scalar_strategy_benchmark(e3m4_fp64 3 1 24 -5 3)
+add_ieee_scalar_strategy_benchmark(e6m1_fp32 4 0 24 -28 28)
+add_ieee_scalar_strategy_benchmark(e6m1_fp64 4 1 24 -28 28)
+add_ieee_scalar_strategy_benchmark(e8m5_fp32 5 0 26 -120 120)
+add_ieee_scalar_strategy_benchmark(e11m2_fp64 6 1 28 -1000 1000)
+add_ieee_scalar_strategy_benchmark(e2m11_fp32 7 0 26 -10 1)
+add_ieee_scalar_strategy_benchmark(e2m11_fp64 7 1 26 -10 1)
+add_ieee_scalar_strategy_benchmark(e5m8_fp32 8 0 26 -20 14)
+add_ieee_scalar_strategy_benchmark(e5m8_fp64 8 1 26 -20 14)
+add_ieee_scalar_strategy_benchmark(fp16_e5m10_fp32 9 0 17 -20 14)
+add_ieee_scalar_strategy_benchmark(fp16_e5m10_fp64 9 1 17 -20 14)
+add_ieee_scalar_strategy_benchmark(bf16_e8m7_fp32 10 0 17 -120 120)
+add_ieee_scalar_strategy_benchmark(bf16_e8m7_fp64 10 1 17 -120 120)
+add_ieee_scalar_strategy_benchmark(e11m4_fp64 11 1 20 -1000 1000)
+add_ieee_scalar_strategy_benchmark(e3m12_fp32 12 0 48 -12 3)
+add_ieee_scalar_strategy_benchmark(e3m12_fp64 12 1 48 -12 3)
+add_ieee_scalar_strategy_benchmark(e6m9_fp32 13 0 82 -36 28)
+add_ieee_scalar_strategy_benchmark(e6m9_fp64 13 1 82 -36 28)
+add_ieee_scalar_strategy_benchmark(fp32_e8m23_fp32 14 0 1 -120 120)
+add_ieee_scalar_strategy_benchmark(fp32_e8m23_fp64 14 1 1 -120 120)
+add_ieee_scalar_strategy_benchmark(e11m20_fp64 15 1 4 -1000 1000)
+add_ieee_scalar_strategy_benchmark(e4m27_fp64 16 1 66 -30 7)
+add_ieee_scalar_strategy_benchmark(e10m21_fp64 17 1 66 -500 500)
+
 add_executable(accuracy_statistics_test tests/accuracy_statistics_test.cpp)
 target_include_directories(
     accuracy_statistics_test

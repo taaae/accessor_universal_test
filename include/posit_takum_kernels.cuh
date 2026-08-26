@@ -167,6 +167,22 @@ __global__ void validate_decode_kernel(storage_view<Bits> input, Float *output,
   }
 }
 
+template <typename Decoder, int Bits, typename Float, bool SharedTable>
+__global__ void validate_generic_decoder_kernel(storage_view<Bits> input,
+                                                Decoder decoder,
+                                                Float *output,
+                                                std::size_t count) {
+  extern __shared__ unsigned char dynamic_shared[];
+  auto *shared = reinterpret_cast<Float *>(dynamic_shared);
+  const auto *table = decoder.prepare(shared);
+  for (auto index = static_cast<std::size_t>(blockIdx.x) * blockDim.x +
+                    threadIdx.x;
+       index < count;
+       index += static_cast<std::size_t>(gridDim.x) * blockDim.x) {
+    output[index] = decoder.value(input.raw(index), table);
+  }
+}
+
 } // namespace aut::pt
 
 #endif

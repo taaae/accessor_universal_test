@@ -17,11 +17,20 @@ case "${mode}" in
     *) echo "error: MODE must be smoke or full" >&2; exit 2 ;;
 esac
 
-targets=(
+alt_targets=(
     posit8_es0 posit14_es1 posit16_es1 posit32_es2
     takum8 takum14 takum16 takum32
     takum_log8 takum_log14 takum_log16 takum_log32
 )
+ieee_targets=(
+    fp8_e4m3_fp32 fp8_e4m3_fp64 fp8_e5m2_fp32 fp8_e5m2_fp64
+    e3m4_fp32 e3m4_fp64 e6m1_fp32 e6m1_fp64
+    e8m5_fp32 e11m2_fp64 e2m11_fp32 e2m11_fp64 e5m8_fp32 e5m8_fp64
+    fp16_e5m10_fp32 fp16_e5m10_fp64 bf16_e8m7_fp32 bf16_e8m7_fp64
+    e11m4_fp64 e3m12_fp32 e3m12_fp64 e6m9_fp32 e6m9_fp64
+    fp32_e8m23_fp32 fp32_e8m23_fp64 e11m20_fp64 e4m27_fp64 e10m21_fp64
+)
+targets=("${alt_targets[@]}" "${ieee_targets[@]}")
 
 mkdir -p "${run_dir}/${mode}"
 finish_manifest() {
@@ -77,15 +86,24 @@ ctest --test-dir "${build_dir}" --output-on-failure \
 
 current_stage="build_targets"
 for target in "${targets[@]}"; do
-    cmake --build "${build_dir}" --parallel "${build_jobs}" \
-        --target "posit_takum_strategy_bench_${target}"
+    if [[ " ${alt_targets[*]} " == *" ${target} "* ]]; then
+        executable="posit_takum_strategy_bench_${target}"
+    else
+        executable="ieee_scalar_strategy_bench_${target}"
+    fi
+    cmake --build "${build_dir}" --parallel "${build_jobs}" --target "${executable}"
 done
 
 run_bounded() {
-    local target="$1"
+    local target="$1" executable
+    if [[ " ${alt_targets[*]} " == *" ${target} "* ]]; then
+        executable="posit_takum_strategy_bench_${target}"
+    else
+        executable="ieee_scalar_strategy_bench_${target}"
+    fi
     local prefix="${run_dir}/${mode}/${target}"
     if timeout --foreground "${target_timeout}" \
-        "${build_dir}/bin/posit_takum_strategy_bench_${target}" \
+        "${build_dir}/bin/${executable}" \
         --mode "${mode}" \
         --seed "${seed}" \
         --dot-n "${DOT_N:-134217728}" \
