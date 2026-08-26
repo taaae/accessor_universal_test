@@ -298,7 +298,9 @@ AUT_PT_HD AUT_PT_INLINE Float decode_log_takum(std::uint32_t raw) {
   Float magnitude{};
 #if defined(__CUDA_ARCH__)
   if constexpr (std::is_same_v<Float, float>) {
-    magnitude = exp2f(static_cast<float>(exponent2));
+    // Keep the mapped exponent in double: rounding it before exp2 can amplify
+    // the input error by dozens of FP32 output ULPs at large magnitudes.
+    magnitude = static_cast<Float>(exp2(exponent2));
   } else {
     magnitude = exp2(exponent2);
   }
