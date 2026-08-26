@@ -38,3 +38,12 @@ distribution and that bounded rejection of endpoint-rounding samples is
 deterministic, symmetric between operands, sign-balanced, terminates safely,
 and does not affect CUDA synchronization or timed regions. No new finding was
 reported.
+
+A subsequent smoke validation showed that endpoint coverage must account for
+the support of the complementary pair, not each operand in isolation. The
+reviewer reproduced the issue for FP32 `takum<8>` (individual support
+`[-127,127]`, pair-admissible marginal support `[-127,119]`). After the check
+was changed to intersect the quantization cells of both complementary targets,
+the final review of commit `07256b8` reported no remaining finding. It verified
+the midpoint tie handling, bounded inward endpoint nudges, 32-bit binary-search
+safety, and the expected `takum<8>` support.
