@@ -101,6 +101,37 @@ target_include_directories(
 target_compile_options(posit_takum_core_test PRIVATE -O3)
 add_test(NAME posit_takum_core_test COMMAND posit_takum_core_test)
 
+add_executable(normal32_formats_test tests/normal32_formats_test.cpp)
+target_include_directories(
+    normal32_formats_test
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+target_compile_options(normal32_formats_test PRIVATE -O3)
+add_test(NAME normal32_formats_test COMMAND normal32_formats_test)
+
+
+add_executable(normal32_dot_bench src/normal32_dot_bench.cu)
+target_link_libraries(normal32_dot_bench PRIVATE CUDA::curand_static)
+target_include_directories(
+    normal32_dot_bench
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+target_compile_options(
+    normal32_dot_bench
+    PRIVATE
+        "$<$<COMPILE_LANGUAGE:CXX>:-O3>"
+        "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v>"
+)
+set_target_properties(
+    normal32_dot_bench
+    PROPERTIES
+        CUDA_RUNTIME_LIBRARY Static
+        CUDA_SEPARABLE_COMPILATION OFF
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
 function(add_bitwidth_strategy_benchmark bits)
     set(target "bitwidth_strategy_bench_${bits}")
     add_executable(${target} src/bitwidth_strategy_bench.cu)
