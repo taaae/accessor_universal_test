@@ -226,7 +226,7 @@ long double raw_q(std::uint32_t raw) {
 }
 
 std::pair<long double, long double>
-representable_q_bounds(long double lower, long double upper) {
+pair_admissible_q_bounds(long double lower, long double upper) {
   const std::uint32_t high = pt::sign_mask<storage_bits>() - 1u;
   std::uint32_t lo = 1u;
   std::uint32_t hi = high;
@@ -237,7 +237,8 @@ representable_q_bounds(long double lower, long double upper) {
     else
       hi = mid;
   }
-  const auto first = raw_q(lo);
+  const auto first_raw = lo;
+  const auto first = raw_q(first_raw);
 
   lo = 1u;
   hi = high;
@@ -248,12 +249,64 @@ representable_q_bounds(long double lower, long double upper) {
     else
       hi = mid - 1u;
   }
-  const auto last = raw_q(lo);
+  const auto last_raw = lo;
+  const auto last = raw_q(last_raw);
   if (first < lower || first > upper || last < lower || last > upper ||
       first > last) {
     throw benchmark_error("format has no finite value in its exponent interval");
   }
-  return {first, last};
+
+  long double target_lower = lower;
+  if (first_raw > 1u) {
+    const auto previous = raw_q(first_raw - 1u);
+    target_lower = std::max(
+        target_lower,
+        std::nextafter((previous + first) / 2.0L,
+                       std::numeric_limits<long double>::infinity()));
+  }
+  long double target_upper = upper;
+  if (last_raw < high) {
+    const auto next = raw_q(last_raw + 1u);
+    target_upper = std::min(target_upper, (last + next) / 2.0L);
+  }
+
+  const auto sum = lower + upper;
+  auto paired_target_lower = std::max(target_lower, sum - target_upper);
+  auto paired_target_upper = std::min(target_upper, sum - target_lower);
+  if (paired_target_lower > paired_target_upper) {
+    throw benchmark_error("format has no admissible paired-log sample");
+  }
+
+  const auto quantized_q = [](long double target) {
+    return raw_q(
+        pt::encode_positive_log2<benchmark_family, storage_bits, posit_es>(
+            target));
+  };
+  const auto target_is_admissible = [&](long double target) {
+    const auto left = quantized_q(target);
+    const auto right = quantized_q(sum - target);
+    return left >= lower && left <= upper && right >= lower && right <= upper;
+  };
+  for (int attempt = 0;
+       attempt < 64 && !target_is_admissible(paired_target_lower); ++attempt) {
+    paired_target_lower =
+        std::nextafter(paired_target_lower, paired_target_upper);
+  }
+  for (int attempt = 0;
+       attempt < 64 && !target_is_admissible(paired_target_upper); ++attempt) {
+    paired_target_upper =
+        std::nextafter(paired_target_upper, paired_target_lower);
+  }
+  if (!target_is_admissible(paired_target_lower) ||
+      !target_is_admissible(paired_target_upper)) {
+    throw benchmark_error("could not determine paired-log support");
+  }
+  const auto lower_left = quantized_q(paired_target_lower);
+  const auto lower_right = quantized_q(sum - paired_target_lower);
+  const auto upper_left = quantized_q(paired_target_upper);
+  const auto upper_right = quantized_q(sum - paired_target_upper);
+  return {std::min({lower_left, lower_right, upper_left, upper_right}),
+          std::max({lower_left, lower_right, upper_left, upper_right})};
 }
 
 int field_bucket(std::uint32_t positive_raw) {
@@ -429,7 +482,7 @@ void verify_pool(const code_pair_pool &pool, long double lower,
   verify_side(pool.right);
   if (require_interval_coverage) {
     const auto [representable_lower, representable_upper] =
-        representable_q_bounds(lower, upper);
+        pair_admissible_q_bounds(lower, upper);
     const auto allowance = (representable_upper - representable_lower) * 0.02L;
     if (pool.realized_min > representable_lower + allowance ||
         pool.realized_max < representable_upper - allowance)
