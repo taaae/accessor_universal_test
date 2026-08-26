@@ -22,7 +22,7 @@ def read_all_rows(path: Path) -> list[dict[str, str]]:
 
 def write_rows(path: Path, fieldnames: list[str], rows: list[dict[str, object]]) -> None:
     with path.open("w", newline="") as output:
-        writer = csv.DictWriter(output, fieldnames=fieldnames)
+        writer = csv.DictWriter(output, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 
