@@ -321,6 +321,19 @@ def validate(args: argparse.Namespace) -> dict[str, int | str]:
                 raise ValueError(f"unbalanced takum regime histogram for {key}")
             if len(regime) < 2:
                 raise ValueError(f"degenerate regime histogram for {key}")
+        if key[0].startswith("takum") and "field_bucket" in required:
+            cells = histogram_buckets[key + ("field_bucket",)]
+            if set(cells) != {str(index) for index in range(16)}:
+                raise ValueError(f"incomplete takum field matrix for {key}")
+            if direction["0"] != sum(cells[str(index)] for index in range(8)):
+                raise ValueError(f"takum D=0 cells disagree for {key}")
+            if direction["1"] != sum(cells[str(index)] for index in range(8, 16)):
+                raise ValueError(f"takum D=1 cells disagree for {key}")
+            for index in range(8):
+                if regime[str(index)] != cells[str(index)] + cells[str(8 + index)]:
+                    raise ValueError(
+                        f"takum regime cells disagree for {key}, regime {index}"
+                    )
         if "characteristic" in required and len(
             histogram_buckets[key + ("characteristic",)]
         ) < 2:

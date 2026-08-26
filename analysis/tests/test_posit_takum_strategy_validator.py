@@ -189,7 +189,9 @@ def test_complete_smoke_matrix_is_accepted(tmp_path: Path) -> None:
         else:
             kinds = {"sign", "field_bucket", "exponent", "subnormal"}
         for kind in kinds:
-            if kind in {"sign", "direction", "field_bucket", "characteristic", "exponent"}:
+            if kind == "field_bucket" and key[0].startswith("takum"):
+                counts = {str(index): 256 for index in range(16)}
+            elif kind in {"sign", "direction", "field_bucket", "characteristic", "exponent"}:
                 counts = {"0": 2048, "1": 2048}
             elif kind == "regime" and key[0].startswith("takum"):
                 counts = {str(index): 512 for index in range(8)}
