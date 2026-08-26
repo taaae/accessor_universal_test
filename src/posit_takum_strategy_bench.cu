@@ -237,11 +237,8 @@ Float independent_log_takum_reference(std::uint32_t raw) {
           ? 0.0L
           : static_cast<long double>(tail) /
                 static_cast<long double>(std::uint64_t{1} << tail_bits);
-  constexpr long double inv_two_ln2 =
-      0.721347520444481703679962340500946L;
   const auto decoded =
-      std::exp2((static_cast<long double>(characteristic) + fraction) *
-                inv_two_ln2);
+      std::exp((static_cast<long double>(characteristic) + fraction) / 2.0L);
   const auto result = static_cast<Float>(decoded);
   return sign ? -result : result;
 }

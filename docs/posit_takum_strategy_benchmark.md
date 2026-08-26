@@ -87,14 +87,16 @@ The prefix work remains bounded as the storage width grows.
 
 1. Use the same bounded-prefix decode to recover the signed fixed-point
    logarithm.
-2. Convert its magnitude with FP64 `exp2`, rounding the final value to FP32
+2. Convert its magnitude with FP64 `exp`, using the algebraically equivalent
+   identity `2^(z / (2 ln 2)) = exp(z / 2)`, and round the final value to FP32
    when FP32 output is requested.
 3. Apply the decoded sign.
 
-Keeping the mapped exponent in FP64 is part of the accurate direct strategy.
-Using `exp2f` would round that exponent before the transcendental operation; at
-large magnitudes, that input rounding alone can move the result by many FP32
-ULPs.
+The natural exponent `z / 2` is exact because the stored logarithmic fraction
+is dyadic. This avoids multiplying a large value by an approximation to
+`1 / (2 ln 2)` before `exp2`, which moved the FP64 result by many ULPs at the
+widest characteristics. Keeping the exponent and transcendental evaluation in
+FP64 also avoids the larger early-rounding error of `exp2f` for FP32 output.
 
 The main benchmark uses normal CUDA math, not `--use_fast_math`. A segmented
 antilogarithm LUT or polynomial is not part of the first experiment. If

@@ -292,20 +292,13 @@ AUT_PT_HD AUT_PT_INLINE Float decode_log_takum(std::uint32_t raw) {
                               : static_cast<double>(fields.tail) /
                                     static_cast<double>(std::uint64_t{1}
                                                         << fields.tail_bits);
-  constexpr double inv_two_ln2 = 0.721347520444481703679962340500946;
-  const double exponent2 =
-      (static_cast<double>(fields.characteristic) + fraction) * inv_two_ln2;
+  const double natural_exponent =
+      (static_cast<double>(fields.characteristic) + fraction) * 0.5;
   Float magnitude{};
 #if defined(__CUDA_ARCH__)
-  if constexpr (std::is_same_v<Float, float>) {
-    // Keep the mapped exponent in double: rounding it before exp2 can amplify
-    // the input error by dozens of FP32 output ULPs at large magnitudes.
-    magnitude = static_cast<Float>(exp2(exponent2));
-  } else {
-    magnitude = exp2(exponent2);
-  }
+  magnitude = static_cast<Float>(exp(natural_exponent));
 #else
-  magnitude = static_cast<Float>(std::exp2(exponent2));
+  magnitude = static_cast<Float>(std::exp(natural_exponent));
 #endif
   return fields.sign ? -magnitude : magnitude;
 }
@@ -341,8 +334,8 @@ inline long double decode_long_double(std::uint32_t raw) {
             : static_cast<long double>(fields.tail) /
                   static_cast<long double>(std::uint64_t{1} << fields.tail_bits);
     return (fields.sign ? -1.0L : 1.0L) *
-           std::exp2((static_cast<long double>(fields.characteristic) + fraction) /
-                     (2.0L * std::log(2.0L)));
+           std::exp((static_cast<long double>(fields.characteristic) + fraction) /
+                    2.0L);
   }
 }
 
