@@ -66,3 +66,13 @@ ULPs. The final implementation uses the exact identity
 representable for every tested width, the double device overload is selected,
 the 2-ULP/1-ULP gates remain direct, and all source-bound hashes match. Its only
 finding was a stale `exp2` word in the specification, which was corrected.
+
+The final smoke reached every benchmark case and then exposed an aggregate
+histogram mismatch: equal weighting of reachable direction/regime cells cannot
+also balance both marginals when one cell is unreachable. Generation now
+balances the two direction totals and all eight regime totals separately while
+honoring forbidden cells. The validator requires all 16 cells, including
+explicit zero-count cells, and cross-checks their row and column sums. The
+reviewer verified allocation feasibility and termination, sign balance,
+anti-correlated pairing, GEMV column indexing, non-vacuous validation, and the
+synthetic fixture, with no remaining finding.
