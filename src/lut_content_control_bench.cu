@@ -37,8 +37,6 @@ namespace {
 constexpr int bits = AUT_LUT_CONTROL_BITS;
 constexpr auto compute = static_cast<bw::compute_kind>(AUT_LUT_CONTROL_COMPUTE);
 using Float = bw::compute_t<compute>;
-using ieee_format =
-    std::conditional_t<bits == 8, storage::fp8_e4m3, storage::e5m8>;
 constexpr int threads = 256;
 constexpr int dot_blocks = 512;
 constexpr std::size_t table_entries = std::size_t{1} << bits;
@@ -154,14 +152,16 @@ const char *arithmetic_name() {
   return compute == bw::compute_kind::fp32 ? "fp32" : "fp64";
 }
 
-Float ieee_value(std::uint32_t raw) {
-  if constexpr (bits == 8) {
-    storage::storage_type_t<ieee_format> value;
+template <int SelectedBits = bits> Float ieee_value(std::uint32_t raw) {
+  using selected_format = std::conditional_t<
+      SelectedBits == 8, storage::fp8_e4m3, storage::e5m8>;
+  if constexpr (SelectedBits == 8) {
+    storage::storage_type_t<selected_format> value;
     value.__x = static_cast<__nv_fp8_storage_t>(raw);
-    return static_cast<Float>(storage::decode<ieee_format>(value));
+    return static_cast<Float>(storage::decode<selected_format>(value));
   } else {
     return static_cast<Float>(
-        bw::decode_reference<ieee_format, bw::compute_kind::fp64>(raw));
+        bw::decode_reference<selected_format, bw::compute_kind::fp64>(raw));
   }
 }
 
