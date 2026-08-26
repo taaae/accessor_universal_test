@@ -15,6 +15,7 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <map>
 #include <numeric>
 #include <random>
 #include <stdexcept>
@@ -197,6 +198,12 @@ template <typename Float> const char *arithmetic_name() {
   return std::is_same_v<Float, float> ? "fp32" : "fp64";
 }
 
+const char *reference_name() {
+  return benchmark_family == pt::family::takum_log
+             ? "takum_log_paper_formula"
+             : "universal_cross_validated_core";
+}
+
 std::pair<long double, long double> exponent_interval(bool fp32) {
   if constexpr (benchmark_family == pt::family::posit) {
     if constexpr (storage_bits == 8) return {-5, 5};
@@ -340,10 +347,10 @@ code_pair_pool make_log_uniform_pool(std::size_t count, long double lower,
         pt::encode_positive_log2<benchmark_family, storage_bits, posit_es>(q_left);
     const auto right_magnitude =
         pt::encode_positive_log2<benchmark_family, storage_bits, posit_es>(q_right);
-    result.left.push_back(pt::apply_sign<storage_bits>(left_magnitude,
-                                                       (rng() & 1u) != 0u));
-    result.right.push_back(pt::apply_sign<storage_bits>(right_magnitude,
-                                                        (rng() & 1u) != 0u));
+    result.left.push_back(
+        pt::apply_sign<storage_bits>(left_magnitude, (index & 1u) != 0u));
+    result.right.push_back(pt::apply_sign<storage_bits>(
+        right_magnitude, ((index >> 1) & 1u) != 0u));
     result.realized_min =
         std::min({result.realized_min, raw_q(result.left.back()),
                   raw_q(result.right.back())});
@@ -354,23 +361,121 @@ code_pair_pool make_log_uniform_pool(std::size_t count, long double lower,
   return result;
 }
 
+void verify_pool(const code_pair_pool &pool, long double lower,
+                 long double upper, bool require_interval_coverage) {
+  auto verify_side = [&](const std::vector<std::uint32_t> &codes) {
+    std::size_t negative{};
+    for (const auto raw : codes) {
+      const auto value =
+          pt::decode_long_double<benchmark_family, storage_bits, posit_es>(raw);
+      if (!std::isfinite(value) || value == 0.0L)
+        throw benchmark_error("input pool contains zero or a special value");
+      const auto q = std::log2(std::abs(value));
+      if (q < lower || q > upper)
+        throw benchmark_error("input pool escaped its exponent interval");
+      negative += value < 0.0L;
+    }
+    if (negative * 2 + 1 < codes.size() ||
+        negative * 2 > codes.size() + 1)
+      throw benchmark_error("input signs are not balanced");
+  };
+  verify_side(pool.left);
+  verify_side(pool.right);
+  if (require_interval_coverage) {
+    const auto allowance = (upper - lower) * 0.02L;
+    if (pool.realized_min > lower + allowance ||
+        pool.realized_max < upper - allowance)
+      throw benchmark_error("paired-log pool does not cover its interval");
+  }
+}
+
 std::size_t storage_bytes(std::size_t count) {
   return (count * static_cast<std::size_t>(storage_bits) + 7u) / 8u;
 }
 
+std::uint64_t mix_index(std::uint64_t value) {
+  value += 0x9e3779b97f4a7c15ULL;
+  value = (value ^ (value >> 30)) * 0xbf58476d1ce4e5b9ULL;
+  value = (value ^ (value >> 27)) * 0x94d049bb133111ebULL;
+  return value ^ (value >> 31);
+}
+
+std::uint32_t randomize_significand(std::uint32_t raw, std::uint64_t hash,
+                                    long double lower, long double upper,
+                                    bool sign) {
+  const auto original_magnitude = pt::magnitude_bits<storage_bits>(raw);
+  auto magnitude = original_magnitude;
+  int fraction_bits{};
+  bool may_randomize = true;
+  if constexpr (benchmark_family == pt::family::posit) {
+    const auto aligned = magnitude << (33 - storage_bits);
+    const bool regime_one = (aligned & 0x80000000u) != 0u;
+    int run = regime_one ? pt::leading_zeros(~aligned)
+                         : pt::leading_zeros(aligned);
+    run = std::min(run, storage_bits - 1);
+    const int consumed = run + (run < storage_bits - 1 ? 1 : 0);
+    const int remaining = storage_bits - 1 - consumed;
+    const int exponent_taken = std::min(remaining, posit_es);
+    fraction_bits = remaining - exponent_taken;
+    const auto tail = magnitude &
+                      (consumed == storage_bits - 1
+                           ? 0u
+                           : ((std::uint32_t{1}
+                               << (storage_bits - 1 - consumed)) -
+                              1u));
+    const auto exponent_raw = exponent_taken == 0
+                                  ? 0u
+                                  : tail >> fraction_bits;
+    const auto exponent_bits = exponent_raw << (posit_es - exponent_taken);
+    const int exponent = (regime_one ? run - 1 : -run) * (1 << posit_es) +
+                         static_cast<int>(exponent_bits);
+    may_randomize = exponent < upper;
+  } else {
+    const auto fields = pt::split_takum<storage_bits>(magnitude);
+    fraction_bits = fields.tail_bits;
+    if constexpr (benchmark_family == pt::family::takum_linear) {
+      may_randomize = fields.characteristic < upper;
+    } else {
+      constexpr long double inv_two_ln2 =
+          0.721347520444481703679962340500946L;
+      may_randomize =
+          (static_cast<long double>(fields.characteristic) + 1.0L) *
+              inv_two_ln2 <=
+          upper;
+    }
+  }
+  if (may_randomize && fraction_bits > 0) {
+    const auto fraction_mask =
+        (std::uint32_t{1} << fraction_bits) - std::uint32_t{1};
+    magnitude = (magnitude & ~fraction_mask) |
+                (static_cast<std::uint32_t>(hash) & fraction_mask);
+  }
+  auto candidate = pt::apply_sign<storage_bits>(magnitude, sign);
+  const auto value =
+      pt::decode_long_double<benchmark_family, storage_bits, posit_es>(candidate);
+  const auto q = std::log2(std::abs(value));
+  if (!std::isfinite(value) || value == 0.0L || q < lower || q > upper)
+    candidate = pt::apply_sign<storage_bits>(original_magnitude, sign);
+  return candidate;
+}
+
 std::vector<std::uint8_t>
 pack_codes(std::size_t count, const std::vector<std::uint32_t> &pool,
-           std::size_t row_length = 0, std::uint64_t sign_seed = 0) {
-  const auto allocation = storage_bits == 14 ? storage_bytes(count) + 4u
-                                              : storage_bytes(count);
+           std::size_t row_length = 0, std::uint64_t sign_seed = 0,
+           long double lower = -std::numeric_limits<long double>::infinity(),
+           long double upper = std::numeric_limits<long double>::infinity()) {
+  const auto packed = storage_bytes(count);
+  const auto allocation =
+      storage_bits == 14 ? ((packed + 3u) & ~std::size_t{3}) + 4u : packed;
   std::vector<std::uint8_t> bytes(allocation, 0u);
   for (std::size_t index = 0; index < count; ++index) {
     auto raw = pool[index % pool.size()];
     if (row_length != 0) {
       const auto row = index / row_length;
-      const auto hash = (row * 0x9e3779b97f4a7c15ULL + index + sign_seed);
-      const auto magnitude = pt::magnitude_bits<storage_bits>(raw);
-      raw = pt::apply_sign<storage_bits>(magnitude, (hash >> 7) & 1u);
+      const auto hash = mix_index(row * 0x9e3779b97f4a7c15ULL + index +
+                                  sign_seed);
+      const auto sign = ((row + index % row_length) & 1u) != 0u;
+      raw = randomize_significand(raw, hash, lower, upper, sign);
     }
     if constexpr (storage_bits == 8) {
       bytes[index] = static_cast<std::uint8_t>(raw);
@@ -450,6 +555,9 @@ public:
       raw[0] = 0u;
       raw[1] = pt::sign_mask<storage_bits>();
       raw[2] = pt::mask<storage_bits>();
+      raw[3] = 1u;
+      raw[4] = pt::sign_mask<storage_bits>() - 1u;
+      raw[5] = pt::sign_mask<storage_bits>() + 1u;
     }
     auto packed = pack_codes(count, raw);
     device_buffer<std::uint8_t> device_input(packed.size());
@@ -480,9 +588,18 @@ public:
     }
     validation_ << format_name() << ',' << arithmetic_name<Float>()
                 << ",direct," << count << ',' << failures << ',' << max_ulp
-                << ',' << (failures == 0 ? "pass" : "fail") << '\n';
+                << ',' << reference_name() << ','
+                << (failures == 0 ? "pass" : "fail") << '\n';
     if (failures != 0) {
       throw benchmark_error("GPU decoder validation failed");
+    }
+    if constexpr (storage_bits <= 16) {
+      validate_lut<pt::strategy::full_lut_global>(device_input, device_output,
+                                                   raw, count);
+    }
+    if constexpr (storage_bits <= 14) {
+      validate_lut<pt::strategy::full_lut_shared>(device_input, device_output,
+                                                   raw, count);
     }
   }
 
@@ -494,6 +611,50 @@ public:
   }
 
 private:
+  template <pt::strategy Strategy>
+  void validate_lut(const device_buffer<std::uint8_t> &input,
+                    device_buffer<Float> &output,
+                    const std::vector<std::uint32_t> &raw,
+                    std::size_t count) {
+    using decoder = pt::alternative_decoder<benchmark_family, storage_bits,
+                                            posit_es, Float, Strategy>;
+    constexpr bool shared = Strategy == pt::strategy::full_lut_shared;
+    const auto shared_bytes = shared ? table_.size() * sizeof(Float) : 0u;
+    const auto *name = shared ? "full_lut_shared" : "full_lut_global";
+    if (shared_bytes > std::size_t(max_shared_)) {
+      validation_ << format_name() << ',' << arithmetic_name<Float>() << ','
+                  << name << ",0,0,0," << reference_name()
+                  << ",infeasible_shared_memory\n";
+      return;
+    }
+    if constexpr (shared) {
+      CUDA_CHECK(cudaFuncSetAttribute(
+          pt::validate_generic_decoder_kernel<decoder, storage_bits, Float,
+                                              true>,
+          cudaFuncAttributeMaxDynamicSharedMemorySize,
+          static_cast<int>(shared_bytes)));
+    }
+    pt::validate_generic_decoder_kernel<decoder, storage_bits, Float, shared>
+        <<<std::min<std::size_t>(4096, (count + 255) / 256), 256,
+           shared_bytes>>>({input.get()}, {table_.get()}, output.get(), count);
+    CUDA_CHECK(cudaGetLastError());
+    std::vector<Float> decoded(count);
+    CUDA_CHECK(cudaMemcpy(decoded.data(), output.get(), count * sizeof(Float),
+                          cudaMemcpyDeviceToHost));
+    std::size_t failures{};
+    for (std::size_t index = 0; index < count; ++index) {
+      const auto expected = pt::decode<benchmark_family, storage_bits, posit_es,
+                                       Float>(raw[index]);
+      if (std::isnan(expected) && std::isnan(decoded[index])) continue;
+      if (pt::to_bits(expected) != pt::to_bits(decoded[index])) ++failures;
+    }
+    validation_ << format_name() << ',' << arithmetic_name<Float>() << ','
+                << name << ',' << count << ',' << failures << ",0,"
+                << reference_name() << ','
+                << (failures == 0 ? "pass" : "fail") << '\n';
+    if (failures != 0) throw benchmark_error("GPU LUT validation failed");
+  }
+
   void build_table() {
     if constexpr (storage_bits <= 16) {
       const std::size_t entries = std::size_t{1} << storage_bits;
@@ -510,6 +671,18 @@ private:
 
   void write_histogram(const std::string &distribution,
                        const code_pair_pool &pool) {
+    const auto write_counts = [&](const char *name,
+                                  const std::map<int, std::size_t> &counts) {
+      for (const auto &[bucket, count] : counts)
+        histograms_ << format_name() << ',' << arithmetic_name<Float>() << ','
+                    << distribution << ',' << name << ',' << bucket << ','
+                    << count << ',' << static_cast<double>(pool.realized_min)
+                    << ',' << static_cast<double>(pool.realized_max) << '\n';
+    };
+    std::map<int, std::size_t> signs;
+    for (const auto raw : pool.left)
+      ++signs[(raw & pt::sign_mask<storage_bits>()) != 0u];
+    write_counts("sign", signs);
     if (pool.bucket_counts.empty()) {
       histograms_ << format_name() << ',' << arithmetic_name<Float>() << ','
                   << distribution << ",log_interval,all," << pool.left.size()
@@ -522,6 +695,25 @@ private:
                     << pool.bucket_counts[bucket] << ','
                     << static_cast<double>(pool.realized_min) << ','
                     << static_cast<double>(pool.realized_max) << '\n';
+      }
+      if constexpr (benchmark_family == pt::family::posit) {
+        std::map<int, std::size_t> regimes;
+        for (const auto raw : pool.left)
+          ++regimes[field_bucket(pt::magnitude_bits<storage_bits>(raw))];
+        write_counts("regime", regimes);
+      } else {
+        std::map<int, std::size_t> directions;
+        std::map<int, std::size_t> regimes;
+        std::map<int, std::size_t> characteristics;
+        for (const auto raw : pool.left) {
+          const auto fields = pt::split_takum<storage_bits>(raw);
+          ++directions[static_cast<int>(fields.direction)];
+          ++regimes[static_cast<int>(fields.regime_code)];
+          ++characteristics[fields.characteristic];
+        }
+        write_counts("direction", directions);
+        write_counts("regime", regimes);
+        write_counts("characteristic", characteristics);
       }
     }
   }
@@ -601,19 +793,30 @@ private:
   }
 
   void time_variants(const std::string &distribution, const std::string &kernel,
-                     std::size_t n, std::size_t m,
+                     std::size_t n, std::size_t m, std::size_t input_bytes,
                      std::vector<variant<Float>> &variants) {
     for (auto &entry : variants) {
       if (!entry.feasible) {
         samples_ << format_name() << ',' << family_name() << ',' << storage_bits
                  << ',' << arithmetic_name<Float>() << ',' << distribution << ','
                  << kernel << ',' << entry.strategy_name
-                 << ",dense,scalar,1," << n << ',' << m << ','
+                 << ",dense,scalar,1," << n << ',' << m << ',' << input_bytes << ','
                  << entry.table_bytes << ',' << entry.shared_bytes
                  << ",-1,-1,-1,infeasible_shared_memory\n";
         continue;
       }
       for (int warm = 0; warm < settings_.warmup; ++warm) entry.launch();
+      CUDA_CHECK(cudaGetLastError());
+      CUDA_CHECK(cudaDeviceSynchronize());
+      std::vector<Float> checked(kernel == "dot" ? 1u : m);
+      auto *source = kernel == "dot" ? dot_result_.get() : gemv_result_.get();
+      CUDA_CHECK(cudaMemcpy(checked.data(), source,
+                            checked.size() * sizeof(Float),
+                            cudaMemcpyDeviceToHost));
+      if (!std::all_of(checked.begin(), checked.end(),
+                       [](Float value) { return std::isfinite(value); }))
+        throw benchmark_error("nonfinite kernel output for " +
+                              entry.strategy_name);
     }
     CUDA_CHECK(cudaGetLastError());
     CUDA_CHECK(cudaDeviceSynchronize());
@@ -627,7 +830,7 @@ private:
         samples_ << format_name() << ',' << family_name() << ',' << storage_bits
                  << ',' << arithmetic_name<Float>() << ',' << distribution << ','
                  << kernel << ',' << entry.strategy_name
-                 << ",dense,scalar,1," << n << ',' << m << ','
+                 << ",dense,scalar,1," << n << ',' << m << ',' << input_bytes << ','
                  << entry.table_bytes << ',' << entry.shared_bytes << ','
                  << round << ',' << position << ',' << std::setprecision(9)
                  << milliseconds << ",ok\n";
@@ -655,19 +858,16 @@ private:
       cases.push_back(make_dot_variant<pt::strategy::full_lut_shared>(
           left, right, settings_.dot_n));
     }
-    time_variants(distribution, "dot", settings_.dot_n, 1, cases);
-    Float result{};
-    CUDA_CHECK(cudaMemcpy(&result, dot_result_.get(), sizeof(result),
-                          cudaMemcpyDeviceToHost));
-    if (!std::isfinite(result)) {
-      throw benchmark_error("DOT output is not finite");
-    }
+    time_variants(distribution, "dot", settings_.dot_n, 1,
+                  left.size() + right.size(), cases);
   }
 
   void run_gemv(const std::string &distribution, const code_pair_pool &pool) {
     const auto matrix_count = settings_.gemv_m * settings_.gemv_n;
+    const auto [lower, upper] =
+        exponent_interval(std::is_same_v<Float, float>);
     auto matrix_host = pack_codes(matrix_count, pool.left, settings_.gemv_n,
-                                  settings_.seed);
+                                  settings_.seed, lower, upper);
     device_buffer<std::uint8_t> matrix(matrix_host.size());
     CUDA_CHECK(cudaMemcpy(matrix.get(), matrix_host.data(), matrix_host.size(),
                           cudaMemcpyHostToDevice));
@@ -687,15 +887,7 @@ private:
           make_gemv_variant<pt::strategy::full_lut_shared>(matrix, vector));
     }
     time_variants(distribution, "gemv", settings_.gemv_n, settings_.gemv_m,
-                  cases);
-    std::vector<Float> result(settings_.gemv_m);
-    CUDA_CHECK(cudaMemcpy(result.data(), gemv_result_.get(),
-                          result.size() * sizeof(Float),
-                          cudaMemcpyDeviceToHost));
-    if (!std::all_of(result.begin(), result.end(),
-                     [](Float value) { return std::isfinite(value); })) {
-      throw benchmark_error("GEMV output is not finite");
-    }
+                  matrix.size() + vector.size(), cases);
   }
 
   const settings &settings_;
@@ -713,9 +905,9 @@ private:
 void write_headers(std::ofstream &samples, std::ofstream &validation,
                    std::ofstream &histograms) {
   samples << "format,family,bits,arithmetic,distribution,kernel,strategy,"
-             "storage_layout,access_method,packet_values,N,M,lut_bytes,"
+             "storage_layout,access_method,packet_values,N,M,input_bytes,lut_bytes,"
              "dynamic_shared_bytes,round,order_position,kernel_ms,status\n";
-  validation << "format,arithmetic,strategy,codes_checked,failures,max_ulp,status\n";
+  validation << "format,arithmetic,strategy,codes_checked,failures,max_ulp,reference,status\n";
   histograms << "format,arithmetic,distribution,histogram,bucket,count,"
                 "realized_q_min,realized_q_max\n";
 }
@@ -732,10 +924,12 @@ void run_arithmetic(const settings &settings, std::ofstream &samples,
   const std::size_t pool_size = settings.mode == "smoke" ? 4096 : 65536;
   const auto field = make_field_pool(pool_size, lower, upper,
                                      settings.seed ^ sizeof(Float));
+  verify_pool(field, lower, upper, false);
   runner.run_distribution("field_balanced_finite", field);
   const auto log = make_log_uniform_pool(pool_size, lower, upper,
                                          settings.seed ^ 0x52b61e19ULL ^
                                              sizeof(Float));
+  verify_pool(log, lower, upper, true);
   runner.run_distribution("paired_log_uniform_finite", log);
 }
 

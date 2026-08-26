@@ -13,6 +13,7 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <map>
 #include <numeric>
 #include <random>
 #include <stdexcept>
@@ -112,6 +113,7 @@ public:
     if (count != 0) CUDA_CHECK(cudaMalloc(&data_, count * sizeof(T)));
   }
   T *get() const { return data_; }
+  std::size_t size() const { return count_; }
 private:
   T *data_{};
   std::size_t count_{};
@@ -311,8 +313,8 @@ pool make_log_pool(std::size_t count, std::uint64_t seed) {
     const auto qr = q_lower + q_upper - ql;
     auto left = encode_raw(static_cast<double>(std::exp2(ql)));
     auto right = encode_raw(static_cast<double>(std::exp2(qr)));
-    if (rng() & 1u) left |= std::uint32_t{1} << (Bits - 1);
-    if (rng() & 1u) right |= std::uint32_t{1} << (Bits - 1);
+    if (index & 1u) left |= std::uint32_t{1} << (Bits - 1);
+    if ((index >> 1) & 1u) right |= std::uint32_t{1} << (Bits - 1);
     if (!std::isfinite(reference_value(left)) || reference_value(left) == 0.0 ||
         !std::isfinite(reference_value(right)) || reference_value(right) == 0.0)
       throw benchmark_error("paired log generator produced a special value");
@@ -324,22 +326,82 @@ pool make_log_pool(std::size_t count, std::uint64_t seed) {
   return result;
 }
 
+void verify_pool(const pool &codes, bool require_interval_coverage) {
+  auto verify_side = [](const std::vector<std::uint32_t> &values) {
+    std::size_t negative{};
+    for (const auto raw : values) {
+      const auto value = reference_value(raw);
+      if (!std::isfinite(value) || value == 0.0)
+        throw benchmark_error("IEEE input pool contains zero or a special value");
+      const auto q = raw_q(raw);
+      if (q < q_lower || q > q_upper)
+        throw benchmark_error("IEEE input pool escaped its exponent interval");
+      negative += value < 0.0;
+    }
+    if (negative * 2 + 1 < values.size() ||
+        negative * 2 > values.size() + 1)
+      throw benchmark_error("IEEE input signs are not balanced");
+  };
+  verify_side(codes.left);
+  verify_side(codes.right);
+  if (require_interval_coverage) {
+    const auto allowance = (q_upper - q_lower) * 0.02L;
+    if (codes.minimum > q_lower + allowance ||
+        codes.maximum < q_upper - allowance)
+      throw benchmark_error("IEEE paired-log pool does not cover its interval");
+  }
+}
+
 std::size_t storage_bytes(std::size_t count) {
   return (count * std::size_t(Bits) + 7u) / 8u;
+}
+
+std::uint64_t mix_index(std::uint64_t value) {
+  value += 0x9e3779b97f4a7c15ULL;
+  value = (value ^ (value >> 30)) * 0xbf58476d1ce4e5b9ULL;
+  value = (value ^ (value >> 27)) * 0x94d049bb133111ebULL;
+  return value ^ (value >> 31);
 }
 
 std::vector<std::uint8_t> pack(std::size_t count,
                                const std::vector<std::uint32_t> &codes,
                                std::size_t row_length = 0,
                                std::uint64_t seed = 0) {
-  std::vector<std::uint8_t> bytes(storage_bytes(count) + (Bits == 14 ? 4 : 0), 0);
+  const auto packed_bytes = storage_bytes(count);
+  const auto allocation =
+      Bits == 14 ? ((packed_bytes + 3u) & ~std::size_t{3}) + 4u
+                 : packed_bytes;
+  std::vector<std::uint8_t> bytes(allocation, 0);
   for (std::size_t index = 0; index < count; ++index) {
     auto raw = codes[index % codes.size()];
     if (row_length != 0) {
-      const auto sign = ((index / row_length) * 0x9e3779b97f4a7c15ULL + index +
-                         seed) & 1u;
-      raw = (raw & ~(std::uint32_t{1} << (Bits - 1))) |
-            (static_cast<std::uint32_t>(sign) << (Bits - 1));
+      const auto hash = mix_index((index / row_length) *
+                                      0x9e3779b97f4a7c15ULL +
+                                  index + seed);
+      const auto row = index / row_length;
+      const auto sign = static_cast<std::uint32_t>(
+          (row + index % row_length) & 1u);
+      constexpr auto fraction_mask =
+          (std::uint32_t{1} << Format::fraction_bits) - 1u;
+      auto randomized_fraction =
+          static_cast<std::uint32_t>(hash) & fraction_mask;
+      if (exponent(raw) == 0 && randomized_fraction == 0)
+        randomized_fraction = 1;
+      using layout = bw::format_layout_t<Format>;
+      if (exponent(raw) != 0 &&
+          static_cast<int>(exponent(raw)) - layout::exponent_bias >= q_upper)
+        randomized_fraction = raw & fraction_mask;
+      const auto candidate =
+          (raw & ~(fraction_mask | (std::uint32_t{1} << (Bits - 1)))) |
+          randomized_fraction | (sign << (Bits - 1));
+      const auto candidate_value = reference_value(candidate);
+      const auto candidate_q =
+          std::log2(std::abs(static_cast<long double>(candidate_value)));
+      raw = std::isfinite(candidate_value) && candidate_value != 0.0 &&
+                    candidate_q >= q_lower && candidate_q <= q_upper
+                ? candidate
+                : ((raw & ~(std::uint32_t{1} << (Bits - 1))) |
+                   (sign << (Bits - 1)));
     }
     if constexpr (Bits == 8) bytes[index] = raw;
     else if constexpr (Bits == 16) {
@@ -424,6 +486,19 @@ public:
     else {
       std::mt19937_64 rng(settings_.seed ^ 0xc6904f51ULL);
       for (auto &value : raw) value = static_cast<std::uint32_t>(rng());
+      constexpr auto sign = std::uint32_t{1} << (Bits - 1);
+      constexpr auto max_exponent =
+          (std::uint32_t{1} << Format::exponent_bits) - 1u;
+      constexpr auto max_fraction =
+          (std::uint32_t{1} << Format::fraction_bits) - 1u;
+      raw[0] = 0u;
+      raw[1] = sign;
+      raw[2] = 1u;
+      raw[3] = max_fraction;
+      raw[4] = max_exponent << Format::fraction_bits;
+      raw[5] = (max_exponent << Format::fraction_bits) | max_fraction;
+      raw[6] = sign | raw[4];
+      raw[7] = sign | raw[5];
     }
     auto host = pack(count, raw);
     device_buffer<std::uint8_t> input(host.size());
@@ -433,7 +508,8 @@ public:
     for (auto &entry : variants) {
       if (!entry.feasible) {
         validation_ << Format::name << ',' << arithmetic_name() << ','
-                    << entry.name << ",0,0,0,infeasible_shared_memory\n";
+                    << entry.name
+                    << ",0,0,0,cpu_format_reference,infeasible_shared_memory\n";
         continue;
       }
       entry.launch(); CUDA_CHECK(cudaGetLastError()); CUDA_CHECK(cudaDeviceSynchronize());
@@ -446,7 +522,7 @@ public:
         if (pt::to_bits(expected) != pt::to_bits(decoded[index])) ++failures;
       }
       validation_ << Format::name << ',' << arithmetic_name() << ',' << entry.name
-                  << ',' << count << ',' << failures << ",0,"
+                  << ',' << count << ',' << failures << ",0,cpu_format_reference,"
                   << (failures == 0 ? "pass" : "fail") << '\n';
       if (failures) throw benchmark_error("IEEE decoder validation failed");
     }
@@ -579,16 +655,26 @@ private:
   }
 
   void time(const std::string &distribution, const char *kernel,
-            std::size_t n, std::size_t m,
+            std::size_t n, std::size_t m, std::size_t input_bytes,
             std::vector<benchmark_variant> &variants) {
     for (auto &entry : variants) {
       if (!entry.feasible) {
         samples_ << Format::name << ",ieee," << Bits << ',' << arithmetic_name()
                  << ',' << distribution << ',' << kernel << ',' << entry.name
-                 << ",dense,scalar,1," << n << ',' << m << ',' << entry.lut_bytes
+                 << ",dense,scalar,1," << n << ',' << m << ',' << input_bytes
+                 << ',' << entry.lut_bytes
                  << ',' << entry.shared_bytes << ",-1,-1,-1,infeasible_shared_memory\n";
       } else {
         for (int warm = 0; warm < settings_.warmup; ++warm) entry.launch();
+        CUDA_CHECK(cudaGetLastError());
+        CUDA_CHECK(cudaDeviceSynchronize());
+        std::vector<Float> checked(kernel == std::string("dot") ? 1u : m);
+        CUDA_CHECK(cudaMemcpy(checked.data(), result_.get(),
+                              checked.size() * sizeof(Float),
+                              cudaMemcpyDeviceToHost));
+        if (!std::all_of(checked.begin(), checked.end(),
+                         [](Float value) { return std::isfinite(value); }))
+          throw benchmark_error("nonfinite IEEE kernel output for " + entry.name);
       }
     }
     CUDA_CHECK(cudaGetLastError()); CUDA_CHECK(cudaDeviceSynchronize());
@@ -599,7 +685,8 @@ private:
         const auto ms = timer_.measure(entry.launch);
         samples_ << Format::name << ",ieee," << Bits << ',' << arithmetic_name()
                  << ',' << distribution << ',' << kernel << ',' << entry.name
-                 << ",dense,scalar,1," << n << ',' << m << ',' << entry.lut_bytes
+                 << ",dense,scalar,1," << n << ',' << m << ',' << input_bytes
+                 << ',' << entry.lut_bytes
                  << ',' << entry.shared_bytes << ',' << round << ',' << position
                  << ',' << std::setprecision(9) << ms << ",ok\n";
       }
@@ -612,7 +699,7 @@ private:
     CUDA_CHECK(cudaMemcpy(left.get(),lh.data(),lh.size(),cudaMemcpyHostToDevice));
     CUDA_CHECK(cudaMemcpy(right.get(),rh.data(),rh.size(),cudaMemcpyHostToDevice));
     auto variants = make_variants(left,right,settings_.dot_n,false);
-    time(distribution,"dot",settings_.dot_n,1,variants);
+    time(distribution,"dot",settings_.dot_n,1,left.size()+right.size(),variants);
   }
   void run_gemv(const std::string &distribution, const pool &codes) {
     auto mh = pack(settings_.gemv_m*settings_.gemv_n,codes.left,settings_.gemv_n,settings_.seed);
@@ -621,17 +708,39 @@ private:
     CUDA_CHECK(cudaMemcpy(matrix.get(),mh.data(),mh.size(),cudaMemcpyHostToDevice));
     CUDA_CHECK(cudaMemcpy(vector.get(),vh.data(),vh.size(),cudaMemcpyHostToDevice));
     auto variants = make_variants(matrix,vector,settings_.gemv_n,true);
-    time(distribution,"gemv",settings_.gemv_n,settings_.gemv_m,variants);
+    time(distribution,"gemv",settings_.gemv_n,settings_.gemv_m,
+         matrix.size()+vector.size(),variants);
   }
   void write_histogram(const std::string &distribution, const pool &codes) {
+    const auto write_counts = [&](const char *name,
+                                  const std::map<int, std::size_t> &counts) {
+      for (const auto &[bucket, count] : counts)
+        histograms_ << Format::name << ',' << arithmetic_name() << ','
+                    << distribution << ',' << name << ',' << bucket << ','
+                    << count << ',' << double(codes.minimum) << ','
+                    << double(codes.maximum) << '\n';
+    };
+    std::map<int, std::size_t> signs;
+    for (const auto raw : codes.left) ++signs[source_sign(raw)];
+    write_counts("sign", signs);
     if (codes.buckets.empty()) {
       histograms_ << Format::name << ',' << arithmetic_name() << ',' << distribution
                   << ",log_interval,all," << codes.left.size() << ','
                   << double(codes.minimum) << ',' << double(codes.maximum) << '\n';
-    } else for (std::size_t bucket=0;bucket<codes.buckets.size();++bucket)
-      histograms_ << Format::name << ',' << arithmetic_name() << ',' << distribution
-                  << ",field_bucket," << bucket << ',' << codes.buckets[bucket]
-                  << ',' << double(codes.minimum) << ',' << double(codes.maximum) << '\n';
+    } else {
+      for (std::size_t bucket=0;bucket<codes.buckets.size();++bucket)
+        histograms_ << Format::name << ',' << arithmetic_name() << ',' << distribution
+                    << ",field_bucket," << bucket << ',' << codes.buckets[bucket]
+                    << ',' << double(codes.minimum) << ',' << double(codes.maximum) << '\n';
+      std::map<int, std::size_t> exponents;
+      std::map<int, std::size_t> subnormal;
+      for (const auto raw : codes.left) {
+        ++exponents[static_cast<int>(exponent(raw))];
+        ++subnormal[exponent(raw) == 0 ? 1 : 0];
+      }
+      write_counts("exponent", exponents);
+      write_counts("subnormal", subnormal);
+    }
   }
 
   const settings &settings_;
@@ -650,14 +759,18 @@ int main(int argc, char **argv) try {
       cudaDevAttrMaxSharedMemoryPerBlockOptin,0));
   std::ofstream samples(settings.output), validation(settings.validation_output), histograms(settings.histogram_output);
   if (!samples || !validation || !histograms) throw benchmark_error("failed to open output");
-  samples << "format,family,bits,arithmetic,distribution,kernel,strategy,storage_layout,access_method,packet_values,N,M,lut_bytes,dynamic_shared_bytes,round,order_position,kernel_ms,status\n";
-  validation << "format,arithmetic,strategy,codes_checked,failures,max_ulp,status\n";
+  samples << "format,family,bits,arithmetic,distribution,kernel,strategy,storage_layout,access_method,packet_values,N,M,input_bytes,lut_bytes,dynamic_shared_bytes,round,order_position,kernel_ms,status\n";
+  validation << "format,arithmetic,strategy,codes_checked,failures,max_ulp,reference,status\n";
   histograms << "format,arithmetic,distribution,histogram,bucket,count,realized_q_min,realized_q_max\n";
   runner benchmark(settings,samples,validation,histograms,max_shared);
   benchmark.validate();
   const auto pool_size = settings.mode == "smoke" ? 4096u : 65536u;
-  benchmark.run_distribution("field_balanced_finite",make_field_pool(pool_size,settings.seed));
-  benchmark.run_distribution("paired_log_uniform_finite",make_log_pool(pool_size,settings.seed^0xa0187ULL));
+  auto field = make_field_pool(pool_size, settings.seed);
+  verify_pool(field, false);
+  benchmark.run_distribution("field_balanced_finite", field);
+  auto log = make_log_pool(pool_size, settings.seed ^ 0xa0187ULL);
+  verify_pool(log, true);
+  benchmark.run_distribution("paired_log_uniform_finite", log);
   std::cout << "completed " << Format::name << ' ' <<
       (Compute == bw::compute_kind::fp32 ? "fp32" : "fp64") << '\n';
   return 0;

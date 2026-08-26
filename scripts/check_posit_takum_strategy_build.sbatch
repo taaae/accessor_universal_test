@@ -24,6 +24,7 @@ cmake -S "${repo_dir}" -B "${build_dir}" \
     -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTURES=90
 cmake --build "${build_dir}" --parallel 4 --target posit_takum_core_test
 ctest --test-dir "${build_dir}" --output-on-failure -R '^posit_takum_core_test$'
+"${repo_dir}/scripts/check_posit_takum_host.sh"
 targets=(
     posit8_es0 posit14_es1 posit16_es1 posit32_es2
     takum8 takum14 takum16 takum32
@@ -45,4 +46,9 @@ for target in "${ieee_targets[@]}"; do
     cmake --build "${build_dir}" --parallel 1 \
         --target "ieee_scalar_strategy_bench_${target}"
 done
-echo "All scalar posit/takum CUDA targets compiled successfully."
+control_targets=(8_fp32 8_fp64 14_fp32 14_fp64)
+for target in "${control_targets[@]}"; do
+    cmake --build "${build_dir}" --parallel 1 \
+        --target "lut_content_control_bench_${target}"
+done
+echo "All scalar posit/takum, IEEE, and LUT-control CUDA targets compiled successfully."

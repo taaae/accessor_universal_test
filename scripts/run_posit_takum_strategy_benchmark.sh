@@ -30,7 +30,19 @@ ieee_targets=(
     e11m4_fp64 e3m12_fp32 e3m12_fp64 e6m9_fp32 e6m9_fp64
     fp32_e8m23_fp32 fp32_e8m23_fp64 e11m20_fp64 e4m27_fp64 e10m21_fp64
 )
-targets=("${alt_targets[@]}" "${ieee_targets[@]}")
+control_targets=(8_fp32 8_fp64 14_fp32 14_fp64)
+targets=("${alt_targets[@]}" "${ieee_targets[@]}" "${control_targets[@]}")
+
+executable_for_target() {
+    local target="$1"
+    if [[ " ${alt_targets[*]} " == *" ${target} "* ]]; then
+        echo "posit_takum_strategy_bench_${target}"
+    elif [[ " ${ieee_targets[*]} " == *" ${target} "* ]]; then
+        echo "ieee_scalar_strategy_bench_${target}"
+    else
+        echo "lut_content_control_bench_${target}"
+    fi
+}
 
 mkdir -p "${run_dir}/${mode}"
 finish_manifest() {
@@ -51,10 +63,15 @@ trap finish_manifest EXIT
     echo "mode=${mode}"
     echo "formats=${targets[*]}"
     echo "arithmetic_types=fp32,fp64"
-    echo "distributions=field_balanced_finite,paired_log_uniform_finite"
+    echo "main_distributions=field_balanced_finite,paired_log_uniform_finite"
+    echo "lut_control_traces=lut_scattered_control,lut_concentrated_control"
     echo "storage_layout=dense"
     echo "access_method=scalar"
     echo "packet_values=1"
+    echo "threads_per_block=256"
+    echo "dot_blocks=512"
+    echo "cuda_arch=sm_${CUDA_ARCH:-90}"
+    echo "cuda_compile_flags=-O3 -lineinfo -Xptxas=-v --ftz=false"
     echo "dot_n=${DOT_N:-134217728}"
     echo "gemv_m=${GEMV_M:-1024}"
     echo "gemv_n=${GEMV_N:-65536}"
@@ -83,24 +100,18 @@ cmake --build "${build_dir}" --parallel "${build_jobs}" \
     --target posit_takum_core_test
 ctest --test-dir "${build_dir}" --output-on-failure \
     -R '^posit_takum_core_test$' | tee "${run_dir}/${mode}/ctest.txt"
+"${repo_dir}/scripts/check_posit_takum_host.sh" \
+    | tee "${run_dir}/${mode}/universal_reference.txt"
 
 current_stage="build_targets"
 for target in "${targets[@]}"; do
-    if [[ " ${alt_targets[*]} " == *" ${target} "* ]]; then
-        executable="posit_takum_strategy_bench_${target}"
-    else
-        executable="ieee_scalar_strategy_bench_${target}"
-    fi
+    executable="$(executable_for_target "${target}")"
     cmake --build "${build_dir}" --parallel "${build_jobs}" --target "${executable}"
 done
 
 run_bounded() {
     local target="$1" executable
-    if [[ " ${alt_targets[*]} " == *" ${target} "* ]]; then
-        executable="posit_takum_strategy_bench_${target}"
-    else
-        executable="ieee_scalar_strategy_bench_${target}"
-    fi
+    executable="$(executable_for_target "${target}")"
     local prefix="${run_dir}/${mode}/${target}"
     if timeout --foreground "${target_timeout}" \
         "${build_dir}/bin/${executable}" \

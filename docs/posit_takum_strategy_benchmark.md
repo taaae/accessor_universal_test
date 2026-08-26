@@ -317,6 +317,11 @@ configuration must be identical within a paired comparison. These controls are
 reported separately and do not act as main numerical distributions or enter
 strategy selection.
 
+Each width/arithmetic control is one executable. Its IEEE, posit, linear-takum,
+and logarithmic-takum variants call the same compiled table-only kernel and are
+rotated within every timing round. The runtime table pointer and table contents
+are the only family-dependent kernel inputs.
+
 ## Kernels and problem sizes
 
 Only the largest application cases select winners.
@@ -396,6 +401,10 @@ Before timing each generated input buffer, verify:
   HPC application.
 - Store every raw timing sample.
 - Report the median and a confidence interval for paired timing ratios.
+
+Use a paired round bootstrap when variants were interleaved in one executable.
+Use an independent bootstrap for comparisons between separate format
+executables, including the broad same-width alternative-versus-IEEE comparison.
 
 For the statement that two implementations have the same speed, use a 3%
 equivalence band. Declare equivalence only when the confidence interval for

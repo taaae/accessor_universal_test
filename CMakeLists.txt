@@ -295,6 +295,36 @@ add_ieee_scalar_strategy_benchmark(e11m20_fp64 15 1 4 -1000 1000)
 add_ieee_scalar_strategy_benchmark(e4m27_fp64 16 1 66 -30 7)
 add_ieee_scalar_strategy_benchmark(e10m21_fp64 17 1 66 -500 500)
 
+function(add_lut_content_control_benchmark name bits compute)
+    set(target "lut_content_control_bench_${name}")
+    add_executable(${target} src/lut_content_control_bench.cu)
+    target_include_directories(${target} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
+    target_compile_definitions(
+        ${target}
+        PRIVATE
+            AUT_LUT_CONTROL_BITS=${bits}
+            AUT_LUT_CONTROL_COMPUTE=${compute}
+    )
+    target_compile_options(
+        ${target}
+        PRIVATE
+            "$<$<COMPILE_LANGUAGE:CXX>:-O3>"
+            "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v;--ftz=false>"
+    )
+    set_target_properties(
+        ${target}
+        PROPERTIES
+            CUDA_RUNTIME_LIBRARY Static
+            CUDA_SEPARABLE_COMPILATION OFF
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+    )
+endfunction()
+
+add_lut_content_control_benchmark(8_fp32 8 0)
+add_lut_content_control_benchmark(8_fp64 8 1)
+add_lut_content_control_benchmark(14_fp32 14 0)
+add_lut_content_control_benchmark(14_fp64 14 1)
+
 add_executable(accuracy_statistics_test tests/accuracy_statistics_test.cpp)
 target_include_directories(
     accuracy_statistics_test
