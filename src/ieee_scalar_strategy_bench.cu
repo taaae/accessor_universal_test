@@ -173,40 +173,42 @@ settings parse_arguments(int argc, char **argv) {
   return result;
 }
 
+template <typename Selected = Format>
 double reference_value(std::uint32_t raw) {
-  if constexpr (std::is_same_v<Format, storage::fp8_e4m3>) {
-    storage::storage_type_t<Format> value;
+  if constexpr (std::is_same_v<Selected, storage::fp8_e4m3>) {
+    storage::storage_type_t<Selected> value;
     value.__x = static_cast<__nv_fp8_storage_t>(raw);
-    return storage::decode<Format>(value);
-  } else if constexpr (std::is_same_v<Format, storage::fp8_e5m2>) {
-    storage::storage_type_t<Format> value;
+    return storage::decode<Selected>(value);
+  } else if constexpr (std::is_same_v<Selected, storage::fp8_e5m2>) {
+    storage::storage_type_t<Selected> value;
     value.__x = static_cast<__nv_fp8_storage_t>(raw);
-    return storage::decode<Format>(value);
-  } else if constexpr (std::is_same_v<Format, storage::fp16_e5m10>) {
-    return storage::decode<Format>(
+    return storage::decode<Selected>(value);
+  } else if constexpr (std::is_same_v<Selected, storage::fp16_e5m10>) {
+    return storage::decode<Selected>(
         __half{__half_raw{static_cast<unsigned short>(raw)}});
-  } else if constexpr (std::is_same_v<Format, storage::bf16_e8m7>) {
-    return storage::decode<Format>(__nv_bfloat16{
+  } else if constexpr (std::is_same_v<Selected, storage::bf16_e8m7>) {
+    return storage::decode<Selected>(__nv_bfloat16{
         __nv_bfloat16_raw{static_cast<unsigned short>(raw)}});
-  } else if constexpr (std::is_same_v<Format, storage::fp32_e8m23>) {
+  } else if constexpr (std::is_same_v<Selected, storage::fp32_e8m23>) {
     float value{};
     std::memcpy(&value, &raw, sizeof(value));
     return value;
   } else {
-    return bw::decode_reference<Format, bw::compute_kind::fp64>(raw);
+    return bw::decode_reference<Selected, bw::compute_kind::fp64>(raw);
   }
 }
 
+template <typename Selected = Format>
 std::uint32_t encode_raw(double value) {
-  const auto encoded = storage::encode<Format>(value);
-  if constexpr (std::is_same_v<Format, storage::fp8_e4m3> ||
-                std::is_same_v<Format, storage::fp8_e5m2>) {
+  const auto encoded = storage::encode<Selected>(value);
+  if constexpr (std::is_same_v<Selected, storage::fp8_e4m3> ||
+                std::is_same_v<Selected, storage::fp8_e5m2>) {
     return encoded.__x;
-  } else if constexpr (std::is_same_v<Format, storage::fp16_e5m10>) {
+  } else if constexpr (std::is_same_v<Selected, storage::fp16_e5m10>) {
     return __half_as_ushort(encoded);
-  } else if constexpr (std::is_same_v<Format, storage::bf16_e8m7>) {
+  } else if constexpr (std::is_same_v<Selected, storage::bf16_e8m7>) {
     return __bfloat16_as_ushort(encoded);
-  } else if constexpr (std::is_same_v<Format, storage::fp32_e8m23>) {
+  } else if constexpr (std::is_same_v<Selected, storage::fp32_e8m23>) {
     std::uint32_t raw{};
     std::memcpy(&raw, &encoded, sizeof(raw));
     return raw;
