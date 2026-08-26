@@ -469,7 +469,9 @@ pack_codes(std::size_t count, const std::vector<std::uint32_t> &pool,
       storage_bits == 14 ? ((packed + 3u) & ~std::size_t{3}) + 4u : packed;
   std::vector<std::uint8_t> bytes(allocation, 0u);
   for (std::size_t index = 0; index < count; ++index) {
-    auto raw = pool[index % pool.size()];
+    const auto pool_index =
+        row_length == 0 ? index % pool.size() : (index % row_length) % pool.size();
+    auto raw = pool[pool_index];
     if (row_length != 0) {
       const auto row = index / row_length;
       const auto hash = mix_index(row * 0x9e3779b97f4a7c15ULL + index +
@@ -816,7 +818,8 @@ private:
       if (!std::all_of(checked.begin(), checked.end(),
                        [](Float value) { return std::isfinite(value); }))
         throw benchmark_error("nonfinite kernel output for " +
-                              entry.strategy_name);
+                              entry.strategy_name + " in " + distribution +
+                              " " + kernel);
     }
     CUDA_CHECK(cudaGetLastError());
     CUDA_CHECK(cudaDeviceSynchronize());

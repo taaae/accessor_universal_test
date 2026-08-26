@@ -373,7 +373,9 @@ std::vector<std::uint8_t> pack(std::size_t count,
                  : packed_bytes;
   std::vector<std::uint8_t> bytes(allocation, 0);
   for (std::size_t index = 0; index < count; ++index) {
-    auto raw = codes[index % codes.size()];
+    const auto code_index =
+        row_length == 0 ? index % codes.size() : (index % row_length) % codes.size();
+    auto raw = codes[code_index];
     if (row_length != 0) {
       const auto hash = mix_index((index / row_length) *
                                       0x9e3779b97f4a7c15ULL +
@@ -674,7 +676,8 @@ private:
                               cudaMemcpyDeviceToHost));
         if (!std::all_of(checked.begin(), checked.end(),
                          [](Float value) { return std::isfinite(value); }))
-          throw benchmark_error("nonfinite IEEE kernel output for " + entry.name);
+          throw benchmark_error("nonfinite IEEE kernel output for " + entry.name +
+                                " in " + distribution + " " + kernel);
       }
     }
     CUDA_CHECK(cudaGetLastError()); CUDA_CHECK(cudaDeviceSynchronize());
