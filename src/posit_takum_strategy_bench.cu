@@ -198,6 +198,63 @@ template <typename Float> const char *arithmetic_name() {
   return std::is_same_v<Float, float> ? "fp32" : "fp64";
 }
 
+template <int Bits, typename Float>
+Float independent_log_takum_reference(std::uint32_t raw) {
+  const auto value_mask = Bits == 32 ? 0xffffffffu
+                                     : (std::uint32_t{1} << Bits) - 1u;
+  const auto sign_mask = std::uint32_t{1} << (Bits - 1);
+  raw &= value_mask;
+  if (raw == 0u) return Float{0};
+  if (raw == sign_mask) return std::numeric_limits<Float>::quiet_NaN();
+  const bool sign = (raw & sign_mask) != 0u;
+  const auto magnitude = sign ? ((~raw + 1u) & value_mask) : raw;
+  const auto direction_and_regime = (magnitude >> (Bits - 5)) & 0xfu;
+  const auto direction = direction_and_regime >> 3;
+  const auto regime_code = direction_and_regime & 7u;
+  const auto characteristic_bits = direction ? regime_code : 7u - regime_code;
+  constexpr unsigned available = Bits - 5;
+  const auto stored_characteristic =
+      std::min(characteristic_bits, available);
+  const auto tail_bits = available - stored_characteristic;
+  const auto stored =
+      stored_characteristic == 0
+          ? 0u
+          : (magnitude >> tail_bits) &
+                ((std::uint32_t{1} << stored_characteristic) - 1u);
+  const auto characteristic_payload =
+      stored << (characteristic_bits - stored_characteristic);
+  const int characteristic =
+      direction ? (static_cast<int>(std::uint32_t{1} << characteristic_bits) -
+                   1 + static_cast<int>(characteristic_payload))
+                : (1 - static_cast<int>(std::uint32_t{1}
+                                        << (characteristic_bits + 1)) +
+                   static_cast<int>(characteristic_payload));
+  const auto tail = tail_bits == 0
+                        ? 0u
+                        : magnitude & ((std::uint32_t{1} << tail_bits) - 1u);
+  const auto fraction =
+      tail_bits == 0
+          ? 0.0L
+          : static_cast<long double>(tail) /
+                static_cast<long double>(std::uint64_t{1} << tail_bits);
+  constexpr long double inv_two_ln2 =
+      0.721347520444481703679962340500946L;
+  const auto decoded =
+      std::exp2((static_cast<long double>(characteristic) + fraction) *
+                inv_two_ln2);
+  const auto result = static_cast<Float>(decoded);
+  return sign ? -result : result;
+}
+
+template <typename Float>
+Float decoder_reference(std::uint32_t raw) {
+  if constexpr (benchmark_family == pt::family::takum_log) {
+    return independent_log_takum_reference<storage_bits, Float>(raw);
+  } else {
+    return pt::decode<benchmark_family, storage_bits, posit_es, Float>(raw);
+  }
+}
+
 const char *reference_name() {
   return benchmark_family == pt::family::takum_log
              ? "takum_log_paper_formula"
@@ -677,8 +734,7 @@ public:
     std::size_t failures{};
     std::uint64_t max_ulp{};
     for (std::size_t index = 0; index < count; ++index) {
-      const auto expected = pt::decode<benchmark_family, storage_bits, posit_es,
-                                       Float>(raw[index]);
+      const auto expected = decoder_reference<Float>(raw[index]);
       if (std::isnan(expected) && std::isnan(output[index])) continue;
       const auto left = pt::to_bits(output[index]);
       const auto right = pt::to_bits(expected);
@@ -746,8 +802,7 @@ private:
                           cudaMemcpyDeviceToHost));
     std::size_t failures{};
     for (std::size_t index = 0; index < count; ++index) {
-      const auto expected = pt::decode<benchmark_family, storage_bits, posit_es,
-                                       Float>(raw[index]);
+      const auto expected = decoder_reference<Float>(raw[index]);
       if (std::isnan(expected) && std::isnan(decoded[index])) continue;
       if (pt::to_bits(expected) != pt::to_bits(decoded[index])) ++failures;
     }
@@ -763,8 +818,7 @@ private:
       const std::size_t entries = std::size_t{1} << storage_bits;
       std::vector<Float> host(entries);
       for (std::size_t raw = 0; raw < entries; ++raw) {
-        host[raw] = pt::decode<benchmark_family, storage_bits, posit_es, Float>(
-            static_cast<std::uint32_t>(raw));
+        host[raw] = decoder_reference<Float>(static_cast<std::uint32_t>(raw));
       }
       table_.reset(entries);
       CUDA_CHECK(cudaMemcpy(table_.get(), host.data(), entries * sizeof(Float),

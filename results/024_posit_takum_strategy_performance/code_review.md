@@ -47,3 +47,14 @@ was changed to intersect the quantization cells of both complementary targets,
 the final review of commit `07256b8` reported no remaining finding. It verified
 the midpoint tie handling, bounded inward endpoint nudges, 32-bit binary-search
 safety, and the expected `takum<8>` support.
+
+The next smoke run exposed a device/host mismatch in the logarithmic-takum FP32
+path: rounding the mapped exponent before `exp2f` produced up to 35 output ULPs
+at extreme codes. The accurate direct path now evaluates FP64 `exp2` and rounds
+the final value once. During review, a further evidence-chain issue was found:
+device results had been compared to the host core and only indirectly to the
+paper formula. The benchmark now computes an independent paper-formula
+reference directly for GPU validation and canonical LUT construction. The
+reviewer verified the separate field decode, direct 2-ULP/1-ULP bounds, exact
+LUT checks, shift safety, and special-value handling, and reported no remaining
+finding.
