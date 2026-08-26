@@ -100,7 +100,7 @@ FP64 also avoids the larger early-rounding error of `exp2f` for FP32 output.
 
 The main benchmark uses normal CUDA math, not `--use_fast_math`. A segmented
 antilogarithm LUT or polynomial is not part of the first experiment. If
-`exp2` dominates the result, that is already an answer about straightforward
+`exp` dominates the result, that is already an answer about straightforward
 logarithmic-takum storage conversion.
 
 ## IEEE comparison inventory and strategies

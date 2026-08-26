@@ -58,3 +58,11 @@ reference directly for GPU validation and canonical LUT construction. The
 reviewer verified the separate field decode, direct 2-ULP/1-ULP bounds, exact
 LUT checks, shift safety, and special-value handling, and reported no remaining
 finding.
+
+FP64 validation then showed that multiplying by an approximation to
+`1 / (2 ln 2)` before `exp2` amplified argument rounding by up to 65 output
+ULPs. The final implementation uses the exact identity
+`2^(z / (2 ln 2)) = exp(z / 2)`. The reviewer confirmed that `z / 2` is exactly
+representable for every tested width, the double device overload is selected,
+the 2-ULP/1-ULP gates remain direct, and all source-bound hashes match. Its only
+finding was a stale `exp2` word in the specification, which was corrected.
