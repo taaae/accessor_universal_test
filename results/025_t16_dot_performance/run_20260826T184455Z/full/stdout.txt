@@ -1,0 +1,8 @@
+Building the 65,536-entry T16 normal codebook
+T16 DOT benchmark complete on NVIDIA H200 NVL at N=134217728
+  t16          1.011229 ms
+  fp16_e5m10   0.492076 ms
+  e6m9         0.892173 ms
+  e8m15        0.504949 ms
+  raw_fp32     0.519657 ms
+Raw samples: /storage/home/timofeirusanov/accessor_universal_test_normal32/results/025_t16_dot_performance/run_20260826T184455Z/full/timing_samples.csv

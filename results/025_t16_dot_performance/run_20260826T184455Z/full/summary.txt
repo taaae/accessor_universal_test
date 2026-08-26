@@ -1,0 +1,6 @@
+format,strategy,median_ms,physical_GB/s,speedup_vs_raw_fp32
+t16,global_lut_x1,1.011229,530.909,0.5139
+fp16_e5m10,native_scalar_x1,0.492076,1091.032,1.0561
+e6m9,direct_branchy_x1,0.892173,601.756,0.5825
+e8m15,direct_shift_x1,0.504949,1594.828,1.0291
+raw_fp32,raw_x1,0.519657,2066.249,1.0000

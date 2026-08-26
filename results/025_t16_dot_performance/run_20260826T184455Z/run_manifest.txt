@@ -1,0 +1,33 @@
+experiment=025_t16_dot_performance
+started_utc=2026-08-26T18:44:55Z
+git_commit=51a416b9469dd6b7bf8c6c643667b0b225ed0d66
+formats=t16,fp16_e5m10,e6m9,e8m15,raw_fp32
+strategies=global_lut_x1,native_scalar_x1,direct_branchy_x1,direct_shift_x1,raw_x1
+kernel=dot
+N=134217728
+arithmetic_type=fp32
+distribution=truncated_normal
+sigma=16376
+cutoff_sigma=4
+warmup=10
+samples=30
+target_sample_ms=20
+base_seed=2611923443488327891
+stop_after=full
+git_status_begin
+?? results/025_t16_dot_performance/run_20260826T184336Z/
+?? results/025_t16_dot_performance/run_20260826T184455Z/
+?? results/025_t16_dot_performance/slurm-452834.out
+?? results/025_t16_dot_performance/slurm-452839.out
+?? results/025_t16_dot_performance/slurm-build-452833.out
+?? results/026_normal32_dot_performance/run_20260826T182651Z/
+?? results/026_normal32_dot_performance/run_20260826T182814Z/
+?? results/026_normal32_dot_performance/slurm-452823.out
+?? results/026_normal32_dot_performance/slurm-452824.out
+?? results/026_normal32_dot_performance/slurm-build-452820.out
+?? results/026_normal32_dot_performance/slurm-build-452821.out
+?? results/026_normal32_dot_performance/slurm-build-452822.out
+git_status_end
+finished_utc=2026-08-26T18:45:00Z
+wall_time_seconds=5
+completed_stage=full
