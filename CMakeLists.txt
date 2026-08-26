@@ -92,6 +92,36 @@ target_include_directories(
 target_compile_options(lns_benchmark_core_test PRIVATE -O3)
 add_test(NAME lns_benchmark_core_test COMMAND lns_benchmark_core_test)
 
+add_executable(t16_codebook_test tests/t16_codebook_test.cpp)
+target_include_directories(
+    t16_codebook_test
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+target_compile_options(t16_codebook_test PRIVATE -O3)
+add_test(NAME t16_codebook_test COMMAND t16_codebook_test)
+
+add_executable(t16_dot_bench src/t16_dot_bench.cu)
+target_link_libraries(t16_dot_bench PRIVATE CUDA::curand_static)
+target_include_directories(
+    t16_dot_bench
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+target_compile_options(
+    t16_dot_bench
+    PRIVATE
+        "$<$<COMPILE_LANGUAGE:CXX>:-O3>"
+        "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v>"
+)
+set_target_properties(
+    t16_dot_bench
+    PROPERTIES
+        CUDA_RUNTIME_LIBRARY Static
+        CUDA_SEPARABLE_COMPILATION OFF
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
 function(add_bitwidth_strategy_benchmark bits)
     set(target "bitwidth_strategy_bench_${bits}")
     add_executable(${target} src/bitwidth_strategy_bench.cu)
