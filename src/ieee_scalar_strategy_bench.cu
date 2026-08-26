@@ -520,21 +520,23 @@ private:
     return result;
   }
 
+  template <std::uint32_t Mask = strategy_mask>
   std::vector<benchmark_variant> make_variants(device_buffer<std::uint8_t> &left,
                                                device_buffer<std::uint8_t> &right,
                                                std::size_t count, bool gemv) {
     owned_tables_.clear();
     std::vector<benchmark_variant> result;
-    if constexpr (strategy_mask & 1u) result.push_back(make_variant<bw::decoder_kind::native_scalar>(left,right,count,gemv));
-    if constexpr (strategy_mask & 2u) result.push_back(make_variant<bw::decoder_kind::direct_branchy>(left,right,count,gemv));
-    if constexpr (strategy_mask & 4u) result.push_back(make_variant<bw::decoder_kind::direct_masked>(left,right,count,gemv));
-    if constexpr (strategy_mask & 8u) result.push_back(make_variant<bw::decoder_kind::full_lut_shared>(left,right,count,gemv));
-    if constexpr (strategy_mask & 16u) result.push_back(make_variant<bw::decoder_kind::full_lut_global>(left,right,count,gemv));
-    if constexpr (strategy_mask & 32u) result.push_back(make_variant<bw::decoder_kind::subnormal_lut_global>(left,right,count,gemv));
-    if constexpr (strategy_mask & 64u) result.push_back(make_variant<bw::decoder_kind::prefix_lut_global>(left,right,count,gemv));
+    if constexpr (Mask & 1u) result.push_back(make_variant<bw::decoder_kind::native_scalar>(left,right,count,gemv));
+    if constexpr (Mask & 2u) result.push_back(make_variant<bw::decoder_kind::direct_branchy>(left,right,count,gemv));
+    if constexpr (Mask & 4u) result.push_back(make_variant<bw::decoder_kind::direct_masked>(left,right,count,gemv));
+    if constexpr (Mask & 8u) result.push_back(make_variant<bw::decoder_kind::full_lut_shared>(left,right,count,gemv));
+    if constexpr (Mask & 16u) result.push_back(make_variant<bw::decoder_kind::full_lut_global>(left,right,count,gemv));
+    if constexpr (Mask & 32u) result.push_back(make_variant<bw::decoder_kind::subnormal_lut_global>(left,right,count,gemv));
+    if constexpr (Mask & 64u) result.push_back(make_variant<bw::decoder_kind::prefix_lut_global>(left,right,count,gemv));
     return result;
   }
 
+  template <std::uint32_t Mask = strategy_mask>
   std::vector<benchmark_variant> validation_variants(device_buffer<std::uint8_t> &input,
                                                      device_buffer<Float> &output,
                                                      std::size_t count) {
@@ -566,13 +568,13 @@ private:
       }
       variants.push_back(std::move(entry));
     };
-    if constexpr (strategy_mask & 1u) add(std::integral_constant<bw::decoder_kind,bw::decoder_kind::native_scalar>{});
-    if constexpr (strategy_mask & 2u) add(std::integral_constant<bw::decoder_kind,bw::decoder_kind::direct_branchy>{});
-    if constexpr (strategy_mask & 4u) add(std::integral_constant<bw::decoder_kind,bw::decoder_kind::direct_masked>{});
-    if constexpr (strategy_mask & 8u) add(std::integral_constant<bw::decoder_kind,bw::decoder_kind::full_lut_shared>{});
-    if constexpr (strategy_mask & 16u) add(std::integral_constant<bw::decoder_kind,bw::decoder_kind::full_lut_global>{});
-    if constexpr (strategy_mask & 32u) add(std::integral_constant<bw::decoder_kind,bw::decoder_kind::subnormal_lut_global>{});
-    if constexpr (strategy_mask & 64u) add(std::integral_constant<bw::decoder_kind,bw::decoder_kind::prefix_lut_global>{});
+    if constexpr (Mask & 1u) add(std::integral_constant<bw::decoder_kind,bw::decoder_kind::native_scalar>{});
+    if constexpr (Mask & 2u) add(std::integral_constant<bw::decoder_kind,bw::decoder_kind::direct_branchy>{});
+    if constexpr (Mask & 4u) add(std::integral_constant<bw::decoder_kind,bw::decoder_kind::direct_masked>{});
+    if constexpr (Mask & 8u) add(std::integral_constant<bw::decoder_kind,bw::decoder_kind::full_lut_shared>{});
+    if constexpr (Mask & 16u) add(std::integral_constant<bw::decoder_kind,bw::decoder_kind::full_lut_global>{});
+    if constexpr (Mask & 32u) add(std::integral_constant<bw::decoder_kind,bw::decoder_kind::subnormal_lut_global>{});
+    if constexpr (Mask & 64u) add(std::integral_constant<bw::decoder_kind,bw::decoder_kind::prefix_lut_global>{});
     return variants;
   }
 
