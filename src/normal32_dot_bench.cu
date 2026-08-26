@@ -183,8 +183,7 @@ __global__ void truncated_normal_from_uniform_kernel(double *values,
     const auto probability = cdf_lower + retained_mass * values[index];
     const auto generated =
         sigma * 1.4142135623730950488 * erfinv(2.0 * probability - 1.0);
-    constexpr double fp32_max =
-        static_cast<double>(std::numeric_limits<float>::max());
+    constexpr double fp32_max = 0x1.fffffep+127;
     values[index] = fmin(fmax(generated, -fp32_max), fp32_max);
   }
 }
@@ -217,10 +216,7 @@ __device__ __forceinline__ std::int32_t encode_qn32_device(double value) {
       (2.0 * normal32::qn_b);
   const auto magnitude = nearbyint(fmin(t, 1.0) * normal32::qn_integer_scale);
   const auto signed_value = copysign(magnitude, value);
-  const auto clipped =
-      fmin(fmax(signed_value,
-                static_cast<double>(std::numeric_limits<std::int32_t>::min())),
-           static_cast<double>(std::numeric_limits<std::int32_t>::max()));
+  const auto clipped = fmin(fmax(signed_value, -2147483648.0), 2147483647.0);
   return static_cast<std::int32_t>(clipped);
 }
 
