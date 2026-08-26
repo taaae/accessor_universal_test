@@ -341,12 +341,27 @@ code_pair_pool make_log_uniform_pool(std::size_t count, long double lower,
   result.realized_min = std::numeric_limits<long double>::infinity();
   result.realized_max = -std::numeric_limits<long double>::infinity();
   for (std::size_t index = 0; index < count; ++index) {
-    const auto q_left = lower + (upper - lower) * unit(rng);
-    const auto q_right = lower + upper - q_left;
-    const auto left_magnitude =
-        pt::encode_positive_log2<benchmark_family, storage_bits, posit_es>(q_left);
-    const auto right_magnitude =
-        pt::encode_positive_log2<benchmark_family, storage_bits, posit_es>(q_right);
+    std::uint32_t left_magnitude{};
+    std::uint32_t right_magnitude{};
+    bool accepted = false;
+    for (int attempt = 0; attempt < 4096 && !accepted; ++attempt) {
+      const auto q_left = lower + (upper - lower) * unit(rng);
+      const auto q_right = lower + upper - q_left;
+      left_magnitude =
+          pt::encode_positive_log2<benchmark_family, storage_bits, posit_es>(q_left);
+      right_magnitude =
+          pt::encode_positive_log2<benchmark_family, storage_bits, posit_es>(q_right);
+      const auto realized_left = raw_q(left_magnitude);
+      const auto realized_right = raw_q(right_magnitude);
+      accepted = std::isfinite(realized_left) &&
+                 std::isfinite(realized_right) && realized_left >= lower &&
+                 realized_left <= upper && realized_right >= lower &&
+                 realized_right <= upper;
+    }
+    if (!accepted) {
+      throw benchmark_error(
+          "could not quantize a paired-log sample inside its interval");
+    }
     result.left.push_back(
         pt::apply_sign<storage_bits>(left_magnitude, (index & 1u) != 0u));
     result.right.push_back(pt::apply_sign<storage_bits>(

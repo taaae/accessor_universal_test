@@ -309,15 +309,30 @@ pool make_log_pool(std::size_t count, std::uint64_t seed) {
   result.minimum = std::numeric_limits<long double>::infinity();
   result.maximum = -std::numeric_limits<long double>::infinity();
   for (std::size_t index = 0; index < count; ++index) {
-    const auto ql = q_lower + (q_upper - q_lower) * unit(rng);
-    const auto qr = q_lower + q_upper - ql;
-    auto left = encode_raw(static_cast<double>(std::exp2(ql)));
-    auto right = encode_raw(static_cast<double>(std::exp2(qr)));
+    std::uint32_t left{};
+    std::uint32_t right{};
+    bool accepted = false;
+    for (int attempt = 0; attempt < 4096 && !accepted; ++attempt) {
+      const auto ql = q_lower + (q_upper - q_lower) * unit(rng);
+      const auto qr = q_lower + q_upper - ql;
+      left = encode_raw(static_cast<double>(std::exp2(ql)));
+      right = encode_raw(static_cast<double>(std::exp2(qr)));
+      const auto left_value = reference_value(left);
+      const auto right_value = reference_value(right);
+      if (!std::isfinite(left_value) || left_value == 0.0 ||
+          !std::isfinite(right_value) || right_value == 0.0)
+        continue;
+      const auto realized_left = raw_q(left);
+      const auto realized_right = raw_q(right);
+      accepted = realized_left >= q_lower && realized_left <= q_upper &&
+                 realized_right >= q_lower && realized_right <= q_upper;
+    }
+    if (!accepted) {
+      throw benchmark_error(
+          "could not quantize an IEEE paired-log sample inside its interval");
+    }
     if (index & 1u) left |= std::uint32_t{1} << (Bits - 1);
     if ((index >> 1) & 1u) right |= std::uint32_t{1} << (Bits - 1);
-    if (!std::isfinite(reference_value(left)) || reference_value(left) == 0.0 ||
-        !std::isfinite(reference_value(right)) || reference_value(right) == 0.0)
-      throw benchmark_error("paired log generator produced a special value");
     result.left.push_back(left);
     result.right.push_back(right);
     result.minimum = std::min({result.minimum, raw_q(left), raw_q(right)});
