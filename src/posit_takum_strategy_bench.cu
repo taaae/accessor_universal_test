@@ -225,6 +225,37 @@ long double raw_q(std::uint32_t raw) {
   return std::log2(std::abs(value));
 }
 
+std::pair<long double, long double>
+representable_q_bounds(long double lower, long double upper) {
+  const std::uint32_t high = pt::sign_mask<storage_bits>() - 1u;
+  std::uint32_t lo = 1u;
+  std::uint32_t hi = high;
+  while (lo < hi) {
+    const auto mid = lo + ((hi - lo) >> 1);
+    if (raw_q(mid) < lower)
+      lo = mid + 1u;
+    else
+      hi = mid;
+  }
+  const auto first = raw_q(lo);
+
+  lo = 1u;
+  hi = high;
+  while (lo < hi) {
+    const auto mid = lo + ((hi - lo + 1u) >> 1);
+    if (raw_q(mid) <= upper)
+      lo = mid;
+    else
+      hi = mid - 1u;
+  }
+  const auto last = raw_q(lo);
+  if (first < lower || first > upper || last < lower || last > upper ||
+      first > last) {
+    throw benchmark_error("format has no finite value in its exponent interval");
+  }
+  return {first, last};
+}
+
 int field_bucket(std::uint32_t positive_raw) {
   if constexpr (benchmark_family == pt::family::posit) {
     const auto aligned = positive_raw << (33 - storage_bits);
@@ -397,9 +428,11 @@ void verify_pool(const code_pair_pool &pool, long double lower,
   verify_side(pool.left);
   verify_side(pool.right);
   if (require_interval_coverage) {
-    const auto allowance = (upper - lower) * 0.02L;
-    if (pool.realized_min > lower + allowance ||
-        pool.realized_max < upper - allowance)
+    const auto [representable_lower, representable_upper] =
+        representable_q_bounds(lower, upper);
+    const auto allowance = (representable_upper - representable_lower) * 0.02L;
+    if (pool.realized_min > representable_lower + allowance ||
+        pool.realized_max < representable_upper - allowance)
       throw benchmark_error("paired-log pool does not cover its interval");
   }
 }

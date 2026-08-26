@@ -388,7 +388,11 @@ Before timing each generated input buffer, verify:
 - no decoded zero;
 - every realized `q` lies inside the promised interval;
 - field-bucket counts differ by at most one after admissibility filtering;
-- paired-log-uniform histograms cover the complete requested interval.
+- paired-log-uniform histograms cover the complete representable portion of the
+  requested interval. Coverage is checked against the first and last format
+  values inside the interval, because a narrow tapered format can have no code
+  near a continuous endpoint (for example, `takum<8>` jumps from exponent
+  `-143` to `-127` around the requested FP32 lower bound of `-140`).
 
 ## Timing protocol
 
