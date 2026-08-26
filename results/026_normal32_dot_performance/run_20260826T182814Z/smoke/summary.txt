@@ -1,0 +1,12 @@
+format,strategy,median_ms,physical_GB/s,speedup_vs_raw_fp64
+pwl_normal32_16_16,pwl_global_x1,0.025248,332.248,0.4689
+pwq_normal32_8_24,pwq_shared_x1,0.014880,563.751,0.7957
+qn32,qn_direct_x1,0.012736,658.653,0.9296
+fp32_e8m23,native_f64_x1,0.010512,798.003,1.1263
+e11m20,direct_shift_x1,0.011472,731.225,1.0321
+e9m22,prefix_global_x1,0.013968,600.559,0.8477
+e9m22,word_branchy_x1,0.013664,613.920,0.8665
+e8m29,prefix_global_x1,0.017120,581.862,0.6916
+e8m30,prefix_global_x1,0.015600,655.360,0.7590
+e11m36,direct_shift_x1,0.011936,1054.198,0.9920
+raw_fp64,raw_pointer_x1,0.011840,1416.995,1.0000

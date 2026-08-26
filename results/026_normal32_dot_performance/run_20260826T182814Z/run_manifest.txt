@@ -1,0 +1,30 @@
+experiment=026_normal32_dot_performance
+started_utc=2026-08-26T18:28:14Z
+git_commit=51a416b9469dd6b7bf8c6c643667b0b225ed0d66
+formats=pwl_normal32_16_16,pwq_normal32_8_24,qn32,fp32_e8m23,e11m20,e9m22,e8m29,e8m30,e11m36,raw_fp64
+strategies=pwl_global_x1,pwq_shared_x1,qn_direct_x1,native_f64_x1,direct_shift_x1,prefix_global_x1,word_branchy_x1,raw_pointer_x1
+kernel=dot
+N=134217728
+arithmetic_type=fp64
+access=scalar_x1
+distribution=truncated_normal
+sigma=fp32_max/4
+cutoff_sigma=4
+encoding=offline_untimed
+warmup=10
+samples=30
+target_sample_ms=20
+base_seed=1376283091369227076
+stop_after=full
+git_status_begin
+?? results/026_normal32_dot_performance/run_20260826T182651Z/
+?? results/026_normal32_dot_performance/run_20260826T182814Z/
+?? results/026_normal32_dot_performance/slurm-452823.out
+?? results/026_normal32_dot_performance/slurm-452824.out
+?? results/026_normal32_dot_performance/slurm-build-452820.out
+?? results/026_normal32_dot_performance/slurm-build-452821.out
+?? results/026_normal32_dot_performance/slurm-build-452822.out
+git_status_end
+finished_utc=2026-08-26T18:28:24Z
+wall_time_seconds=10
+completed_stage=full

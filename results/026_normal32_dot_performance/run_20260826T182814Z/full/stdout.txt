@@ -1,0 +1,14 @@
+Building PWLNormal32 and PWQNormal32 coefficient tables
+Normal32 DOT benchmark complete on NVIDIA H200 NVL at N=134217728
+  pwl_normal32_16_16     pwl_global_x1        1.964602 ms
+  pwq_normal32_8_24      pwq_shared_x1        0.743794 ms
+  qn32                   qn_direct_x1         0.509913 ms
+  fp32_e8m23             native_f64_x1        0.525429 ms
+  e11m20                 direct_shift_x1      0.492770 ms
+  e9m22                  prefix_global_x1     0.946836 ms
+  e9m22                  word_branchy_x1      0.924833 ms
+  e8m29                  prefix_global_x1     1.073197 ms
+  e8m30                  prefix_global_x1     1.073963 ms
+  e11m36                 direct_shift_x1      0.606914 ms
+  raw_fp64               raw_pointer_x1       0.601211 ms
+Raw samples: /storage/home/timofeirusanov/accessor_universal_test_normal32/results/026_normal32_dot_performance/run_20260826T182814Z/full/timing_samples.csv
