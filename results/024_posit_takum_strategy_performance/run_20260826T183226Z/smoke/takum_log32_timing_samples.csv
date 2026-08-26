@@ -1,0 +1,17 @@
+format,family,bits,arithmetic,distribution,kernel,strategy,storage_layout,access_method,packet_values,N,M,input_bytes,lut_bytes,dynamic_shared_bytes,round,order_position,kernel_ms,status
+takum_log32,takum_log,32,fp32,field_balanced_finite,dot,direct,dense,scalar,1,65536,1,524288,0,1024,0,0,0.0120639997,ok
+takum_log32,takum_log,32,fp32,field_balanced_finite,dot,direct,dense,scalar,1,65536,1,524288,0,1024,1,0,0.00886400044,ok
+takum_log32,takum_log,32,fp32,field_balanced_finite,gemv,direct,dense,scalar,1,256,16,17408,0,1024,0,0,0.00585599989,ok
+takum_log32,takum_log,32,fp32,field_balanced_finite,gemv,direct,dense,scalar,1,256,16,17408,0,1024,1,0,0.00486399978,ok
+takum_log32,takum_log,32,fp32,paired_log_uniform_finite,dot,direct,dense,scalar,1,65536,1,524288,0,1024,0,0,0.00857600011,ok
+takum_log32,takum_log,32,fp32,paired_log_uniform_finite,dot,direct,dense,scalar,1,65536,1,524288,0,1024,1,0,0.00796800014,ok
+takum_log32,takum_log,32,fp32,paired_log_uniform_finite,gemv,direct,dense,scalar,1,256,16,17408,0,1024,0,0,0.00515200011,ok
+takum_log32,takum_log,32,fp32,paired_log_uniform_finite,gemv,direct,dense,scalar,1,256,16,17408,0,1024,1,0,0.00496000005,ok
+takum_log32,takum_log,32,fp64,field_balanced_finite,dot,direct,dense,scalar,1,65536,1,524288,0,2048,0,0,0.0090239998,ok
+takum_log32,takum_log,32,fp64,field_balanced_finite,dot,direct,dense,scalar,1,65536,1,524288,0,2048,1,0,0.00828799978,ok
+takum_log32,takum_log,32,fp64,field_balanced_finite,gemv,direct,dense,scalar,1,256,16,17408,0,2048,0,0,0.00547200022,ok
+takum_log32,takum_log,32,fp64,field_balanced_finite,gemv,direct,dense,scalar,1,256,16,17408,0,2048,1,0,0.00511999987,ok
+takum_log32,takum_log,32,fp64,paired_log_uniform_finite,dot,direct,dense,scalar,1,65536,1,524288,0,2048,0,0,0.00800000038,ok
+takum_log32,takum_log,32,fp64,paired_log_uniform_finite,dot,direct,dense,scalar,1,65536,1,524288,0,2048,1,0,0.00825599954,ok
+takum_log32,takum_log,32,fp64,paired_log_uniform_finite,gemv,direct,dense,scalar,1,256,16,17408,0,2048,0,0,0.00534400018,ok
+takum_log32,takum_log,32,fp64,paired_log_uniform_finite,gemv,direct,dense,scalar,1,256,16,17408,0,2048,1,0,0.00505599985,ok

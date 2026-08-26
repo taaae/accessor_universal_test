@@ -1,0 +1,9 @@
+format,family,bits,arithmetic,distribution,kernel,strategy,storage_layout,access_method,packet_values,N,M,input_bytes,lut_bytes,dynamic_shared_bytes,round,order_position,kernel_ms,status
+fp32_e8m23,ieee,32,fp32,field_balanced_finite,dot,native_scalar,dense,scalar,1,65536,1,524288,0,1024,0,0,0.0124159995,ok
+fp32_e8m23,ieee,32,fp32,field_balanced_finite,dot,native_scalar,dense,scalar,1,65536,1,524288,0,1024,1,0,0.00828799978,ok
+fp32_e8m23,ieee,32,fp32,field_balanced_finite,gemv,native_scalar,dense,scalar,1,256,16,17408,0,1024,0,0,0.00489600003,ok
+fp32_e8m23,ieee,32,fp32,field_balanced_finite,gemv,native_scalar,dense,scalar,1,256,16,17408,0,1024,1,0,0.00486399978,ok
+fp32_e8m23,ieee,32,fp32,paired_log_uniform_finite,dot,native_scalar,dense,scalar,1,65536,1,524288,0,1024,0,0,0.00828799978,ok
+fp32_e8m23,ieee,32,fp32,paired_log_uniform_finite,dot,native_scalar,dense,scalar,1,65536,1,524288,0,1024,1,0,0.00719999988,ok
+fp32_e8m23,ieee,32,fp32,paired_log_uniform_finite,gemv,native_scalar,dense,scalar,1,256,16,17408,0,1024,0,0,0.00460800016,ok
+fp32_e8m23,ieee,32,fp32,paired_log_uniform_finite,gemv,native_scalar,dense,scalar,1,256,16,17408,0,1024,1,0,0.00531199994,ok

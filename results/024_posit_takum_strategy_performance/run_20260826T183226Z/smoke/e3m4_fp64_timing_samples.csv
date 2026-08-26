@@ -1,0 +1,17 @@
+format,family,bits,arithmetic,distribution,kernel,strategy,storage_layout,access_method,packet_values,N,M,input_bytes,lut_bytes,dynamic_shared_bytes,round,order_position,kernel_ms,status
+e3m4,ieee,8,fp64,field_balanced_finite,dot,full_lut_shared,dense,scalar,1,65536,1,131072,2048,4096,0,0,0.00995200034,ok
+e3m4,ieee,8,fp64,field_balanced_finite,dot,full_lut_global,dense,scalar,1,65536,1,131072,2048,2048,0,1,0.00803199969,ok
+e3m4,ieee,8,fp64,field_balanced_finite,dot,full_lut_global,dense,scalar,1,65536,1,131072,2048,2048,1,0,0.00723200012,ok
+e3m4,ieee,8,fp64,field_balanced_finite,dot,full_lut_shared,dense,scalar,1,65536,1,131072,2048,4096,1,1,0.00774399983,ok
+e3m4,ieee,8,fp64,field_balanced_finite,gemv,full_lut_shared,dense,scalar,1,256,16,4352,2048,4096,0,0,0.00470399996,ok
+e3m4,ieee,8,fp64,field_balanced_finite,gemv,full_lut_global,dense,scalar,1,256,16,4352,2048,2048,0,1,0.00444799988,ok
+e3m4,ieee,8,fp64,field_balanced_finite,gemv,full_lut_global,dense,scalar,1,256,16,4352,2048,2048,1,0,0.00454400014,ok
+e3m4,ieee,8,fp64,field_balanced_finite,gemv,full_lut_shared,dense,scalar,1,256,16,4352,2048,4096,1,1,0.00476799998,ok
+e3m4,ieee,8,fp64,paired_log_uniform_finite,dot,full_lut_shared,dense,scalar,1,65536,1,131072,2048,4096,0,0,0.00784000009,ok
+e3m4,ieee,8,fp64,paired_log_uniform_finite,dot,full_lut_global,dense,scalar,1,65536,1,131072,2048,2048,0,1,0.00771200005,ok
+e3m4,ieee,8,fp64,paired_log_uniform_finite,dot,full_lut_global,dense,scalar,1,65536,1,131072,2048,2048,1,0,0.00815999974,ok
+e3m4,ieee,8,fp64,paired_log_uniform_finite,dot,full_lut_shared,dense,scalar,1,65536,1,131072,2048,4096,1,1,0.00755200023,ok
+e3m4,ieee,8,fp64,paired_log_uniform_finite,gemv,full_lut_shared,dense,scalar,1,256,16,4352,2048,4096,0,0,0.00467200018,ok
+e3m4,ieee,8,fp64,paired_log_uniform_finite,gemv,full_lut_global,dense,scalar,1,256,16,4352,2048,2048,0,1,0.0045119999,ok
+e3m4,ieee,8,fp64,paired_log_uniform_finite,gemv,full_lut_global,dense,scalar,1,256,16,4352,2048,2048,1,0,0.00444799988,ok
+e3m4,ieee,8,fp64,paired_log_uniform_finite,gemv,full_lut_shared,dense,scalar,1,256,16,4352,2048,4096,1,1,0.00438399985,ok

@@ -1,0 +1,1198 @@
+-- Configuring done (0.1s)
+-- Generating done (2.1s)
+-- Build files have been written to: /storage/home/timofeirusanov/accessor_universal_test/build-h200
+[100%] Built target posit_takum_core_test
+Internal ctest changing into directory: /storage/home/timofeirusanov/accessor_universal_test/build-h200
+Test project /storage/home/timofeirusanov/accessor_universal_test/build-h200
+    Start 6: posit_takum_core_test
+1/1 Test #6: posit_takum_core_test ............   Passed    0.01 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.01 sec
+Verified source-bound committed independent reference evidence
+status=pass
+generated_utc=2026-08-26
+universal_commit=e8254b96924e44d8af6f8a62c9ec18e5c5708299
+core_sha256=d002cae4a83af01ae9463ba9f6590880e7a351591df9b35973b1c7c1b5439f9c
+validator_sha256=2d76caed5ef4e4c77c46ac7870ff091007291b88dea889babc653409246a5a70
+coverage=exhaustive_8_14_16;random_1000000_plus_boundaries_32
+posit_reference=Universal
+linear_takum_reference=Universal_FP64_then_target_rounding
+log_takum_reference=independent_paper_formula
+fp32_log_takum_tolerance_ulp=2
+fp64_log_takum_tolerance_ulp=1
+output=Universal_and_log-takum_paper-formula_cross-validation_passed
+[  0%] Building CUDA object CMakeFiles/posit_takum_strategy_bench_posit8_es0.dir/src/posit_takum_strategy_bench.cu.o
+/storage/home/timofeirusanov/accessor_universal_test/src/posit_takum_strategy_bench.cu(852): warning #186-D: pointless comparison of unsigned integer with zero
+      if (shared_bytes > std::size_t(max_shared_)) {
+                       ^
+          detected during:
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_lut<Strategy>(const <unnamed>::device_buffer<uint8_t> &, <unnamed>::device_buffer<Float> &, const std::vector<std::seed_seq::result_type, std::allocator<std::seed_seq::result_type>> &, std::size_t) [with Float=float, Strategy=aut::pt::strategy::full_lut_global]" at line 826
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_decoder() [with Float=float]" at line 1148
+            instantiation of "void <unnamed>::run_arithmetic<Float>(const <unnamed>::settings &, std::ofstream &, std::ofstream &, std::ofstream &, int) [with Float=float]" at line 1184
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/storage/home/timofeirusanov/accessor_universal_test/src/posit_takum_strategy_bench.cu(852): warning #186-D: pointless comparison of unsigned integer with zero
+      if (shared_bytes > std::size_t(max_shared_)) {
+                       ^
+          detected during:
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_lut<Strategy>(const <unnamed>::device_buffer<uint8_t> &, <unnamed>::device_buffer<Float> &, const std::vector<std::seed_seq::result_type, std::allocator<std::seed_seq::result_type>> &, std::size_t) [with Float=double, Strategy=aut::pt::strategy::full_lut_global]" at line 826
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_decoder() [with Float=double]" at line 1148
+            instantiation of "void <unnamed>::run_arithmetic<Float>(const <unnamed>::settings &, std::ofstream &, std::ofstream &, std::ofstream &, int) [with Float=double]" at line 1185
+
+ptxas info    : 0 bytes gmem
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EdLNS0_8strategyE2EEELi8EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EdLNS0_8strategyE2EEELi8EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers
+ptxas info    : Compile time = 6.988 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EdLNS0_8strategyE1EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EdLNS0_8strategyE1EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers
+ptxas info    : Compile time = 4.988 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EdLNS0_8strategyE0EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EdLNS0_8strategyE0EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 23 registers, used 1 barriers
+ptxas info    : Compile time = 15.842 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EdLNS0_8strategyE2EEELi8EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EdLNS0_8strategyE2EEELi8EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers
+ptxas info    : Compile time = 5.406 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EdLNS0_8strategyE1EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EdLNS0_8strategyE1EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers
+ptxas info    : Compile time = 4.305 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 3.442 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EdLNS0_8strategyE0EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EdLNS0_8strategyE0EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers
+ptxas info    : Compile time = 15.067 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EdLNS0_8strategyE2EEELi8EdLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EdLNS0_8strategyE2EEELi8EdLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 1 barriers
+ptxas info    : Compile time = 3.530 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EdLNS0_8strategyE1EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EdLNS0_8strategyE1EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.396 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE0ELi8ELi0EdEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE0ELi8ELi0EdEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 0 barriers
+ptxas info    : Compile time = 8.160 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EfLNS0_8strategyE2EEELi8EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EfLNS0_8strategyE2EEELi8EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers
+ptxas info    : Compile time = 5.702 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EfLNS0_8strategyE1EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EfLNS0_8strategyE1EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers
+ptxas info    : Compile time = 4.590 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EfLNS0_8strategyE0EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EfLNS0_8strategyE0EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers
+ptxas info    : Compile time = 14.957 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EfLNS0_8strategyE2EEELi8EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EfLNS0_8strategyE2EEELi8EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers
+ptxas info    : Compile time = 5.394 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EfLNS0_8strategyE1EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EfLNS0_8strategyE1EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers
+ptxas info    : Compile time = 4.246 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 10 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 3.469 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EfLNS0_8strategyE0EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EfLNS0_8strategyE0EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers
+ptxas info    : Compile time = 14.951 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EfLNS0_8strategyE2EEELi8EfLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EfLNS0_8strategyE2EEELi8EfLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 1 barriers
+ptxas info    : Compile time = 3.499 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EfLNS0_8strategyE1EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE0ELi8ELi0EfLNS0_8strategyE1EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.333 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE0ELi8ELi0EfEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE0ELi8ELi0EfEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 0 barriers
+ptxas info    : Compile time = 7.954 ms
+[100%] Linking CUDA executable bin/posit_takum_strategy_bench_posit8_es0
+[100%] Built target posit_takum_strategy_bench_posit8_es0
+[100%] Building CUDA object CMakeFiles/posit_takum_strategy_bench_posit14_es1.dir/src/posit_takum_strategy_bench.cu.o
+/storage/home/timofeirusanov/accessor_universal_test/src/posit_takum_strategy_bench.cu(852): warning #186-D: pointless comparison of unsigned integer with zero
+      if (shared_bytes > std::size_t(max_shared_)) {
+                       ^
+          detected during:
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_lut<Strategy>(const <unnamed>::device_buffer<uint8_t> &, <unnamed>::device_buffer<Float> &, const std::vector<std::seed_seq::result_type, std::allocator<std::seed_seq::result_type>> &, std::size_t) [with Float=float, Strategy=aut::pt::strategy::full_lut_global]" at line 826
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_decoder() [with Float=float]" at line 1148
+            instantiation of "void <unnamed>::run_arithmetic<Float>(const <unnamed>::settings &, std::ofstream &, std::ofstream &, std::ofstream &, int) [with Float=float]" at line 1184
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/storage/home/timofeirusanov/accessor_universal_test/src/posit_takum_strategy_bench.cu(852): warning #186-D: pointless comparison of unsigned integer with zero
+      if (shared_bytes > std::size_t(max_shared_)) {
+                       ^
+          detected during:
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_lut<Strategy>(const <unnamed>::device_buffer<uint8_t> &, <unnamed>::device_buffer<Float> &, const std::vector<std::seed_seq::result_type, std::allocator<std::seed_seq::result_type>> &, std::size_t) [with Float=double, Strategy=aut::pt::strategy::full_lut_global]" at line 826
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_decoder() [with Float=double]" at line 1148
+            instantiation of "void <unnamed>::run_arithmetic<Float>(const <unnamed>::settings &, std::ofstream &, std::ofstream &, std::ofstream &, int) [with Float=double]" at line 1185
+
+ptxas info    : 0 bytes gmem
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EdLNS0_8strategyE2EEELi14EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EdLNS0_8strategyE2EEELi14EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 25 registers, used 1 barriers
+ptxas info    : Compile time = 8.170 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EdLNS0_8strategyE1EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EdLNS0_8strategyE1EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 1 barriers
+ptxas info    : Compile time = 6.175 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EdLNS0_8strategyE0EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EdLNS0_8strategyE0EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 23 registers, used 1 barriers
+ptxas info    : Compile time = 17.003 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EdLNS0_8strategyE2EEELi14EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EdLNS0_8strategyE2EEELi14EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 23 registers, used 1 barriers
+ptxas info    : Compile time = 6.314 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EdLNS0_8strategyE1EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EdLNS0_8strategyE1EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers
+ptxas info    : Compile time = 5.227 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 3.540 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EdLNS0_8strategyE0EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EdLNS0_8strategyE0EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers
+ptxas info    : Compile time = 16.102 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EdLNS0_8strategyE2EEELi14EdLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EdLNS0_8strategyE2EEELi14EdLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 1 barriers
+ptxas info    : Compile time = 4.173 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EdLNS0_8strategyE1EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EdLNS0_8strategyE1EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 2.963 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE0ELi14ELi1EdEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE0ELi14ELi1EdEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 0 barriers
+ptxas info    : Compile time = 8.775 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EfLNS0_8strategyE2EEELi14EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EfLNS0_8strategyE2EEELi14EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 25 registers, used 1 barriers
+ptxas info    : Compile time = 6.810 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EfLNS0_8strategyE1EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EfLNS0_8strategyE1EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 1 barriers
+ptxas info    : Compile time = 5.768 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EfLNS0_8strategyE0EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EfLNS0_8strategyE0EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers
+ptxas info    : Compile time = 16.139 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EfLNS0_8strategyE2EEELi14EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EfLNS0_8strategyE2EEELi14EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers
+ptxas info    : Compile time = 6.210 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EfLNS0_8strategyE1EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EfLNS0_8strategyE1EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 1 barriers
+ptxas info    : Compile time = 5.208 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 10 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 3.520 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EfLNS0_8strategyE0EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EfLNS0_8strategyE0EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 27 registers, used 1 barriers
+ptxas info    : Compile time = 16.114 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EfLNS0_8strategyE2EEELi14EfLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EfLNS0_8strategyE2EEELi14EfLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 1 barriers
+ptxas info    : Compile time = 4.112 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EfLNS0_8strategyE1EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE0ELi14ELi1EfLNS0_8strategyE1EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 15 registers, used 0 barriers
+ptxas info    : Compile time = 2.956 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE0ELi14ELi1EfEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE0ELi14ELi1EfEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 0 barriers
+ptxas info    : Compile time = 8.499 ms
+[100%] Linking CUDA executable bin/posit_takum_strategy_bench_posit14_es1
+[100%] Built target posit_takum_strategy_bench_posit14_es1
+[100%] Building CUDA object CMakeFiles/posit_takum_strategy_bench_posit16_es1.dir/src/posit_takum_strategy_bench.cu.o
+/storage/home/timofeirusanov/accessor_universal_test/src/posit_takum_strategy_bench.cu(852): warning #186-D: pointless comparison of unsigned integer with zero
+      if (shared_bytes > std::size_t(max_shared_)) {
+                       ^
+          detected during:
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_lut<Strategy>(const <unnamed>::device_buffer<uint8_t> &, <unnamed>::device_buffer<Float> &, const std::vector<std::seed_seq::result_type, std::allocator<std::seed_seq::result_type>> &, std::size_t) [with Float=float, Strategy=aut::pt::strategy::full_lut_global]" at line 826
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_decoder() [with Float=float]" at line 1148
+            instantiation of "void <unnamed>::run_arithmetic<Float>(const <unnamed>::settings &, std::ofstream &, std::ofstream &, std::ofstream &, int) [with Float=float]" at line 1184
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/storage/home/timofeirusanov/accessor_universal_test/src/posit_takum_strategy_bench.cu(852): warning #186-D: pointless comparison of unsigned integer with zero
+      if (shared_bytes > std::size_t(max_shared_)) {
+                       ^
+          detected during:
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_lut<Strategy>(const <unnamed>::device_buffer<uint8_t> &, <unnamed>::device_buffer<Float> &, const std::vector<std::seed_seq::result_type, std::allocator<std::seed_seq::result_type>> &, std::size_t) [with Float=double, Strategy=aut::pt::strategy::full_lut_global]" at line 826
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_decoder() [with Float=double]" at line 1148
+            instantiation of "void <unnamed>::run_arithmetic<Float>(const <unnamed>::settings &, std::ofstream &, std::ofstream &, std::ofstream &, int) [with Float=double]" at line 1185
+
+ptxas info    : 0 bytes gmem
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi16ELi1EdLNS0_8strategyE1EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi16ELi1EdLNS0_8strategyE1EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers
+ptxas info    : Compile time = 6.048 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi16ELi1EdLNS0_8strategyE0EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi16ELi1EdLNS0_8strategyE0EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 23 registers, used 1 barriers
+ptxas info    : Compile time = 16.507 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi16ELi1EdLNS0_8strategyE1EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi16ELi1EdLNS0_8strategyE1EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers
+ptxas info    : Compile time = 4.521 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 3.533 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi16ELi1EdLNS0_8strategyE0EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi16ELi1EdLNS0_8strategyE0EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers
+ptxas info    : Compile time = 15.740 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE0ELi16ELi1EdLNS0_8strategyE1EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE0ELi16ELi1EdLNS0_8strategyE1EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.405 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE0ELi16ELi1EdEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE0ELi16ELi1EdEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 0 barriers
+ptxas info    : Compile time = 8.297 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi16ELi1EfLNS0_8strategyE1EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi16ELi1EfLNS0_8strategyE1EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers
+ptxas info    : Compile time = 4.728 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi16ELi1EfLNS0_8strategyE0EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi16ELi1EfLNS0_8strategyE0EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers
+ptxas info    : Compile time = 15.168 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi16ELi1EfLNS0_8strategyE1EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi16ELi1EfLNS0_8strategyE1EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers
+ptxas info    : Compile time = 4.452 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 10 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 3.441 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi16ELi1EfLNS0_8strategyE0EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi16ELi1EfLNS0_8strategyE0EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers
+ptxas info    : Compile time = 14.961 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE0ELi16ELi1EfLNS0_8strategyE1EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE0ELi16ELi1EfLNS0_8strategyE1EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.356 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE0ELi16ELi1EfEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE0ELi16ELi1EfEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 0 barriers
+ptxas info    : Compile time = 8.044 ms
+[100%] Linking CUDA executable bin/posit_takum_strategy_bench_posit16_es1
+[100%] Built target posit_takum_strategy_bench_posit16_es1
+[100%] Building CUDA object CMakeFiles/posit_takum_strategy_bench_posit32_es2.dir/src/posit_takum_strategy_bench.cu.o
+ptxas info    : 0 bytes gmem
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi32ELi2EdLNS0_8strategyE0EEELi32EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi32ELi2EdLNS0_8strategyE0EEELi32EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 23 registers, used 1 barriers
+ptxas info    : Compile time = 17.015 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 3.764 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi32ELi2EdLNS0_8strategyE0EEELi32EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi32ELi2EdLNS0_8strategyE0EEELi32EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers
+ptxas info    : Compile time = 15.595 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE0ELi32ELi2EdEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE0ELi32ELi2EdEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 0 barriers
+ptxas info    : Compile time = 8.061 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi32ELi2EfLNS0_8strategyE0EEELi32EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE0ELi32ELi2EfLNS0_8strategyE0EEELi32EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers
+ptxas info    : Compile time = 14.724 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 10 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 3.484 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi32ELi2EfLNS0_8strategyE0EEELi32EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE0ELi32ELi2EfLNS0_8strategyE0EEELi32EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers
+ptxas info    : Compile time = 14.471 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE0ELi32ELi2EfEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE0ELi32ELi2EfEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 0 barriers
+ptxas info    : Compile time = 7.940 ms
+[100%] Linking CUDA executable bin/posit_takum_strategy_bench_posit32_es2
+[100%] Built target posit_takum_strategy_bench_posit32_es2
+[100%] Building CUDA object CMakeFiles/posit_takum_strategy_bench_takum8.dir/src/posit_takum_strategy_bench.cu.o
+/storage/home/timofeirusanov/accessor_universal_test/src/posit_takum_strategy_bench.cu(852): warning #186-D: pointless comparison of unsigned integer with zero
+      if (shared_bytes > std::size_t(max_shared_)) {
+                       ^
+          detected during:
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_lut<Strategy>(const <unnamed>::device_buffer<uint8_t> &, <unnamed>::device_buffer<Float> &, const std::vector<std::seed_seq::result_type, std::allocator<std::seed_seq::result_type>> &, std::size_t) [with Float=float, Strategy=aut::pt::strategy::full_lut_global]" at line 826
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_decoder() [with Float=float]" at line 1148
+            instantiation of "void <unnamed>::run_arithmetic<Float>(const <unnamed>::settings &, std::ofstream &, std::ofstream &, std::ofstream &, int) [with Float=float]" at line 1184
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/storage/home/timofeirusanov/accessor_universal_test/src/posit_takum_strategy_bench.cu(852): warning #186-D: pointless comparison of unsigned integer with zero
+      if (shared_bytes > std::size_t(max_shared_)) {
+                       ^
+          detected during:
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_lut<Strategy>(const <unnamed>::device_buffer<uint8_t> &, <unnamed>::device_buffer<Float> &, const std::vector<std::seed_seq::result_type, std::allocator<std::seed_seq::result_type>> &, std::size_t) [with Float=double, Strategy=aut::pt::strategy::full_lut_global]" at line 826
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_decoder() [with Float=double]" at line 1148
+            instantiation of "void <unnamed>::run_arithmetic<Float>(const <unnamed>::settings &, std::ofstream &, std::ofstream &, std::ofstream &, int) [with Float=double]" at line 1185
+
+ptxas info    : 0 bytes gmem
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EdLNS0_8strategyE2EEELi8EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EdLNS0_8strategyE2EEELi8EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers
+ptxas info    : Compile time = 5.233 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EdLNS0_8strategyE1EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EdLNS0_8strategyE1EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers
+ptxas info    : Compile time = 3.583 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EdLNS0_8strategyE0EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EdLNS0_8strategyE0EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 23 registers, used 1 barriers
+ptxas info    : Compile time = 9.566 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EdLNS0_8strategyE2EEELi8EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EdLNS0_8strategyE2EEELi8EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers
+ptxas info    : Compile time = 3.850 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EdLNS0_8strategyE1EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EdLNS0_8strategyE1EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers
+ptxas info    : Compile time = 3.071 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 2.479 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EdLNS0_8strategyE0EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EdLNS0_8strategyE0EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers
+ptxas info    : Compile time = 8.958 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EdLNS0_8strategyE2EEELi8EdLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EdLNS0_8strategyE2EEELi8EdLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 1 barriers
+ptxas info    : Compile time = 2.540 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EdLNS0_8strategyE1EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EdLNS0_8strategyE1EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 1.744 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE1ELi8ELi0EdEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE1ELi8ELi0EdEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 0 barriers
+ptxas info    : Compile time = 5.012 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EfLNS0_8strategyE2EEELi8EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EfLNS0_8strategyE2EEELi8EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers
+ptxas info    : Compile time = 4.023 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EfLNS0_8strategyE1EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EfLNS0_8strategyE1EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers
+ptxas info    : Compile time = 3.288 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EfLNS0_8strategyE0EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EfLNS0_8strategyE0EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 1 barriers
+ptxas info    : Compile time = 9.226 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EfLNS0_8strategyE2EEELi8EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EfLNS0_8strategyE2EEELi8EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers
+ptxas info    : Compile time = 3.822 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EfLNS0_8strategyE1EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EfLNS0_8strategyE1EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers
+ptxas info    : Compile time = 3.064 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 10 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 2.417 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EfLNS0_8strategyE0EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EfLNS0_8strategyE0EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers
+ptxas info    : Compile time = 8.605 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EfLNS0_8strategyE2EEELi8EfLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EfLNS0_8strategyE2EEELi8EfLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 1 barriers
+ptxas info    : Compile time = 2.509 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EfLNS0_8strategyE1EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE1ELi8ELi0EfLNS0_8strategyE1EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 1.691 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE1ELi8ELi0EfEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE1ELi8ELi0EfEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 0 barriers
+ptxas info    : Compile time = 4.660 ms
+[100%] Linking CUDA executable bin/posit_takum_strategy_bench_takum8
+[100%] Built target posit_takum_strategy_bench_takum8
+[  0%] Building CUDA object CMakeFiles/posit_takum_strategy_bench_takum14.dir/src/posit_takum_strategy_bench.cu.o
+/storage/home/timofeirusanov/accessor_universal_test/src/posit_takum_strategy_bench.cu(852): warning #186-D: pointless comparison of unsigned integer with zero
+      if (shared_bytes > std::size_t(max_shared_)) {
+                       ^
+          detected during:
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_lut<Strategy>(const <unnamed>::device_buffer<uint8_t> &, <unnamed>::device_buffer<Float> &, const std::vector<std::seed_seq::result_type, std::allocator<std::seed_seq::result_type>> &, std::size_t) [with Float=float, Strategy=aut::pt::strategy::full_lut_global]" at line 826
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_decoder() [with Float=float]" at line 1148
+            instantiation of "void <unnamed>::run_arithmetic<Float>(const <unnamed>::settings &, std::ofstream &, std::ofstream &, std::ofstream &, int) [with Float=float]" at line 1184
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/storage/home/timofeirusanov/accessor_universal_test/src/posit_takum_strategy_bench.cu(852): warning #186-D: pointless comparison of unsigned integer with zero
+      if (shared_bytes > std::size_t(max_shared_)) {
+                       ^
+          detected during:
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_lut<Strategy>(const <unnamed>::device_buffer<uint8_t> &, <unnamed>::device_buffer<Float> &, const std::vector<std::seed_seq::result_type, std::allocator<std::seed_seq::result_type>> &, std::size_t) [with Float=double, Strategy=aut::pt::strategy::full_lut_global]" at line 826
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_decoder() [with Float=double]" at line 1148
+            instantiation of "void <unnamed>::run_arithmetic<Float>(const <unnamed>::settings &, std::ofstream &, std::ofstream &, std::ofstream &, int) [with Float=double]" at line 1185
+
+ptxas info    : 0 bytes gmem
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EdLNS0_8strategyE2EEELi14EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EdLNS0_8strategyE2EEELi14EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 25 registers, used 1 barriers
+ptxas info    : Compile time = 5.983 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EdLNS0_8strategyE1EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EdLNS0_8strategyE1EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 1 barriers
+ptxas info    : Compile time = 4.415 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EdLNS0_8strategyE0EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EdLNS0_8strategyE0EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers
+ptxas info    : Compile time = 10.247 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EdLNS0_8strategyE2EEELi14EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EdLNS0_8strategyE2EEELi14EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 23 registers, used 1 barriers
+ptxas info    : Compile time = 4.934 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EdLNS0_8strategyE1EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EdLNS0_8strategyE1EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers
+ptxas info    : Compile time = 3.792 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 2.497 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EdLNS0_8strategyE0EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EdLNS0_8strategyE0EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers
+ptxas info    : Compile time = 9.484 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EdLNS0_8strategyE2EEELi14EdLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EdLNS0_8strategyE2EEELi14EdLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 1 barriers
+ptxas info    : Compile time = 2.930 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EdLNS0_8strategyE1EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EdLNS0_8strategyE1EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 2.114 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE1ELi14ELi0EdEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE1ELi14ELi0EdEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 0 barriers
+ptxas info    : Compile time = 5.194 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EfLNS0_8strategyE2EEELi14EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EfLNS0_8strategyE2EEELi14EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 25 registers, used 1 barriers
+ptxas info    : Compile time = 4.780 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EfLNS0_8strategyE1EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EfLNS0_8strategyE1EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 1 barriers
+ptxas info    : Compile time = 4.250 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EfLNS0_8strategyE0EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EfLNS0_8strategyE0EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers
+ptxas info    : Compile time = 9.775 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EfLNS0_8strategyE2EEELi14EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EfLNS0_8strategyE2EEELi14EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers
+ptxas info    : Compile time = 4.454 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EfLNS0_8strategyE1EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EfLNS0_8strategyE1EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 1 barriers
+ptxas info    : Compile time = 3.698 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 10 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 2.456 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EfLNS0_8strategyE0EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EfLNS0_8strategyE0EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 25 registers, used 1 barriers
+ptxas info    : Compile time = 9.103 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EfLNS0_8strategyE2EEELi14EfLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EfLNS0_8strategyE2EEELi14EfLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 1 barriers
+ptxas info    : Compile time = 2.967 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EfLNS0_8strategyE1EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE1ELi14ELi0EfLNS0_8strategyE1EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 15 registers, used 0 barriers
+ptxas info    : Compile time = 2.124 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE1ELi14ELi0EfEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE1ELi14ELi0EfEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 0 barriers
+ptxas info    : Compile time = 5.033 ms
+[100%] Linking CUDA executable bin/posit_takum_strategy_bench_takum14
+[100%] Built target posit_takum_strategy_bench_takum14
+[  0%] Building CUDA object CMakeFiles/posit_takum_strategy_bench_takum16.dir/src/posit_takum_strategy_bench.cu.o
+/storage/home/timofeirusanov/accessor_universal_test/src/posit_takum_strategy_bench.cu(852): warning #186-D: pointless comparison of unsigned integer with zero
+      if (shared_bytes > std::size_t(max_shared_)) {
+                       ^
+          detected during:
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_lut<Strategy>(const <unnamed>::device_buffer<uint8_t> &, <unnamed>::device_buffer<Float> &, const std::vector<std::seed_seq::result_type, std::allocator<std::seed_seq::result_type>> &, std::size_t) [with Float=float, Strategy=aut::pt::strategy::full_lut_global]" at line 826
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_decoder() [with Float=float]" at line 1148
+            instantiation of "void <unnamed>::run_arithmetic<Float>(const <unnamed>::settings &, std::ofstream &, std::ofstream &, std::ofstream &, int) [with Float=float]" at line 1184
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/storage/home/timofeirusanov/accessor_universal_test/src/posit_takum_strategy_bench.cu(852): warning #186-D: pointless comparison of unsigned integer with zero
+      if (shared_bytes > std::size_t(max_shared_)) {
+                       ^
+          detected during:
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_lut<Strategy>(const <unnamed>::device_buffer<uint8_t> &, <unnamed>::device_buffer<Float> &, const std::vector<std::seed_seq::result_type, std::allocator<std::seed_seq::result_type>> &, std::size_t) [with Float=double, Strategy=aut::pt::strategy::full_lut_global]" at line 826
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_decoder() [with Float=double]" at line 1148
+            instantiation of "void <unnamed>::run_arithmetic<Float>(const <unnamed>::settings &, std::ofstream &, std::ofstream &, std::ofstream &, int) [with Float=double]" at line 1185
+
+ptxas info    : 0 bytes gmem
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi16ELi0EdLNS0_8strategyE1EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi16ELi0EdLNS0_8strategyE1EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers
+ptxas info    : Compile time = 6.018 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi16ELi0EdLNS0_8strategyE0EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi16ELi0EdLNS0_8strategyE0EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 23 registers, used 1 barriers
+ptxas info    : Compile time = 13.640 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi16ELi0EdLNS0_8strategyE1EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi16ELi0EdLNS0_8strategyE1EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers
+ptxas info    : Compile time = 4.572 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 3.619 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi16ELi0EdLNS0_8strategyE0EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi16ELi0EdLNS0_8strategyE0EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers
+ptxas info    : Compile time = 13.077 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE1ELi16ELi0EdLNS0_8strategyE1EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE1ELi16ELi0EdLNS0_8strategyE1EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.535 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE1ELi16ELi0EdEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE1ELi16ELi0EdEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 0 barriers
+ptxas info    : Compile time = 6.900 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi16ELi0EfLNS0_8strategyE1EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi16ELi0EfLNS0_8strategyE1EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers
+ptxas info    : Compile time = 4.675 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi16ELi0EfLNS0_8strategyE0EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi16ELi0EfLNS0_8strategyE0EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers
+ptxas info    : Compile time = 12.562 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi16ELi0EfLNS0_8strategyE1EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi16ELi0EfLNS0_8strategyE1EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers
+ptxas info    : Compile time = 4.433 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 10 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 3.463 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi16ELi0EfLNS0_8strategyE0EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi16ELi0EfLNS0_8strategyE0EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 25 registers, used 1 barriers
+ptxas info    : Compile time = 12.184 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE1ELi16ELi0EfLNS0_8strategyE1EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE1ELi16ELi0EfLNS0_8strategyE1EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.348 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE1ELi16ELi0EfEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE1ELi16ELi0EfEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 0 barriers
+ptxas info    : Compile time = 6.637 ms
+[100%] Linking CUDA executable bin/posit_takum_strategy_bench_takum16
+[100%] Built target posit_takum_strategy_bench_takum16
+Building CUDA object CMakeFiles/posit_takum_strategy_bench_takum32.dir/src/posit_takum_strategy_bench.cu.o
+ptxas info    : 0 bytes gmem
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi32ELi0EdLNS0_8strategyE0EEELi32EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi32ELi0EdLNS0_8strategyE0EEELi32EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers
+ptxas info    : Compile time = 13.957 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 3.963 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi32ELi0EdLNS0_8strategyE0EEELi32EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi32ELi0EdLNS0_8strategyE0EEELi32EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers
+ptxas info    : Compile time = 12.829 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE1ELi32ELi0EdEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE1ELi32ELi0EdEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 17 registers, used 0 barriers
+ptxas info    : Compile time = 6.456 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi32ELi0EfLNS0_8strategyE0EEELi32EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE1ELi32ELi0EfLNS0_8strategyE0EEELi32EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers
+ptxas info    : Compile time = 13.547 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 10 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 3.572 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi32ELi0EfLNS0_8strategyE0EEELi32EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE1ELi32ELi0EfLNS0_8strategyE0EEELi32EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 25 registers, used 1 barriers
+ptxas info    : Compile time = 13.153 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE1ELi32ELi0EfEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE1ELi32ELi0EfEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 0 barriers
+ptxas info    : Compile time = 7.017 ms
+Linking CUDA executable bin/posit_takum_strategy_bench_takum32
+Built target posit_takum_strategy_bench_takum32
+[  0%] Building CUDA object CMakeFiles/posit_takum_strategy_bench_takum_log8.dir/src/posit_takum_strategy_bench.cu.o
+/storage/home/timofeirusanov/accessor_universal_test/src/posit_takum_strategy_bench.cu(852): warning #186-D: pointless comparison of unsigned integer with zero
+      if (shared_bytes > std::size_t(max_shared_)) {
+                       ^
+          detected during:
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_lut<Strategy>(const <unnamed>::device_buffer<uint8_t> &, <unnamed>::device_buffer<Float> &, const std::vector<std::seed_seq::result_type, std::allocator<std::seed_seq::result_type>> &, std::size_t) [with Float=float, Strategy=aut::pt::strategy::full_lut_global]" at line 826
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_decoder() [with Float=float]" at line 1148
+            instantiation of "void <unnamed>::run_arithmetic<Float>(const <unnamed>::settings &, std::ofstream &, std::ofstream &, std::ofstream &, int) [with Float=float]" at line 1184
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/storage/home/timofeirusanov/accessor_universal_test/src/posit_takum_strategy_bench.cu(852): warning #186-D: pointless comparison of unsigned integer with zero
+      if (shared_bytes > std::size_t(max_shared_)) {
+                       ^
+          detected during:
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_lut<Strategy>(const <unnamed>::device_buffer<uint8_t> &, <unnamed>::device_buffer<Float> &, const std::vector<std::seed_seq::result_type, std::allocator<std::seed_seq::result_type>> &, std::size_t) [with Float=double, Strategy=aut::pt::strategy::full_lut_global]" at line 826
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_decoder() [with Float=double]" at line 1148
+            instantiation of "void <unnamed>::run_arithmetic<Float>(const <unnamed>::settings &, std::ofstream &, std::ofstream &, std::ofstream &, int) [with Float=double]" at line 1185
+
+ptxas info    : 0 bytes gmem
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EdLNS0_8strategyE2EEELi8EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EdLNS0_8strategyE2EEELi8EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers
+ptxas info    : Compile time = 6.971 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EdLNS0_8strategyE1EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EdLNS0_8strategyE1EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers
+ptxas info    : Compile time = 4.989 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EdLNS0_8strategyE0EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EdLNS0_8strategyE0EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers
+ptxas info    : Compile time = 20.132 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EdLNS0_8strategyE2EEELi8EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EdLNS0_8strategyE2EEELi8EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers
+ptxas info    : Compile time = 5.406 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EdLNS0_8strategyE1EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EdLNS0_8strategyE1EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers
+ptxas info    : Compile time = 4.285 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 3.451 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EdLNS0_8strategyE0EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EdLNS0_8strategyE0EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 34 registers, used 1 barriers
+ptxas info    : Compile time = 18.937 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EdLNS0_8strategyE2EEELi8EdLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EdLNS0_8strategyE2EEELi8EdLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 1 barriers
+ptxas info    : Compile time = 3.578 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EdLNS0_8strategyE1EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EdLNS0_8strategyE1EEELi8EdLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.391 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE2ELi8ELi0EdEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE2ELi8ELi0EdEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 29 registers, used 0 barriers
+ptxas info    : Compile time = 12.003 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EfLNS0_8strategyE2EEELi8EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EfLNS0_8strategyE2EEELi8EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers
+ptxas info    : Compile time = 5.680 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EfLNS0_8strategyE1EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EfLNS0_8strategyE1EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers
+ptxas info    : Compile time = 4.612 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EfLNS0_8strategyE0EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EfLNS0_8strategyE0EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers
+ptxas info    : Compile time = 19.238 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EfLNS0_8strategyE2EEELi8EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EfLNS0_8strategyE2EEELi8EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers
+ptxas info    : Compile time = 5.336 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EfLNS0_8strategyE1EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EfLNS0_8strategyE1EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers
+ptxas info    : Compile time = 4.300 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 10 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 3.457 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EfLNS0_8strategyE0EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EfLNS0_8strategyE0EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers
+ptxas info    : Compile time = 19.225 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EfLNS0_8strategyE2EEELi8EfLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EfLNS0_8strategyE2EEELi8EfLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 1 barriers
+ptxas info    : Compile time = 3.531 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EfLNS0_8strategyE1EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE2ELi8ELi0EfLNS0_8strategyE1EEELi8EfLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.358 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE2ELi8ELi0EfEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE2ELi8ELi0EfEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 29 registers, used 0 barriers
+ptxas info    : Compile time = 11.854 ms
+[100%] Linking CUDA executable bin/posit_takum_strategy_bench_takum_log8
+[100%] Built target posit_takum_strategy_bench_takum_log8
+[100%] Building CUDA object CMakeFiles/posit_takum_strategy_bench_takum_log14.dir/src/posit_takum_strategy_bench.cu.o
+/storage/home/timofeirusanov/accessor_universal_test/src/posit_takum_strategy_bench.cu(852): warning #186-D: pointless comparison of unsigned integer with zero
+      if (shared_bytes > std::size_t(max_shared_)) {
+                       ^
+          detected during:
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_lut<Strategy>(const <unnamed>::device_buffer<uint8_t> &, <unnamed>::device_buffer<Float> &, const std::vector<std::seed_seq::result_type, std::allocator<std::seed_seq::result_type>> &, std::size_t) [with Float=float, Strategy=aut::pt::strategy::full_lut_global]" at line 826
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_decoder() [with Float=float]" at line 1148
+            instantiation of "void <unnamed>::run_arithmetic<Float>(const <unnamed>::settings &, std::ofstream &, std::ofstream &, std::ofstream &, int) [with Float=float]" at line 1184
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/storage/home/timofeirusanov/accessor_universal_test/src/posit_takum_strategy_bench.cu(852): warning #186-D: pointless comparison of unsigned integer with zero
+      if (shared_bytes > std::size_t(max_shared_)) {
+                       ^
+          detected during:
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_lut<Strategy>(const <unnamed>::device_buffer<uint8_t> &, <unnamed>::device_buffer<Float> &, const std::vector<std::seed_seq::result_type, std::allocator<std::seed_seq::result_type>> &, std::size_t) [with Float=double, Strategy=aut::pt::strategy::full_lut_global]" at line 826
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_decoder() [with Float=double]" at line 1148
+            instantiation of "void <unnamed>::run_arithmetic<Float>(const <unnamed>::settings &, std::ofstream &, std::ofstream &, std::ofstream &, int) [with Float=double]" at line 1185
+
+ptxas info    : 0 bytes gmem
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EdLNS0_8strategyE2EEELi14EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EdLNS0_8strategyE2EEELi14EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 25 registers, used 1 barriers
+ptxas info    : Compile time = 8.150 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EdLNS0_8strategyE1EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EdLNS0_8strategyE1EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 1 barriers
+ptxas info    : Compile time = 6.109 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EdLNS0_8strategyE0EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EdLNS0_8strategyE0EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers
+ptxas info    : Compile time = 21.038 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EdLNS0_8strategyE2EEELi14EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EdLNS0_8strategyE2EEELi14EdLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 23 registers, used 1 barriers
+ptxas info    : Compile time = 6.328 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EdLNS0_8strategyE1EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EdLNS0_8strategyE1EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers
+ptxas info    : Compile time = 5.263 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 3.518 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EdLNS0_8strategyE0EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EdLNS0_8strategyE0EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 36 registers, used 1 barriers
+ptxas info    : Compile time = 19.940 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EdLNS0_8strategyE2EEELi14EdLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EdLNS0_8strategyE2EEELi14EdLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 1 barriers
+ptxas info    : Compile time = 4.164 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EdLNS0_8strategyE1EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EdLNS0_8strategyE1EEELi14EdLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 3.000 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE2ELi14ELi0EdEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE2ELi14ELi0EdEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 29 registers, used 0 barriers
+ptxas info    : Compile time = 12.638 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EfLNS0_8strategyE2EEELi14EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EfLNS0_8strategyE2EEELi14EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 25 registers, used 1 barriers
+ptxas info    : Compile time = 6.798 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EfLNS0_8strategyE1EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EfLNS0_8strategyE1EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 1 barriers
+ptxas info    : Compile time = 5.716 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EfLNS0_8strategyE0EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EfLNS0_8strategyE0EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers
+ptxas info    : Compile time = 20.111 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EfLNS0_8strategyE2EEELi14EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EfLNS0_8strategyE2EEELi14EfLb1EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers
+ptxas info    : Compile time = 6.307 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EfLNS0_8strategyE1EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EfLNS0_8strategyE1EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 1 barriers
+ptxas info    : Compile time = 5.210 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 10 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 3.523 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EfLNS0_8strategyE0EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EfLNS0_8strategyE0EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 34 registers, used 1 barriers
+ptxas info    : Compile time = 19.697 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EfLNS0_8strategyE2EEELi14EfLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EfLNS0_8strategyE2EEELi14EfLb1EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 1 barriers
+ptxas info    : Compile time = 4.173 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EfLNS0_8strategyE1EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE2ELi14ELi0EfLNS0_8strategyE1EEELi14EfLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 15 registers, used 0 barriers
+ptxas info    : Compile time = 2.928 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE2ELi14ELi0EfEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE2ELi14ELi0EfEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 29 registers, used 0 barriers
+ptxas info    : Compile time = 12.551 ms
+[100%] Linking CUDA executable bin/posit_takum_strategy_bench_takum_log14
+[100%] Built target posit_takum_strategy_bench_takum_log14
+[100%] Building CUDA object CMakeFiles/posit_takum_strategy_bench_takum_log16.dir/src/posit_takum_strategy_bench.cu.o
+/storage/home/timofeirusanov/accessor_universal_test/src/posit_takum_strategy_bench.cu(852): warning #186-D: pointless comparison of unsigned integer with zero
+      if (shared_bytes > std::size_t(max_shared_)) {
+                       ^
+          detected during:
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_lut<Strategy>(const <unnamed>::device_buffer<uint8_t> &, <unnamed>::device_buffer<Float> &, const std::vector<std::seed_seq::result_type, std::allocator<std::seed_seq::result_type>> &, std::size_t) [with Float=float, Strategy=aut::pt::strategy::full_lut_global]" at line 826
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_decoder() [with Float=float]" at line 1148
+            instantiation of "void <unnamed>::run_arithmetic<Float>(const <unnamed>::settings &, std::ofstream &, std::ofstream &, std::ofstream &, int) [with Float=float]" at line 1184
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/storage/home/timofeirusanov/accessor_universal_test/src/posit_takum_strategy_bench.cu(852): warning #186-D: pointless comparison of unsigned integer with zero
+      if (shared_bytes > std::size_t(max_shared_)) {
+                       ^
+          detected during:
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_lut<Strategy>(const <unnamed>::device_buffer<uint8_t> &, <unnamed>::device_buffer<Float> &, const std::vector<std::seed_seq::result_type, std::allocator<std::seed_seq::result_type>> &, std::size_t) [with Float=double, Strategy=aut::pt::strategy::full_lut_global]" at line 826
+            instantiation of "void <unnamed>::arithmetic_runner<Float>::validate_decoder() [with Float=double]" at line 1148
+            instantiation of "void <unnamed>::run_arithmetic<Float>(const <unnamed>::settings &, std::ofstream &, std::ofstream &, std::ofstream &, int) [with Float=double]" at line 1185
+
+ptxas info    : 0 bytes gmem
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi16ELi0EdLNS0_8strategyE1EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi16ELi0EdLNS0_8strategyE1EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers
+ptxas info    : Compile time = 6.007 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi16ELi0EdLNS0_8strategyE0EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi16ELi0EdLNS0_8strategyE0EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers
+ptxas info    : Compile time = 20.472 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi16ELi0EdLNS0_8strategyE1EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi16ELi0EdLNS0_8strategyE1EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers
+ptxas info    : Compile time = 4.496 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 3.490 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi16ELi0EdLNS0_8strategyE0EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi16ELi0EdLNS0_8strategyE0EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 36 registers, used 1 barriers
+ptxas info    : Compile time = 19.735 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE2ELi16ELi0EdLNS0_8strategyE1EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE2ELi16ELi0EdLNS0_8strategyE1EEELi16EdLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.435 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE2ELi16ELi0EdEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE2ELi16ELi0EdEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 0 barriers
+ptxas info    : Compile time = 12.090 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi16ELi0EfLNS0_8strategyE1EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi16ELi0EfLNS0_8strategyE1EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers
+ptxas info    : Compile time = 4.667 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi16ELi0EfLNS0_8strategyE0EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi16ELi0EfLNS0_8strategyE0EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers
+ptxas info    : Compile time = 19.309 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi16ELi0EfLNS0_8strategyE1EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi16ELi0EfLNS0_8strategyE1EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers
+ptxas info    : Compile time = 4.442 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 10 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 3.459 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi16ELi0EfLNS0_8strategyE0EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi16ELi0EfLNS0_8strategyE0EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 34 registers, used 1 barriers
+ptxas info    : Compile time = 19.089 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE2ELi16ELi0EfLNS0_8strategyE1EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt31validate_generic_decoder_kernelINS0_19alternative_decoderILNS0_6familyE2ELi16ELi0EfLNS0_8strategyE1EEELi16EfLb0EEEvNS0_12storage_viewIXT0_EEET_PT1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.440 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE2ELi16ELi0EfEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE2ELi16ELi0EfEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 0 barriers
+ptxas info    : Compile time = 12.010 ms
+[100%] Linking CUDA executable bin/posit_takum_strategy_bench_takum_log16
+[100%] Built target posit_takum_strategy_bench_takum_log16
+[100%] Building CUDA object CMakeFiles/posit_takum_strategy_bench_takum_log32.dir/src/posit_takum_strategy_bench.cu.o
+ptxas info    : 0 bytes gmem
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi32ELi0EdLNS0_8strategyE0EEELi32EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi32ELi0EdLNS0_8strategyE0EEELi32EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers
+ptxas info    : Compile time = 20.425 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIdEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 3.860 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi32ELi0EdLNS0_8strategyE0EEELi32EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi32ELi0EdLNS0_8strategyE0EEELi32EdLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 36 registers, used 1 barriers
+ptxas info    : Compile time = 18.875 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE2ELi32ELi0EdEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE2ELi32ELi0EdEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 0 barriers
+ptxas info    : Compile time = 11.823 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi32ELi0EfLNS0_8strategyE0EEELi32EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt11gemv_kernelINS0_19alternative_decoderILNS0_6familyE2ELi32ELi0EfLNS0_8strategyE0EEELi32EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mmT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers
+ptxas info    : Compile time = 18.722 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt19finalize_dot_kernelIfEEvPKT_mPS2_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 10 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 3.503 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi32ELi0EfLNS0_8strategyE0EEELi32EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt10dot_kernelINS0_19alternative_decoderILNS0_6familyE2ELi32ELi0EfLNS0_8strategyE0EEELi32EfLb0EEEvNS0_12storage_viewIXT0_EEES7_mT_PT1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 34 registers, used 1 barriers
+ptxas info    : Compile time = 18.089 ms
+ptxas info    : Compiling entry function '_ZN3aut2pt22validate_decode_kernelILNS0_6familyE2ELi32ELi0EfEEvNS0_12storage_viewIXT0_EEEPT2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut2pt22validate_decode_kernelILNS0_6familyE2ELi32ELi0EfEEvNS0_12storage_viewIXT0_EEEPT2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 0 barriers
+ptxas info    : Compile time = 11.471 ms
+[100%] Linking CUDA executable bin/posit_takum_strategy_bench_takum_log32
+[100%] Built target posit_takum_strategy_bench_takum_log32
+[100%] Built target ieee_scalar_strategy_bench_fp8_e4m3_fp32
+[100%] Built target ieee_scalar_strategy_bench_fp8_e4m3_fp64
+Built target ieee_scalar_strategy_bench_fp8_e5m2_fp32
+[100%] Built target ieee_scalar_strategy_bench_fp8_e5m2_fp64
+[100%] Built target ieee_scalar_strategy_bench_e3m4_fp32
+[100%] Built target ieee_scalar_strategy_bench_e3m4_fp64
+[100%] Built target ieee_scalar_strategy_bench_e6m1_fp32
+[100%] Built target ieee_scalar_strategy_bench_e6m1_fp64
+[100%] Built target ieee_scalar_strategy_bench_e8m5_fp32
+[100%] Built target ieee_scalar_strategy_bench_e11m2_fp64
+[100%] Built target ieee_scalar_strategy_bench_e2m11_fp32
+[100%] Built target ieee_scalar_strategy_bench_e2m11_fp64
+[100%] Built target ieee_scalar_strategy_bench_e5m8_fp32
+[100%] Built target ieee_scalar_strategy_bench_e5m8_fp64
+[100%] Built target ieee_scalar_strategy_bench_fp16_e5m10_fp32
+[100%] Built target ieee_scalar_strategy_bench_fp16_e5m10_fp64
+[100%] Built target ieee_scalar_strategy_bench_bf16_e8m7_fp32
+Built target ieee_scalar_strategy_bench_bf16_e8m7_fp64
+[100%] Built target ieee_scalar_strategy_bench_e11m4_fp64
+[100%] Built target ieee_scalar_strategy_bench_e3m12_fp32
+Built target ieee_scalar_strategy_bench_e3m12_fp64
+[100%] Built target ieee_scalar_strategy_bench_e6m9_fp32
+Built target ieee_scalar_strategy_bench_e6m9_fp64
+[100%] Built target ieee_scalar_strategy_bench_fp32_e8m23_fp32
+[100%] Built target ieee_scalar_strategy_bench_fp32_e8m23_fp64
+[100%] Built target ieee_scalar_strategy_bench_e11m20_fp64
+[100%] Built target ieee_scalar_strategy_bench_e4m27_fp64
+[100%] Built target ieee_scalar_strategy_bench_e10m21_fp64
+[100%] Built target lut_content_control_bench_8_fp32
+[100%] Built target lut_content_control_bench_8_fp64
+[100%] Built target lut_content_control_bench_14_fp32
+[100%] Built target lut_content_control_bench_14_fp64
+All scalar posit/takum, IEEE, and LUT-control CUDA targets compiled successfully.

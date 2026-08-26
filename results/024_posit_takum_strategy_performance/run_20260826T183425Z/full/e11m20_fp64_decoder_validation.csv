@@ -1,0 +1,2 @@
+format,arithmetic,strategy,codes_checked,failures,max_ulp,reference,status
+e11m20,fp64,direct_masked,1000000,0,0,cpu_format_reference,pass

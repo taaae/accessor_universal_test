@@ -1,0 +1,2 @@
+format,arithmetic,strategy,codes_checked,failures,max_ulp,reference,status
+fp32_e8m23,fp32,native_scalar,1000000,0,0,cpu_format_reference,pass

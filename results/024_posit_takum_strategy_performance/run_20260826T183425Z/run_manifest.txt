@@ -1,0 +1,44 @@
+experiment=024_posit_takum_strategy_performance
+started_utc=2026-08-26T18:34:25Z
+git_commit=6d05d8aa5e1bbdb4c9df13db939f2e5edb5843df
+mode=full
+formats=posit8_es0 posit14_es1 posit16_es1 posit32_es2 takum8 takum14 takum16 takum32 takum_log8 takum_log14 takum_log16 takum_log32 fp8_e4m3_fp32 fp8_e4m3_fp64 fp8_e5m2_fp32 fp8_e5m2_fp64 e3m4_fp32 e3m4_fp64 e6m1_fp32 e6m1_fp64 e8m5_fp32 e11m2_fp64 e2m11_fp32 e2m11_fp64 e5m8_fp32 e5m8_fp64 fp16_e5m10_fp32 fp16_e5m10_fp64 bf16_e8m7_fp32 bf16_e8m7_fp64 e11m4_fp64 e3m12_fp32 e3m12_fp64 e6m9_fp32 e6m9_fp64 fp32_e8m23_fp32 fp32_e8m23_fp64 e11m20_fp64 e4m27_fp64 e10m21_fp64 8_fp32 8_fp64 14_fp32 14_fp64
+arithmetic_types=fp32,fp64
+main_distributions=field_balanced_finite,paired_log_uniform_finite
+lut_control_traces=lut_scattered_control,lut_concentrated_control
+storage_layout=dense
+access_method=scalar
+packet_values=1
+threads_per_block=256
+dot_blocks=512
+cuda_arch=sm_90
+cuda_compile_flags=-O3 -lineinfo -Xptxas=-v --ftz=false
+dot_n=134217728
+gemv_m=1024
+gemv_n=65536
+warmup=10
+samples=30
+base_seed=7762632251762735585
+target_timeout_seconds=5400
+git_status_begin
+?? results/024_posit_takum_strategy_performance/run_20260826T183226Z/
+?? results/024_posit_takum_strategy_performance/run_20260826T183425Z/
+?? results/024_posit_takum_strategy_performance/slurm-build-452777.out
+?? results/024_posit_takum_strategy_performance/slurm-build-452778.out
+?? results/024_posit_takum_strategy_performance/slurm-build-452786.out
+?? results/024_posit_takum_strategy_performance/slurm-build-452794.out
+?? results/024_posit_takum_strategy_performance/slurm-build-452796.out
+?? results/024_posit_takum_strategy_performance/slurm-build-452798.out
+?? results/024_posit_takum_strategy_performance/slurm-build-452800.out
+?? results/024_posit_takum_strategy_performance/slurm-build-452802.out
+?? results/024_posit_takum_strategy_performance/slurm-build-452805.out
+?? results/024_posit_takum_strategy_performance/slurm-build-452807.out
+?? results/024_posit_takum_strategy_performance/slurm-build-452816.out
+?? results/024_posit_takum_strategy_performance/slurm-build-452825.out
+?? results/024_posit_takum_strategy_performance/slurm-full-452827.out
+?? results/024_posit_takum_strategy_performance/slurm-smoke-452826.out
+git_status_end
+finished_utc=2026-08-26T18:41:26Z
+wall_time_seconds=421
+final_stage=complete
+exit_status=0

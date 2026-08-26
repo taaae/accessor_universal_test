@@ -1,0 +1,4 @@
+format,arithmetic,strategy,codes_checked,failures,max_ulp,reference,status
+e2m11,fp64,direct_branchy,16384,0,0,cpu_format_reference,pass
+e2m11,fp64,full_lut_shared,16384,0,0,cpu_format_reference,pass
+e2m11,fp64,full_lut_global,16384,0,0,cpu_format_reference,pass

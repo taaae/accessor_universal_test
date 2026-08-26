@@ -1,0 +1,17 @@
+format,family,bits,arithmetic,distribution,kernel,strategy,storage_layout,access_method,packet_values,N,M,input_bytes,lut_bytes,dynamic_shared_bytes,round,order_position,kernel_ms,status
+takum32,takum,32,fp32,field_balanced_finite,dot,direct,dense,scalar,1,65536,1,524288,0,1024,0,0,0.0128640002,ok
+takum32,takum,32,fp32,field_balanced_finite,dot,direct,dense,scalar,1,65536,1,524288,0,1024,1,0,0.00828799978,ok
+takum32,takum,32,fp32,field_balanced_finite,gemv,direct,dense,scalar,1,256,16,17408,0,1024,0,0,0.00537599996,ok
+takum32,takum,32,fp32,field_balanced_finite,gemv,direct,dense,scalar,1,256,16,17408,0,1024,1,0,0.00483200001,ok
+takum32,takum,32,fp32,paired_log_uniform_finite,dot,direct,dense,scalar,1,65536,1,524288,0,1024,0,0,0.00905600004,ok
+takum32,takum,32,fp32,paired_log_uniform_finite,dot,direct,dense,scalar,1,65536,1,524288,0,1024,1,0,0.00832000002,ok
+takum32,takum,32,fp32,paired_log_uniform_finite,gemv,direct,dense,scalar,1,256,16,17408,0,1024,0,0,0.0054080002,ok
+takum32,takum,32,fp32,paired_log_uniform_finite,gemv,direct,dense,scalar,1,256,16,17408,0,1024,1,0,0.00489600003,ok
+takum32,takum,32,fp64,field_balanced_finite,dot,direct,dense,scalar,1,65536,1,524288,0,2048,0,0,0.00838399958,ok
+takum32,takum,32,fp64,field_balanced_finite,dot,direct,dense,scalar,1,65536,1,524288,0,2048,1,0,0.00793599989,ok
+takum32,takum,32,fp64,field_balanced_finite,gemv,direct,dense,scalar,1,256,16,17408,0,2048,0,0,0.00476799998,ok
+takum32,takum,32,fp64,field_balanced_finite,gemv,direct,dense,scalar,1,256,16,17408,0,2048,1,0,0.00460800016,ok
+takum32,takum,32,fp64,paired_log_uniform_finite,dot,direct,dense,scalar,1,65536,1,524288,0,2048,0,0,0.00803199969,ok
+takum32,takum,32,fp64,paired_log_uniform_finite,dot,direct,dense,scalar,1,65536,1,524288,0,2048,1,0,0.00758400001,ok
+takum32,takum,32,fp64,paired_log_uniform_finite,gemv,direct,dense,scalar,1,256,16,17408,0,2048,0,0,0.00505599985,ok
+takum32,takum,32,fp64,paired_log_uniform_finite,gemv,direct,dense,scalar,1,256,16,17408,0,2048,1,0,0.00470399996,ok

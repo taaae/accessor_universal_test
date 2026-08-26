@@ -1,0 +1,17 @@
+format,arithmetic,distribution,histogram,bucket,count,realized_q_min,realized_q_max
+fp8_e4m3,fp32,lut_scattered_control,raw_index_trace,all,4096,0,255
+fp8_e4m3,fp32,lut_scattered_control,raw_index_distinct,all,256,0,255
+posit8_es0,fp32,lut_scattered_control,raw_index_trace,all,4096,0,255
+posit8_es0,fp32,lut_scattered_control,raw_index_distinct,all,256,0,255
+takum8,fp32,lut_scattered_control,raw_index_trace,all,4096,0,255
+takum8,fp32,lut_scattered_control,raw_index_distinct,all,256,0,255
+takum_log8,fp32,lut_scattered_control,raw_index_trace,all,4096,0,255
+takum_log8,fp32,lut_scattered_control,raw_index_distinct,all,256,0,255
+fp8_e4m3,fp32,lut_concentrated_control,raw_index_trace,all,4096,0,255
+fp8_e4m3,fp32,lut_concentrated_control,raw_index_distinct,all,256,0,255
+posit8_es0,fp32,lut_concentrated_control,raw_index_trace,all,4096,0,255
+posit8_es0,fp32,lut_concentrated_control,raw_index_distinct,all,256,0,255
+takum8,fp32,lut_concentrated_control,raw_index_trace,all,4096,0,255
+takum8,fp32,lut_concentrated_control,raw_index_distinct,all,256,0,255
+takum_log8,fp32,lut_concentrated_control,raw_index_trace,all,4096,0,255
+takum_log8,fp32,lut_concentrated_control,raw_index_distinct,all,256,0,255

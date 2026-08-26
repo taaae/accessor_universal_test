@@ -1,0 +1,3 @@
+format,arithmetic,strategy,codes_checked,failures,max_ulp,reference,status
+posit32_es2,fp32,direct,1000000,0,0,universal_cross_validated_core,pass
+posit32_es2,fp64,direct,1000000,0,0,universal_cross_validated_core,pass

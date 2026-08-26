@@ -1,0 +1,4 @@
+format,arithmetic,strategy,codes_checked,failures,max_ulp,reference,status
+e6m9,fp32,direct_branchy,65536,0,0,cpu_format_reference,pass
+e6m9,fp32,full_lut_global,65536,0,0,cpu_format_reference,pass
+e6m9,fp32,prefix_lut_global,65536,0,0,cpu_format_reference,pass

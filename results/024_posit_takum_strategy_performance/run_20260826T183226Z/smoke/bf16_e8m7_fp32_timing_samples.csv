@@ -1,0 +1,17 @@
+format,family,bits,arithmetic,distribution,kernel,strategy,storage_layout,access_method,packet_values,N,M,input_bytes,lut_bytes,dynamic_shared_bytes,round,order_position,kernel_ms,status
+bf16_e8m7,ieee,16,fp32,field_balanced_finite,dot,native_scalar,dense,scalar,1,65536,1,262144,0,1024,0,0,0.00966400001,ok
+bf16_e8m7,ieee,16,fp32,field_balanced_finite,dot,full_lut_global,dense,scalar,1,65536,1,262144,262144,1024,0,1,0.00755200023,ok
+bf16_e8m7,ieee,16,fp32,field_balanced_finite,dot,full_lut_global,dense,scalar,1,65536,1,262144,262144,1024,1,0,0.00761599978,ok
+bf16_e8m7,ieee,16,fp32,field_balanced_finite,dot,native_scalar,dense,scalar,1,65536,1,262144,0,1024,1,1,0.00694399979,ok
+bf16_e8m7,ieee,16,fp32,field_balanced_finite,gemv,native_scalar,dense,scalar,1,256,16,8704,0,1024,0,0,0.00505599985,ok
+bf16_e8m7,ieee,16,fp32,field_balanced_finite,gemv,full_lut_global,dense,scalar,1,256,16,8704,262144,1024,0,1,0.00438399985,ok
+bf16_e8m7,ieee,16,fp32,field_balanced_finite,gemv,full_lut_global,dense,scalar,1,256,16,8704,262144,1024,1,0,0.00470399996,ok
+bf16_e8m7,ieee,16,fp32,field_balanced_finite,gemv,native_scalar,dense,scalar,1,256,16,8704,0,1024,1,1,0.00467200018,ok
+bf16_e8m7,ieee,16,fp32,paired_log_uniform_finite,dot,native_scalar,dense,scalar,1,65536,1,262144,0,1024,0,0,0.00687999977,ok
+bf16_e8m7,ieee,16,fp32,paired_log_uniform_finite,dot,full_lut_global,dense,scalar,1,65536,1,262144,262144,1024,0,1,0.00854399987,ok
+bf16_e8m7,ieee,16,fp32,paired_log_uniform_finite,dot,full_lut_global,dense,scalar,1,65536,1,262144,262144,1024,1,0,0.00819199998,ok
+bf16_e8m7,ieee,16,fp32,paired_log_uniform_finite,dot,native_scalar,dense,scalar,1,65536,1,262144,0,1024,1,1,0.00736000016,ok
+bf16_e8m7,ieee,16,fp32,paired_log_uniform_finite,gemv,native_scalar,dense,scalar,1,256,16,8704,0,1024,0,0,0.00454400014,ok
+bf16_e8m7,ieee,16,fp32,paired_log_uniform_finite,gemv,full_lut_global,dense,scalar,1,256,16,8704,262144,1024,0,1,0.00476799998,ok
+bf16_e8m7,ieee,16,fp32,paired_log_uniform_finite,gemv,full_lut_global,dense,scalar,1,256,16,8704,262144,1024,1,0,0.00486399978,ok
+bf16_e8m7,ieee,16,fp32,paired_log_uniform_finite,gemv,native_scalar,dense,scalar,1,256,16,8704,0,1024,1,1,0.00419199979,ok

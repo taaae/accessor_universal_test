@@ -1,0 +1,17 @@
+format,family,bits,arithmetic,distribution,kernel,strategy,storage_layout,access_method,packet_values,N,M,input_bytes,lut_bytes,dynamic_shared_bytes,round,order_position,kernel_ms,status
+e3m12,ieee,16,fp32,field_balanced_finite,dot,full_lut_global,dense,scalar,1,65536,1,262144,262144,1024,0,0,0.0105280001,ok
+e3m12,ieee,16,fp32,field_balanced_finite,dot,subnormal_lut_global,dense,scalar,1,65536,1,262144,16384,1024,0,1,0.00806399994,ok
+e3m12,ieee,16,fp32,field_balanced_finite,dot,subnormal_lut_global,dense,scalar,1,65536,1,262144,16384,1024,1,0,0.00809600018,ok
+e3m12,ieee,16,fp32,field_balanced_finite,dot,full_lut_global,dense,scalar,1,65536,1,262144,262144,1024,1,1,0.00784000009,ok
+e3m12,ieee,16,fp32,field_balanced_finite,gemv,full_lut_global,dense,scalar,1,256,16,8704,262144,1024,0,0,0.00496000005,ok
+e3m12,ieee,16,fp32,field_balanced_finite,gemv,subnormal_lut_global,dense,scalar,1,256,16,8704,16384,1024,0,1,0.0054080002,ok
+e3m12,ieee,16,fp32,field_balanced_finite,gemv,subnormal_lut_global,dense,scalar,1,256,16,8704,16384,1024,1,0,0.00505599985,ok
+e3m12,ieee,16,fp32,field_balanced_finite,gemv,full_lut_global,dense,scalar,1,256,16,8704,262144,1024,1,1,0.00502400007,ok
+e3m12,ieee,16,fp32,paired_log_uniform_finite,dot,full_lut_global,dense,scalar,1,65536,1,262144,262144,1024,0,0,0.00899199955,ok
+e3m12,ieee,16,fp32,paired_log_uniform_finite,dot,subnormal_lut_global,dense,scalar,1,65536,1,262144,16384,1024,0,1,0.00863999967,ok
+e3m12,ieee,16,fp32,paired_log_uniform_finite,dot,subnormal_lut_global,dense,scalar,1,65536,1,262144,16384,1024,1,0,0.00857600011,ok
+e3m12,ieee,16,fp32,paired_log_uniform_finite,dot,full_lut_global,dense,scalar,1,65536,1,262144,262144,1024,1,1,0.00848000031,ok
+e3m12,ieee,16,fp32,paired_log_uniform_finite,gemv,full_lut_global,dense,scalar,1,256,16,8704,262144,1024,0,0,0.00515200011,ok
+e3m12,ieee,16,fp32,paired_log_uniform_finite,gemv,subnormal_lut_global,dense,scalar,1,256,16,8704,16384,1024,0,1,0.00499199983,ok
+e3m12,ieee,16,fp32,paired_log_uniform_finite,gemv,subnormal_lut_global,dense,scalar,1,256,16,8704,16384,1024,1,0,0.00499199983,ok
+e3m12,ieee,16,fp32,paired_log_uniform_finite,gemv,full_lut_global,dense,scalar,1,256,16,8704,262144,1024,1,1,0.00521600014,ok

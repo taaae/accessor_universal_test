@@ -1,0 +1,9 @@
+format,family,bits,arithmetic,distribution,kernel,strategy,storage_layout,access_method,packet_values,N,M,input_bytes,lut_bytes,dynamic_shared_bytes,round,order_position,kernel_ms,status
+e11m20,ieee,32,fp64,field_balanced_finite,dot,direct_masked,dense,scalar,1,65536,1,524288,0,2048,0,0,0.012352,ok
+e11m20,ieee,32,fp64,field_balanced_finite,dot,direct_masked,dense,scalar,1,65536,1,524288,0,2048,1,0,0.00838399958,ok
+e11m20,ieee,32,fp64,field_balanced_finite,gemv,direct_masked,dense,scalar,1,256,16,17408,0,2048,0,0,0.00489600003,ok
+e11m20,ieee,32,fp64,field_balanced_finite,gemv,direct_masked,dense,scalar,1,256,16,17408,0,2048,1,0,0.00499199983,ok
+e11m20,ieee,32,fp64,paired_log_uniform_finite,dot,direct_masked,dense,scalar,1,65536,1,524288,0,2048,0,0,0.00793599989,ok
+e11m20,ieee,32,fp64,paired_log_uniform_finite,dot,direct_masked,dense,scalar,1,65536,1,524288,0,2048,1,0,0.00767999981,ok
+e11m20,ieee,32,fp64,paired_log_uniform_finite,gemv,direct_masked,dense,scalar,1,256,16,17408,0,2048,0,0,0.00444799988,ok
+e11m20,ieee,32,fp64,paired_log_uniform_finite,gemv,direct_masked,dense,scalar,1,256,16,17408,0,2048,1,0,0.00518399989,ok

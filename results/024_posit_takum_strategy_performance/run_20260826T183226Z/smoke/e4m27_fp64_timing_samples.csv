@@ -1,0 +1,17 @@
+format,family,bits,arithmetic,distribution,kernel,strategy,storage_layout,access_method,packet_values,N,M,input_bytes,lut_bytes,dynamic_shared_bytes,round,order_position,kernel_ms,status
+e4m27,ieee,32,fp64,field_balanced_finite,dot,direct_branchy,dense,scalar,1,65536,1,524288,0,2048,0,0,0.01088,ok
+e4m27,ieee,32,fp64,field_balanced_finite,dot,prefix_lut_global,dense,scalar,1,65536,1,524288,256,2048,0,1,0.00835200027,ok
+e4m27,ieee,32,fp64,field_balanced_finite,dot,prefix_lut_global,dense,scalar,1,65536,1,524288,256,2048,1,0,0.00819199998,ok
+e4m27,ieee,32,fp64,field_balanced_finite,dot,direct_branchy,dense,scalar,1,65536,1,524288,0,2048,1,1,0.00793599989,ok
+e4m27,ieee,32,fp64,field_balanced_finite,gemv,direct_branchy,dense,scalar,1,256,16,17408,0,2048,0,0,0.00537599996,ok
+e4m27,ieee,32,fp64,field_balanced_finite,gemv,prefix_lut_global,dense,scalar,1,256,16,17408,256,2048,0,1,0.00505599985,ok
+e4m27,ieee,32,fp64,field_balanced_finite,gemv,prefix_lut_global,dense,scalar,1,256,16,17408,256,2048,1,0,0.00499199983,ok
+e4m27,ieee,32,fp64,field_balanced_finite,gemv,direct_branchy,dense,scalar,1,256,16,17408,0,2048,1,1,0.00502400007,ok
+e4m27,ieee,32,fp64,paired_log_uniform_finite,dot,direct_branchy,dense,scalar,1,65536,1,524288,0,2048,0,0,0.00787200034,ok
+e4m27,ieee,32,fp64,paired_log_uniform_finite,dot,prefix_lut_global,dense,scalar,1,65536,1,524288,256,2048,0,1,0.00841599982,ok
+e4m27,ieee,32,fp64,paired_log_uniform_finite,dot,prefix_lut_global,dense,scalar,1,65536,1,524288,256,2048,1,0,0.00793599989,ok
+e4m27,ieee,32,fp64,paired_log_uniform_finite,dot,direct_branchy,dense,scalar,1,65536,1,524288,0,2048,1,1,0.00796800014,ok
+e4m27,ieee,32,fp64,paired_log_uniform_finite,gemv,direct_branchy,dense,scalar,1,256,16,17408,0,2048,0,0,0.00499199983,ok
+e4m27,ieee,32,fp64,paired_log_uniform_finite,gemv,prefix_lut_global,dense,scalar,1,256,16,17408,256,2048,0,1,0.00543999998,ok
+e4m27,ieee,32,fp64,paired_log_uniform_finite,gemv,prefix_lut_global,dense,scalar,1,256,16,17408,256,2048,1,0,0.00483200001,ok
+e4m27,ieee,32,fp64,paired_log_uniform_finite,gemv,direct_branchy,dense,scalar,1,256,16,17408,0,2048,1,1,0.00486399978,ok

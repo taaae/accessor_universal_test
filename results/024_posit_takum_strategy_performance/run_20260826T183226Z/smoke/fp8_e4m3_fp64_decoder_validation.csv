@@ -1,0 +1,4 @@
+format,arithmetic,strategy,codes_checked,failures,max_ulp,reference,status
+fp8_e4m3,fp64,native_scalar,256,0,0,cpu_format_reference,pass
+fp8_e4m3,fp64,full_lut_shared,256,0,0,cpu_format_reference,pass
+fp8_e4m3,fp64,full_lut_global,256,0,0,cpu_format_reference,pass

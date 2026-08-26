@@ -1,0 +1,5 @@
+format,arithmetic,strategy,codes_checked,failures,max_ulp,reference,status
+takum_log16,fp32,direct,65536,0,0,takum_log_paper_formula,pass
+takum_log16,fp32,full_lut_global,65536,0,0,takum_log_paper_formula,pass
+takum_log16,fp64,direct,65536,0,1,takum_log_paper_formula,pass
+takum_log16,fp64,full_lut_global,65536,0,0,takum_log_paper_formula,pass

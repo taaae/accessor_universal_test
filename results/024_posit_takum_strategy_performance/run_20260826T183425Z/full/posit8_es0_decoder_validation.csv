@@ -1,0 +1,7 @@
+format,arithmetic,strategy,codes_checked,failures,max_ulp,reference,status
+posit8_es0,fp32,direct,256,0,0,universal_cross_validated_core,pass
+posit8_es0,fp32,full_lut_global,256,0,0,universal_cross_validated_core,pass
+posit8_es0,fp32,full_lut_shared,256,0,0,universal_cross_validated_core,pass
+posit8_es0,fp64,direct,256,0,0,universal_cross_validated_core,pass
+posit8_es0,fp64,full_lut_global,256,0,0,universal_cross_validated_core,pass
+posit8_es0,fp64,full_lut_shared,256,0,0,universal_cross_validated_core,pass
