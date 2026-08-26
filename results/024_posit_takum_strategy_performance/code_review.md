@@ -30,3 +30,11 @@ Local evidence at the final review gate:
 - the synthetic complete-matrix validator test passed;
 - the deterministic bootstrap-analysis test passed;
 - shell syntax, Python compilation, and `git diff --check` passed.
+
+After the first smoke runs exposed two host-side input-construction edge cases,
+the reviewer performed one more context-free pass over the finished fixes. It
+confirmed that column-indexed GEMV pools preserve the intended per-column
+distribution and that bounded rejection of endpoint-rounding samples is
+deterministic, symmetric between operands, sign-balanced, terminates safely,
+and does not affect CUDA synchronization or timed regions. No new finding was
+reported.
