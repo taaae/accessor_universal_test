@@ -315,6 +315,10 @@ def validate(args: argparse.Namespace) -> dict[str, int | str]:
                 str(index) for index in range(8)
             }:
                 raise ValueError(f"incomplete takum regime histogram for {key}")
+            if key[0].startswith("takum") and max(regime.values()) - min(
+                regime.values()
+            ) > 1:
+                raise ValueError(f"unbalanced takum regime histogram for {key}")
             if len(regime) < 2:
                 raise ValueError(f"degenerate regime histogram for {key}")
         if "characteristic" in required and len(
@@ -351,7 +355,9 @@ def validate(args: argparse.Namespace) -> dict[str, int | str]:
     for key, counts in field_counts.items():
         if not counts:
             raise ValueError(f"missing field buckets for {key}")
-        if key[0] in ALT_FORMATS:
+        if key[0].startswith("takum"):
+            balanced = True
+        elif key[0] in ALT_FORMATS:
             balanced = max(counts) - min(counts) <= 1
         elif len(counts) > 1 and counts[-1] >= sum(counts[:-1]) - 1:
             balanced = max(counts[:-1]) - min(counts[:-1]) <= 1

@@ -395,7 +395,10 @@ Before timing each generated input buffer, verify:
 - no decoded NaN or infinity;
 - no decoded zero;
 - every realized `q` lies inside the promised interval;
-- field-bucket counts differ by at most one after admissibility filtering;
+- posit field-bucket counts differ by at most one after admissibility
+  filtering; takum direction totals and regime-code totals each differ by at
+  most one, while individual direction/regime cells may differ when an interval
+  makes a cell unreachable;
 - paired-log-uniform histograms cover the complete pair-admissible representable
   portion of the requested interval. Coverage is checked against the first and
   last format values reachable while both complementary quantizations remain

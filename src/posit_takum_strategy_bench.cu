@@ -428,10 +428,14 @@ field_candidates(long double lower, long double upper, std::mt19937_64 &rng) {
       }
     }
   }
-  buckets.erase(std::remove_if(buckets.begin(), buckets.end(),
-                               [](const auto &bucket) { return bucket.empty(); }),
-                buckets.end());
-  if (buckets.empty()) {
+  if constexpr (benchmark_family == pt::family::posit) {
+    buckets.erase(
+        std::remove_if(buckets.begin(), buckets.end(),
+                       [](const auto &bucket) { return bucket.empty(); }),
+        buckets.end());
+  }
+  if (std::none_of(buckets.begin(), buckets.end(),
+                   [](const auto &bucket) { return !bucket.empty(); })) {
     throw benchmark_error("no admissible field buckets");
   }
   return buckets;
@@ -452,12 +456,80 @@ code_pair_pool make_field_pool(std::size_t count, long double lower,
   code_pair_pool result;
   result.left.reserve(count);
   result.bucket_counts.assign(buckets.size(), 0);
-  for (std::size_t index = 0; index < count; ++index) {
-    const auto bucket = index % buckets.size();
-    const auto magnitude = buckets[bucket][rng() % buckets[bucket].size()];
-    result.left.push_back(
-        pt::apply_sign<storage_bits>(magnitude, (index & 1u) != 0u));
-    ++result.bucket_counts[bucket];
+  if constexpr (benchmark_family == pt::family::posit) {
+    for (std::size_t index = 0; index < count; ++index) {
+      const auto bucket = index % buckets.size();
+      const auto magnitude = buckets[bucket][rng() % buckets[bucket].size()];
+      result.left.push_back(
+          pt::apply_sign<storage_bits>(magnitude, (index & 1u) != 0u));
+      ++result.bucket_counts[bucket];
+    }
+  } else {
+    if (buckets.size() != 16u)
+      throw benchmark_error("takum field bucket matrix is incomplete");
+    std::array<std::size_t, 8> regime_totals{};
+    std::array<std::size_t, 16> allocation{};
+    std::vector<std::size_t> flexible_regimes;
+    for (std::size_t regime = 0; regime < 8; ++regime) {
+      const auto total = count / 8u + (regime < count % 8u ? 1u : 0u);
+      regime_totals[regime] = total;
+      const bool has_zero = !buckets[regime].empty();
+      const bool has_one = !buckets[8u + regime].empty();
+      if (!has_zero && !has_one)
+        throw benchmark_error("takum regime has no admissible encoding");
+      if (!has_zero) {
+        allocation[8u + regime] = total;
+      } else if (!has_one) {
+        allocation[regime] = total;
+      } else {
+        allocation[regime] = total / 2u;
+        allocation[8u + regime] = total - allocation[regime];
+        flexible_regimes.push_back(regime);
+      }
+    }
+
+    const auto direction_zero_target = count / 2u;
+    auto direction_zero = std::accumulate(allocation.begin(),
+                                          allocation.begin() + 8, std::size_t{});
+    while (direction_zero < direction_zero_target) {
+      bool changed = false;
+      for (const auto regime : flexible_regimes) {
+        if (allocation[regime] < regime_totals[regime]) {
+          ++allocation[regime];
+          --allocation[8u + regime];
+          ++direction_zero;
+          changed = true;
+          if (direction_zero == direction_zero_target) break;
+        }
+      }
+      if (!changed)
+        throw benchmark_error("cannot balance takum direction buckets");
+    }
+    while (direction_zero > direction_zero_target) {
+      bool changed = false;
+      for (const auto regime : flexible_regimes) {
+        if (allocation[regime] > 0u) {
+          --allocation[regime];
+          ++allocation[8u + regime];
+          --direction_zero;
+          changed = true;
+          if (direction_zero == direction_zero_target) break;
+        }
+      }
+      if (!changed)
+        throw benchmark_error("cannot balance takum direction buckets");
+    }
+
+    for (std::size_t bucket = 0; bucket < buckets.size(); ++bucket) {
+      for (std::size_t sample = 0; sample < allocation[bucket]; ++sample) {
+        const auto magnitude =
+            buckets[bucket][rng() % buckets[bucket].size()];
+        const auto index = result.left.size();
+        result.left.push_back(
+            pt::apply_sign<storage_bits>(magnitude, (index & 1u) != 0u));
+      }
+      result.bucket_counts[bucket] = allocation[bucket];
+    }
   }
   std::sort(result.left.begin(), result.left.end(), [](auto a, auto b) {
     return raw_q(a) < raw_q(b);
