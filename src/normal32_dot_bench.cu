@@ -700,6 +700,9 @@ void run(const options &settings) {
       normal32::normal_sigma * normal32::qn_a / normal32::qn_integer_scale;
   const auto c2 = normal32::normal_sigma * normal32::qn_b /
                   (normal32::qn_integer_scale * normal32::qn_integer_scale);
+  const auto *pwq_left_ptr = pwq_left.get();
+  const auto *pwq_right_ptr = pwq_right.get();
+  const auto *pwq_table_ptr = pwq_table.get();
   std::vector<benchmark_variant> variants;
   variants.push_back({"pwl_normal32_16_16", 32, "natural",
                       "global_coefficients", "pwl_global_x1",
@@ -712,7 +715,7 @@ void run(const options &settings) {
        "pwq_shared_x1", 2 * settings.count * sizeof(std::uint32_t),
        host_tables.pwq.size() * sizeof(normal32::pwq_coeff),
        [=, &partials, &result] {
-         launch_pwq_dot(pwq_left.get(), pwq_right.get(), pwq_table.get(),
+         launch_pwq_dot(pwq_left_ptr, pwq_right_ptr, pwq_table_ptr,
                         settings.count, blocks, partials.get(), result.get());
        }});
   variants.push_back({"qn32", 32, "natural", "direct_quadratic", "qn_direct_x1",
