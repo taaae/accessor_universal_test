@@ -92,6 +92,15 @@ target_include_directories(
 target_compile_options(lns_benchmark_core_test PRIVATE -O3)
 add_test(NAME lns_benchmark_core_test COMMAND lns_benchmark_core_test)
 
+add_executable(posit_takum_core_test tests/posit_takum_core_test.cpp)
+target_include_directories(
+    posit_takum_core_test
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+target_compile_options(posit_takum_core_test PRIVATE -O3)
+add_test(NAME posit_takum_core_test COMMAND posit_takum_core_test)
+
 function(add_bitwidth_strategy_benchmark bits)
     set(target "bitwidth_strategy_bench_${bits}")
     add_executable(${target} src/bitwidth_strategy_bench.cu)
@@ -185,6 +194,49 @@ add_lns_strategy_benchmark(lns16_r13 14 0)
 add_lns_strategy_benchmark(lns32_r20 15 0)
 add_lns_strategy_benchmark(lns32_r23 16 0)
 add_lns_strategy_benchmark(lns32_r28 17 0)
+
+function(add_posit_takum_strategy_benchmark name family bits es)
+    set(target "posit_takum_strategy_bench_${name}")
+    add_executable(${target} src/posit_takum_strategy_bench.cu)
+    target_include_directories(
+        ${target}
+        PRIVATE
+            "${CMAKE_CURRENT_SOURCE_DIR}/include"
+    )
+    target_compile_definitions(
+        ${target}
+        PRIVATE
+            AUT_PT_FAMILY=${family}
+            AUT_PT_BITS=${bits}
+            AUT_PT_ES=${es}
+    )
+    target_compile_options(
+        ${target}
+        PRIVATE
+            "$<$<COMPILE_LANGUAGE:CXX>:-O3>"
+            "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v;--ftz=false>"
+    )
+    set_target_properties(
+        ${target}
+        PROPERTIES
+            CUDA_RUNTIME_LIBRARY Static
+            CUDA_SEPARABLE_COMPILATION OFF
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+    )
+endfunction()
+
+add_posit_takum_strategy_benchmark(posit8_es0 0 8 0)
+add_posit_takum_strategy_benchmark(posit14_es1 0 14 1)
+add_posit_takum_strategy_benchmark(posit16_es1 0 16 1)
+add_posit_takum_strategy_benchmark(posit32_es2 0 32 2)
+add_posit_takum_strategy_benchmark(takum8 1 8 0)
+add_posit_takum_strategy_benchmark(takum14 1 14 0)
+add_posit_takum_strategy_benchmark(takum16 1 16 0)
+add_posit_takum_strategy_benchmark(takum32 1 32 0)
+add_posit_takum_strategy_benchmark(takum_log8 2 8 0)
+add_posit_takum_strategy_benchmark(takum_log14 2 14 0)
+add_posit_takum_strategy_benchmark(takum_log16 2 16 0)
+add_posit_takum_strategy_benchmark(takum_log32 2 32 0)
 
 add_executable(accuracy_statistics_test tests/accuracy_statistics_test.cpp)
 target_include_directories(
