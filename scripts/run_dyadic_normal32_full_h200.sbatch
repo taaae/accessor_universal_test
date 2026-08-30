@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+#SBATCH --job-name=dn32-full
+#SBATCH --partition=compute
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=16G
+#SBATCH --gres=gpu:nvidia:1
+#SBATCH --time=01:00:00
+#SBATCH --output=results/030_dyadic_normal32_dispersion/slurm-full-%j.out
+#SBATCH --export=ALL,TMPDIR=/tmp
+
+set -eo pipefail
+repo_dir="${SLURM_SUBMIT_DIR:?submit from the repository root}"
+if [[ ! -x "${repo_dir}/scripts/run_dyadic_normal32.sh" ]]; then
+    echo "error: submit from the accessor_universal_test repository root" >&2
+    exit 2
+fi
+source /etc/profile
+set -u
+module load "${CUDA_MODULE:-cuda/13.1.1}"
+cd "${repo_dir}"
+srun --ntasks=1 --cpus-per-task="${SLURM_CPUS_PER_TASK}" \
+    env MODE=full BUILD_JOBS=4 CUDA_ARCH=90 TMPDIR=/tmp TARGET_TIMEOUT=3000 \
+    "${repo_dir}/scripts/run_dyadic_normal32.sh"
