@@ -1,0 +1,37 @@
+GPU: NVIDIA H200 NVL
+N=1048576, warmups=1, samples=3
+raw_fp64 complete
+g1_u16_global_fp64/u16_global_fp64 target X=0 actual X=0 q=0
+g1_u16_global_fp64/u16_global_fp64 target X=0.5 actual X=0.500143 q=0.48432
+g1_u16_global_fp64/u16_global_fp64 target X=1 actual X=1 q=1
+g1_u16_global_fp64/u16_global_fp64 sink=327534
+g2_u8_shared_fp32/u8_shared_fp32 target X=0 actual X=0 q=0
+g2_u8_shared_fp32/u8_shared_fp32 target X=0.5 actual X=0.500183 q=0.470179
+g2_u8_shared_fp32/u8_shared_fp32 target X=1 actual X=1.00019 q=1
+g2_u8_shared_fp32/u8_shared_fp32 sink=243910
+g3_u8_shared_fp64/u8_shared_fp64 target X=0 actual X=0 q=0
+g3_u8_shared_fp64/u8_shared_fp64 target X=0.5 actual X=0.500183 q=0.470179
+g3_u8_shared_fp64/u8_shared_fp64 target X=1 actual X=1.00019 q=1
+g3_u8_shared_fp64/u8_shared_fp64 sink=401599
+g4_u16_split_fp32/u16_2x8_shared_fp32 target X=0 actual X=0 q=0
+g4_u16_split_fp32/u16_2x8_shared_fp32 target X=0.5 actual X=0.499831 q=0.470179
+g4_u16_split_fp32/u16_2x8_shared_fp32 target X=1 actual X=1.00006 q=1
+g4_u16_split_fp32/u16_2x8_shared_fp32 sink=1.23684e+06
+g4_u16_split_fp32/u16_4x4_shared_fp32 target X=0 actual X=0 q=0
+g4_u16_split_fp32/u16_4x4_shared_fp32 target X=0.5 actual X=0.500045 q=0.28066
+g4_u16_split_fp32/u16_4x4_shared_fp32 target X=1 actual X=0.999961 q=1
+g4_u16_split_fp32/u16_4x4_shared_fp32 sink=6.42293e+06
+g5_u32_split_fp64/u32_2x16_global_fp64 target X=0 actual X=0 q=0
+g5_u32_split_fp64/u32_2x16_global_fp64 target X=0.5 actual X=0.49993 q=0.48432
+g5_u32_split_fp64/u32_2x16_global_fp64 target X=1 actual X=1.00001 q=1
+g5_u32_split_fp64/u32_2x16_global_fp64 sink=1.27319e+06
+g5_u32_split_fp64/u32_4x8_shared_fp64 target X=0 actual X=0 q=0
+g5_u32_split_fp64/u32_4x8_shared_fp64 target X=0.5 actual X=0.500067 q=0.470179
+g5_u32_split_fp64/u32_4x8_shared_fp64 target X=1 actual X=0.999964 q=1
+g5_u32_split_fp64/u32_4x8_shared_fp64 sink=5.53872e+06
+g5_u32_split_fp64/u32_8x4_shared_fp64 target X=0 actual X=0 q=0
+g5_u32_split_fp64/u32_8x4_shared_fp64 target X=0.5 actual X=0.500411 q=0.28066
+g5_u32_split_fp64/u32_8x4_shared_fp64 target X=1 actual X=0.999925 q=1
+g5_u32_split_fp64/u32_8x4_shared_fp64 sink=2.45421e+07
+Wrote /storage/home/timofeirusanov/accessor_universal_test_lut_decomposition/results/029_lut_decomposition_shapes/run_20260830T120026Z/smoke/timing_samples.csv
+Wrote /storage/home/timofeirusanov/accessor_universal_test_lut_decomposition/results/029_lut_decomposition_shapes/run_20260830T120026Z/smoke/access_metrics.csv

@@ -1,0 +1,25 @@
+experiment=029_lut_decomposition_shapes
+started_utc=2026-08-30T12:00:26Z
+git_commit=19fc87981b83743e450623be342f86782e63fa11
+kernel=dot
+full_n=67108864
+blocks=512
+threads=256
+access=scalar_x1
+target_x=0,0.125,0.25,0.375,0.5,0.625,0.75,0.875,1
+full_warmup=10
+full_samples=50
+shared_staging=inside_timed_first_stage_once_per_block
+raw_fp32_source=/storage/home/timofeirusanov/accessor_universal_test_lut_decomposition/results/027_lut_distribution_shape/raw_fp32_followup_20260830T104804Z/full/timing_samples.csv
+left_seed=7640891576956012809
+right_seed=13503953896175478587
+git_status_begin
+?? results/029_lut_decomposition_shapes/run_20260830T120026Z/
+?? results/029_lut_decomposition_shapes/slurm-build-454524.out
+?? results/029_lut_decomposition_shapes/slurm-smoke-454526.out
+git_status_end
+stage=smoke
+finished_utc=2026-08-30T12:00:29Z
+wall_time_seconds=3
+final_stage=complete
+exit_status=0

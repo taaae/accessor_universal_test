@@ -1,0 +1,101 @@
+-- Configuring done (0.1s)
+-- Generating done (1.8s)
+-- Build files have been written to: /storage/home/timofeirusanov/accessor_universal_test_lut_decomposition/build-h200-lut-decomposition-19fc87981b83
+[100%] Built target lut_decomposition_core_test
+[100%] Built target lut_decomposition_bench
+Internal ctest changing into directory: /storage/home/timofeirusanov/accessor_universal_test_lut_decomposition/build-h200-lut-decomposition-19fc87981b83
+Test project /storage/home/timofeirusanov/accessor_universal_test_lut_decomposition/build-h200-lut-decomposition-19fc87981b83
+    Start 8: lut_decomposition_core_test
+1/1 Test #8: lut_decomposition_core_test ......   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
+GPU: NVIDIA H200 NVL
+N=67108864, warmups=10, samples=50
+raw_fp64 complete
+g1_u16_global_fp64/u16_global_fp64 target X=0 actual X=0 q=0
+g1_u16_global_fp64/u16_global_fp64 target X=0.125 actual X=0.124978 q=0.12107
+g1_u16_global_fp64/u16_global_fp64 target X=0.25 actual X=0.250015 q=0.242146
+g1_u16_global_fp64/u16_global_fp64 target X=0.375 actual X=0.375008 q=0.363229
+g1_u16_global_fp64/u16_global_fp64 target X=0.5 actual X=0.500041 q=0.48432
+g1_u16_global_fp64/u16_global_fp64 target X=0.625 actual X=0.625013 q=0.605417
+g1_u16_global_fp64/u16_global_fp64 target X=0.75 actual X=0.750036 q=0.726522
+g1_u16_global_fp64/u16_global_fp64 target X=0.875 actual X=0.875038 q=0.847791
+g1_u16_global_fp64/u16_global_fp64 target X=1 actual X=1 q=1
+g1_u16_global_fp64/u16_global_fp64 sink=1.0476e+09
+g2_u8_shared_fp32/u8_shared_fp32 target X=0 actual X=0 q=0
+g2_u8_shared_fp32/u8_shared_fp32 target X=0.125 actual X=0.124996 q=0.115057
+g2_u8_shared_fp32/u8_shared_fp32 target X=0.25 actual X=0.250004 q=0.231741
+g2_u8_shared_fp32/u8_shared_fp32 target X=0.375 actual X=0.375005 q=0.350098
+g2_u8_shared_fp32/u8_shared_fp32 target X=0.5 actual X=0.50003 q=0.470179
+g2_u8_shared_fp32/u8_shared_fp32 target X=0.625 actual X=0.625006 q=0.592035
+g2_u8_shared_fp32/u8_shared_fp32 target X=0.75 actual X=0.75003 q=0.715721
+g2_u8_shared_fp32/u8_shared_fp32 target X=0.875 actual X=0.875028 q=0.841414
+g2_u8_shared_fp32/u8_shared_fp32 target X=1 actual X=0.999989 q=1
+g2_u8_shared_fp32/u8_shared_fp32 sink=7.64877e+08
+g3_u8_shared_fp64/u8_shared_fp64 target X=0 actual X=0 q=0
+g3_u8_shared_fp64/u8_shared_fp64 target X=0.125 actual X=0.124996 q=0.115057
+g3_u8_shared_fp64/u8_shared_fp64 target X=0.25 actual X=0.250004 q=0.231741
+g3_u8_shared_fp64/u8_shared_fp64 target X=0.375 actual X=0.375005 q=0.350098
+g3_u8_shared_fp64/u8_shared_fp64 target X=0.5 actual X=0.50003 q=0.470179
+g3_u8_shared_fp64/u8_shared_fp64 target X=0.625 actual X=0.625006 q=0.592035
+g3_u8_shared_fp64/u8_shared_fp64 target X=0.75 actual X=0.75003 q=0.715721
+g3_u8_shared_fp64/u8_shared_fp64 target X=0.875 actual X=0.875028 q=0.841414
+g3_u8_shared_fp64/u8_shared_fp64 target X=1 actual X=0.999989 q=1
+g3_u8_shared_fp64/u8_shared_fp64 sink=1.28733e+09
+g4_u16_split_fp32/u16_2x8_shared_fp32 target X=0 actual X=0 q=0
+g4_u16_split_fp32/u16_2x8_shared_fp32 target X=0.125 actual X=0.124962 q=0.115057
+g4_u16_split_fp32/u16_2x8_shared_fp32 target X=0.25 actual X=0.249958 q=0.231741
+g4_u16_split_fp32/u16_2x8_shared_fp32 target X=0.375 actual X=0.374948 q=0.350098
+g4_u16_split_fp32/u16_2x8_shared_fp32 target X=0.5 actual X=0.499998 q=0.470179
+g4_u16_split_fp32/u16_2x8_shared_fp32 target X=0.625 actual X=0.624994 q=0.592035
+g4_u16_split_fp32/u16_2x8_shared_fp32 target X=0.75 actual X=0.74999 q=0.715721
+g4_u16_split_fp32/u16_2x8_shared_fp32 target X=0.875 actual X=0.874974 q=0.841414
+g4_u16_split_fp32/u16_2x8_shared_fp32 target X=1 actual X=0.999985 q=1
+g4_u16_split_fp32/u16_2x8_shared_fp32 sink=3.94251e+09
+g4_u16_split_fp32/u16_4x4_shared_fp32 target X=0 actual X=0 q=0
+g4_u16_split_fp32/u16_4x4_shared_fp32 target X=0.125 actual X=0.124979 q=0.0570956
+g4_u16_split_fp32/u16_4x4_shared_fp32 target X=0.25 actual X=0.249937 q=0.121332
+g4_u16_split_fp32/u16_4x4_shared_fp32 target X=0.375 actual X=0.374947 q=0.194796
+g4_u16_split_fp32/u16_4x4_shared_fp32 target X=0.5 actual X=0.499939 q=0.28066
+g4_u16_split_fp32/u16_4x4_shared_fp32 target X=0.625 actual X=0.624912 q=0.384095
+g4_u16_split_fp32/u16_4x4_shared_fp32 target X=0.75 actual X=0.749973 q=0.51442
+g4_u16_split_fp32/u16_4x4_shared_fp32 target X=0.875 actual X=0.87498 q=0.691278
+g4_u16_split_fp32/u16_4x4_shared_fp32 target X=1 actual X=0.999997 q=1
+g4_u16_split_fp32/u16_4x4_shared_fp32 sink=2.07734e+10
+g5_u32_split_fp64/u32_2x16_global_fp64 target X=0 actual X=0 q=0
+g5_u32_split_fp64/u32_2x16_global_fp64 target X=0.125 actual X=0.124958 q=0.12107
+g5_u32_split_fp64/u32_2x16_global_fp64 target X=0.25 actual X=0.249962 q=0.242146
+g5_u32_split_fp64/u32_2x16_global_fp64 target X=0.375 actual X=0.374945 q=0.363229
+g5_u32_split_fp64/u32_2x16_global_fp64 target X=0.5 actual X=0.49999 q=0.48432
+g5_u32_split_fp64/u32_2x16_global_fp64 target X=0.625 actual X=0.624995 q=0.605417
+g5_u32_split_fp64/u32_2x16_global_fp64 target X=0.75 actual X=0.749985 q=0.726522
+g5_u32_split_fp64/u32_2x16_global_fp64 target X=0.875 actual X=0.874978 q=0.847791
+g5_u32_split_fp64/u32_2x16_global_fp64 target X=1 actual X=1 q=1
+g5_u32_split_fp64/u32_2x16_global_fp64 sink=4.06696e+09
+g5_u32_split_fp64/u32_4x8_shared_fp64 target X=0 actual X=0 q=0
+g5_u32_split_fp64/u32_4x8_shared_fp64 target X=0.125 actual X=0.124968 q=0.115057
+g5_u32_split_fp64/u32_4x8_shared_fp64 target X=0.25 actual X=0.249975 q=0.231741
+g5_u32_split_fp64/u32_4x8_shared_fp64 target X=0.375 actual X=0.374958 q=0.350098
+g5_u32_split_fp64/u32_4x8_shared_fp64 target X=0.5 actual X=0.499992 q=0.470179
+g5_u32_split_fp64/u32_4x8_shared_fp64 target X=0.625 actual X=0.624996 q=0.592035
+g5_u32_split_fp64/u32_4x8_shared_fp64 target X=0.75 actual X=0.75 q=0.715721
+g5_u32_split_fp64/u32_4x8_shared_fp64 target X=0.875 actual X=0.874996 q=0.841414
+g5_u32_split_fp64/u32_4x8_shared_fp64 target X=1 actual X=0.999999 q=1
+g5_u32_split_fp64/u32_4x8_shared_fp64 sink=1.76799e+10
+g5_u32_split_fp64/u32_8x4_shared_fp64 target X=0 actual X=0 q=0
+g5_u32_split_fp64/u32_8x4_shared_fp64 target X=0.125 actual X=0.125004 q=0.0570956
+g5_u32_split_fp64/u32_8x4_shared_fp64 target X=0.25 actual X=0.249979 q=0.121332
+g5_u32_split_fp64/u32_8x4_shared_fp64 target X=0.375 actual X=0.374993 q=0.194796
+g5_u32_split_fp64/u32_8x4_shared_fp64 target X=0.5 actual X=0.499986 q=0.28066
+g5_u32_split_fp64/u32_8x4_shared_fp64 target X=0.625 actual X=0.624994 q=0.384095
+g5_u32_split_fp64/u32_8x4_shared_fp64 target X=0.75 actual X=0.749996 q=0.51442
+g5_u32_split_fp64/u32_8x4_shared_fp64 target X=0.875 actual X=0.874986 q=0.691278
+g5_u32_split_fp64/u32_8x4_shared_fp64 target X=1 actual X=0.999989 q=1
+g5_u32_split_fp64/u32_8x4_shared_fp64 sink=7.72864e+10
+Wrote /storage/home/timofeirusanov/accessor_universal_test_lut_decomposition/results/029_lut_decomposition_shapes/run_20260830T120142Z/full/timing_samples.csv
+Wrote /storage/home/timofeirusanov/accessor_universal_test_lut_decomposition/results/029_lut_decomposition_shapes/run_20260830T120142Z/full/access_metrics.csv
+wrote five graphs and /storage/home/timofeirusanov/accessor_universal_test_lut_decomposition/results/029_lut_decomposition_shapes/run_20260830T120142Z/full/report.html
+raw baselines: FP32 0.265135989 ms, FP64 0.311856002 ms
+LUT decomposition full complete: /storage/home/timofeirusanov/accessor_universal_test_lut_decomposition/results/029_lut_decomposition_shapes/run_20260830T120142Z/full

@@ -1,0 +1,169 @@
+-- The CXX compiler identification is GNU 11.5.0
+-- The CUDA compiler identification is NVIDIA 13.1.115
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Detecting CUDA compiler ABI info
+-- Detecting CUDA compiler ABI info - done
+-- Check for working CUDA compiler: /storage/apps/opt/spack/opt/spack/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spac/linux-x86_64_v3/cuda-13.1.1-ob4osjedbwoxkf5l3w5bvc3kycejthpt/bin/nvcc - skipped
+-- Detecting CUDA compile features
+-- Detecting CUDA compile features - done
+-- Found CUDAToolkit: /storage/apps/opt/spack/opt/spack/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spac/linux-x86_64_v3/cuda-13.1.1-ob4osjedbwoxkf5l3w5bvc3kycejthpt/include (found version "13.1.115") 
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
+-- Configuring done (1.4s)
+-- Generating done (1.8s)
+-- Build files have been written to: /storage/home/timofeirusanov/accessor_universal_test_lut_decomposition/build-h200-lut-decomposition-19fc87981b83
+[100%] Building CXX object CMakeFiles/lut_decomposition_core_test.dir/tests/lut_decomposition_core_test.cpp.o
+[100%] Linking CXX executable lut_decomposition_core_test
+[100%] Built target lut_decomposition_core_test
+[100%] Building CUDA object CMakeFiles/lut_decomposition_bench.dir/src/lut_decomposition_bench.cu.o
+ptxas info    : 0 bytes gmem
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main24dot_shared_tables_kernelIjdLi4ELi8EEEvPKT_S3_mPKT0_PS4_' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main24dot_shared_tables_kernelIjdLi4ELi8EEEvPKT_S3_mPKT0_PS4_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers
+ptxas info    : Compile time = 6.686 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main21access_metrics_kernelIjLi4ELi8ELi8ELb1EEEvPKT_mPyS4_' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main21access_metrics_kernelIjLi4ELi8ELi8ELb1EEEvPKT_mPyS4_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 56 registers, used 0 barriers
+ptxas info    : Compile time = 105.403 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main28generate_packed_codes_kernelIjLi4ELi8EEEvPT_mmd' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main28generate_packed_codes_kernelIjLi4ELi8EEEvPT_mmd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 0 barriers
+ptxas info    : Compile time = 8.163 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main24dot_shared_tables_kernelIjdLi8ELi4EEEvPKT_S3_mPKT0_PS4_' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main24dot_shared_tables_kernelIjdLi8ELi4EEEvPKT_S3_mPKT0_PS4_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers
+ptxas info    : Compile time = 4.001 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main21access_metrics_kernelIjLi8ELi4ELi8ELb1EEEvPKT_mPyS4_' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main21access_metrics_kernelIjLi8ELi4ELi8ELb1EEEvPKT_mPyS4_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 0 barriers
+ptxas info    : Compile time = 40.964 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main28generate_packed_codes_kernelIjLi8ELi4EEEvPT_mmd' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main28generate_packed_codes_kernelIjLi8ELi4EEEvPT_mmd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 0 barriers
+ptxas info    : Compile time = 4.466 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main24dot_global_tables_kernelIjdLi16ELi2EEEvPKT_S3_mPKT0_PS4_' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main24dot_global_tables_kernelIjdLi16ELi2EEEvPKT_S3_mPKT0_PS4_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 3.170 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main21access_metrics_kernelIjLi16ELi2ELi8ELb0EEEvPKT_mPyS4_' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main21access_metrics_kernelIjLi16ELi2ELi8ELb0EEEvPKT_mPyS4_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 27 registers, used 0 barriers
+ptxas info    : Compile time = 3.506 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main28generate_packed_codes_kernelIjLi16ELi2EEEvPT_mmd' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main28generate_packed_codes_kernelIjLi16ELi2EEEvPT_mmd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 0 barriers
+ptxas info    : Compile time = 2.885 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main24dot_shared_tables_kernelItfLi4ELi4EEEvPKT_S3_mPKT0_PS4_' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main24dot_shared_tables_kernelItfLi4ELi4EEEvPKT_S3_mPKT0_PS4_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 27 registers, used 1 barriers
+ptxas info    : Compile time = 3.929 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main21access_metrics_kernelItLi4ELi4ELi4ELb1EEEvPKT_mPyS4_' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main21access_metrics_kernelItLi4ELi4ELi4ELb1EEEvPKT_mPyS4_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 0 barriers
+ptxas info    : Compile time = 18.587 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main28generate_packed_codes_kernelItLi4ELi4EEEvPT_mmd' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main28generate_packed_codes_kernelItLi4ELi4EEEvPT_mmd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 0 barriers
+ptxas info    : Compile time = 4.385 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main24dot_shared_tables_kernelItfLi8ELi2EEEvPKT_S3_mPKT0_PS4_' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main24dot_shared_tables_kernelItfLi8ELi2EEEvPKT_S3_mPKT0_PS4_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 23 registers, used 1 barriers
+ptxas info    : Compile time = 3.701 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main21access_metrics_kernelItLi8ELi2ELi4ELb1EEEvPKT_mPyS4_' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main21access_metrics_kernelItLi8ELi2ELi4ELb1EEEvPKT_mPyS4_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 31 registers, used 0 barriers
+ptxas info    : Compile time = 10.713 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main28generate_packed_codes_kernelItLi8ELi2EEEvPT_mmd' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main28generate_packed_codes_kernelItLi8ELi2EEEvPT_mmd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 0 barriers
+ptxas info    : Compile time = 2.858 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main24dot_shared_tables_kernelIhdLi8ELi1EEEvPKT_S3_mPKT0_PS4_' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main24dot_shared_tables_kernelIhdLi8ELi1EEEvPKT_S3_mPKT0_PS4_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers
+ptxas info    : Compile time = 3.366 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main21access_metrics_kernelIhLi8ELi1ELi8ELb1EEEvPKT_mPyS4_' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main21access_metrics_kernelIhLi8ELi1ELi8ELb1EEEvPKT_mPyS4_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 0 barriers
+ptxas info    : Compile time = 5.386 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main19finalize_dot_kernelIfEEvPKT_mPS1_' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main19finalize_dot_kernelIfEEvPKT_mPS1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 10 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 2.336 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main24dot_shared_tables_kernelIhfLi8ELi1EEEvPKT_S3_mPKT0_PS4_' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main24dot_shared_tables_kernelIhfLi8ELi1EEEvPKT_S3_mPKT0_PS4_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers
+ptxas info    : Compile time = 3.332 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main21access_metrics_kernelIhLi8ELi1ELi4ELb1EEEvPKT_mPyS4_' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main21access_metrics_kernelIhLi8ELi1ELi4ELb1EEEvPKT_mPyS4_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 0 barriers
+ptxas info    : Compile time = 4.028 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main28generate_packed_codes_kernelIhLi8ELi1EEEvPT_mmd' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main28generate_packed_codes_kernelIhLi8ELi1EEEvPT_mmd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 0 barriers
+ptxas info    : Compile time = 2.154 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main24dot_global_tables_kernelItdLi16ELi1EEEvPKT_S3_mPKT0_PS4_' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main24dot_global_tables_kernelItdLi16ELi1EEEvPKT_S3_mPKT0_PS4_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 2.775 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main21access_metrics_kernelItLi16ELi1ELi8ELb0EEEvPKT_mPyS4_' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main21access_metrics_kernelItLi16ELi1ELi8ELb0EEEvPKT_mPyS4_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 0 barriers
+ptxas info    : Compile time = 2.547 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main28generate_packed_codes_kernelItLi16ELi1EEEvPT_mmd' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main28generate_packed_codes_kernelItLi16ELi1EEEvPT_mmd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 0 barriers
+ptxas info    : Compile time = 2.160 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main19finalize_dot_kernelIdEEvPKT_mPS1_' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main19finalize_dot_kernelIdEEvPKT_mPS1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 2.198 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main14dot_raw_kernelIdEEvPKT_S3_mPS1_' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main14dot_raw_kernelIdEEvPKT_S3_mPS1_
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 2.564 ms
+ptxas info    : Compiling entry function '_ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main26generate_raw_values_kernelIdEEvPT_mm' for 'sm_90'
+ptxas info    : Function properties for _ZN55_GLOBAL__N__d9d362fb_26_lut_decomposition_bench_cu_main26generate_raw_values_kernelIdEEvPT_mm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 1.775 ms
+[100%] Linking CUDA executable bin/lut_decomposition_bench
+[100%] Built target lut_decomposition_bench
+Internal ctest changing into directory: /storage/home/timofeirusanov/accessor_universal_test_lut_decomposition/build-h200-lut-decomposition-19fc87981b83
+Test project /storage/home/timofeirusanov/accessor_universal_test_lut_decomposition/build-h200-lut-decomposition-19fc87981b83
+    Start 8: lut_decomposition_core_test
+1/1 Test #8: lut_decomposition_core_test ......   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
