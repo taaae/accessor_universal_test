@@ -1,0 +1,222 @@
+-- The CXX compiler identification is GNU 11.5.0
+-- The CUDA compiler identification is NVIDIA 13.1.115
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Detecting CUDA compiler ABI info
+-- Detecting CUDA compiler ABI info - done
+-- Check for working CUDA compiler: /storage/apps/opt/spack/opt/spack/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spac/linux-x86_64_v3/cuda-13.1.1-ob4osjedbwoxkf5l3w5bvc3kycejthpt/bin/nvcc - skipped
+-- Detecting CUDA compile features
+-- Detecting CUDA compile features - done
+-- Found CUDAToolkit: /storage/apps/opt/spack/opt/spack/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spac/linux-x86_64_v3/cuda-13.1.1-ob4osjedbwoxkf5l3w5bvc3kycejthpt/include (found version "13.1.115") 
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
+-- Configuring done (1.7s)
+-- Generating done (1.5s)
+-- Build files have been written to: /storage/home/timofeirusanov/accessor_universal_test_dyadic_strategies/build-h200-dyadic-normal32-dc79786f4669
+Building CXX object CMakeFiles/dyadic_normal32_core_test.dir/tests/dyadic_normal32_core_test.cpp.o
+Linking CXX executable dyadic_normal32_core_test
+Built target dyadic_normal32_core_test
+[  0%] Building CUDA object CMakeFiles/dyadic_normal32_bench.dir/src/dyadic_normal32_bench.cu.o
+ptxas info    : 0 bytes gmem
+ptxas info    : Compiling entry function '_ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main41decode_bitcast_constant_validation_kernelEPKjmPd' for 'sm_90'
+ptxas info    : Function properties for _ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main41decode_bitcast_constant_validation_kernelEPKjmPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 0 barriers
+ptxas info    : Compile time = 3.572 ms
+ptxas info    : Compiling entry function '_ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main39decode_bitcast_shared_validation_kernelEPKjmPKN3aut15dyadic_normal3220segment_coefficientsEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main39decode_bitcast_shared_validation_kernelEPKjmPKN3aut15dyadic_normal3220segment_coefficientsEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 1 barriers, 512 bytes smem
+ptxas info    : Compile time = 2.763 ms
+ptxas info    : Compiling entry function '_ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main24decode_validation_kernelEPKjmPKN3aut15dyadic_normal3220segment_coefficientsEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main24decode_validation_kernelEPKjmPKN3aut15dyadic_normal3220segment_coefficientsEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 1 barriers, 512 bytes smem
+ptxas info    : Compile time = 2.618 ms
+ptxas info    : Compiling entry function '_ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main22segment_metrics_kernelEPKjmPy' for 'sm_90'
+ptxas info    : Function properties for _ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main22segment_metrics_kernelEPKjmPy
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 1.996 ms
+ptxas info    : Compiling entry function '_ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main19finalize_dot_kernelEPKfmPf' for 'sm_90'
+ptxas info    : Function properties for _ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main19finalize_dot_kernelEPKfmPf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 10 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 2.135 ms
+ptxas info    : Compiling entry function '_ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main19finalize_dot_kernelEPKdmPd' for 'sm_90'
+ptxas info    : Function properties for _ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main19finalize_dot_kernelEPKdmPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 2.178 ms
+ptxas info    : Compiling entry function '_ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main23dot_fp32_to_fp64_kernelEPKfS1_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main23dot_fp32_to_fp64_kernelEPKfS1_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 2.567 ms
+ptxas info    : Compiling entry function '_ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main19dot_raw_fp32_kernelEPKfS1_mPf' for 'sm_90'
+ptxas info    : Function properties for _ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main19dot_raw_fp32_kernelEPKfS1_mPf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 2.485 ms
+ptxas info    : Compiling entry function '_ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main19dot_raw_fp64_kernelEPKdS1_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main19dot_raw_fp64_kernelEPKdS1_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 2.477 ms
+ptxas info    : Compiling entry function '_ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main34dot_dyadic_bitcast_constant_kernelEPKjS1_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main34dot_dyadic_bitcast_constant_kernelEPKjS1_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 3.206 ms
+ptxas info    : Compiling entry function '_ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main32dot_dyadic_bitcast_shared_kernelEPKjS1_mPKN3aut15dyadic_normal3220segment_coefficientsEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main32dot_dyadic_bitcast_shared_kernelEPKjS1_mPKN3aut15dyadic_normal3220segment_coefficientsEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 31 registers, used 1 barriers
+ptxas info    : Compile time = 3.904 ms
+ptxas info    : Compiling entry function '_ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main28dot_dyadic_sign_fused_kernelEPKjS1_mPKN3aut15dyadic_normal3220segment_coefficientsEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main28dot_dyadic_sign_fused_kernelEPKjS1_mPKN3aut15dyadic_normal3220segment_coefficientsEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 31 registers, used 1 barriers
+ptxas info    : Compile time = 3.786 ms
+ptxas info    : Compiling entry function '_ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main26dot_dyadic_normal32_kernelEPKjS1_mPKN3aut15dyadic_normal3220segment_coefficientsEPd' for 'sm_90'
+ptxas info    : Function properties for _ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main26dot_dyadic_normal32_kernelEPKjS1_mPKN3aut15dyadic_normal3220segment_coefficientsEPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers
+ptxas info    : Compile time = 3.832 ms
+ptxas info    : Compiling entry function '_ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main26generate_raw_values_kernelEPfmm' for 'sm_90'
+ptxas info    : Function properties for _ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main26generate_raw_values_kernelEPfmm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 0 barriers
+ptxas info    : Compile time = 1.708 ms
+ptxas info    : Compiling entry function '_ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main26generate_raw_values_kernelEPdmm' for 'sm_90'
+ptxas info    : Function properties for _ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main26generate_raw_values_kernelEPdmm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 1.735 ms
+ptxas info    : Compiling entry function '_ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main29generate_genuine_codes_kernelEPjmmPKd' for 'sm_90'
+ptxas info    : Function properties for _ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main29generate_genuine_codes_kernelEPjmmPKd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 0 barriers
+ptxas info    : Compile time = 5.060 ms
+ptxas info    : Compiling entry function '_ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main21generate_codes_kernelEPjmmd' for 'sm_90'
+ptxas info    : Function properties for _ZN53_GLOBAL__N__88acf366_24_dyadic_normal32_bench_cu_main21generate_codes_kernelEPjmmd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 0 barriers
+ptxas info    : Compile time = 2.964 ms
+[100%] Linking CUDA executable bin/dyadic_normal32_bench
+[100%] Built target dyadic_normal32_bench
+Internal ctest changing into directory: /storage/home/timofeirusanov/accessor_universal_test_dyadic_strategies/build-h200-dyadic-normal32-dc79786f4669
+Test project /storage/home/timofeirusanov/accessor_universal_test_dyadic_strategies/build-h200-dyadic-normal32-dc79786f4669
+    Start 9: dyadic_normal32_core_test
+1/1 Test #9: dyadic_normal32_core_test ........   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.01 sec
+GPU: NVIDIA H200 NVL
+N=67108864, warmups=10, samples=50
+raw_fp64/before complete
+raw_fp32/before complete
+fp32_to_fp64/before complete
+dyadic_normal32/hot_uniform/forward target X=0 actual X=0 q=0
+dyadic_sign_fused/hot_uniform/forward target X=0 actual X=0 q=0
+dyadic_bitcast_shared/hot_uniform/forward target X=0 actual X=0 q=0
+dyadic_bitcast_constant/hot_uniform/forward target X=0 actual X=0 q=0
+dyadic_normal32/hot_uniform/forward target X=0.125 actual X=0.124977 q=0.0814135
+dyadic_sign_fused/hot_uniform/forward target X=0.125 actual X=0.124977 q=0.0814135
+dyadic_bitcast_shared/hot_uniform/forward target X=0.125 actual X=0.124977 q=0.0814135
+dyadic_bitcast_constant/hot_uniform/forward target X=0.125 actual X=0.124977 q=0.0814135
+dyadic_normal32/hot_uniform/forward target X=0.25 actual X=0.250007 q=0.169822
+dyadic_sign_fused/hot_uniform/forward target X=0.25 actual X=0.250007 q=0.169822
+dyadic_bitcast_shared/hot_uniform/forward target X=0.25 actual X=0.250007 q=0.169822
+dyadic_bitcast_constant/hot_uniform/forward target X=0.25 actual X=0.250007 q=0.169822
+dyadic_normal32/hot_uniform/forward target X=0.375 actual X=0.375024 q=0.266566
+dyadic_sign_fused/hot_uniform/forward target X=0.375 actual X=0.375024 q=0.266566
+dyadic_bitcast_shared/hot_uniform/forward target X=0.375 actual X=0.375024 q=0.266566
+dyadic_bitcast_constant/hot_uniform/forward target X=0.375 actual X=0.375024 q=0.266566
+dyadic_normal32/hot_uniform/forward target X=0.5 actual X=0.500045 q=0.373418
+dyadic_sign_fused/hot_uniform/forward target X=0.5 actual X=0.500045 q=0.373418
+dyadic_bitcast_shared/hot_uniform/forward target X=0.5 actual X=0.500045 q=0.373418
+dyadic_bitcast_constant/hot_uniform/forward target X=0.5 actual X=0.500045 q=0.373418
+dyadic_normal32/hot_uniform/forward target X=0.625 actual X=0.625035 q=0.492786
+dyadic_sign_fused/hot_uniform/forward target X=0.625 actual X=0.625035 q=0.492786
+dyadic_bitcast_shared/hot_uniform/forward target X=0.625 actual X=0.625035 q=0.492786
+dyadic_bitcast_constant/hot_uniform/forward target X=0.625 actual X=0.625035 q=0.492786
+dyadic_normal32/hot_uniform/forward target X=0.75 actual X=0.750073 q=0.628065
+dyadic_sign_fused/hot_uniform/forward target X=0.75 actual X=0.750073 q=0.628065
+dyadic_bitcast_shared/hot_uniform/forward target X=0.75 actual X=0.750073 q=0.628065
+dyadic_bitcast_constant/hot_uniform/forward target X=0.75 actual X=0.750073 q=0.628065
+dyadic_normal32/hot_uniform/forward target X=0.875 actual X=0.875034 q=0.784274
+dyadic_sign_fused/hot_uniform/forward target X=0.875 actual X=0.875034 q=0.784274
+dyadic_bitcast_shared/hot_uniform/forward target X=0.875 actual X=0.875034 q=0.784274
+dyadic_bitcast_constant/hot_uniform/forward target X=0.875 actual X=0.875034 q=0.784274
+dyadic_normal32/hot_uniform/forward target X=1 actual X=1.00004 q=1
+dyadic_sign_fused/hot_uniform/forward target X=1 actual X=1.00004 q=1
+dyadic_bitcast_shared/hot_uniform/forward target X=1 actual X=1.00004 q=1
+dyadic_bitcast_constant/hot_uniform/forward target X=1 actual X=1.00004 q=1
+dyadic_normal32/genuine_n01/forward target X=0.100185 actual X=0.10018 q=nan
+dyadic_sign_fused/genuine_n01/forward target X=0.100185 actual X=0.10018 q=nan
+dyadic_bitcast_shared/genuine_n01/forward target X=0.100185 actual X=0.10018 q=nan
+dyadic_bitcast_constant/genuine_n01/forward target X=0.100185 actual X=0.10018 q=nan
+dyadic_bitcast_constant/genuine_n01/reverse target X=0.100185 actual X=0.10018 q=nan
+dyadic_bitcast_shared/genuine_n01/reverse target X=0.100185 actual X=0.10018 q=nan
+dyadic_sign_fused/genuine_n01/reverse target X=0.100185 actual X=0.10018 q=nan
+dyadic_normal32/genuine_n01/reverse target X=0.100185 actual X=0.10018 q=nan
+dyadic_bitcast_constant/hot_uniform/reverse target X=1 actual X=1.00004 q=1
+dyadic_bitcast_shared/hot_uniform/reverse target X=1 actual X=1.00004 q=1
+dyadic_sign_fused/hot_uniform/reverse target X=1 actual X=1.00004 q=1
+dyadic_normal32/hot_uniform/reverse target X=1 actual X=1.00004 q=1
+dyadic_bitcast_constant/hot_uniform/reverse target X=0.875 actual X=0.875034 q=0.784274
+dyadic_bitcast_shared/hot_uniform/reverse target X=0.875 actual X=0.875034 q=0.784274
+dyadic_sign_fused/hot_uniform/reverse target X=0.875 actual X=0.875034 q=0.784274
+dyadic_normal32/hot_uniform/reverse target X=0.875 actual X=0.875034 q=0.784274
+dyadic_bitcast_constant/hot_uniform/reverse target X=0.75 actual X=0.750073 q=0.628065
+dyadic_bitcast_shared/hot_uniform/reverse target X=0.75 actual X=0.750073 q=0.628065
+dyadic_sign_fused/hot_uniform/reverse target X=0.75 actual X=0.750073 q=0.628065
+dyadic_normal32/hot_uniform/reverse target X=0.75 actual X=0.750073 q=0.628065
+dyadic_bitcast_constant/hot_uniform/reverse target X=0.625 actual X=0.625035 q=0.492786
+dyadic_bitcast_shared/hot_uniform/reverse target X=0.625 actual X=0.625035 q=0.492786
+dyadic_sign_fused/hot_uniform/reverse target X=0.625 actual X=0.625035 q=0.492786
+dyadic_normal32/hot_uniform/reverse target X=0.625 actual X=0.625035 q=0.492786
+dyadic_bitcast_constant/hot_uniform/reverse target X=0.5 actual X=0.500045 q=0.373418
+dyadic_bitcast_shared/hot_uniform/reverse target X=0.5 actual X=0.500045 q=0.373418
+dyadic_sign_fused/hot_uniform/reverse target X=0.5 actual X=0.500045 q=0.373418
+dyadic_normal32/hot_uniform/reverse target X=0.5 actual X=0.500045 q=0.373418
+dyadic_bitcast_constant/hot_uniform/reverse target X=0.375 actual X=0.375024 q=0.266566
+dyadic_bitcast_shared/hot_uniform/reverse target X=0.375 actual X=0.375024 q=0.266566
+dyadic_sign_fused/hot_uniform/reverse target X=0.375 actual X=0.375024 q=0.266566
+dyadic_normal32/hot_uniform/reverse target X=0.375 actual X=0.375024 q=0.266566
+dyadic_bitcast_constant/hot_uniform/reverse target X=0.25 actual X=0.250007 q=0.169822
+dyadic_bitcast_shared/hot_uniform/reverse target X=0.25 actual X=0.250007 q=0.169822
+dyadic_sign_fused/hot_uniform/reverse target X=0.25 actual X=0.250007 q=0.169822
+dyadic_normal32/hot_uniform/reverse target X=0.25 actual X=0.250007 q=0.169822
+dyadic_bitcast_constant/hot_uniform/reverse target X=0.125 actual X=0.124977 q=0.0814135
+dyadic_bitcast_shared/hot_uniform/reverse target X=0.125 actual X=0.124977 q=0.0814135
+dyadic_sign_fused/hot_uniform/reverse target X=0.125 actual X=0.124977 q=0.0814135
+dyadic_normal32/hot_uniform/reverse target X=0.125 actual X=0.124977 q=0.0814135
+dyadic_bitcast_constant/hot_uniform/reverse target X=0 actual X=0 q=0
+dyadic_bitcast_shared/hot_uniform/reverse target X=0 actual X=0 q=0
+dyadic_sign_fused/hot_uniform/reverse target X=0 actual X=0 q=0
+dyadic_normal32/hot_uniform/reverse target X=0 actual X=0 q=0
+dyadic_normal32 sink=-2.96635e+08
+fp32_to_fp64/after complete
+raw_fp32/after complete
+raw_fp64/after complete
+Wrote /storage/home/timofeirusanov/accessor_universal_test_dyadic_strategies/results/030_dyadic_normal32_dispersion/run_20260830T194837Z/full/timing_samples.csv
+Wrote /storage/home/timofeirusanov/accessor_universal_test_dyadic_strategies/results/030_dyadic_normal32_dispersion/run_20260830T194837Z/full/access_metrics.csv
+Wrote /storage/home/timofeirusanov/accessor_universal_test_dyadic_strategies/results/030_dyadic_normal32_dispersion/run_20260830T194837Z/full/correctness_checks.txt
+Wrote /storage/home/timofeirusanov/accessor_universal_test_dyadic_strategies/results/030_dyadic_normal32_dispersion/run_20260830T194837Z/full/coefficient_table.csv
+wrote /storage/home/timofeirusanov/accessor_universal_test_dyadic_strategies/results/030_dyadic_normal32_dispersion/run_20260830T194837Z/full/dyadic-normal32-strategies.svg and /storage/home/timofeirusanov/accessor_universal_test_dyadic_strategies/results/030_dyadic_normal32_dispersion/run_20260830T194837Z/full/report.html
+PNG generated: no converter available
+Current DyadicNormal32 genuine N(0,1): 0.294448003 ms
+Sign-fused decoder genuine N(0,1): 0.292719990 ms
+BitCast, shared coefficients genuine N(0,1): 0.293264002 ms
+BitCast, constant coefficients genuine N(0,1): 0.313712001 ms
+Raw FP64 median: 0.308367997 ms
+Raw FP32 median: 0.266144007 ms
+FP32 to FP64 median: 0.268112004 ms
+DyadicNormal32 full complete: /storage/home/timofeirusanov/accessor_universal_test_dyadic_strategies/results/030_dyadic_normal32_dispersion/run_20260830T194837Z/full

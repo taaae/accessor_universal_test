@@ -1,0 +1,9 @@
+wrote /storage/home/timofeirusanov/accessor_universal_test_dyadic_strategies/results/030_dyadic_normal32_dispersion/run_20260830T194837Z/full/dyadic-normal32-strategies.svg and /storage/home/timofeirusanov/accessor_universal_test_dyadic_strategies/results/030_dyadic_normal32_dispersion/run_20260830T194837Z/full/report.html
+PNG generated: no converter available
+Current DyadicNormal32 genuine N(0,1): 0.294448003 ms
+Sign-fused decoder genuine N(0,1): 0.292719990 ms
+BitCast, shared coefficients genuine N(0,1): 0.293264002 ms
+BitCast, constant coefficients genuine N(0,1): 0.313712001 ms
+Raw FP64 median: 0.308367997 ms
+Raw FP32 median: 0.266144007 ms
+FP32 to FP64 median: 0.268112004 ms
