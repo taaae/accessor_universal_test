@@ -215,7 +215,15 @@ def extract(text: str) -> list[dict[str, float | int | str]]:
         if primary.endswith("_loads"):
             memory = primary.removesuffix("_loads")
             actual = row[f"decoder_{memory}_loads"]
-        elif primary in {"fp32", "fp64", "conversion", "integer_alu", "special"}:
+        elif primary == "special":
+            # CUDA lowers some nominal special operations, notably FP64 exp2,
+            # to a visible polynomial instead of MUFU or CALL. Count the
+            # complete lowered numeric body while retaining each SASS family
+            # in its own predictor feature.
+            actual = sum(row[f"decoder_{family}"] for family in
+                         ("special", "fp64", "fp32", "conversion",
+                          "integer_multiply", "integer_divide"))
+        elif primary in {"fp32", "fp64", "conversion", "integer_alu"}:
             actual = row[f"decoder_{primary}"]
         else:
             actual = 0
