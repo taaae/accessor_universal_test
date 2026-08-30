@@ -33,7 +33,7 @@ struct device_tables {
   const normal32::pwq_coeff *pwq;
 };
 
-extern __constant__ double constant_lut[4096];
+__device__ __constant__ double constant_lut[4096];
 
 __device__ __forceinline__ double finite_from_u32(std::uint32_t value) {
   return __hiloint2double(static_cast<int>(0x3ff00000u | (value >> 12)),

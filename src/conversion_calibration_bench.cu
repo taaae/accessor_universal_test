@@ -21,10 +21,6 @@
 namespace calibration = aut::calibration;
 namespace normal32 = aut::normal32;
 
-namespace aut::calibration {
-__constant__ double constant_lut[4096];
-} // namespace aut::calibration
-
 namespace {
 
 constexpr std::uint64_t left_key = 0x6bd87c012a53f9e1ULL;
