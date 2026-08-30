@@ -1,0 +1,4 @@
+GPU: NVIDIA H200 NVL
+Raw FP32 DOT: N=1048576, warmups=1, samples=3
+Result sink: 186.648
+Wrote /storage/home/timofeirusanov/accessor_universal_test_lut_fp32_followup/results/027_lut_distribution_shape/raw_fp32_followup_20260830T104804Z/smoke/timing_samples.csv

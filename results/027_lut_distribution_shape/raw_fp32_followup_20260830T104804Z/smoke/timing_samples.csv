@@ -1,0 +1,4 @@
+timestamp,gpu,mode,kernel,N,blocks,threads,storage_bits,arithmetic_type,storage_layout,access_method,packet_values,lut_entries,lut_bytes,format,x_semantics,left_seed,right_seed,warmup,sample,kernel_ms,result
+2026-08-30T10:48:08Z,NVIDIA H200 NVL,smoke,dot,1048576,512,256,32,fp32,natural,scalar,1,0,0,raw_fp32,undefined_no_lut,11820040416388919760,589684135938649225,1,0,0.011392000131309032,62.216056823730469
+2026-08-30T10:48:08Z,NVIDIA H200 NVL,smoke,dot,1048576,512,256,32,fp32,natural,scalar,1,0,0,raw_fp32,undefined_no_lut,11820040416388919760,589684135938649225,1,1,0.010080000385642052,62.216056823730469
+2026-08-30T10:48:08Z,NVIDIA H200 NVL,smoke,dot,1048576,512,256,32,fp32,natural,scalar,1,0,0,raw_fp32,undefined_no_lut,11820040416388919760,589684135938649225,1,2,0.017247999086976051,62.216056823730469
