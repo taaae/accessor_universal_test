@@ -21,7 +21,9 @@
 namespace calibration = aut::calibration;
 namespace normal32 = aut::normal32;
 
-__constant__ double aut::calibration::constant_lut[4096];
+namespace aut::calibration {
+__constant__ double constant_lut[4096];
+} // namespace aut::calibration
 
 namespace {
 
