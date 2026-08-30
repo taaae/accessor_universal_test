@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 #SBATCH --job-name=conversion-calibration
 #SBATCH --partition=compute
-#SBATCH --nodelist=gpu-nvidia-h200-2
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
@@ -20,5 +19,5 @@ module load "${CUDA_MODULE:-cuda/13.1.1}"
 cd "${repo_dir}"
 srun --ntasks=1 --cpus-per-task="${SLURM_CPUS_PER_TASK}" \
   env MODE="${MODE:-smoke}" RUN_DIR="${RUN_DIR:?set one protected run directory}" \
-  BUILD_DIR="${repo_dir}/build-conversion-calibration" BUILD_JOBS=2 \
+  BUILD_DIR="${repo_dir}/build-conversion-calibration-$(git rev-parse --short=12 HEAD)" BUILD_JOBS=2 \
   "${repo_dir}/scripts/run_conversion_calibration.sh"

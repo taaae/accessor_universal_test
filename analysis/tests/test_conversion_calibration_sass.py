@@ -8,8 +8,8 @@ from conversion_calibration.sass import critical_depth, main_loop, parse_functio
 FIXTURE = r'''
 Function : void aut::calibration::dot_case_kernel<0>(unsigned int const*, unsigned int const*, unsigned long, aut::calibration::device_tables, double*)
         /*0000*/                   MOV R1, c[0x0][0x28] ;
-        /*0010*/                   IADD3 R4, R2, 0x1, RZ ;
-        /*0020*/                   LOP3.LUT R5, R4, 0xff, RZ, 0xc0, !PT ;
+        /*0010*/                   IADD3 R4, R2, 0x1, RZ ; /* 0x0000000102047810 */
+        /*0020*/                   LOP3.LUT R5, R4, 0xff, RZ, 0xc0, !PT ; /* 0x000fe200078e00ff */
         /*0030*/              @P0  IADD3 R6, R5, 0x2, RZ ;
         /*0040*/                   BRA 0x10 ;
         /*0050*/                   EXIT ;

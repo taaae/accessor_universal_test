@@ -2,7 +2,8 @@
 set -euo pipefail
 
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-build_dir="${BUILD_DIR:-${repo_dir}/build-conversion-calibration}"
+commit_short="$(git -C "${repo_dir}" rev-parse --short=12 HEAD)"
+build_dir="${BUILD_DIR:-${repo_dir}/build-conversion-calibration-${commit_short}}"
 results_root="${RESULTS_ROOT:-${repo_dir}/results/028_conversion_cost_calibration}"
 run_dir="${RUN_DIR:-${results_root}/run_$(date -u +%Y%m%dT%H%M%SZ)}"
 mode="${MODE:-smoke}"
@@ -78,7 +79,20 @@ cuobjdump --dump-resource-usage --demangle "${binary}" >"${mode_dir}/cuobjdump_r
 stage="benchmark"
 benchmark_args=(--mode "${mode}" --output "${mode_dir}/timing_samples.csv" --resources "${mode_dir}/kernel_resources.csv")
 if [[ "${mode}" == smoke ]]; then benchmark_args+=(--n "${SMOKE_N:-1048576}" --warmups 1 --rounds 1 --samples 1 --interval-ms 0); fi
-"${binary}" "${benchmark_args[@]}" | tee "${mode_dir}/stdout.txt"
+if [[ "${mode}" == smoke ]]; then
+  stage="compute_sanitizer"
+  all_cases="$(python3 - <<'PY'
+print(','.join(str(index) for index in range(135)))
+PY
+)"
+  timeout --foreground "${SANITIZER_TIMEOUT:-1200}" compute-sanitizer \
+    --tool memcheck --error-exitcode 99 "${binary}" --mode smoke --n 65536 \
+    --resources "${mode_dir}/sanitizer_resources.csv" \
+    --profile-cases "${all_cases}" >"${mode_dir}/compute_sanitizer.txt" 2>&1
+fi
+stage="benchmark"
+timeout --foreground "${BENCHMARK_TIMEOUT:-7200}" \
+  "${binary}" "${benchmark_args[@]}" | tee "${mode_dir}/stdout.txt"
 
 stage="feature_extraction"
 python3 "${repo_dir}/tools/extract_conversion_calibration_sass.py" \
@@ -88,7 +102,8 @@ python3 "${repo_dir}/tools/extract_conversion_calibration_sass.py" \
 stage="analysis"
 mkdir "${mode_dir}/analysis"
 python3 "${repo_dir}/tools/analyze_conversion_calibration.py" \
-  "${mode_dir}/timing_samples.csv" "${mode_dir}/features.csv" "${mode_dir}/analysis" | tee "${mode_dir}/analysis_stdout.txt"
+  "${mode_dir}/timing_samples.csv" "${mode_dir}/features.csv" "${mode_dir}/analysis" \
+  --require-timing-qc | tee "${mode_dir}/analysis_stdout.txt"
 python3 "${repo_dir}/tools/build_conversion_calibration_report.py" \
   "${mode_dir}" "${mode_dir}/analysis/report.html"
 

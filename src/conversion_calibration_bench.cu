@@ -192,6 +192,8 @@ void run(const options &settings) {
   cudaDeviceProp properties{}; CUDA_CHECK(cudaGetDeviceProperties(&properties, device));
   if (settings.mode == "full" && (properties.major != 9 || properties.minor != 0))
     throw std::runtime_error("full experiment requires SM90");
+  if (settings.mode == "full" && std::string(properties.name).find("H200") == std::string::npos)
+    throw std::runtime_error("full experiment requires an NVIDIA H200");
 
   device_buffer<std::uint32_t> left(settings.n), right(settings.n);
   device_buffer<double> partials(fixed_blocks), result(1);

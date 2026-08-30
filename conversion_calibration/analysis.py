@@ -14,7 +14,8 @@ from typing import Iterable
 from .manifest import CASES, manifest_document
 
 
-PIPELINES = ("issue", "integer", "conversion", "fp32", "fp64", "special", "lut")
+PIPELINES = ("issue", "integer", "conversion", "fp32", "fp64", "special",
+             "lut_global", "lut_shared", "lut_constant")
 PENALTIES = ("dependency", "divergence", "spills")
 
 
@@ -42,7 +43,14 @@ def load_timings(path: Path) -> tuple[list[dict], dict]:
     with path.open(newline="") as handle: rows = list(csv.DictReader(handle))
     measurements: dict[str, list[float]] = {}
     anchors: dict[int, dict[str, float]] = {}
+    keys: set[tuple[str, str, str, str, str]] = set()
     for row in rows:
+        if row.get("status") != "ok":
+            raise ValueError(f"non-ok timing row: {row}")
+        key = (row["case_id"], row["round"], row["position"], row["sample"], row["stage"])
+        if key in keys:
+            raise ValueError(f"duplicate timing row: {key}")
+        keys.add(key)
         value = float(row["per_dot_ms"])
         if row["stage"] == "measurement": measurements.setdefault(row["case_id"], []).append(value)
         elif "anchor" in row["stage"]:
@@ -50,6 +58,27 @@ def load_timings(path: Path) -> tuple[list[dict], dict]:
     expected = {case.case_id for case in CASES}
     if set(measurements) != expected:
         raise ValueError(f"timing cases mismatch missing={sorted(expected-set(measurements))} extra={sorted(set(measurements)-expected)}")
+    counts = {len(values) for values in measurements.values()}
+    if counts == {30}:
+        mode = "full"
+        if {int(row["n"]) for row in rows} != {1 << 27}:
+            raise ValueError("full timing contains wrong or mixed N")
+        for case in CASES:
+            case_rows = [row for row in rows if row["case_id"] == case.case_id and row["stage"] == "measurement"]
+            if {int(row["round"]) for row in case_rows} != {0, 1, 2}:
+                raise ValueError(f"wrong rounds for {case.case_id}")
+            for round_index in range(3):
+                round_rows = [row for row in case_rows if int(row["round"]) == round_index]
+                if len(round_rows) != 10 or {int(row["sample"]) for row in round_rows} != set(range(10)) or len({row["position"] for row in round_rows}) != 1:
+                    raise ValueError(f"wrong samples/position for {case.case_id} round {round_index}")
+        for round_index in range(3):
+            positions = {int(row["position"]) for row in rows if row["stage"] == "measurement" and int(row["round"]) == round_index}
+            if positions != set(range(len(CASES))):
+                raise ValueError(f"round {round_index} does not cover every shuffled position")
+    elif counts == {1}:
+        mode = "smoke"
+    else:
+        raise ValueError(f"wrong per-case measurement counts: {counts}")
     summaries=[]
     for case in CASES:
         summary=summarize_samples(measurements[case.case_id], seed=0x4F3C2D1A ^ len(summaries))
@@ -65,13 +94,15 @@ def load_timings(path: Path) -> tuple[list[dict], dict]:
         "anchor_drift_pass":max(drift,default=0.0)<=0.02,
         "noisy_case_count":len(noisy),"noisy_case_fraction":len(noisy)/len(summaries),
         "noise_pass":len(noisy)/len(summaries)<=0.02,
-        "timing_pass":max(drift,default=0.0)<=0.02 and len(noisy)/len(summaries)<=0.02}
+        "timing_pass":max(drift,default=0.0)<=0.02 and len(noisy)/len(summaries)<=0.02,
+        "mode": mode}
     return summaries,qc
 
 
 def load_features(path: Path) -> dict[str, dict[str, float | str]]:
     with path.open(newline="") as handle: rows=list(csv.DictReader(handle))
-    numeric=set(rows[0])-{"case_id","split","group","function"}
+    numeric=set(rows[0])-{"case_id","split","group","function",
+                         "primary_operation_family","compiler_count_status"}
     result={}
     for row in rows:
         converted={key:(float(value) if key in numeric else value) for key,value in row.items()}
@@ -82,14 +113,21 @@ def load_features(path: Path) -> dict[str, dict[str, float | str]]:
 
 
 def raw_model_features(row: dict[str,float|str]) -> dict[str,float]:
+    case = next(case for case in CASES if case.case_id == row["case_id"])
+    def value(name: str, fallback: str | None = None) -> float:
+        return float(row.get(name, row.get(fallback, 0.0) if fallback else 0.0))
+    entries = 1 << case.lut_index_bits if case.lut_index_bits else 0
+    unique_addresses = entries * (1.0 - (1.0 - 1.0 / entries) ** 32) if entries else 0.0
     return {
-        "issue":float(row["loop_instruction_count"]),
-        "integer":float(row["integer_alu"])+2.0*float(row["integer_multiply"])+8.0*float(row["integer_divide"]),
-        "conversion":float(row["conversion"]),
-        "fp32":float(row["fp32"]),
-        "fp64":float(row["fp64"]),
-        "special":float(row["special"]),
-        "lut":float(row["lut_expected_sectors_per_warp"])+float(row["global_loads"]),
+        "issue":value("decoder_loop_instruction_count", "loop_instruction_count"),
+        "integer":value("decoder_integer_alu", "integer_alu") + 2.0*value("decoder_integer_multiply", "integer_multiply") + 8.0*value("decoder_integer_divide", "integer_divide"),
+        "conversion":value("decoder_conversion", "conversion"),
+        "fp32":value("decoder_fp32", "fp32"),
+        "fp64":value("decoder_fp64", "fp64"),
+        "special":value("decoder_special", "special"),
+        "lut_global":float(row["lut_expected_sectors_per_warp"]) if case.lut_memory == "global" else 0.0,
+        "lut_shared":value("decoder_shared_loads", "shared_loads") * max(1.0, 1.0 / max(float(row["estimated_occupancy"]), 0.125)) if case.lut_memory == "shared" else 0.0,
+        "lut_constant":unique_addresses * case.lut_loads if case.lut_memory == "constant" else 0.0,
         "dependency":float(row["critical_dependency_depth"])*(1.0-float(row["estimated_occupancy"])*0.5),
         "divergence":max(0.0,float(row["expected_true_warp_path"])+float(row["expected_false_warp_path"])-1.0)*float(row["predicated_instruction_count"]+row["branch_count"]),
         "spills":float(row["local_loads"])+float(row["local_stores"])+float(row["local_bytes_per_thread"])/8.0,
@@ -112,8 +150,12 @@ def huber_loss(errors: Iterable[float], delta: float) -> float:
 
 
 def fit_model(summaries: list[dict], features: dict[str,dict]) -> dict:
+    if not summaries or any(row["split"] != "train" for row in summaries):
+        raise ValueError("fit_model accepts training summaries only")
+    if set(features) != {row["case_id"] for row in summaries}:
+        raise ValueError("fit_model feature set must exactly equal training cases")
     measured={row["case_id"]:row["median_ms"] for row in summaries}
-    train_ids=[case.case_id for case in CASES if case.split=="train"]
+    train_ids=[row["case_id"] for row in summaries]
     raw={case_id:raw_model_features(features[case_id]) for case_id in measured}
     scales={name:max(max(raw[case_id][name] for case_id in train_ids),1.0) for name in PIPELINES+PENALTIES}
     vectors={case_id:{name:value/scales[name] for name,value in values.items()} for case_id,values in raw.items()}
@@ -143,7 +185,17 @@ def fit_model(summaries: list[dict], features: dict[str,dict]) -> dict:
            "interval_half_width_ms":residual90,"huber_delta_ms":delta,"objective":best,
            "pipeline_features":list(PIPELINES),"penalty_features":list(PENALTIES)}
     frozen=json.dumps(model,sort_keys=True,separators=(",",":")); model["frozen_sha256"]=hashlib.sha256(frozen.encode()).hexdigest(); model["frozen_before_final_evaluation"]=True
-    return {"model":model,"vectors":vectors,"predictions":predictions}
+    return model
+
+
+def apply_model(model: dict, features: dict[str, dict]) -> dict[str, tuple[float, str]]:
+    vectors = {}
+    for case_id, row in features.items():
+        raw = raw_model_features(row)
+        vectors[case_id] = {name: raw[name] / model["feature_scales"][name]
+                            for name in PIPELINES + PENALTIES}
+    return {case_id: predict_vector(vector, model["parameters_ms"])
+            for case_id, vector in vectors.items()}
 
 
 def ranks(values:list[float])->list[float]:
@@ -163,11 +215,11 @@ def spearman(left:list[float],right:list[float])->float:
     return numerator/denominator if denominator else 0.0
 
 
-def evaluate(summaries:list[dict], fit:dict)->tuple[list[dict],dict]:
-    measured={row["case_id"]:row for row in summaries}; half=fit["model"]["interval_half_width_ms"]
+def evaluate(summaries:list[dict], model:dict, predictions:dict)->tuple[list[dict],dict]:
+    measured={row["case_id"]:row for row in summaries}; half=model["interval_half_width_ms"]
     rows=[]
     for case in CASES:
-        predicted,bottleneck=fit["predictions"][case.case_id]; actual=measured[case.case_id]["median_ms"]
+        predicted,bottleneck=predictions[case.case_id]; actual=measured[case.case_id]["median_ms"]
         rows.append({"case_id":case.case_id,"split":case.split,"group":case.group,"measured_ms":actual,
                      "predicted_ms":predicted,"interval_low_ms":max(0.0,predicted-half),"interval_high_ms":predicted+half,
                      "absolute_error_ms":abs(predicted-actual),"ape_percent":abs(predicted-actual)/actual*100.0,
@@ -193,12 +245,24 @@ def write_csv(rows:list[dict],path:Path)->None:
 
 
 def analyze(timing:Path,features_path:Path,output_dir:Path)->dict:
-    summaries,qc=load_timings(timing); features=load_features(features_path); fit=fit_model(summaries,features)
-    evaluations,acceptance=evaluate(summaries,fit)
+    summaries,qc=load_timings(timing); features=load_features(features_path)
     output_dir.mkdir(parents=True,exist_ok=True)
+    training_summaries=[row for row in summaries if row["split"]=="train"]
+    training_features={row["case_id"]:features[row["case_id"]] for row in training_summaries}
+    model=fit_model(training_summaries,training_features)
+    model_path=output_dir/"model.json"
+    model_path.write_text(json.dumps(model,indent=2,sort_keys=True)+"\n")
+    # This persisted reload is the freeze boundary. Final predictions are not
+    # computed until the hashed, training-only model exists on disk.
+    frozen_model=json.loads(model_path.read_text())
+    expected_hash=frozen_model["frozen_sha256"]
+    hash_payload=dict(frozen_model); hash_payload.pop("frozen_sha256"); hash_payload.pop("frozen_before_final_evaluation")
+    actual_hash=hashlib.sha256(json.dumps(hash_payload,sort_keys=True,separators=(",",":")).encode()).hexdigest()
+    if actual_hash != expected_hash: raise ValueError("persisted frozen model hash mismatch")
+    predictions=apply_model(frozen_model,features)
+    evaluations,acceptance=evaluate(summaries,frozen_model,predictions)
     write_csv(summaries,output_dir/"timing_summary.csv"); write_csv(evaluations,output_dir/"predictions.csv")
-    (output_dir/"model.json").write_text(json.dumps(fit["model"],indent=2,sort_keys=True)+"\n")
     result={"manifest":manifest_document(),"quality_control":qc,"acceptance":acceptance,
-            "model_sha256":fit["model"]["frozen_sha256"]}
+            "model_sha256":frozen_model["frozen_sha256"]}
     (output_dir/"analysis.json").write_text(json.dumps(result,indent=2,sort_keys=True)+"\n")
     return result

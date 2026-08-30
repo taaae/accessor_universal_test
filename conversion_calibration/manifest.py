@@ -38,6 +38,7 @@ class Case:
     lut_index_bits: int = 0
     lut_loads: int = 0
     assumptions: tuple[str, ...] = ()
+    provenance: tuple[str, ...] = ()
 
     def row(self) -> dict[str, Any]:
         result = asdict(self)
@@ -130,17 +131,17 @@ def synthetic_validation_cases() -> list[Case]:
 
 def real_cases() -> list[Case]:
     return [
-        c("dev_raw_fp32_to_fp64", "development", "real_development", "real", params={"format": "raw_fp32"}),
-        c("dev_e11m20_shifter", "development", "real_development", "real", params={"format": "e11m20_shifter"}),
-        c("dev_e9m22_branchy", "development", "real_development", "real", params={"format": "e9m22_branchy"}),
-        c("dev_e9m22_prefix_global", "development", "real_development", "real", params={"format": "e9m22_prefix_global"}, lut_memory="global", lut_index_bits=10, lut_loads=1, assumptions=("prefix index is sign plus exponent",)),
-        c("dev_quadnormal32", "development", "real_development", "real", params={"format": "quadnormal32"}),
-        c("final_pwlnormal32_16_16", "final", "real_final", "real", params={"format": "pwlnormal32_16_16"}, lut_memory="global", lut_index_bits=16, lut_loads=1),
-        c("final_pwqnormal32_8_24", "final", "real_final", "real", params={"format": "pwqnormal32_8_24"}, lut_memory="global", lut_index_bits=8, lut_loads=1),
-        c("final_posit32_es2", "final", "real_final", "real", params={"format": "posit32_es2"}),
-        c("final_takum32_linear", "final", "real_final", "real", params={"format": "takum32_linear"}),
-        c("final_takum32_log", "final", "real_final", "real", params={"format": "takum32_log"}),
-        c("final_lns32_r23_reference_exp2", "final", "real_final", "real", params={"format": "lns32_r23_reference_exp2"}),
+        c("dev_raw_fp32_to_fp64", "development", "real_development", "real", params={"format": "raw_fp32"}, provenance=("include/format_decoder_strategies.cuh:native_direct", "main@3cbce41")),
+        c("dev_e11m20_shifter", "development", "real_development", "real", params={"format": "e11m20_shifter"}, provenance=("include/decoder_strategy_core.hpp:decode_prefix_words<20>", "main@3cbce41")),
+        c("dev_e9m22_branchy", "development", "real_development", "real", params={"format": "e9m22_branchy"}, provenance=("include/bitwidth_benchmark_core.hpp:decode_direct_fp64_branchy<storage::e9m22>", "main@3cbce41")),
+        c("dev_e9m22_prefix_global", "development", "real_development", "real", params={"format": "e9m22_prefix_global"}, lut_memory="global", lut_index_bits=10, lut_loads=1, assumptions=("prefix index is sign plus exponent",), provenance=("include/format_decoder_strategies.cuh:prefix_high_lut", "main@3cbce41")),
+        c("dev_quadnormal32", "development", "real_development", "real", params={"format": "quadnormal32"}, provenance=("src/normal32_dot_bench.cu:qn32_view", "codex/t16-dot-benchmark@51a416b")),
+        c("final_pwlnormal32_16_16", "final", "real_final", "real", params={"format": "pwlnormal32_16_16"}, lut_memory="global", lut_index_bits=16, lut_loads=1, provenance=("src/normal32_dot_bench.cu:pwl_view", "codex/t16-dot-benchmark@51a416b")),
+        c("final_pwqnormal32_8_24", "final", "real_final", "real", params={"format": "pwqnormal32_8_24"}, lut_memory="shared", lut_index_bits=8, lut_loads=1, assumptions=("256 coefficients are staged from global to shared once per block",), provenance=("src/normal32_dot_bench.cu:decode_pwq_shared", "codex/t16-dot-benchmark@51a416b")),
+        c("final_posit32_es2", "final", "real_final", "real", params={"format": "posit32_es2"}, provenance=("include/posit_takum_core.hpp:decode_posit<32,2,double>", "main@c069094")),
+        c("final_takum32_linear", "final", "real_final", "real", params={"format": "takum32_linear"}, provenance=("include/posit_takum_core.hpp:decode_linear_takum<32,double>", "main@c069094")),
+        c("final_takum32_log", "final", "real_final", "real", params={"format": "takum32_log"}, provenance=("include/posit_takum_core.hpp:decode_log_takum<32,double>", "main@c069094")),
+        c("final_lns32_r23_reference_exp2", "final", "real_final", "real", params={"format": "lns32_r23_reference_exp2"}, provenance=("include/lns_decoder_strategies.cuh:reference_exp2", "main@3cbce41")),
     ]
 
 
@@ -209,6 +210,8 @@ def validate_manifest() -> None:
             raise ValueError(f"missing branch probability: {case.case_id}")
         if case.kind == "lut" and (not case.lut_memory or not case.lut_index_bits or not case.lut_loads):
             raise ValueError(f"missing LUT metadata: {case.case_id}")
+        if case.kind == "real" and len(case.provenance) < 2:
+            raise ValueError(f"missing real-converter provenance: {case.case_id}")
 
 
 validate_manifest()

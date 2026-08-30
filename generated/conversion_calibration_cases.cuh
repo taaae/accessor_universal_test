@@ -32,7 +32,7 @@ __device__ __forceinline__ std::uint32_t op_iadd3(std::uint32_t a,
                                                    std::uint32_t b,
                                                    std::uint32_t c) {
   std::uint32_t out;
-  asm volatile("add.u32 %0, %1, %2; add.u32 %0, %0, %3;"
+  asm volatile("add.u32 %0, %1, %2;"
                : "=r"(out) : "r"(a), "r"(b), "r"(c));
   return out;
 }

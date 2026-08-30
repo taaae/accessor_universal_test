@@ -50,6 +50,9 @@ class ManifestTest(unittest.TestCase):
     def test_final_cases_never_enter_fit_split(self):
         train_ids = {case.case_id for case in CASES if case.split == "train"}
         self.assertFalse(train_ids & {case.case_id for case in CASES if case.split == "final"})
+        for case in CASES:
+            if case.kind == "real":
+                self.assertGreaterEqual(len(case.provenance), 2)
 
     def test_codegen_is_deterministic_and_complete(self):
         first, second = render(), render()

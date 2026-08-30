@@ -17,6 +17,7 @@
       "lut_loads": 0,
       "lut_memory": null,
       "params": {},
+      "provenance": [],
       "split": "train"
     },
     {
@@ -32,6 +33,7 @@
         "count": 1,
         "source": "u32"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -47,6 +49,7 @@
         "count": 1,
         "source": "s32"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -63,6 +66,7 @@
         "dependency": "chain",
         "op": "iadd3"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -79,6 +83,7 @@
         "dependency": "ilp4",
         "op": "iadd3"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -95,6 +100,7 @@
         "dependency": "chain",
         "op": "iadd3"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -111,6 +117,7 @@
         "dependency": "ilp4",
         "op": "iadd3"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -127,6 +134,7 @@
         "dependency": "chain",
         "op": "iadd3"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -143,6 +151,7 @@
         "dependency": "ilp4",
         "op": "iadd3"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -159,6 +168,7 @@
         "dependency": "chain",
         "op": "lop3"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -175,6 +185,7 @@
         "dependency": "ilp4",
         "op": "lop3"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -191,6 +202,7 @@
         "dependency": "chain",
         "op": "lop3"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -207,6 +219,7 @@
         "dependency": "ilp4",
         "op": "lop3"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -223,6 +236,7 @@
         "dependency": "chain",
         "op": "lop3"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -239,6 +253,7 @@
         "dependency": "ilp4",
         "op": "lop3"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -255,6 +270,7 @@
         "dependency": "chain",
         "op": "shf"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -271,6 +287,7 @@
         "dependency": "ilp4",
         "op": "shf"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -287,6 +304,7 @@
         "dependency": "chain",
         "op": "shf"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -303,6 +321,7 @@
         "dependency": "ilp4",
         "op": "shf"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -319,6 +338,7 @@
         "dependency": "chain",
         "op": "shf"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -335,6 +355,7 @@
         "dependency": "ilp4",
         "op": "shf"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -351,6 +372,7 @@
         "dependency": "chain",
         "op": "imad"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -367,6 +389,7 @@
         "dependency": "ilp4",
         "op": "imad"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -383,6 +406,7 @@
         "dependency": "chain",
         "op": "imad"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -399,6 +423,7 @@
         "dependency": "ilp4",
         "op": "imad"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -415,6 +440,7 @@
         "dependency": "chain",
         "op": "imad"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -431,6 +457,7 @@
         "dependency": "ilp4",
         "op": "imad"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -445,6 +472,7 @@
       "params": {
         "count": 1
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -459,6 +487,7 @@
       "params": {
         "count": 2
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -473,6 +502,7 @@
       "params": {
         "count": 4
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -487,6 +517,7 @@
       "params": {
         "count": 1
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -501,6 +532,7 @@
       "params": {
         "count": 4
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -515,6 +547,7 @@
       "params": {
         "count": 8
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -530,6 +563,7 @@
         "count": 1,
         "source": "u32"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -545,6 +579,7 @@
         "count": 2,
         "source": "u32"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -560,6 +595,7 @@
         "count": 4,
         "source": "u32"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -575,6 +611,7 @@
         "count": 1,
         "source": "s32"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -590,6 +627,7 @@
         "count": 2,
         "source": "s32"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -605,6 +643,7 @@
         "count": 4,
         "source": "s32"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -620,6 +659,7 @@
         "count": 1,
         "source": "f32"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -635,6 +675,7 @@
         "count": 2,
         "source": "f32"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -650,6 +691,7 @@
         "count": 4,
         "source": "f32"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -664,6 +706,7 @@
       "params": {
         "source": "u32"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -678,6 +721,7 @@
       "params": {
         "source": "s32"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -695,6 +739,7 @@
         "op": "fma",
         "precision": "fp64"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -712,6 +757,7 @@
         "op": "fma",
         "precision": "fp64"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -729,6 +775,7 @@
         "op": "fma",
         "precision": "fp64"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -746,6 +793,7 @@
         "op": "fma",
         "precision": "fp64"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -763,6 +811,7 @@
         "op": "fma",
         "precision": "fp64"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -780,6 +829,7 @@
         "op": "fma",
         "precision": "fp64"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -797,6 +847,7 @@
         "op": "add",
         "precision": "fp64"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -814,6 +865,7 @@
         "op": "add",
         "precision": "fp64"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -831,6 +883,7 @@
         "op": "mul",
         "precision": "fp64"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -848,6 +901,7 @@
         "op": "mul",
         "precision": "fp64"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -865,6 +919,7 @@
         "op": "fma",
         "precision": "fp32"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -882,6 +937,7 @@
         "op": "fma",
         "precision": "fp32"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -899,6 +955,7 @@
         "op": "fma",
         "precision": "fp32"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -916,6 +973,7 @@
         "op": "fma",
         "precision": "fp32"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -933,6 +991,7 @@
         "dependency": "chain",
         "fmas": 1
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -950,6 +1009,7 @@
         "dependency": "parallel",
         "fmas": 1
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -967,6 +1027,7 @@
         "dependency": "chain",
         "fmas": 4
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -984,6 +1045,7 @@
         "dependency": "parallel",
         "fmas": 4
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1001,6 +1063,7 @@
         "dependency": "chain",
         "fmas": 8
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1018,6 +1081,7 @@
         "dependency": "parallel",
         "fmas": 8
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1035,6 +1099,7 @@
         "dependency": "chain",
         "fmas": 4
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1052,6 +1117,7 @@
         "dependency": "parallel",
         "fmas": 4
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1069,6 +1135,7 @@
         "dependency": "chain",
         "fmas": 8
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1086,6 +1153,7 @@
         "dependency": "parallel",
         "fmas": 8
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1104,6 +1172,7 @@
         "count": 4,
         "denominator": 2
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1122,6 +1191,7 @@
         "count": 16,
         "denominator": 2
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1140,6 +1210,7 @@
         "count": 4,
         "denominator": 2
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1158,6 +1229,7 @@
         "count": 16,
         "denominator": 2
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1176,6 +1248,7 @@
         "count": 4,
         "denominator": 16
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1194,6 +1267,7 @@
         "count": 16,
         "denominator": 16
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1212,6 +1286,7 @@
         "count": 4,
         "denominator": 16
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1230,6 +1305,7 @@
         "count": 16,
         "denominator": 16
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1248,6 +1324,7 @@
         "count": 4,
         "denominator": 64
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1266,6 +1343,7 @@
         "count": 16,
         "denominator": 64
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1284,6 +1362,7 @@
         "count": 4,
         "denominator": 64
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1302,6 +1381,7 @@
         "count": 16,
         "denominator": 64
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1320,6 +1400,7 @@
         "count": 4,
         "denominator": 256
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1338,6 +1419,7 @@
         "count": 16,
         "denominator": 256
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1356,6 +1438,7 @@
         "count": 4,
         "denominator": 256
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1374,6 +1457,7 @@
         "count": 16,
         "denominator": 256
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1392,6 +1476,7 @@
         "loads": 1,
         "memory": "global"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1410,6 +1495,7 @@
         "loads": 1,
         "memory": "global"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1428,6 +1514,7 @@
         "loads": 1,
         "memory": "global"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1446,6 +1533,7 @@
         "loads": 1,
         "memory": "global"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1464,6 +1552,7 @@
         "loads": 1,
         "memory": "global"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1482,6 +1571,7 @@
         "loads": 1,
         "memory": "global"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1500,6 +1590,7 @@
         "loads": 1,
         "memory": "constant"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1518,6 +1609,7 @@
         "loads": 1,
         "memory": "constant"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1536,6 +1628,7 @@
         "loads": 1,
         "memory": "constant"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1554,6 +1647,7 @@
         "loads": 1,
         "memory": "shared"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1572,6 +1666,7 @@
         "loads": 1,
         "memory": "shared"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1590,6 +1685,7 @@
         "loads": 1,
         "memory": "shared"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1608,6 +1704,7 @@
         "loads": 2,
         "memory": "global"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1626,6 +1723,7 @@
         "loads": 2,
         "memory": "global"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1644,6 +1742,7 @@
         "loads": 3,
         "memory": "global"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1662,6 +1761,7 @@
         "loads": 3,
         "memory": "global"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1680,6 +1780,7 @@
         "loads": 3,
         "memory": "global"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1694,6 +1795,7 @@
       "params": {
         "op": "exp2"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1708,6 +1810,7 @@
       "params": {
         "op": "log2"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1722,6 +1825,7 @@
       "params": {
         "op": "sqrt"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1736,6 +1840,7 @@
       "params": {
         "op": "div_f64"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1750,6 +1855,7 @@
       "params": {
         "op": "div_u32"
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1765,6 +1871,7 @@
         "chains": 1,
         "fmas": 32
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1780,6 +1887,7 @@
         "chains": 2,
         "fmas": 32
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1795,6 +1903,7 @@
         "chains": 4,
         "fmas": 32
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1810,6 +1919,7 @@
         "chains": 8,
         "fmas": 32
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1825,6 +1935,7 @@
         "chains": 16,
         "fmas": 32
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1840,6 +1951,7 @@
         "chains": 32,
         "fmas": 32
       },
+      "provenance": [],
       "split": "train"
     },
     {
@@ -1856,6 +1968,7 @@
         "dependency": "chain",
         "op": "iadd3"
       },
+      "provenance": [],
       "split": "synthetic_validation"
     },
     {
@@ -1872,6 +1985,7 @@
         "dependency": "ilp4",
         "op": "lop3"
       },
+      "provenance": [],
       "split": "synthetic_validation"
     },
     {
@@ -1888,6 +2002,7 @@
         "dependency": "chain",
         "op": "shf"
       },
+      "provenance": [],
       "split": "synthetic_validation"
     },
     {
@@ -1903,6 +2018,7 @@
         "clz": 2,
         "shifts": 4
       },
+      "provenance": [],
       "split": "synthetic_validation"
     },
     {
@@ -1920,6 +2036,7 @@
         "op": "fma",
         "precision": "fp64"
       },
+      "provenance": [],
       "split": "synthetic_validation"
     },
     {
@@ -1935,6 +2052,7 @@
         "chains": 8,
         "fmas": 24
       },
+      "provenance": [],
       "split": "synthetic_validation"
     },
     {
@@ -1952,6 +2070,7 @@
         "dependency": "chain",
         "fmas": 3
       },
+      "provenance": [],
       "split": "synthetic_validation"
     },
     {
@@ -1969,6 +2088,7 @@
         "dependency": "parallel",
         "fmas": 6
       },
+      "provenance": [],
       "split": "synthetic_validation"
     },
     {
@@ -1987,6 +2107,7 @@
         "count": 8,
         "denominator": 4
       },
+      "provenance": [],
       "split": "synthetic_validation"
     },
     {
@@ -2005,6 +2126,7 @@
         "count": 8,
         "denominator": 128
       },
+      "provenance": [],
       "split": "synthetic_validation"
     },
     {
@@ -2023,6 +2145,7 @@
         "loads": 2,
         "memory": "global"
       },
+      "provenance": [],
       "split": "synthetic_validation"
     },
     {
@@ -2041,6 +2164,7 @@
         "loads": 3,
         "memory": "global"
       },
+      "provenance": [],
       "split": "synthetic_validation"
     },
     {
@@ -2055,6 +2179,10 @@
       "params": {
         "format": "raw_fp32"
       },
+      "provenance": [
+        "include/format_decoder_strategies.cuh:native_direct",
+        "main@3cbce41"
+      ],
       "split": "development"
     },
     {
@@ -2069,6 +2197,10 @@
       "params": {
         "format": "e11m20_shifter"
       },
+      "provenance": [
+        "include/decoder_strategy_core.hpp:decode_prefix_words<20>",
+        "main@3cbce41"
+      ],
       "split": "development"
     },
     {
@@ -2083,6 +2215,10 @@
       "params": {
         "format": "e9m22_branchy"
       },
+      "provenance": [
+        "include/bitwidth_benchmark_core.hpp:decode_direct_fp64_branchy<storage::e9m22>",
+        "main@3cbce41"
+      ],
       "split": "development"
     },
     {
@@ -2099,6 +2235,10 @@
       "params": {
         "format": "e9m22_prefix_global"
       },
+      "provenance": [
+        "include/format_decoder_strategies.cuh:prefix_high_lut",
+        "main@3cbce41"
+      ],
       "split": "development"
     },
     {
@@ -2113,6 +2253,10 @@
       "params": {
         "format": "quadnormal32"
       },
+      "provenance": [
+        "src/normal32_dot_bench.cu:qn32_view",
+        "codex/t16-dot-benchmark@51a416b"
+      ],
       "split": "development"
     },
     {
@@ -2127,20 +2271,30 @@
       "params": {
         "format": "pwlnormal32_16_16"
       },
+      "provenance": [
+        "src/normal32_dot_bench.cu:pwl_view",
+        "codex/t16-dot-benchmark@51a416b"
+      ],
       "split": "final"
     },
     {
-      "assumptions": [],
+      "assumptions": [
+        "256 coefficients are staged from global to shared once per block"
+      ],
       "branch_probability": null,
       "case_id": "final_pwqnormal32_8_24",
       "group": "real_final",
       "kind": "real",
       "lut_index_bits": 8,
       "lut_loads": 1,
-      "lut_memory": "global",
+      "lut_memory": "shared",
       "params": {
         "format": "pwqnormal32_8_24"
       },
+      "provenance": [
+        "src/normal32_dot_bench.cu:decode_pwq_shared",
+        "codex/t16-dot-benchmark@51a416b"
+      ],
       "split": "final"
     },
     {
@@ -2155,6 +2309,10 @@
       "params": {
         "format": "posit32_es2"
       },
+      "provenance": [
+        "include/posit_takum_core.hpp:decode_posit<32,2,double>",
+        "main@c069094"
+      ],
       "split": "final"
     },
     {
@@ -2169,6 +2327,10 @@
       "params": {
         "format": "takum32_linear"
       },
+      "provenance": [
+        "include/posit_takum_core.hpp:decode_linear_takum<32,double>",
+        "main@c069094"
+      ],
       "split": "final"
     },
     {
@@ -2183,6 +2345,10 @@
       "params": {
         "format": "takum32_log"
       },
+      "provenance": [
+        "include/posit_takum_core.hpp:decode_log_takum<32,double>",
+        "main@c069094"
+      ],
       "split": "final"
     },
     {
@@ -2197,6 +2363,10 @@
       "params": {
         "format": "lns32_r23_reference_exp2"
       },
+      "provenance": [
+        "include/lns_decoder_strategies.cuh:reference_exp2",
+        "main@3cbce41"
+      ],
       "split": "final"
     }
   ],
@@ -2229,6 +2399,6 @@
     "timing_scope": "first reduction plus final reduction",
     "warmups": 10
   },
-  "generated_header_sha256": "23011c0e0f66c837be400532e3d34d5b49d079a109e703d1be84097a66470cc9",
+  "generated_header_sha256": "7827f671882fdc94f993d49d6b3b3edfc1b59765c3d228477c502a12cc986239",
   "version": 1
 }

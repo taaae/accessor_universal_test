@@ -15,7 +15,8 @@ from .manifest import CASES
 FUNCTION_RE = re.compile(r"(?:Function\s*:\s*|\.section\s+\.text\.)(.+?)\s*$")
 INSTRUCTION_RE = re.compile(
     r"/\*([0-9a-fA-F]+)\*/\s+(?:@!?P\d+\s+)?"
-    r"([A-Z][A-Z0-9_.]*)(?:\s+([^;]*?))?\s*;\s*$"
+    r"([A-Z][A-Z0-9_.]*)(?:\s+([^;]*?))?\s*;"
+    r"(?:\s*/\*.*\*/)?\s*$"
 )
 TARGET_RE = re.compile(r"(?:0x)?([0-9a-fA-F]+)\s*;?\s*$")
 REGISTER_RE = re.compile(r"\b(?:U?RZ|U?R\d+|P\d+)\b")
@@ -99,7 +100,7 @@ def feature_row(index: int, instructions: list[Instruction]) -> dict[str, float 
     case = CASES[index]
     loop = main_loop(instructions)
     opcodes = [item.opcode for item in loop]
-    global_loads = _count(opcodes, ("LDG", "LD.E", "LD."))
+    global_loads = _count(opcodes, ("LDG", "LD.E"))
     shared_loads = _count(opcodes, ("LDS",))
     constant_loads = _count(opcodes, ("LDC",))
     local_loads = _count(opcodes, ("LDL",))
@@ -125,8 +126,9 @@ def feature_row(index: int, instructions: list[Instruction]) -> dict[str, float 
         "integer_multiply": _count(opcodes, ("IMAD", "XMAD")),
         "integer_divide": _count(opcodes, ("CALL",)) if case.params.get("op") == "div_u32" else 0,
         "conversion": _count(opcodes, ("I2F", "F2I", "F2F")),
-        "fp32": _count(opcodes, ("FADD", "FMUL", "FFMA")),
-        "fp64": _count(opcodes, ("DADD", "DMUL", "DFMA")),
+        "fp32": sum(opcode.startswith(("FADD", "FMUL", "FFMA")) and ".D2" not in opcode for opcode in opcodes),
+        "fp64": _count(opcodes, ("DADD", "DMUL", "DFMA")) +
+                sum(opcode.startswith(("FADD.D2", "FMUL.D2", "FFMA.D2")) for opcode in opcodes),
         "special": _count(opcodes, ("MUFU", "RRO", "CALL")),
         "global_loads": global_loads,
         "shared_loads": shared_loads,
@@ -161,6 +163,43 @@ def extract(text: str) -> list[dict[str, float | int | str]]:
         row = feature_row(index, instructions)
         row["function"] = name
         rows.append(row)
+    baseline = rows[0]
+    delta_fields = ("loop_instruction_count", "integer_alu", "integer_multiply",
+                    "integer_divide", "conversion", "fp32", "fp64", "special",
+                    "global_loads", "shared_loads", "constant_loads", "local_loads",
+                    "local_stores", "branch_count", "predicated_instruction_count")
+    for row in rows:
+        for field in delta_fields:
+            row[f"decoder_{field}"] = max(0, int(row[field]) - int(baseline[field]))
+        case = next(case for case in CASES if case.case_id == row["case_id"])
+        nominal = 0
+        primary = "none"
+        if case.kind in {"integer", "clz", "int64"}:
+            nominal = int(case.params.get("count", 1)); primary = "integer_alu"
+        elif case.kind == "numeric":
+            nominal = int(case.params["count"]); primary = "conversion"
+        elif case.kind == "numeric_chain":
+            nominal = 2; primary = "conversion"
+        elif case.kind == "fp":
+            nominal = int(case.params["count"]); primary = str(case.params["precision"])
+        elif case.kind == "latency":
+            nominal = int(case.params["fmas"]); primary = "fp64"
+        elif case.kind == "special":
+            nominal = 1; primary = "special"
+        elif case.kind == "lut":
+            nominal = int(case.lut_loads); primary = f"{case.lut_memory}_loads"
+        row["nominal_primary_operations"] = nominal
+        row["primary_operation_family"] = primary
+        if primary.endswith("_loads"):
+            memory = primary.removesuffix("_loads")
+            actual = row[f"decoder_{memory}_loads"]
+        elif primary in {"fp32", "fp64", "conversion", "integer_alu", "special"}:
+            actual = row[f"decoder_{primary}"]
+        else:
+            actual = 0
+        row["compiled_primary_operations"] = actual
+        row["compiler_count_status"] = ("not_applicable" if nominal == 0 else
+                                        "exact" if actual == nominal else "changed")
     return rows
 
 
@@ -175,7 +214,8 @@ def merge_resources(rows: list[dict], resource_csv: Path | None) -> None:
         static_shared = int(resource.get("static_shared_bytes", 0))
         local_bytes = int(resource.get("local_bytes", 0))
         case = next(case for case in CASES if case.case_id == row["case_id"])
-        dynamic_shared = (1 << case.lut_index_bits) * 8 if case.lut_memory == "shared" else (6144 if case.case_id.endswith("pwqnormal32_8_24") else 0)
+        dynamic_shared = (6144 if case.case_id.endswith("pwqnormal32_8_24") else
+                          (1 << case.lut_index_bits) * 8 if case.lut_memory == "shared" else 0)
         blocks_register = 32 if not registers else max(1, 65536 // (registers * 256))
         blocks_shared = 32 if not (static_shared + dynamic_shared + 2048) else max(1, 233472 // (static_shared + dynamic_shared + 2048))
         resident_blocks = min(8, blocks_register, blocks_shared)
@@ -193,14 +233,18 @@ def validate_acceptance(rows: list[dict]) -> list[str]:
         row = by_id[case.case_id]
         if row["loop_instruction_count"] == 0:
             raise ValueError(f"empty SASS loop: {case.case_id}")
-        if case.kind == "lut" and row["global_loads"] + row["shared_loads"] + row["constant_loads"] == 0:
-            raise ValueError(f"LUT load optimized away: {case.case_id}")
-        if case.kind == "branch" and row["branch_count"] == 0 and row["predicated_instruction_count"] == 0:
+        if case.kind == "lut" and row[f"decoder_{case.lut_memory}_loads"] == 0:
+            raise ValueError(f"LUT load optimized away or in wrong memory space: {case.case_id}")
+        if case.kind == "branch" and row["decoder_branch_count"] == 0 and row["decoder_predicated_instruction_count"] == 0:
             warnings.append(f"branch body has neither explicit branch nor predication: {case.case_id}")
+        if case.kind in {"integer", "clz", "int64", "numeric", "numeric_chain", "fp", "latency", "special"} and row["compiled_primary_operations"] == 0:
+            raise ValueError(f"primary operation family optimized away: {case.case_id}")
+        if row["compiler_count_status"] == "changed":
+            warnings.append(f"compiler changed nominal primary count for {case.case_id}: nominal={row['nominal_primary_operations']} compiled={row['compiled_primary_operations']}")
     training_branches = [by_id[case.case_id] for case in CASES if case.split == "train" and case.kind == "branch"]
-    if not any(row["branch_count"] > 0 for row in training_branches):
+    if not any(row["decoder_branch_count"] > 0 for row in training_branches):
         raise ValueError("branch calibration contains no real SASS branch; increase only long bodies to 32")
-    if not any(row["predicated_instruction_count"] > 0 and row["branch_count"] == 0 for row in training_branches):
+    if not any(row["decoder_predicated_instruction_count"] > 0 and row["decoder_branch_count"] == 0 for row in training_branches):
         warnings.append("branch calibration contains no purely predicated case")
     return warnings
 

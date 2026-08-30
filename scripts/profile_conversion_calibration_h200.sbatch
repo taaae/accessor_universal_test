@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 #SBATCH --job-name=conversion-profile
 #SBATCH --partition=compute
-#SBATCH --nodelist=gpu-nvidia-h200-2
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
@@ -17,7 +16,7 @@ source /etc/profile
 set -u
 module load "${CUDA_MODULE:-cuda/13.1.1}"
 cd "${repo_dir}"
-binary="${repo_dir}/build-conversion-calibration/bin/conversion_calibration_bench"
+binary="${repo_dir}/build-conversion-calibration-$(git rev-parse --short=12 HEAD)/bin/conversion_calibration_bench"
 profile_dir="${RUN_DIR:?set RUN_DIR}/profile"
 [[ ! -e "${profile_dir}" ]] || { echo "refusing to overwrite profile" >&2; exit 2; }
 mkdir "${profile_dir}"
