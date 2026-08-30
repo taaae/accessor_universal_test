@@ -36,6 +36,20 @@ class SassTest(unittest.TestCase):
         self.assertAlmostEqual(row["lut_expected_sectors_per_warp"],
                                2.0 * one_lookup)
 
+    def test_hopper_imad_iadd_is_add_not_multiply(self):
+        fixture = r'''
+Function : void aut::calibration::dot_case_kernel<3>()
+        /*0010*/ IMAD.IADD R5, R4, 0x1, R3 ;
+        /*0020*/ IADD3 R6, R5, R2, RZ ;
+        /*0030*/ BRA 0x10 ;
+'''
+        instructions = next(iter(parse_functions(fixture).values()))
+        row = feature_row(3, instructions)
+        self.assertEqual(row["iadd_sass"], 2)
+        self.assertEqual(row["iadd3_sass"], 1)
+        self.assertEqual(row["imad_sass"], 0)
+        self.assertEqual(row["integer_multiply"], 0)
+
 
 if __name__ == "__main__":
     unittest.main()
