@@ -1,0 +1,33 @@
+slurmstepd: error: Unable to create TMPDIR [/scratch/timofeirusanov/tmp]: No such file or directory
+slurmstepd: error: Setting TMPDIR to /tmp
+-- Configuring done (0.1s)
+-- Generating done (2.1s)
+-- Build files have been written to: /storage/home/timofeirusanov/accessor_universal_test_lut_distribution/build-h200-lut-distribution-a0d7b554964e
+gmake[3]: Warning: File 'lut_distribution_core_test' has modification time 0.00065 s in the future
+[  0%] Linking CXX executable lut_distribution_core_test
+gmake[3]: warning:  Clock skew detected.  Your build may be incomplete.
+[100%] Built target lut_distribution_core_test
+gmake[3]: Warning: File 'CMakeFiles/lut_distribution_bench.dir/src/lut_distribution_bench.cu.o' has modification time 0.00026 s in the future
+[  0%] Linking CUDA executable bin/lut_distribution_bench
+gmake[3]: warning:  Clock skew detected.  Your build may be incomplete.
+[100%] Built target lut_distribution_bench
+Internal ctest changing into directory: /storage/home/timofeirusanov/accessor_universal_test_lut_distribution/build-h200-lut-distribution-a0d7b554964e
+Test project /storage/home/timofeirusanov/accessor_universal_test_lut_distribution/build-h200-lut-distribution-a0d7b554964e
+    Start 7: lut_distribution_core_test
+1/1 Test #7: lut_distribution_core_test .......   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.01 sec
+GPU: NVIDIA H200 NVL
+N: 1048576, warmups: 1, samples: 3
+T16: 65536 FP32 entries, sanitized 0 nonfinite entries
+Posit 16 es1: 65536 FP32 entries, sanitized 1 nonfinite entries
+LNS 16 r11: 65536 FP32 entries, sanitized 1 nonfinite entries
+q=0, X=0, mean unique sectors=1
+q=0.5, X=0.516901, mean unique sectors=16.9927
+q=1, X=1, mean unique sectors=31.9396
+Result sink: 1.50536e+16
+Wrote /storage/home/timofeirusanov/accessor_universal_test_lut_distribution/results/027_lut_distribution_shape/run_20260830T102642Z/smoke/timing_samples.csv
+Wrote /storage/home/timofeirusanov/accessor_universal_test_lut_distribution/results/027_lut_distribution_shape/run_20260830T102642Z/smoke/access_metrics.csv
+LUT distribution smoke complete: /storage/home/timofeirusanov/accessor_universal_test_lut_distribution/results/027_lut_distribution_shape/run_20260830T102642Z/smoke

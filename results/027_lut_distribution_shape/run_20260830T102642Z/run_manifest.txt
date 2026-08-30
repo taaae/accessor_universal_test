@@ -1,0 +1,32 @@
+experiment=027_lut_distribution_shape
+started_utc=2026-08-30T10:26:44Z
+git_commit=a0d7b554964e3b5848daa9ce640ee3c09e3fdff9
+formats=t16,posit16_es1,lns16_r11
+kernel=dot
+storage=uint16
+arithmetic=fp32
+access=scalar_x1_global_lut
+lut_entries=65536
+lut_bytes=262144
+full_n=67108864
+q_eighths=0,1,2,3,4,5,6,7,8
+full_warmup=10
+full_samples=50
+left_seed=2611923443488327891
+right_seed=1376283091369227076
+hot_sector_base=0
+git_status_begin
+?? results/027_lut_distribution_shape/run_20260830T102642Z/
+?? results/027_lut_distribution_shape/slurm-build-454502.out
+?? results/027_lut_distribution_shape/slurm-smoke-454503.out
+git_status_end
+stage=smoke
+finished_utc=2026-08-30T10:26:48Z
+wall_time_seconds=4
+final_stage=complete
+exit_status=0
+stage=full
+finished_utc=2026-08-30T10:28:13Z
+wall_time_seconds=3
+final_stage=complete
+exit_status=0

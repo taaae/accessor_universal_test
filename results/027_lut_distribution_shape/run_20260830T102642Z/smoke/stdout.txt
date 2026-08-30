@@ -1,0 +1,11 @@
+GPU: NVIDIA H200 NVL
+N: 1048576, warmups: 1, samples: 3
+T16: 65536 FP32 entries, sanitized 0 nonfinite entries
+Posit 16 es1: 65536 FP32 entries, sanitized 1 nonfinite entries
+LNS 16 r11: 65536 FP32 entries, sanitized 1 nonfinite entries
+q=0, X=0, mean unique sectors=1
+q=0.5, X=0.516901, mean unique sectors=16.9927
+q=1, X=1, mean unique sectors=31.9396
+Result sink: 1.50536e+16
+Wrote /storage/home/timofeirusanov/accessor_universal_test_lut_distribution/results/027_lut_distribution_shape/run_20260830T102642Z/smoke/timing_samples.csv
+Wrote /storage/home/timofeirusanov/accessor_universal_test_lut_distribution/results/027_lut_distribution_shape/run_20260830T102642Z/smoke/access_metrics.csv
