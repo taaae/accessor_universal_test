@@ -2,7 +2,8 @@
 
 This experiment measures a single scalar x1 DOT kernel at `N=2^26` with
 FP64 arithmetic and reduction. It compares 32-bit DyadicNormal32 storage with
-raw FP64 in the same executable and GPU allocation.
+raw FP32 arithmetic, FP32 storage converted to FP64 arithmetic, and raw FP64
+in the same executable and GPU allocation.
 
 DyadicNormal32 uses one sign bit and a 31-bit magnitude rank. The number of
 leading one bits in the magnitude rank selects segment `h`. A zero delimiter
@@ -35,5 +36,6 @@ diamond rather than inferring its performance from the artificial mixture.
 Full runs use 512 first-stage blocks, 256 threads per block, 10 warmups, and 50
 timing samples. Half the samples are collected in ascending-X order and half in
 descending-X order, with five warmups before each half. The two genuine-source
-halves sit at the center of that sequence. Raw FP64 samples and warmups are
-split before and after the sweep.
+halves sit at the center of that sequence. Every baseline's samples and
+warmups are split before and after the sweep, and the after order is reversed
+to limit drift bias.

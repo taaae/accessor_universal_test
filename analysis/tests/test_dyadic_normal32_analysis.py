@@ -31,7 +31,26 @@ def synthetic_summary() -> list[dict[str, float | str]]:
 
 
 def test_svg_has_direct_labels_baseline_and_genuine_marker() -> None:
-    raw = {"median_ms": 0.31, "q1_ms": 0.309, "q3_ms": 0.311}
+    baselines = {
+        "raw_fp64": {
+            "label": "Raw FP64",
+            "median_ms": 0.31,
+            "q1_ms": 0.309,
+            "q3_ms": 0.311,
+        },
+        "raw_fp32": {
+            "label": "Raw FP32",
+            "median_ms": 0.24,
+            "q1_ms": 0.239,
+            "q3_ms": 0.241,
+        },
+        "fp32_to_fp64": {
+            "label": "FP32 to FP64",
+            "median_ms": 0.25,
+            "q1_ms": 0.249,
+            "q3_ms": 0.251,
+        },
+    }
     genuine = {
         "target_x": 0.1001849,
         "actual_x": 0.1002,
@@ -39,9 +58,11 @@ def test_svg_has_direct_labels_baseline_and_genuine_marker() -> None:
         "q1_ms": 0.294,
         "q3_ms": 0.296,
     }
-    svg = MODULE.make_svg(synthetic_summary(), raw, genuine)
+    svg = MODULE.make_svg(synthetic_summary(), baselines, genuine)
     assert "DyadicNormal32" in svg
     assert "Raw FP64" in svg
+    assert "Raw FP32" in svg
+    assert "FP32 to FP64" in svg
     assert "genuine N(0,1)" in svg
     assert "stroke-dasharray" in svg
     assert "Normalized segment-table dispersion X" in svg

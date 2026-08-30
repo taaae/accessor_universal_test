@@ -240,6 +240,21 @@ __global__ void generate_raw_values_kernel(double *values, std::size_t count,
   }
 }
 
+__global__ void generate_raw_values_kernel(float *values, std::size_t count,
+                                           std::uint64_t seed) {
+  constexpr float scale = 1.0f / 16777216.0f;
+  for (auto index =
+           static_cast<std::size_t>(blockIdx.x) * blockDim.x + threadIdx.x;
+       index < count;
+       index += static_cast<std::size_t>(gridDim.x) * blockDim.x) {
+    const auto bits = static_cast<std::uint32_t>(
+        aut::lut_distribution::splitmix64(
+            seed ^ static_cast<std::uint64_t>(index)) >>
+        40);
+    values[index] = static_cast<float>(bits) * scale - 0.5f;
+  }
+}
+
 __device__ __forceinline__ double
 decode_code(std::uint32_t code, const dn::segment_coefficients *coefficients) {
   const auto rank = code & dn::magnitude_mask;
@@ -256,6 +271,18 @@ decode_code(std::uint32_t code, const dn::segment_coefficients *coefficients) {
 }
 
 __device__ __forceinline__ double block_sum(double value, double *shared) {
+  shared[threadIdx.x] = value;
+  __syncthreads();
+  for (int offset = blockDim.x / 2; offset > 0; offset >>= 1) {
+    if (threadIdx.x < offset) {
+      shared[threadIdx.x] += shared[threadIdx.x + offset];
+    }
+    __syncthreads();
+  }
+  return shared[0];
+}
+
+__device__ __forceinline__ float block_sum(float value, float *shared) {
   shared[threadIdx.x] = value;
   __syncthreads();
   for (int offset = blockDim.x / 2; offset > 0; offset >>= 1) {
@@ -310,10 +337,56 @@ __global__ void dot_raw_fp64_kernel(const double *left, const double *right,
   }
 }
 
+__global__ void dot_raw_fp32_kernel(const float *left, const float *right,
+                                    std::size_t count, float *partials) {
+  __shared__ float reduction[threads];
+  float sum{};
+  for (auto index =
+           static_cast<std::size_t>(blockIdx.x) * blockDim.x + threadIdx.x;
+       index < count;
+       index += static_cast<std::size_t>(gridDim.x) * blockDim.x) {
+    sum = fmaf(left[index], right[index], sum);
+  }
+  const auto reduced = block_sum(sum, reduction);
+  if (threadIdx.x == 0) {
+    partials[blockIdx.x] = reduced;
+  }
+}
+
+__global__ void dot_fp32_to_fp64_kernel(const float *left, const float *right,
+                                        std::size_t count, double *partials) {
+  __shared__ double reduction[threads];
+  double sum{};
+  for (auto index =
+           static_cast<std::size_t>(blockIdx.x) * blockDim.x + threadIdx.x;
+       index < count;
+       index += static_cast<std::size_t>(gridDim.x) * blockDim.x) {
+    sum = fma(static_cast<double>(left[index]),
+              static_cast<double>(right[index]), sum);
+  }
+  const auto reduced = block_sum(sum, reduction);
+  if (threadIdx.x == 0) {
+    partials[blockIdx.x] = reduced;
+  }
+}
+
 __global__ void finalize_dot_kernel(const double *partials, std::size_t count,
                                     double *result) {
   __shared__ double reduction[threads];
   double sum{};
+  for (std::size_t index = threadIdx.x; index < count; index += blockDim.x) {
+    sum += partials[index];
+  }
+  const auto reduced = block_sum(sum, reduction);
+  if (threadIdx.x == 0) {
+    *result = reduced;
+  }
+}
+
+__global__ void finalize_dot_kernel(const float *partials, std::size_t count,
+                                    float *result) {
+  __shared__ float reduction[threads];
+  float sum{};
   for (std::size_t index = threadIdx.x; index < count; index += blockDim.x) {
     sum += partials[index];
   }
@@ -584,6 +657,107 @@ void run_raw_fp64(csv_context &context, const std::string &phase,
   std::cout << "raw_fp64/" << phase << " complete\n";
 }
 
+void run_raw_fp32(csv_context &context, const std::string &phase,
+                  int sample_begin, int sample_count, int warmups_this_batch,
+                  int execution_order) {
+  const auto &settings = context.configuration;
+  device_buffer<float> left(settings.n);
+  device_buffer<float> right(settings.n);
+  device_buffer<float> partials(dot_blocks);
+  device_buffer<float> result(1);
+  const auto generation_blocks = static_cast<int>(
+      std::min<std::size_t>(4096, (settings.n + threads - 1) / threads));
+  generate_raw_values_kernel<<<generation_blocks, threads>>>(
+      left.get(), settings.n, raw_left_seed);
+  generate_raw_values_kernel<<<generation_blocks, threads>>>(
+      right.get(), settings.n, raw_right_seed);
+  CUDA_CHECK(cudaGetLastError());
+  CUDA_CHECK(cudaDeviceSynchronize());
+  const auto launch = [&] {
+    dot_raw_fp32_kernel<<<dot_blocks, threads>>>(left.get(), right.get(),
+                                                 settings.n, partials.get());
+    finalize_dot_kernel<<<1, threads>>>(partials.get(), dot_blocks,
+                                        result.get());
+  };
+  for (int warmup = 0; warmup < warmups_this_batch; ++warmup) {
+    launch();
+  }
+  CUDA_CHECK(cudaGetLastError());
+  CUDA_CHECK(cudaDeviceSynchronize());
+  event_timer timer;
+  for (int local_sample = 0; local_sample < sample_count; ++local_sample) {
+    const auto sample = sample_begin + local_sample;
+    const auto milliseconds = timer.measure(launch);
+    float host_result{};
+    CUDA_CHECK(cudaMemcpy(&host_result, result.get(), sizeof(host_result),
+                          cudaMemcpyDeviceToHost));
+    if (!std::isfinite(host_result)) {
+      throw benchmark_error("nonfinite raw FP32 result");
+    }
+    context.samples << utc_timestamp() << ',' << context.gpu << ','
+                    << settings.mode << ",raw_fp32,Raw FP32,raw," << phase
+                    << ",dot," << settings.n << ',' << dot_blocks << ','
+                    << threads << ",32,fp32,none,0,0,0,nan,nan,nan,nan,"
+                    << settings.warmup << ',' << warmups_this_batch << ','
+                    << sample << ',' << execution_order << ','
+                    << std::setprecision(17) << milliseconds << ','
+                    << host_result << '\n';
+  }
+  context.samples.flush();
+  std::cout << "raw_fp32/" << phase << " complete\n";
+}
+
+void run_fp32_to_fp64(csv_context &context, const std::string &phase,
+                      int sample_begin, int sample_count,
+                      int warmups_this_batch, int execution_order) {
+  const auto &settings = context.configuration;
+  device_buffer<float> left(settings.n);
+  device_buffer<float> right(settings.n);
+  device_buffer<double> partials(dot_blocks);
+  device_buffer<double> result(1);
+  const auto generation_blocks = static_cast<int>(
+      std::min<std::size_t>(4096, (settings.n + threads - 1) / threads));
+  generate_raw_values_kernel<<<generation_blocks, threads>>>(
+      left.get(), settings.n, raw_left_seed);
+  generate_raw_values_kernel<<<generation_blocks, threads>>>(
+      right.get(), settings.n, raw_right_seed);
+  CUDA_CHECK(cudaGetLastError());
+  CUDA_CHECK(cudaDeviceSynchronize());
+  const auto launch = [&] {
+    dot_fp32_to_fp64_kernel<<<dot_blocks, threads>>>(
+        left.get(), right.get(), settings.n, partials.get());
+    finalize_dot_kernel<<<1, threads>>>(partials.get(), dot_blocks,
+                                        result.get());
+  };
+  for (int warmup = 0; warmup < warmups_this_batch; ++warmup) {
+    launch();
+  }
+  CUDA_CHECK(cudaGetLastError());
+  CUDA_CHECK(cudaDeviceSynchronize());
+  event_timer timer;
+  for (int local_sample = 0; local_sample < sample_count; ++local_sample) {
+    const auto sample = sample_begin + local_sample;
+    const auto milliseconds = timer.measure(launch);
+    double host_result{};
+    CUDA_CHECK(cudaMemcpy(&host_result, result.get(), sizeof(host_result),
+                          cudaMemcpyDeviceToHost));
+    if (!std::isfinite(host_result)) {
+      throw benchmark_error("nonfinite FP32-to-FP64 result");
+    }
+    context.samples << utc_timestamp() << ',' << context.gpu << ','
+                    << settings.mode
+                    << ",fp32_to_fp64,FP32 to FP64,raw," << phase << ",dot,"
+                    << settings.n << ',' << dot_blocks << ',' << threads
+                    << ",32,fp64,none,0,0,0,nan,nan,nan,nan,"
+                    << settings.warmup << ',' << warmups_this_batch << ','
+                    << sample << ',' << execution_order << ','
+                    << std::setprecision(17) << milliseconds << ','
+                    << host_result << '\n';
+  }
+  context.samples.flush();
+  std::cout << "fp32_to_fp64/" << phase << " complete\n";
+}
+
 int run_dyadic_normal32(csv_context &context,
                         const dn::segment_coefficients *device_coefficients,
                         int first_execution_order) {
@@ -782,10 +956,18 @@ void run(const settings &settings) {
   const auto second_batch_samples = settings.samples / 2;
   const auto warmups_per_batch = (settings.warmup + 1) / 2;
   run_raw_fp64(context, "before", 0, first_batch_samples, warmups_per_batch, 0);
+  run_raw_fp32(context, "before", 0, first_batch_samples, warmups_per_batch, 1);
+  run_fp32_to_fp64(context, "before", 0, first_batch_samples,
+                   warmups_per_batch, 2);
   const auto final_execution_order =
-      run_dyadic_normal32(context, device_coefficients.get(), 1);
+      run_dyadic_normal32(context, device_coefficients.get(), 3);
+  run_fp32_to_fp64(context, "after", first_batch_samples,
+                   second_batch_samples, warmups_per_batch,
+                   final_execution_order);
+  run_raw_fp32(context, "after", first_batch_samples, second_batch_samples,
+               warmups_per_batch, final_execution_order + 1);
   run_raw_fp64(context, "after", first_batch_samples, second_batch_samples,
-               warmups_per_batch, final_execution_order);
+               warmups_per_batch, final_execution_order + 2);
   std::cout << "Wrote " << settings.output << '\n';
   std::cout << "Wrote " << settings.metrics_output << '\n';
   std::cout << "Wrote " << settings.correctness_output << '\n';

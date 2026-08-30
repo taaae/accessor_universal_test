@@ -59,7 +59,8 @@ if [[ ! -f "${run_dir}/run_manifest.txt" ]]; then
         echo "full_warmup=10"
         echo "full_warmups_per_half_batch=5"
         echo "full_samples=50"
-        echo "sample_order=raw_before,ascending_half,genuine_forward,genuine_reverse,descending_half,raw_after"
+        echo "sample_order=raw_fp64_before,raw_fp32_before,fp32_to_fp64_before,ascending_half,genuine_forward,genuine_reverse,descending_half,fp32_to_fp64_after,raw_fp32_after,raw_fp64_after"
+        echo "baselines=raw_fp64,raw_fp32,fp32_to_fp64"
         echo "dyadic_storage_bits=32"
         echo "coefficient_entries=32"
         echo "coefficient_bytes=512"
@@ -143,7 +144,7 @@ if [[ "$(wc -l <"${stage_dir}/coefficient_table.csv")" -ne 33 ]]; then
     exit 5
 fi
 if [[ "${mode}" == "smoke" ]]; then
-    if [[ "$(wc -l <"${stage_dir}/timing_samples.csv")" -ne 16 ]]; then
+    if [[ "$(wc -l <"${stage_dir}/timing_samples.csv")" -ne 22 ]]; then
         echo "error: smoke timing CSV has the wrong row count" >&2
         exit 5
     fi
@@ -152,7 +153,7 @@ if [[ "${mode}" == "smoke" ]]; then
         exit 5
     fi
 else
-    if [[ "$(wc -l <"${stage_dir}/timing_samples.csv")" -ne 551 ]]; then
+    if [[ "$(wc -l <"${stage_dir}/timing_samples.csv")" -ne 651 ]]; then
         echo "error: full timing CSV has the wrong row count" >&2
         exit 5
     fi
