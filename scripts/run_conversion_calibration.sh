@@ -79,8 +79,8 @@ cmake --build "${build_dir}" --parallel "${BUILD_JOBS:-2}" --target conversion_c
 binary="${build_dir}/bin/conversion_calibration_bench"
 
 stage="sass"
-cuobjdump --dump-sass --demangle "${binary}" >"${mode_dir}/sass.txt"
-cuobjdump --dump-resource-usage --demangle "${binary}" >"${mode_dir}/cuobjdump_resources.txt"
+cuobjdump --dump-sass "${binary}" >"${mode_dir}/sass.txt"
+cuobjdump --dump-resource-usage "${binary}" >"${mode_dir}/cuobjdump_resources.txt"
 
 stage="benchmark"
 benchmark_args=(--mode "${mode}" --output "${mode_dir}/timing_samples.csv" --resources "${mode_dir}/kernel_resources.csv")
