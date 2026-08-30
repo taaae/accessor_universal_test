@@ -67,7 +67,7 @@ def test_svg_has_direct_labels_baseline_and_genuine_marker() -> None:
     assert "Current DyadicNormal32" in svg
     assert "Sign-fused decoder" in svg
     assert "BitCast, shared coefficients" in svg
-    assert "BitCast, constant coefficients" in svg
+    assert "BitCast, constant coefficients" not in svg
     assert "Raw FP64" in svg
     assert "Raw FP32" in svg
     assert "FP32 to FP64" in svg

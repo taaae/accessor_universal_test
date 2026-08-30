@@ -46,6 +46,10 @@ DYADIC_VARIANTS = {
     },
 }
 STRATEGY_ORDER = tuple(DYADIC_VARIANTS)
+GRAPH_DYADIC_VARIANTS = tuple(
+    variant for variant in DYADIC_VARIANTS
+    if variant != "dyadic_bitcast_constant"
+)
 
 
 def percentile(values: list[float], probability: float) -> float:
@@ -413,7 +417,11 @@ def make_svg(
     width, height = 1420, 760
     left, right, top, bottom = 98, 390, 92, 105
     plot_width, plot_height = width - left - right, height - top - bottom
-    all_rows = [*sweep, *genuine, *baselines.values()]
+    plotted_sweep = [row for row in sweep
+                     if row["variant"] in GRAPH_DYADIC_VARIANTS]
+    plotted_genuine = [row for row in genuine
+                       if row["variant"] in GRAPH_DYADIC_VARIANTS]
+    all_rows = [*plotted_sweep, *plotted_genuine, *baselines.values()]
     y_min = min(float(row["q1_ms"]) for row in all_rows)
     y_max = max(float(row["q3_ms"]) for row in all_rows)
     padding = max((y_max - y_min) * 0.14, y_max * 0.01)
@@ -428,11 +436,11 @@ def make_svg(
     pieces = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
         '<title id="title">DyadicNormal32 decoder strategies versus segment dispersion</title>',
-        '<desc id="desc">Median DOT kernel time with interquartile ranges for four DyadicNormal32 decoders and three baselines.</desc>',
+        '<desc id="desc">Median DOT kernel time with interquartile ranges for three DyadicNormal32 decoders and three baselines. The outlying constant-memory BitCast decoder is retained in the tables but omitted from this plot.</desc>',
         '<rect width="100%" height="100%" fill="#fff"/>',
         '<style>text{font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#243238}.title{font-size:25px;font-weight:700}.subtitle{font-size:14px;fill:#60727b}.axis{stroke:#243238;stroke-width:1.5}.grid{stroke:#dfe6e9;stroke-width:1}.tick{font-size:12px;fill:#60727b}.axis-label{font-size:15px;font-weight:600}.direct{font-size:13px;font-weight:700}.note{font-size:12px;fill:#60727b}</style>',
         f'<text class="title" x="{left}" y="36">DyadicNormal32 decoder strategies versus segment dispersion</text>',
-        f'<text class="subtitle" x="{left}" y="61">DOT, N=2²⁶, scalar x1; four decoders and three drift-controlled baselines in one allocation</text>',
+        f'<text class="subtitle" x="{left}" y="61">DOT, N=2²⁶, scalar x1; three decoder curves and three drift-controlled baselines</text>',
     ]
     for index in range(6):
         value = y_min + (y_max - y_min) * index / 5
@@ -453,7 +461,8 @@ def make_svg(
     genuine_x = float(genuine[0]["target_x"])
     pieces.append(f'<line x1="{px(genuine_x):.2f}" y1="{top}" x2="{px(genuine_x):.2f}" y2="{top + plot_height}" stroke="#87979e" stroke-width="1.4" stroke-dasharray="4 5"/>')
     label_sources: list[tuple[str, str, float, str]] = []
-    for variant, specification in DYADIC_VARIANTS.items():
+    for variant in GRAPH_DYADIC_VARIANTS:
+        specification = DYADIC_VARIANTS[variant]
         rows = sorted((row for row in sweep if row["variant"] == variant),
                       key=lambda row: float(row["actual_x"]))
         color = str(specification["color"])
@@ -493,7 +502,7 @@ def make_svg(
     for label, color, label_y, source_y, dash in positioned:
         pieces.append(f'<path d="M {left + plot_width:.2f} {source_y:.2f} L {label_x - 12:.2f} {label_y:.2f}" stroke="{color}" stroke-width="1.5" stroke-dasharray="{dash}" fill="none"/>')
         pieces.append(f'<text class="direct" x="{label_x}" y="{label_y + 5:.2f}" fill="{color}">{html.escape(label)}</text>')
-    pieces.append(f'<text class="note" x="{left}" y="{height - 10}">Each point and line is the median of 50 launches; bars show IQR. Diamonds mark the genuine N(0,1) input at expected X={genuine_x:.3f}.</text>')
+    pieces.append(f'<text class="note" x="{left}" y="{height - 10}">Each point and line is the median of 50 launches; bars show IQR. Diamonds mark genuine N(0,1) at expected X={genuine_x:.3f}. BitCast/constant remains in the tables.</text>')
     pieces.append("</svg>")
     return "".join(pieces)
 
