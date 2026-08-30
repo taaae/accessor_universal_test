@@ -110,6 +110,15 @@ target_include_directories(
 target_compile_options(lut_distribution_core_test PRIVATE -O3)
 add_test(NAME lut_distribution_core_test COMMAND lut_distribution_core_test)
 
+add_executable(lut_decomposition_core_test tests/lut_decomposition_core_test.cpp)
+target_include_directories(
+    lut_decomposition_core_test
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+target_compile_options(lut_decomposition_core_test PRIVATE -O3)
+add_test(NAME lut_decomposition_core_test COMMAND lut_decomposition_core_test)
+
 add_executable(lut_distribution_bench src/lut_distribution_bench.cu)
 target_include_directories(
     lut_distribution_bench
@@ -124,6 +133,26 @@ target_compile_options(
 )
 set_target_properties(
     lut_distribution_bench
+    PROPERTIES
+        CUDA_RUNTIME_LIBRARY Static
+        CUDA_SEPARABLE_COMPILATION OFF
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
+add_executable(lut_decomposition_bench src/lut_decomposition_bench.cu)
+target_include_directories(
+    lut_decomposition_bench
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+target_compile_options(
+    lut_decomposition_bench
+    PRIVATE
+        "$<$<COMPILE_LANGUAGE:CXX>:-O3>"
+        "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v;--ftz=false>"
+)
+set_target_properties(
+    lut_decomposition_bench
     PROPERTIES
         CUDA_RUNTIME_LIBRARY Static
         CUDA_SEPARABLE_COMPILATION OFF
