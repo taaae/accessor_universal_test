@@ -1,5 +1,6 @@
 #include "dyadic_normal32_core.hpp"
 
+#include <algorithm>
 #include <array>
 #include <bitset>
 #include <cmath>
@@ -29,6 +30,7 @@ std::uint64_t bits(double value) {
 int main() {
   namespace dn = aut::dyadic_normal32;
   const auto coefficients = dn::make_coefficients();
+  const auto bitcast_coefficients = dn::make_bitcast_coefficients();
 
   double previous_boundary = -1.0;
   for (std::uint32_t boundary = 0; boundary <= dn::segment_count; ++boundary) {
@@ -56,12 +58,32 @@ int main() {
             "maximum payload was not preserved");
     const auto minimum_value = dn::decode(minimum_rank, coefficients);
     const auto maximum_value = dn::decode(maximum_rank, coefficients);
+    const auto minimum_bitcast =
+        dn::decode_bitcast(minimum_rank, bitcast_coefficients);
+    const auto maximum_bitcast =
+        dn::decode_bitcast(maximum_rank, bitcast_coefficients);
     require(std::isfinite(minimum_value) && std::isfinite(maximum_value),
             "decoded segment endpoint is not finite");
     require(minimum_value > previous_decoded,
             "decoded segment boundary is not monotonic");
     require(maximum_value >= minimum_value,
             "decoded values decrease inside a segment");
+    require(std::abs(minimum_bitcast - minimum_value) <=
+                8.0 * std::numeric_limits<double>::epsilon() *
+                    std::max(1.0, std::abs(minimum_value)),
+            "bitcast minimum differs from the linear decoder");
+    require(std::abs(maximum_bitcast - maximum_value) <=
+                8.0 * std::numeric_limits<double>::epsilon() *
+                    std::max(1.0, std::abs(maximum_value)),
+            "bitcast maximum differs from the linear decoder");
+    const auto levels = payload_bits == 0
+                            ? 1.0
+                            : std::ldexp(1.0, static_cast<int>(payload_bits));
+    require(dn::bitcast_coordinate(minimum_rank, segment) == 1.0,
+            "bitcast minimum coordinate is not exactly one");
+    require(dn::bitcast_coordinate(maximum_rank, segment) ==
+                1.0 + static_cast<double>(maximum_payload) / levels,
+            "bitcast maximum coordinate is not exact");
     previous_decoded = maximum_value;
 
     const auto negative = maximum_rank | 0x80000000u;
@@ -91,8 +113,13 @@ int main() {
     require(segment < dn::segment_count,
             "random rank selected invalid segment");
     const auto value = dn::decode(rank, coefficients);
+    const auto bitcast_value = dn::decode_bitcast(rank, bitcast_coefficients);
     require(std::isfinite(value) && value > 0.0,
             "random positive code did not decode to a finite magnitude");
+    require(std::abs(bitcast_value - value) <=
+                8.0 * std::numeric_limits<double>::epsilon() *
+                    std::max(1.0, std::abs(value)),
+            "random bitcast decode differs from the linear decoder");
     if (index != 0 && rank > previous_rank) {
       const auto previous_value = dn::decode(previous_rank, coefficients);
       require(value > previous_value, "rank ordering is not monotonic");

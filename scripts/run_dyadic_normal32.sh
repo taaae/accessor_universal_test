@@ -59,13 +59,16 @@ if [[ ! -f "${run_dir}/run_manifest.txt" ]]; then
         echo "full_warmup=10"
         echo "full_warmups_per_half_batch=5"
         echo "full_samples=50"
-        echo "sample_order=raw_fp64_before,raw_fp32_before,fp32_to_fp64_before,ascending_half,genuine_forward,genuine_reverse,descending_half,fp32_to_fp64_after,raw_fp32_after,raw_fp64_after"
+        echo "sample_order=raw_fp64_before,raw_fp32_before,fp32_to_fp64_before,ascending_targets_with_forward_strategy_order,genuine_forward,genuine_reverse,descending_targets_with_reverse_strategy_order,fp32_to_fp64_after,raw_fp32_after,raw_fp64_after"
         echo "baselines=raw_fp64,raw_fp32,fp32_to_fp64"
+        echo "dyadic_strategies=dyadic_normal32,dyadic_sign_fused,dyadic_bitcast_shared,dyadic_bitcast_constant"
+        echo "forward_strategy_order=dyadic_normal32,dyadic_sign_fused,dyadic_bitcast_shared,dyadic_bitcast_constant"
+        echo "reverse_strategy_order=dyadic_bitcast_constant,dyadic_bitcast_shared,dyadic_sign_fused,dyadic_normal32"
         echo "dyadic_storage_bits=32"
         echo "coefficient_entries=32"
         echo "coefficient_bytes=512"
-        echo "coefficient_location=shared"
-        echo "shared_staging=inside_timed_first_stage_once_per_block"
+        echo "coefficient_locations=shared,constant"
+        echo "shared_staging=inside_timed_first_stage_once_per_block_for_three_shared_variants"
         echo "source_sigma=1"
         echo "density_sigma=sqrt(3)"
         echo "terminal_convention=h31_maps_to_half_normal_tail_boundary_2^-32"
@@ -134,8 +137,16 @@ fi
 
 current_stage="artifact_contract"
 if [[ ! -s "${stage_dir}/correctness_checks.txt" ]] || \
-   ! grep -q '^cpu_gpu_bit_mismatches=0$' "${stage_dir}/correctness_checks.txt" || \
-   ! grep -q '^dot_validation_passed=1$' "${stage_dir}/correctness_checks.txt"; then
+   ! grep -q '^current_cpu_gpu_bit_mismatches=0$' "${stage_dir}/correctness_checks.txt" || \
+   ! grep -q '^bitcast_shared_cpu_gpu_bit_mismatches=0$' "${stage_dir}/correctness_checks.txt" || \
+   ! grep -q '^bitcast_constant_cpu_gpu_bit_mismatches=0$' "${stage_dir}/correctness_checks.txt" || \
+   ! grep -q '^dot_current_passed=1$' "${stage_dir}/correctness_checks.txt" || \
+   ! grep -q '^dot_sign_fused_passed=1$' "${stage_dir}/correctness_checks.txt" || \
+   ! grep -q '^dot_bitcast_shared_passed=1$' "${stage_dir}/correctness_checks.txt" || \
+   ! grep -q '^dot_bitcast_constant_passed=1$' "${stage_dir}/correctness_checks.txt" || \
+   ! grep -q '^timed_current_sign_fused_bit_mismatches=0$' "${stage_dir}/correctness_checks.txt" || \
+   ! grep -q '^timed_bitcast_shared_constant_bit_mismatches=0$' "${stage_dir}/correctness_checks.txt" || \
+   ! grep -q '^timed_result_validation_passed=1$' "${stage_dir}/correctness_checks.txt"; then
     echo "error: CPU/GPU correctness contract failed" >&2
     exit 5
 fi
@@ -144,7 +155,7 @@ if [[ "$(wc -l <"${stage_dir}/coefficient_table.csv")" -ne 33 ]]; then
     exit 5
 fi
 if [[ "${mode}" == "smoke" ]]; then
-    if [[ "$(wc -l <"${stage_dir}/timing_samples.csv")" -ne 22 ]]; then
+    if [[ "$(wc -l <"${stage_dir}/timing_samples.csv")" -ne 58 ]]; then
         echo "error: smoke timing CSV has the wrong row count" >&2
         exit 5
     fi
@@ -152,8 +163,16 @@ if [[ "${mode}" == "smoke" ]]; then
         echo "error: smoke metrics CSV has the wrong row count" >&2
         exit 5
     fi
+    current_stage="smoke_analysis"
+    python3 "${repo_dir}/tools/validate_dyadic_normal32_smoke.py" \
+        --samples "${stage_dir}/timing_samples.csv" \
+        --metrics "${stage_dir}/access_metrics.csv" \
+        --correctness "${stage_dir}/correctness_checks.txt" \
+        --coefficients "${stage_dir}/coefficient_table.csv" \
+        --analyzer "${repo_dir}/tools/analyze_dyadic_normal32.py" \
+        | tee "${stage_dir}/analysis.txt"
 else
-    if [[ "$(wc -l <"${stage_dir}/timing_samples.csv")" -ne 651 ]]; then
+    if [[ "$(wc -l <"${stage_dir}/timing_samples.csv")" -ne 2151 ]]; then
         echo "error: full timing CSV has the wrong row count" >&2
         exit 5
     fi

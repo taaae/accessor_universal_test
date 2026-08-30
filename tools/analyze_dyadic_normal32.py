@@ -19,27 +19,33 @@ CANONICAL_SAMPLES = 50
 TARGETS = tuple(index / 8 for index in range(9))
 BASELINES = {
     "raw_fp64": {
-        "label": "Raw FP64",
-        "storage_bits": "64",
-        "arithmetic_type": "fp64",
-        "before_order": 0,
-        "after_order": 25,
+        "label": "Raw FP64", "storage_bits": "64", "arithmetic_type": "fp64",
+        "before_order": 0, "after_order": 85, "color": "#111820", "dash": "9 6",
     },
     "raw_fp32": {
-        "label": "Raw FP32",
-        "storage_bits": "32",
-        "arithmetic_type": "fp32",
-        "before_order": 1,
-        "after_order": 24,
+        "label": "Raw FP32", "storage_bits": "32", "arithmetic_type": "fp32",
+        "before_order": 1, "after_order": 84, "color": "#18794e", "dash": "5 5",
     },
     "fp32_to_fp64": {
-        "label": "FP32 to FP64",
-        "storage_bits": "32",
-        "arithmetic_type": "fp64",
-        "before_order": 2,
-        "after_order": 23,
+        "label": "FP32 to FP64", "storage_bits": "32", "arithmetic_type": "fp64",
+        "before_order": 2, "after_order": 83, "color": "#315f9b", "dash": "7 5",
     },
 }
+DYADIC_VARIANTS = {
+    "dyadic_normal32": {
+        "label": "Current DyadicNormal32", "table_location": "shared", "color": "#b5532b",
+    },
+    "dyadic_sign_fused": {
+        "label": "Sign-fused decoder", "table_location": "shared", "color": "#9b3f80",
+    },
+    "dyadic_bitcast_shared": {
+        "label": "BitCast, shared coefficients", "table_location": "shared", "color": "#d18b16",
+    },
+    "dyadic_bitcast_constant": {
+        "label": "BitCast, constant coefficients", "table_location": "constant", "color": "#007f86",
+    },
+}
+STRATEGY_ORDER = tuple(DYADIC_VARIANTS)
 
 
 def percentile(values: list[float], probability: float) -> float:
@@ -59,6 +65,69 @@ def read_rows(path: Path) -> list[dict[str, str]]:
     return rows
 
 
+def validate_coefficients(path: Path) -> None:
+    rows = read_rows(path)
+    required = {
+        "segment", "lower_boundary", "upper_boundary", "payload_bits", "levels",
+        "linear_start", "linear_step", "bitcast_offset", "bitcast_span",
+    }
+    missing = required - set(rows[0])
+    if missing:
+        raise ValueError(f"coefficient CSV is missing columns: {sorted(missing)}")
+    if len(rows) != 32:
+        raise ValueError("coefficient CSV must contain 32 segments")
+    previous_upper = 0.0
+    for segment, row in enumerate(rows):
+        if int(row["segment"]) != segment:
+            raise ValueError("coefficient segments are not consecutive")
+        numeric = {
+            field: float(row[field]) for field in (
+                "lower_boundary", "upper_boundary", "linear_start", "linear_step",
+                "bitcast_offset", "bitcast_span",
+            )
+        }
+        if not all(math.isfinite(value) for value in numeric.values()):
+            raise ValueError(f"segment {segment}: nonfinite coefficient")
+        if not math.isclose(numeric["lower_boundary"], previous_upper,
+                            rel_tol=0.0, abs_tol=1e-15):
+            raise ValueError(f"segment {segment}: discontinuous boundaries")
+        if numeric["upper_boundary"] <= numeric["lower_boundary"]:
+            raise ValueError(f"segment {segment}: boundaries do not increase")
+        expected_payload_bits = 30 - segment if segment < 30 else 0
+        expected_levels = 1 << expected_payload_bits if segment < 31 else 1
+        if int(row["payload_bits"]) != expected_payload_bits:
+            raise ValueError(f"segment {segment}: wrong payload bit count")
+        if int(row["levels"]) != expected_levels:
+            raise ValueError(f"segment {segment}: wrong level count")
+        if segment < 31:
+            expected_step = (
+                numeric["upper_boundary"] - numeric["lower_boundary"]
+            ) / expected_levels
+            expected_start = numeric["lower_boundary"] + 0.5 * expected_step
+            if not math.isclose(numeric["linear_step"], expected_step,
+                                rel_tol=2e-15, abs_tol=1e-300):
+                raise ValueError(f"segment {segment}: wrong linear step")
+            if not math.isclose(numeric["linear_start"], expected_start,
+                                rel_tol=2e-15, abs_tol=1e-300):
+                raise ValueError(f"segment {segment}: wrong linear start")
+            expected_span = numeric["linear_step"] * expected_levels
+            expected_offset = numeric["linear_start"] - expected_span
+            if not math.isclose(numeric["bitcast_span"], expected_span,
+                                rel_tol=2e-15, abs_tol=1e-300):
+                raise ValueError(f"segment {segment}: wrong BitCast span")
+            if not math.isclose(numeric["bitcast_offset"], expected_offset,
+                                rel_tol=2e-15, abs_tol=1e-300):
+                raise ValueError(f"segment {segment}: wrong BitCast offset")
+        else:
+            if numeric["linear_step"] != 0 or numeric["bitcast_span"] != 0:
+                raise ValueError("terminal segment must have zero step")
+            if numeric["linear_start"] != numeric["upper_boundary"]:
+                raise ValueError("terminal linear value must equal upper boundary")
+            if numeric["bitcast_offset"] != numeric["linear_start"]:
+                raise ValueError("terminal BitCast value must equal linear value")
+        previous_upper = numeric["upper_boundary"]
+
+
 def finite_positive(row: dict[str, str], field: str, context: str) -> float:
     value = float(row[field])
     if not math.isfinite(value) or value <= 0:
@@ -66,294 +135,289 @@ def finite_positive(row: dict[str, str], field: str, context: str) -> float:
     return value
 
 
-def validate_contract(
-    rows: list[dict[str, str]], metrics: list[dict[str, str]], correctness: str
-) -> None:
+def require_fields(rows: list[dict[str, str]]) -> None:
     required = {
         "gpu", "mode", "variant", "distribution", "phase", "kernel", "N",
-        "blocks", "threads", "storage_bits", "arithmetic_type",
-        "table_location", "segments", "coefficient_bytes", "target_x", "q",
-        "mean_unique_segments", "actual_x", "genuine_n01_expected_x",
-        "warmup", "warmups_this_batch", "sample", "execution_order",
-        "kernel_ms", "result",
+        "blocks", "threads", "storage_bits", "arithmetic_type", "table_location",
+        "segments", "coefficient_bytes", "target_x", "q", "mean_unique_segments",
+        "actual_x", "genuine_n01_expected_x", "warmup", "warmups_this_batch",
+        "sample", "execution_order", "kernel_ms", "result",
     }
-    if required - set(rows[0]):
-        raise ValueError("timing CSV is missing required columns")
-    if "cpu_gpu_bit_mismatches=0" not in correctness:
-        raise ValueError("CPU/GPU correctness record contains mismatches")
-    if "segments_covered=32" not in correctness:
-        raise ValueError("correctness record does not cover all segments")
-    if "dot_validation_passed=1" not in correctness:
-        raise ValueError("end-to-end DOT correctness check failed")
+    missing = required - set(rows[0])
+    if missing:
+        raise ValueError(f"timing CSV is missing columns: {sorted(missing)}")
 
+
+def validate_baselines(rows: list[dict[str, str]]) -> None:
     for variant, specification in BASELINES.items():
-        baseline_rows = [row for row in rows if row["variant"] == variant]
-        if len(baseline_rows) != CANONICAL_SAMPLES:
+        group = [row for row in rows if row["variant"] == variant]
+        if len(group) != CANONICAL_SAMPLES:
             raise ValueError(f"{variant} baseline has the wrong sample count")
-        for index, row in enumerate(baseline_rows, start=1):
+        for index, row in enumerate(group, start=1):
             expected = {
                 "mode": "full", "kernel": "dot", "N": str(CANONICAL_N),
                 "blocks": "512", "threads": "256",
                 "storage_bits": str(specification["storage_bits"]),
                 "arithmetic_type": str(specification["arithmetic_type"]),
-                "table_location": "none", "segments": "0",
-                "coefficient_bytes": "0", "warmup": str(CANONICAL_WARMUP),
-                "distribution": "raw",
+                "table_location": "none", "segments": "0", "coefficient_bytes": "0",
+                "warmup": str(CANONICAL_WARMUP), "distribution": "raw",
             }
             for field, value in expected.items():
                 if row[field] != value:
-                    raise ValueError(
-                        f"{variant} row {index}: {field} mismatch"
-                    )
+                    raise ValueError(f"{variant} row {index}: {field} mismatch")
             finite_positive(row, "kernel_ms", f"{variant} row {index}")
             if not math.isfinite(float(row["result"])):
                 raise ValueError(f"{variant} row {index}: nonfinite result")
-        if {int(row["sample"]) for row in baseline_rows} != set(
-            range(CANONICAL_SAMPLES)
-        ):
-            raise ValueError(f"{variant} baseline has missing or duplicate samples")
-        phases = {
-            phase: [row for row in baseline_rows if row["phase"] == phase]
-            for phase in ("before", "after")
-        }
-        if any(
-            len(group) != CANONICAL_SAMPLES // 2 for group in phases.values()
-        ):
-            raise ValueError(f"{variant} baseline was not split before and after")
-        if any(
-            {row["warmups_this_batch"] for row in group} != {"5"}
-            for group in phases.values()
-        ):
-            raise ValueError(f"{variant} batches do not have five warmups each")
-        if {int(row["execution_order"]) for row in phases["before"]} != {
-            int(specification["before_order"])
-        }:
-            raise ValueError(f"{variant} before batch has the wrong execution order")
-        if {int(row["execution_order"]) for row in phases["after"]} != {
-            int(specification["after_order"])
-        }:
-            raise ValueError(f"{variant} after batch has the wrong execution order")
-
-    measured = [row for row in rows if row["variant"] == "dyadic_normal32"]
-    if len(measured) != (len(TARGETS) + 1) * CANONICAL_SAMPLES:
-        raise ValueError("DyadicNormal32 has the wrong total sample count")
-    unknown = {row["variant"] for row in rows} - {
-        *BASELINES,
-        "dyadic_normal32",
-    }
-    if unknown:
-        raise ValueError(f"unknown variants: {sorted(unknown)}")
-    artificial = [row for row in measured if row["distribution"] == "hot_uniform"]
-    genuine = [row for row in measured if row["distribution"] == "genuine_n01"]
-    if len(artificial) != len(TARGETS) * CANONICAL_SAMPLES:
-        raise ValueError("hot-uniform sweep has the wrong sample count")
-    if len(genuine) != CANONICAL_SAMPLES:
-        raise ValueError("genuine N(0,1) point has the wrong sample count")
-    groups: dict[float, list[dict[str, str]]] = defaultdict(list)
-    genuine_values: set[str] = set()
-    for index, row in enumerate(measured, start=1):
-        expected = {
-            "mode": "full", "kernel": "dot", "N": str(CANONICAL_N),
-            "blocks": "512", "threads": "256", "storage_bits": "32",
-            "arithmetic_type": "fp64", "table_location": "shared",
-            "segments": "32", "coefficient_bytes": "512",
-            "warmup": str(CANONICAL_WARMUP),
-        }
-        for field, value in expected.items():
-            if row[field] != value:
-                raise ValueError(f"Dyadic row {index}: {field} mismatch")
-        finite_positive(row, "kernel_ms", f"Dyadic row {index}")
-        if not math.isfinite(float(row["result"])):
-            raise ValueError(f"Dyadic row {index}: nonfinite result")
-        genuine_values.add(row["genuine_n01_expected_x"])
-        if row["distribution"] == "hot_uniform":
-            target = float(row["target_x"])
-            if not any(math.isclose(target, value, abs_tol=1e-15) for value in TARGETS):
-                raise ValueError(f"Dyadic row {index}: unexpected target X")
-            if abs(float(row["actual_x"]) - target) > 0.01:
-                raise ValueError(f"Dyadic row {index}: actual X misses target")
-            if not 0 <= float(row["q"]) <= 1:
-                raise ValueError(f"Dyadic row {index}: q is outside [0,1]")
-            groups[target].append(row)
-        elif row["distribution"] == "genuine_n01":
-            if row["q"] != "nan":
-                raise ValueError("genuine N(0,1) rows must not have mixture q")
-        else:
-            raise ValueError(f"Dyadic row {index}: unknown distribution")
-    if set(groups) != set(TARGETS):
-        raise ValueError("Dyadic timing groups are incomplete")
-    for target_index, target in enumerate(TARGETS):
-        group = groups[target]
-        if len(group) != CANONICAL_SAMPLES:
-            raise ValueError(f"X={target}: wrong sample count")
         if {int(row["sample"]) for row in group} != set(range(CANONICAL_SAMPLES)):
-            raise ValueError(f"X={target}: missing or duplicate samples")
-        if len({row["actual_x"] for row in group}) != 1:
-            raise ValueError(f"X={target}: actual X changed between samples")
+            raise ValueError(f"{variant} has missing or duplicate samples")
         phases = {phase: [row for row in group if row["phase"] == phase]
-                  for phase in ("forward", "reverse")}
+                  for phase in ("before", "after")}
         if any(len(batch) != CANONICAL_SAMPLES // 2 for batch in phases.values()):
-            raise ValueError(f"X={target}: forward/reverse split is wrong")
+            raise ValueError(f"{variant} was not split before and after")
+        if {int(row["sample"]) for row in phases["before"]} != set(range(25)) \
+                or {int(row["sample"]) for row in phases["after"]} != set(range(25, 50)):
+            raise ValueError(f"{variant} baseline sample halves are wrong")
         if any({row["warmups_this_batch"] for row in batch} != {"5"}
                for batch in phases.values()):
-            raise ValueError(f"X={target}: batch warmup count is wrong")
-        if {int(row["execution_order"]) for row in phases["forward"]} != {3 + target_index}:
-            raise ValueError(f"X={target}: forward execution order is wrong")
-        if {int(row["execution_order"]) for row in phases["reverse"]} != {22 - target_index}:
-            raise ValueError(f"X={target}: reverse execution order is wrong")
-    if len(genuine_values) != 1:
+            raise ValueError(f"{variant} batches do not have five warmups")
+        for phase, order_key in (("before", "before_order"), ("after", "after_order")):
+            if {int(row["execution_order"]) for row in phases[phase]} != {
+                int(specification[order_key])
+            }:
+                raise ValueError(f"{variant} {phase} execution order is wrong")
+
+
+def expected_dyadic_order(
+    variant: str, distribution: str, phase: str, target_index: int | None
+) -> int:
+    strategy_index = STRATEGY_ORDER.index(variant)
+    if distribution == "hot_uniform" and phase == "forward":
+        assert target_index is not None
+        return 3 + target_index * 4 + strategy_index
+    if distribution == "genuine_n01" and phase == "forward":
+        return 39 + strategy_index
+    reverse_position = len(STRATEGY_ORDER) - 1 - strategy_index
+    if distribution == "genuine_n01" and phase == "reverse":
+        return 43 + reverse_position
+    if distribution == "hot_uniform" and phase == "reverse":
+        assert target_index is not None
+        return 47 + (len(TARGETS) - 1 - target_index) * 4 + reverse_position
+    raise ValueError("invalid Dyadic phase")
+
+
+def validate_dyadic(rows: list[dict[str, str]]) -> float:
+    genuine_x_values: set[str] = set()
+    for variant, specification in DYADIC_VARIANTS.items():
+        measured = [row for row in rows if row["variant"] == variant]
+        if len(measured) != (len(TARGETS) + 1) * CANONICAL_SAMPLES:
+            raise ValueError(f"{variant} has the wrong total sample count")
+        groups: dict[tuple[str, float], list[dict[str, str]]] = defaultdict(list)
+        for index, row in enumerate(measured, start=1):
+            expected = {
+                "mode": "full", "kernel": "dot", "N": str(CANONICAL_N),
+                "blocks": "512", "threads": "256", "storage_bits": "32",
+                "arithmetic_type": "fp64",
+                "table_location": str(specification["table_location"]),
+                "segments": "32", "coefficient_bytes": "512",
+                "warmup": str(CANONICAL_WARMUP),
+            }
+            for field, value in expected.items():
+                if row[field] != value:
+                    raise ValueError(f"{variant} row {index}: {field} mismatch")
+            finite_positive(row, "kernel_ms", f"{variant} row {index}")
+            if not math.isfinite(float(row["result"])):
+                raise ValueError(f"{variant} row {index}: nonfinite result")
+            genuine_x_values.add(row["genuine_n01_expected_x"])
+            distribution = row["distribution"]
+            if distribution == "hot_uniform":
+                target = float(row["target_x"])
+                target_index = next(
+                    (i for i, value in enumerate(TARGETS)
+                     if math.isclose(target, value, abs_tol=1e-15)), None
+                )
+                if target_index is None or abs(float(row["actual_x"]) - target) > 0.01:
+                    raise ValueError(f"{variant} row {index}: invalid target X")
+                if not 0 <= float(row["q"]) <= 1:
+                    raise ValueError(f"{variant} row {index}: q outside [0,1]")
+            elif distribution == "genuine_n01":
+                target = float(row["target_x"])
+                target_index = None
+                if row["q"] != "nan":
+                    raise ValueError("genuine rows must not have mixture q")
+            else:
+                raise ValueError(f"{variant} row {index}: unknown distribution")
+            groups[(distribution, target)].append(row)
+            if int(row["execution_order"]) != expected_dyadic_order(
+                variant, distribution, row["phase"], target_index
+            ):
+                raise ValueError(f"{variant} row {index}: execution order is wrong")
+        if len(groups) != len(TARGETS) + 1:
+            raise ValueError(f"{variant} timing groups are incomplete")
+        for (distribution, target), group in groups.items():
+            if len(group) != CANONICAL_SAMPLES:
+                raise ValueError(f"{variant}/{distribution}/{target}: wrong samples")
+            if {int(row["sample"]) for row in group} != set(range(CANONICAL_SAMPLES)):
+                raise ValueError(f"{variant}/{distribution}/{target}: bad sample IDs")
+            if len({row["actual_x"] for row in group}) != 1:
+                raise ValueError(f"{variant}/{distribution}/{target}: X changed")
+            phases = {name: [row for row in group if row["phase"] == name]
+                      for name in ("forward", "reverse")}
+            if any(len(batch) != CANONICAL_SAMPLES // 2 for batch in phases.values()):
+                raise ValueError(f"{variant}/{distribution}/{target}: bad split")
+            if {int(row["sample"]) for row in phases["forward"]} != set(range(25)) \
+                    or {int(row["sample"]) for row in phases["reverse"]} != set(range(25, 50)):
+                raise ValueError(
+                    f"{variant}/{distribution}/{target}: wrong sample halves"
+                )
+            if any({row["warmups_this_batch"] for row in batch} != {"5"}
+                   for batch in phases.values()):
+                raise ValueError(f"{variant}/{distribution}/{target}: bad warmups")
+    if len(genuine_x_values) != 1:
         raise ValueError("genuine N(0,1) expected X is inconsistent")
-    genuine_x = float(next(iter(genuine_values)))
+    genuine_x = float(next(iter(genuine_x_values)))
     if not 0 < genuine_x < 1:
         raise ValueError("genuine N(0,1) expected X is outside (0,1)")
-    if {int(row["sample"]) for row in genuine} != set(range(CANONICAL_SAMPLES)):
-        raise ValueError("genuine N(0,1) point has missing or duplicate samples")
-    if any(abs(float(row["target_x"]) - genuine_x) > 1e-12 for row in genuine):
-        raise ValueError("genuine timing rows have the wrong expected X")
-    genuine_actual = {row["actual_x"] for row in genuine}
-    if len(genuine_actual) != 1 or abs(float(next(iter(genuine_actual))) - genuine_x) > 0.01:
-        raise ValueError("genuine timing point misses its expected X")
-    genuine_phases = {phase: [row for row in genuine if row["phase"] == phase]
-                      for phase in ("forward", "reverse")}
-    if any(len(batch) != CANONICAL_SAMPLES // 2 for batch in genuine_phases.values()):
-        raise ValueError("genuine timing point was not split forward/reverse")
-    if any({row["warmups_this_batch"] for row in batch} != {"5"}
-           for batch in genuine_phases.values()):
-        raise ValueError("genuine timing batches do not have five warmups each")
-    if {int(row["execution_order"]) for row in genuine_phases["forward"]} != {12}:
-        raise ValueError("genuine forward batch has the wrong execution order")
-    if {int(row["execution_order"]) for row in genuine_phases["reverse"]} != {13}:
-        raise ValueError("genuine reverse batch has the wrong execution order")
+    return genuine_x
 
-    required_metrics = {
+
+def validate_metrics(
+    rows: list[dict[str, str]], metrics: list[dict[str, str]], genuine_x: float
+) -> None:
+    required = {
         "distribution", "target_x", "q", "N", "left_unique_segments",
         "right_unique_segments", "mean_unique_segments", "actual_x",
     }
-    if required_metrics - set(metrics[0]):
-        raise ValueError("metrics CSV is missing required columns")
+    missing = required - set(metrics[0])
+    if missing:
+        raise ValueError(f"metrics CSV is missing columns: {sorted(missing)}")
     if len(metrics) != len(TARGETS) + 1:
         raise ValueError("metrics CSV has the wrong row count")
-    for row in metrics:
-        target = float(row["target_x"])
-        actual = float(row["actual_x"])
-        if row["distribution"] == "hot_uniform" and (
-            target not in TARGETS or abs(actual - target) > 0.01
-        ):
-            raise ValueError("metrics CSV has an invalid X point")
-        if row["distribution"] == "genuine_n01" and abs(target - genuine_x) > 1e-12:
-            raise ValueError("genuine metrics row has the wrong expected X")
-        if row["N"] != str(CANONICAL_N):
+    current_rows = [row for row in rows if row["variant"] == "dyadic_normal32"]
+    for metric in metrics:
+        distribution = metric["distribution"]
+        target = float(metric["target_x"])
+        actual = float(metric["actual_x"])
+        if metric["N"] != str(CANONICAL_N):
             raise ValueError("metrics CSV has the wrong N")
-        timing_group = groups[target] if row["distribution"] == "hot_uniform" else genuine
-        timing_actual = float(timing_group[0]["actual_x"])
-        if not math.isclose(actual, timing_actual, abs_tol=1e-14):
+        if distribution == "hot_uniform":
+            if target not in TARGETS or abs(actual - target) > 0.01:
+                raise ValueError("metrics CSV has an invalid X point")
+        elif distribution == "genuine_n01":
+            if abs(target - genuine_x) > 1e-12:
+                raise ValueError("genuine metrics row has the wrong expected X")
+        else:
+            raise ValueError("metrics CSV has an unknown distribution")
+        timing = next(
+            row for row in current_rows
+            if row["distribution"] == distribution
+            and math.isclose(float(row["target_x"]), target, abs_tol=1e-14)
+        )
+        if not math.isclose(actual, float(timing["actual_x"]), abs_tol=1e-14):
             raise ValueError("timing and metrics X disagree")
+
+
+def validate_contract(
+    rows: list[dict[str, str]], metrics: list[dict[str, str]], correctness: str
+) -> None:
+    require_fields(rows)
+    required_checks = (
+        "current_cpu_gpu_bit_mismatches=0",
+        "bitcast_shared_cpu_gpu_bit_mismatches=0",
+        "bitcast_constant_cpu_gpu_bit_mismatches=0",
+        "segments_covered=32", "dot_current_passed=1", "dot_sign_fused_passed=1",
+        "dot_bitcast_shared_passed=1", "dot_bitcast_constant_passed=1",
+        "timed_current_sign_fused_bit_mismatches=0",
+        "timed_bitcast_shared_constant_bit_mismatches=0",
+        "timed_result_validation_passed=1",
+    )
+    for check in required_checks:
+        if check not in correctness:
+            raise ValueError(f"correctness record failed: {check}")
+    if "timed_result_checks=500" not in correctness:
+        raise ValueError("full run did not compare all 500 timed result groups")
+    known = set(BASELINES) | set(DYADIC_VARIANTS)
+    unknown = {row["variant"] for row in rows} - known
+    if unknown:
+        raise ValueError(f"unknown variants: {sorted(unknown)}")
+    orders = [int(row["execution_order"]) for row in rows]
+    if orders != sorted(orders):
+        raise ValueError("timing CSV is not in physical execution order")
+    if set(orders) != set(range(86)):
+        raise ValueError("timing CSV does not contain every execution batch")
+    for order in range(86):
+        samples = [int(row["sample"]) for row in rows
+                   if int(row["execution_order"]) == order]
+        if samples != sorted(samples):
+            raise ValueError(f"execution batch {order} is not in sample order")
+    validate_baselines(rows)
+    genuine_x = validate_dyadic(rows)
+    validate_metrics(rows, metrics, genuine_x)
 
 
 def summarize(group: list[dict[str, str]]) -> dict[str, float | int]:
     values = [float(row["kernel_ms"]) for row in group]
     return {
-        "samples": len(values),
-        "median_ms": statistics.median(values),
-        "q1_ms": percentile(values, 0.25),
-        "q3_ms": percentile(values, 0.75),
-        "minimum_ms": min(values),
-        "maximum_ms": max(values),
+        "samples": len(values), "median_ms": statistics.median(values),
+        "q1_ms": percentile(values, 0.25), "q3_ms": percentile(values, 0.75),
+        "minimum_ms": min(values), "maximum_ms": max(values),
     }
 
 
-def build_summary(
-    rows: list[dict[str, str]],
-) -> tuple[
-    list[dict[str, float | int | str]],
-    dict[str, dict[str, float | int | str]],
-    dict[str, float | int | str],
+def build_summary(rows: list[dict[str, str]]) -> tuple[
+    list[dict[str, object]], dict[str, dict[str, object]], list[dict[str, object]]
 ]:
-    groups: dict[float, list[dict[str, str]]] = defaultdict(list)
-    for row in rows:
-        if row["variant"] == "dyadic_normal32" and row["distribution"] == "hot_uniform":
-            groups[float(row["target_x"])].append(row)
-    result: list[dict[str, float | int | str]] = []
-    for target in TARGETS:
-        group = groups[target]
-        result.append(
-            {
-                "variant": "dyadic_normal32",
-                "label": "DyadicNormal32",
-                "target_x": target,
+    baselines: dict[str, dict[str, object]] = {}
+    for variant, specification in BASELINES.items():
+        group = [row for row in rows if row["variant"] == variant]
+        baselines[variant] = {
+            "variant": variant, "label": specification["label"], **summarize(group)
+        }
+    sweep: list[dict[str, object]] = []
+    genuine: list[dict[str, object]] = []
+    for variant, specification in DYADIC_VARIANTS.items():
+        variant_rows = [row for row in rows if row["variant"] == variant]
+        for target in TARGETS:
+            group = [
+                row for row in variant_rows
+                if row["distribution"] == "hot_uniform"
+                and math.isclose(float(row["target_x"]), target, abs_tol=1e-15)
+            ]
+            sweep.append({
+                "variant": variant, "label": specification["label"], "target_x": target,
                 "actual_x": float(group[0]["actual_x"]),
-                "q": float(group[0]["q"]),
                 "mean_unique_segments": float(group[0]["mean_unique_segments"]),
                 **summarize(group),
-            }
-        )
-    baselines: dict[str, dict[str, float | int | str]] = {}
-    for variant, specification in BASELINES.items():
-        baselines[variant] = {
-            "variant": variant,
-            "label": str(specification["label"]),
-            **summarize([row for row in rows if row["variant"] == variant]),
-        }
-    genuine_rows = [
-        row
-        for row in rows
-        if row["variant"] == "dyadic_normal32" and row["distribution"] == "genuine_n01"
-    ]
-    genuine: dict[str, float | int | str] = {
-        "variant": "dyadic_normal32_genuine_n01",
-        "label": "Genuine N(0,1)",
-        "target_x": float(genuine_rows[0]["target_x"]),
-        "actual_x": float(genuine_rows[0]["actual_x"]),
-        "mean_unique_segments": float(genuine_rows[0]["mean_unique_segments"]),
-        **summarize(genuine_rows),
-    }
-    return result, baselines, genuine
+            })
+        group = [row for row in variant_rows if row["distribution"] == "genuine_n01"]
+        genuine.append({
+            "variant": variant, "label": specification["label"],
+            "target_x": float(group[0]["target_x"]),
+            "actual_x": float(group[0]["actual_x"]),
+            "mean_unique_segments": float(group[0]["mean_unique_segments"]),
+            **summarize(group),
+        })
+    return sweep, baselines, genuine
 
 
 def write_csv(path: Path, rows: list[dict[str, object]]) -> None:
-    with path.open("w", newline="") as destination:
-        writer = csv.DictWriter(destination, fieldnames=list(rows[0]), lineterminator="\n")
+    with path.open("w", newline="") as output:
+        writer = csv.DictWriter(output, fieldnames=list(rows[0]))
         writer.writeheader()
         writer.writerows(rows)
 
 
-def crossover_points(summary: list[dict[str, object]], baseline: float) -> list[float]:
-    rows = sorted(summary, key=lambda row: float(row["actual_x"]))
-    result: list[float] = []
-    for left, right in zip(rows, rows[1:]):
-        x0, x1 = float(left["actual_x"]), float(right["actual_x"])
-        y0 = float(left["median_ms"]) - baseline
-        y1 = float(right["median_ms"]) - baseline
-        if y0 == 0:
-            result.append(x0)
-        elif y0 * y1 < 0:
-            result.append(x0 + (x1 - x0) * (-y0) / (y1 - y0))
-    if float(rows[-1]["median_ms"]) == baseline:
-        result.append(float(rows[-1]["actual_x"]))
-    return result
-
-
 def make_svg(
-    summary: list[dict[str, object]],
-    baselines: dict[str, dict[str, object]],
-    genuine: dict[str, object],
+    sweep: list[dict[str, object]], baselines: dict[str, dict[str, object]],
+    genuine: list[dict[str, object]],
 ) -> str:
-    width, height = 1240, 690
-    left, right, top, bottom = 98, 330, 88, 100
-    plot_width = width - left - right
-    plot_height = height - top - bottom
-    lows = [float(row["q1_ms"]) for row in summary] + [
-        *(float(row["q1_ms"]) for row in baselines.values()),
-        float(genuine["q1_ms"]),
-    ]
-    highs = [float(row["q3_ms"]) for row in summary] + [
-        *(float(row["q3_ms"]) for row in baselines.values()),
-        float(genuine["q3_ms"]),
-    ]
-    y_min, y_max = min(lows), max(highs)
-    padding = max((y_max - y_min) * 0.16, y_max * 0.012)
-    y_min -= padding
-    y_max += padding
+    width, height = 1420, 760
+    left, right, top, bottom = 98, 390, 92, 105
+    plot_width, plot_height = width - left - right, height - top - bottom
+    all_rows = [*sweep, *genuine, *baselines.values()]
+    y_min = min(float(row["q1_ms"]) for row in all_rows)
+    y_max = max(float(row["q3_ms"]) for row in all_rows)
+    padding = max((y_max - y_min) * 0.14, y_max * 0.01)
+    y_min, y_max = y_min - padding, y_max + padding
 
     def px(value: float) -> float:
         return left + value * plot_width
@@ -363,12 +427,12 @@ def make_svg(
 
     pieces = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
-        '<title id="title">DyadicNormal32 decoding versus segment dispersion</title>',
-        '<desc id="desc">Median DOT kernel time with interquartile ranges, three raw-storage arithmetic baselines, and expected dispersion for genuine standard-normal inputs.</desc>',
-        '<rect width="100%" height="100%" fill="#ffffff"/>',
-        '<style>text{font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#243238}.title{font-size:25px;font-weight:700}.subtitle{font-size:14px;fill:#60727b}.axis{stroke:#243238;stroke-width:1.5}.grid{stroke:#dfe6e9;stroke-width:1}.tick{font-size:12px;fill:#60727b}.axis-label{font-size:15px;font-weight:600}.curve{fill:none;stroke:#b5532b;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}.iqr{stroke:#b5532b;stroke-width:1.6;opacity:.82}.direct{font-size:14px;font-weight:700}.note{font-size:12px;fill:#60727b}.genuine{font-size:12px;font-weight:650;fill:#476a76}</style>',
-        f'<text class="title" x="{left}" y="35">DyadicNormal32 decoding versus segment dispersion</text>',
-        f'<text class="subtitle" x="{left}" y="59">DOT, N=2²⁶, scalar x1; drift-controlled raw FP32, FP32→FP64, and raw FP64 baselines</text>',
+        '<title id="title">DyadicNormal32 decoder strategies versus segment dispersion</title>',
+        '<desc id="desc">Median DOT kernel time with interquartile ranges for four DyadicNormal32 decoders and three baselines.</desc>',
+        '<rect width="100%" height="100%" fill="#fff"/>',
+        '<style>text{font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#243238}.title{font-size:25px;font-weight:700}.subtitle{font-size:14px;fill:#60727b}.axis{stroke:#243238;stroke-width:1.5}.grid{stroke:#dfe6e9;stroke-width:1}.tick{font-size:12px;fill:#60727b}.axis-label{font-size:15px;font-weight:600}.direct{font-size:13px;font-weight:700}.note{font-size:12px;fill:#60727b}</style>',
+        f'<text class="title" x="{left}" y="36">DyadicNormal32 decoder strategies versus segment dispersion</text>',
+        f'<text class="subtitle" x="{left}" y="61">DOT, N=2²⁶, scalar x1; four decoders and three drift-controlled baselines in one allocation</text>',
     ]
     for index in range(6):
         value = y_min + (y_max - y_min) * index / 5
@@ -380,170 +444,99 @@ def make_svg(
         x = px(value)
         pieces.append(f'<line class="grid" x1="{x:.2f}" y1="{top}" x2="{x:.2f}" y2="{top + plot_height}"/>')
         pieces.append(f'<text class="tick" x="{x:.2f}" y="{top + plot_height + 25}" text-anchor="middle">{value:.3g}</text>')
-    pieces.extend(
-        [
-            f'<line class="axis" x1="{left}" y1="{top + plot_height}" x2="{left + plot_width}" y2="{top + plot_height}"/>',
-            f'<line class="axis" x1="{left}" y1="{top}" x2="{left}" y2="{top + plot_height}"/>',
-            f'<text class="axis-label" x="{left + plot_width / 2}" y="{height - 35}" text-anchor="middle">Normalized segment-table dispersion X</text>',
-            f'<text class="axis-label" transform="translate(27 {top + plot_height / 2}) rotate(-90)" text-anchor="middle">DOT kernel time (ms)</text>',
-        ]
-    )
-
-    genuine_expected_x = float(genuine["target_x"])
-    genuine_actual_x = float(genuine["actual_x"])
-    genuine_px = px(genuine_expected_x)
-    pieces.extend(
-        [
-            f'<line x1="{genuine_px:.2f}" y1="{top}" x2="{genuine_px:.2f}" y2="{top + plot_height}" stroke="#476a76" stroke-width="1.8" stroke-dasharray="4 5"/>',
-            f'<text class="genuine" x="{genuine_px + 7:.2f}" y="{top + 17}">expected genuine N(0,1) X={genuine_expected_x:.3f}</text>',
-        ]
-    )
-
-    baseline_styles = {
-        "raw_fp32": ("#18794e", "5 5"),
-        "fp32_to_fp64": ("#315f9b", "7 5"),
-        "raw_fp64": ("#111820", "9 6"),
-    }
-    baseline_y: dict[str, float] = {}
-    for variant, baseline in baselines.items():
-        color, dash = baseline_styles[variant]
-        median_y = py(float(baseline["median_ms"]))
-        q1 = py(float(baseline["q1_ms"]))
-        q3 = py(float(baseline["q3_ms"]))
-        baseline_y[variant] = median_y
-        pieces.extend(
-            [
-                f'<rect x="{left}" y="{min(q1, q3):.2f}" width="{plot_width}" height="{max(abs(q3 - q1), 1.0):.2f}" fill="{color}" opacity="0.055"/>',
-                f'<line x1="{left}" y1="{median_y:.2f}" x2="{left + plot_width}" y2="{median_y:.2f}" stroke="{color}" stroke-width="2.0" stroke-dasharray="{dash}"/>',
-            ]
+    pieces.extend([
+        f'<line class="axis" x1="{left}" y1="{top + plot_height}" x2="{left + plot_width}" y2="{top + plot_height}"/>',
+        f'<line class="axis" x1="{left}" y1="{top}" x2="{left}" y2="{top + plot_height}"/>',
+        f'<text class="axis-label" x="{left + plot_width / 2}" y="{height - 38}" text-anchor="middle">Normalized segment-table dispersion X</text>',
+        f'<text class="axis-label" transform="translate(27 {top + plot_height / 2}) rotate(-90)" text-anchor="middle">DOT kernel time (ms)</text>',
+    ])
+    genuine_x = float(genuine[0]["target_x"])
+    pieces.append(f'<line x1="{px(genuine_x):.2f}" y1="{top}" x2="{px(genuine_x):.2f}" y2="{top + plot_height}" stroke="#87979e" stroke-width="1.4" stroke-dasharray="4 5"/>')
+    label_sources: list[tuple[str, str, float, str]] = []
+    for variant, specification in DYADIC_VARIANTS.items():
+        rows = sorted((row for row in sweep if row["variant"] == variant),
+                      key=lambda row: float(row["actual_x"]))
+        color = str(specification["color"])
+        points = " ".join(
+            f'{px(float(row["actual_x"])):.2f},{py(float(row["median_ms"])):.2f}'
+            for row in rows
         )
-
-    ordered = sorted(summary, key=lambda row: float(row["actual_x"]))
-    points = " ".join(
-        f'{px(float(row["actual_x"])):.2f},{py(float(row["median_ms"])):.2f}'
-        for row in ordered
-    )
-    pieces.append(f'<polyline class="curve" points="{points}"/>')
-    for row in ordered:
-        x = px(float(row["actual_x"]))
-        y = py(float(row["median_ms"]))
-        q1 = py(float(row["q1_ms"]))
-        q3 = py(float(row["q3_ms"]))
-        pieces.extend(
-            [
-                f'<line class="iqr" x1="{x:.2f}" y1="{q1:.2f}" x2="{x:.2f}" y2="{q3:.2f}"/>',
-                f'<line class="iqr" x1="{x - 4:.2f}" y1="{q1:.2f}" x2="{x + 4:.2f}" y2="{q1:.2f}"/>',
-                f'<line class="iqr" x1="{x - 4:.2f}" y1="{q3:.2f}" x2="{x + 4:.2f}" y2="{q3:.2f}"/>',
-                f'<circle cx="{x:.2f}" cy="{y:.2f}" r="4.4" fill="#b5532b"/>',
-            ]
-        )
-
-    genuine_point_x = px(genuine_actual_x)
-    genuine_point_y = py(float(genuine["median_ms"]))
-    genuine_q1 = py(float(genuine["q1_ms"]))
-    genuine_q3 = py(float(genuine["q3_ms"]))
-    pieces.extend(
-        [
-            f'<line x1="{genuine_point_x:.2f}" y1="{genuine_q1:.2f}" x2="{genuine_point_x:.2f}" y2="{genuine_q3:.2f}" stroke="#476a76" stroke-width="1.7"/>',
-            f'<path d="M {genuine_point_x:.2f} {genuine_point_y - 6:.2f} L {genuine_point_x + 6:.2f} {genuine_point_y:.2f} L {genuine_point_x:.2f} {genuine_point_y + 6:.2f} L {genuine_point_x - 6:.2f} {genuine_point_y:.2f} Z" fill="#476a76"/>',
-            f'<text class="genuine" x="{genuine_point_x + 10:.2f}" y="{genuine_point_y - 10:.2f}">direct genuine-source timing</text>',
-        ]
-    )
-
-    label_x = left + plot_width + 48
-    dyadic_y = py(float(ordered[-1]["median_ms"]))
-    labels = [("DyadicNormal32", "#b5532b", dyadic_y, dyadic_y, "3 4")]
+        pieces.append(f'<polyline points="{points}" fill="none" stroke="{color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>')
+        for row in rows:
+            x, y = px(float(row["actual_x"])), py(float(row["median_ms"]))
+            q1, q3 = py(float(row["q1_ms"])), py(float(row["q3_ms"]))
+            pieces.extend([
+                f'<line x1="{x:.2f}" y1="{q1:.2f}" x2="{x:.2f}" y2="{q3:.2f}" stroke="{color}" stroke-width="1.4"/>',
+                f'<circle cx="{x:.2f}" cy="{y:.2f}" r="3.8" fill="{color}"/>',
+            ])
+        genuine_row = next(row for row in genuine if row["variant"] == variant)
+        gx, gy = px(float(genuine_row["actual_x"])), py(float(genuine_row["median_ms"]))
+        pieces.append(f'<path d="M {gx:.2f} {gy - 5:.2f} L {gx + 5:.2f} {gy:.2f} L {gx:.2f} {gy + 5:.2f} L {gx - 5:.2f} {gy:.2f} Z" fill="{color}"/>')
+        label_sources.append((str(specification["label"]), color,
+                              py(float(rows[-1]["median_ms"])), "3 4"))
     for variant, baseline in baselines.items():
-        color, dash = baseline_styles[variant]
-        source_y = baseline_y[variant]
-        labels.append((str(baseline["label"]), color, source_y, source_y, dash))
-    labels.sort(key=lambda item: item[2])
-    minimum_gap = 27.0
-    for index in range(1, len(labels)):
-        if labels[index][2] - labels[index - 1][2] < minimum_gap:
-            label, color, _, source_y, dash = labels[index]
-            labels[index] = (
-                label,
-                color,
-                labels[index - 1][2] + minimum_gap,
-                source_y,
-                dash,
-            )
-    overflow = labels[-1][2] - (top + plot_height - 8)
+        specification = BASELINES[variant]
+        color, dash = str(specification["color"]), str(specification["dash"])
+        y = py(float(baseline["median_ms"]))
+        pieces.append(f'<line x1="{left}" y1="{y:.2f}" x2="{left + plot_width}" y2="{y:.2f}" stroke="{color}" stroke-width="2" stroke-dasharray="{dash}"/>')
+        label_sources.append((str(baseline["label"]), color, y, dash))
+    labels = sorted(label_sources, key=lambda item: item[2])
+    positioned: list[tuple[str, str, float, float, str]] = []
+    for label, color, source_y, dash in labels:
+        label_y = source_y if not positioned else max(source_y, positioned[-1][2] + 27)
+        positioned.append((label, color, label_y, source_y, dash))
+    overflow = positioned[-1][2] - (top + plot_height - 8)
     if overflow > 0:
-        labels = [
-            (label, color, label_y - overflow, source_y, dash)
-            for label, color, label_y, source_y, dash in labels
-        ]
-    for label, color, label_y, source_y, dash in labels:
+        positioned = [(label, color, label_y - overflow, source_y, dash)
+                      for label, color, label_y, source_y, dash in positioned]
+    label_x = left + plot_width + 50
+    for label, color, label_y, source_y, dash in positioned:
         pieces.append(f'<path d="M {left + plot_width:.2f} {source_y:.2f} L {label_x - 12:.2f} {label_y:.2f}" stroke="{color}" stroke-width="1.5" stroke-dasharray="{dash}" fill="none"/>')
         pieces.append(f'<text class="direct" x="{label_x}" y="{label_y + 5:.2f}" fill="{color}">{html.escape(label)}</text>')
-    pieces.append(f'<text class="note" x="{left}" y="{height - 9}">Curve points, the genuine-source diamond, and each baseline summarize 50 launches. Bars and faint bands show IQR; every baseline was split before and after.</text>')
+    pieces.append(f'<text class="note" x="{left}" y="{height - 10}">Each point and line is the median of 50 launches; bars show IQR. Diamonds mark the genuine N(0,1) input at expected X={genuine_x:.3f}.</text>')
     pieces.append("</svg>")
     return "".join(pieces)
 
 
 def make_report(
-    summary: list[dict[str, object]],
-    baselines: dict[str, dict[str, object]],
-    genuine: dict[str, object],
-    samples_href: str,
-    metrics_href: str,
-    correctness_href: str,
-    coefficients_href: str,
+    sweep: list[dict[str, object]], baselines: dict[str, dict[str, object]],
+    genuine: list[dict[str, object]], samples_href: str, metrics_href: str,
+    correctness_href: str, coefficients_href: str,
 ) -> str:
-    raw = baselines["raw_fp64"]
-    raw_median = float(raw["median_ms"])
-    genuine_time = float(genuine["median_ms"])
-    genuine_expected_x = float(genuine["target_x"])
-    genuine_actual_x = float(genuine["actual_x"])
-    medians = [float(row["median_ms"]) for row in summary]
-    sensitivity = max(medians) / min(medians)
-    crossings = crossover_points(summary, raw_median)
-    if crossings:
-        crossing_text = ", ".join(f"X≈{value:.3f}" for value in crossings)
-    elif all(value < raw_median for value in medians):
-        crossing_text = "No crossover. DyadicNormal32 is faster at every measured X."
-    elif all(value > raw_median for value in medians):
-        crossing_text = "No crossover. Raw FP64 is faster at every measured X."
-    else:
-        crossing_text = "No interpolation crossover could be resolved."
-    rows = "".join(
-        f'<tr><td>{float(row["target_x"]):.3f}</td><td>{float(row["actual_x"]):.6f}</td>'
-        f'<td>{float(row["mean_unique_segments"]):.4f}</td>'
-        f'<td>{float(row["median_ms"]):.6f}</td><td>{float(row["q1_ms"]):.6f}</td>'
-        f'<td>{float(row["q3_ms"]):.6f}</td><td>{float(row["median_ms"]) / raw_median:.3f}×</td></tr>'
-        for row in summary
-    )
-    rows += (
-        f'<tr><td>genuine N(0,1)</td><td>{genuine_actual_x:.6f}</td>'
-        f'<td>{float(genuine["mean_unique_segments"]):.4f}</td>'
-        f'<td>{genuine_time:.6f}</td><td>{float(genuine["q1_ms"]):.6f}</td>'
-        f'<td>{float(genuine["q3_ms"]):.6f}</td><td>{genuine_time / raw_median:.3f}×</td></tr>'
+    raw_fp64 = float(baselines["raw_fp64"]["median_ms"])
+    current = next(row for row in genuine if row["variant"] == "dyadic_normal32")
+    fastest = min(genuine, key=lambda row: float(row["median_ms"]))
+    fastest_time, current_time = float(fastest["median_ms"]), float(current["median_ms"])
+    strategy_rows = "".join(
+        f'<tr><td>{html.escape(str(row["label"]))}</td><td>{float(row["median_ms"]):.6f}</td>'
+        f'<td>{float(row["q1_ms"]):.6f}</td><td>{float(row["q3_ms"]):.6f}</td>'
+        f'<td>{float(row["median_ms"]) / current_time:.3f}×</td>'
+        f'<td>{float(row["median_ms"]) / raw_fp64:.3f}×</td></tr>' for row in genuine
     )
     baseline_rows = "".join(
-        f'<tr><td>{html.escape(str(baseline["label"]))}</td>'
-        f'<td>{float(baseline["median_ms"]):.6f}</td>'
-        f'<td>{float(baseline["q1_ms"]):.6f}</td>'
-        f'<td>{float(baseline["q3_ms"]):.6f}</td>'
-        f'<td>{float(baseline["median_ms"]) / raw_median:.3f}×</td></tr>'
-        for baseline in baselines.values()
+        f'<tr><td>{html.escape(str(row["label"]))}</td><td>{float(row["median_ms"]):.6f}</td>'
+        f'<td>{float(row["q1_ms"]):.6f}</td><td>{float(row["q3_ms"]):.6f}</td>'
+        f'<td>{float(row["median_ms"]) / raw_fp64:.3f}×</td></tr>'
+        for row in baselines.values()
     )
-    return f"""<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DyadicNormal32 dispersion benchmark</title>
-<style>
-:root{{--ink:#1d292f;--muted:#60727b;--line:#dbe3e7;--surface:#fff;--accent:#b5532b;--soft:#f0e7e2}}*{{box-sizing:border-box}}body{{margin:0;background:#f3f6f7;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif}}main{{max-width:1280px;margin:0 auto;padding:54px 30px 80px}}h1{{font-size:40px;line-height:1.08;margin:0 0 14px}}h2{{font-size:25px;margin:40px 0 14px}}.lead{{max-width:980px;font-size:18px;line-height:1.55;color:var(--muted);margin:0 0 30px}}.cards{{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:13px;margin:0 0 34px}}.card{{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}}.card b{{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px}}.figure{{background:white;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 8px 26px rgba(36,58,70,.07)}}.figure img{{display:block;width:100%;height:auto}}.finding{{margin-top:18px;padding:18px 20px;background:var(--soft);border-left:5px solid var(--accent);border-radius:8px;font-size:17px;line-height:1.55}}table{{width:100%;border-collapse:collapse;background:white;border:1px solid var(--line);font-variant-numeric:tabular-nums}}th,td{{padding:11px 12px;text-align:right;border-bottom:1px solid var(--line)}}th:first-child,td:first-child{{text-align:left}}th{{background:#eaf0f2;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}}.method{{line-height:1.65;color:#33454e}}code{{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.93em}}.artifacts{{margin-top:40px;padding:20px 22px;background:#e7f0f5;border-left:5px solid #315f80;border-radius:8px;line-height:1.7}}a{{color:#245d87}}</style></head>
-<body><main><h1>DyadicNormal32 dispersion benchmark</h1>
-<p class="lead">This run isolates whether a 512-byte coefficient decoder changes speed when warps spread their accesses across more dyadic segments. Raw FP32, FP32 storage converted to FP64 arithmetic, and raw FP64 all use the same DOT geometry, executable, GPU allocation, and timing method. A separately generated genuine-standard-normal point checks the bank-access pattern that the one-dimensional X metric cannot capture.</p>
-<div class="cards"><div class="card"><b>Input</b><code>N=2^26</code>, scalar x1 DOT</div><div class="card"><b>Geometry</b>512 × 256 first stage, then one reduction block</div><div class="card"><b>Raw FP32</b>{float(baselines["raw_fp32"]["median_ms"]):.6f} ms median</div><div class="card"><b>FP32 → FP64</b>{float(baselines["fp32_to_fp64"]["median_ms"]):.6f} ms median</div><div class="card"><b>Raw FP64</b>{raw_median:.6f} ms median</div></div>
-<div class="figure"><img src="dyadic-normal32-dispersion.svg" alt="DyadicNormal32 DOT time versus normalized segment dispersion"></div>
-<div class="finding">The directly timed genuine <code>N(0,1)</code> source has expected <code>X={genuine_expected_x:.3f}</code>, measured <code>X={genuine_actual_x:.3f}</code>, and takes {genuine_time:.6f} ms: {genuine_time / float(baselines["fp32_to_fp64"]["median_ms"]):.3f}× FP32→FP64 and {genuine_time / raw_median:.3f}× raw FP64. Across the artificial hot-plus-uniform sweep, the slowest median is {sensitivity:.3f}× the fastest. {html.escape(crossing_text)}</div>
-<h2>Baselines</h2><table><thead><tr><th>Storage and arithmetic</th><th>Median ms</th><th>Q1 ms</th><th>Q3 ms</th><th>/ raw FP64</th></tr></thead><tbody>{baseline_rows}</tbody></table>
-<h2>Measured points</h2><table><thead><tr><th>Target X</th><th>Actual X</th><th>Unique h / warp</th><th>Median ms</th><th>Q1 ms</th><th>Q3 ms</th><th>/ raw FP64</th></tr></thead><tbody>{rows}</tbody></table>
-<h2>Exact format convention</h2><p class="method">Bit 31 is the sign. Bits 30 through 0 are the magnitude rank <code>r</code>. Counting leading one bits in <code>r</code> gives segment <code>h</code>. For <code>h=0…30</code>, the zero delimiter is followed by <code>30-h</code> payload bits <code>l</code>. Segment boundaries split the half-normal code-point density with σ=√3 into tail probabilities <code>2^-h</code>. Each segment uses midpoint-spaced linear reconstruction <code>fma(double(l), B[h], A[h])</code>. The all-ones magnitude rank is <code>h=31,l=0</code> and maps to the finite <code>2^-32</code> tail boundary, approximately 10.978 for source σ=1. The 32 coefficient pairs occupy exactly 512 bytes and are staged in shared memory once per timed first-stage block.</p>
-<p class="method">For 32 segment entries, <code>X=(E[unique h per warp]-1)/(E[unique h under uniform draws]-1)</code>. Sweep codes use a deterministic mixture of hot segment zero and uniform segment draws. The solver chooses mixture probability <code>q</code> for every target X. The genuine point samples the actual segment probabilities induced by an <code>N(0,1)</code> source. It is timed directly because equal X values can still map to different shared-memory bank conflicts. Payload bits and signs are independently randomized; left and right arrays use independent seeds. Each point is split between an ascending and descending pass. Every baseline is likewise split before and after the sweep, with the after order reversed to limit drift bias.</p>
-<div class="artifacts"><b>Artifacts.</b> <a href="{html.escape(samples_href)}">Raw timing samples</a> · <a href="{html.escape(metrics_href)}">Measured segment dispersion</a> · <a href="{html.escape(correctness_href)}">CPU/GPU decoder checks</a> · <a href="{html.escape(coefficients_href)}">Exact coefficient table</a> · <a href="timing_summary.csv">Timing summary</a> · <a href="baseline_summary.csv">Baseline summary</a> · <a href="../run_manifest.txt">Run manifest</a></div>
+    sweep_rows = "".join(
+        f'<tr><td>{html.escape(str(row["label"]))}</td><td>{float(row["target_x"]):.3f}</td>'
+        f'<td>{float(row["actual_x"]):.6f}</td><td>{float(row["median_ms"]):.6f}</td>'
+        f'<td>{float(row["q1_ms"]):.6f}</td><td>{float(row["q3_ms"]):.6f}</td>'
+        f'<td>{float(row["median_ms"]) / raw_fp64:.3f}×</td></tr>' for row in sweep
+    )
+    return f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DyadicNormal32 decoder strategies</title>
+<style>:root{{--ink:#1d292f;--muted:#60727b;--line:#dbe3e7;--surface:#fff;--accent:#007f86;--soft:#e8f3f3}}*{{box-sizing:border-box}}body{{margin:0;background:#f3f6f7;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif}}main{{max-width:1450px;margin:0 auto;padding:54px 30px 80px}}h1{{font-size:40px;line-height:1.08;margin:0 0 14px}}h2{{font-size:25px;margin:40px 0 14px}}.lead{{max-width:1050px;font-size:18px;line-height:1.55;color:var(--muted);margin:0 0 30px}}.cards{{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:13px;margin:0 0 34px}}.card{{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}}.card b{{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px}}.figure{{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 8px 26px rgba(36,58,70,.07)}}.figure img{{display:block;width:100%;height:auto}}.finding{{margin-top:18px;padding:18px 20px;background:var(--soft);border-left:5px solid var(--accent);border-radius:8px;font-size:17px;line-height:1.55}}.table-wrap{{overflow-x:auto}}table{{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);font-variant-numeric:tabular-nums}}th,td{{padding:11px 12px;text-align:right;border-bottom:1px solid var(--line)}}th:first-child,td:first-child{{text-align:left}}th{{background:#eaf0f2;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}}.method{{line-height:1.65;color:#33454e}}code{{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.93em}}.artifacts{{margin-top:40px;padding:20px 22px;background:#e7f0f5;border-left:5px solid #315f80;border-radius:8px;line-height:1.7}}a{{color:#245d87}}</style></head>
+<body><main><h1>DyadicNormal32 decoder strategies</h1><p class="lead">One H200 allocation, one executable, identical 32-bit code arrays, and the same scalar x1 DOT geometry. The run compares the current integer-to-FP64 decoder with sign fusion and two decoders that construct the interpolation coordinate as FP64 bits.</p>
+<div class="cards"><div class="card"><b>Input</b><code>N=2^26</code>, scalar x1 DOT</div><div class="card"><b>Strategies</b>4 Dyadic decoders</div><div class="card"><b>Fastest genuine N(0,1)</b>{html.escape(str(fastest["label"]))}<br>{fastest_time:.6f} ms</div><div class="card"><b>Current decoder</b>{current_time:.6f} ms</div><div class="card"><b>Raw FP64</b>{raw_fp64:.6f} ms</div></div>
+<div class="figure"><img src="dyadic-normal32-strategies.svg" alt="Four DyadicNormal32 decoder strategies and three baselines"></div>
+<div class="finding">On genuine N(0,1), {html.escape(str(fastest["label"]))} is {current_time / fastest_time:.3f}× as fast as the current decoder and takes {fastest_time / raw_fp64:.3f}× raw FP64 time. The artificial sweep shows whether that result survives changes in segment-table dispersion.</div>
+<h2>Genuine N(0,1)</h2><div class="table-wrap"><table><thead><tr><th>Decoder</th><th>Median ms</th><th>Q1 ms</th><th>Q3 ms</th><th>/ current</th><th>/ raw FP64</th></tr></thead><tbody>{strategy_rows}</tbody></table></div>
+<h2>Baselines</h2><div class="table-wrap"><table><thead><tr><th>Storage and arithmetic</th><th>Median ms</th><th>Q1 ms</th><th>Q3 ms</th><th>/ raw FP64</th></tr></thead><tbody>{baseline_rows}</tbody></table></div>
+<h2>Dispersion sweep</h2><div class="table-wrap"><table><thead><tr><th>Decoder</th><th>Target X</th><th>Actual X</th><th>Median ms</th><th>Q1 ms</th><th>Q3 ms</th><th>/ raw FP64</th></tr></thead><tbody>{sweep_rows}</tbody></table></div>
+<h2>What changed</h2><p class="method"><code>Current</code> decodes both signs separately and converts each integer payload to FP64. <code>Sign-fused</code> decodes positive magnitudes and applies the XOR of the two signs once before the multiply-add. The BitCast variants replace each integer-to-FP64 payload conversion with an exact FP64 coordinate assembled from the code bits. One stages transformed coefficient pairs in shared memory; the other reads them from CUDA constant memory. All variants preserve the same 32-bit format and reconstruction points to normal FP64 rounding tolerance.</p>
+<p class="method">Forward batches use current, sign-fused, BitCast/shared, then BitCast/constant. Reverse batches invert that order. The baselines bracket the decoder sweep in reverse order. Each curve point and genuine-source point combines 25 samples from each direction.</p>
+<div class="artifacts"><b>Artifacts.</b> <a href="{html.escape(samples_href)}">Raw timing samples</a> · <a href="{html.escape(metrics_href)}">Measured segment dispersion</a> · <a href="{html.escape(correctness_href)}">CPU/GPU checks</a> · <a href="{html.escape(coefficients_href)}">Coefficient table</a> · <a href="timing_summary.csv">Sweep summary</a> · <a href="genuine_summary.csv">Genuine N(0,1) summary</a> · <a href="baseline_summary.csv">Baseline summary</a> · <a href="../run_manifest.txt">Run manifest</a></div>
 </main></body></html>"""
 
 
@@ -556,12 +549,8 @@ def maybe_make_png(svg_path: Path, png_path: Path) -> bool:
         command.append("convert")
     command.extend([str(svg_path), str(png_path)])
     try:
-        subprocess.run(
-            command,
-            check=True,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
+        subprocess.run(command, check=True, stdout=subprocess.DEVNULL,
+                       stderr=subprocess.DEVNULL)
     except subprocess.CalledProcessError:
         png_path.unlink(missing_ok=True)
         return False
@@ -576,64 +565,33 @@ def main() -> None:
     parser.add_argument("--coefficients", required=True, type=Path)
     parser.add_argument("--output-dir", required=True, type=Path)
     arguments = parser.parse_args()
-
     rows = read_rows(arguments.samples)
     metrics = read_rows(arguments.metrics)
     correctness = arguments.correctness.read_text()
+    validate_coefficients(arguments.coefficients)
     validate_contract(rows, metrics, correctness)
-    summary, baselines, genuine = build_summary(rows)
+    sweep, baselines, genuine = build_summary(rows)
     arguments.output_dir.mkdir(parents=True, exist_ok=True)
-    write_csv(arguments.output_dir / "timing_summary.csv", [*summary, genuine])
-    write_csv(
-        arguments.output_dir / "baseline_summary.csv",
-        [
-            {
-                "baseline": variant,
-                "label": baseline["label"],
-                **{key: value for key, value in baseline.items()
-                   if key not in {"variant", "label"}},
-            }
-            for variant, baseline in baselines.items()
-        ],
-    )
-    svg_path = arguments.output_dir / "dyadic-normal32-dispersion.svg"
-    svg_path.write_text(make_svg(summary, baselines, genuine))
-    made_png = maybe_make_png(
-        svg_path, arguments.output_dir / "dyadic-normal32-dispersion.png"
-    )
+    write_csv(arguments.output_dir / "timing_summary.csv", sweep)
+    write_csv(arguments.output_dir / "genuine_summary.csv", genuine)
+    write_csv(arguments.output_dir / "baseline_summary.csv", list(baselines.values()))
+    svg_path = arguments.output_dir / "dyadic-normal32-strategies.svg"
+    svg_path.write_text(make_svg(sweep, baselines, genuine))
+    made_png = maybe_make_png(svg_path, arguments.output_dir / "dyadic-normal32-strategies.png")
     samples_href = os.path.relpath(arguments.samples, arguments.output_dir)
     metrics_href = os.path.relpath(arguments.metrics, arguments.output_dir)
     correctness_href = os.path.relpath(arguments.correctness, arguments.output_dir)
     coefficients_href = os.path.relpath(arguments.coefficients, arguments.output_dir)
     (arguments.output_dir / "report.html").write_text(
-        make_report(
-            summary,
-            baselines,
-            genuine,
-            samples_href,
-            metrics_href,
-            correctness_href,
-            coefficients_href,
-        )
+        make_report(sweep, baselines, genuine, samples_href, metrics_href,
+                    correctness_href, coefficients_href)
     )
     print(f"wrote {svg_path} and {arguments.output_dir / 'report.html'}")
     print(f"PNG generated: {'yes' if made_png else 'no converter available'}")
-    for baseline in baselines.values():
-        print(
-            f"{baseline['label']} median: "
-            f"{float(baseline['median_ms']):.9f} ms"
-        )
-    print(
-        "DyadicNormal32 endpoint medians: "
-        f"X=0 {float(summary[0]['median_ms']):.9f} ms, "
-        f"X=1 {float(summary[-1]['median_ms']):.9f} ms"
-    )
-    print(
-        "genuine N(0,1): "
-        f"expected X {float(genuine['target_x']):.9f}, "
-        f"actual X {float(genuine['actual_x']):.9f}, "
-        f"median {float(genuine['median_ms']):.9f} ms"
-    )
+    for row in genuine:
+        print(f"{row['label']} genuine N(0,1): {float(row['median_ms']):.9f} ms")
+    for row in baselines.values():
+        print(f"{row['label']} median: {float(row['median_ms']):.9f} ms")
 
 
 if __name__ == "__main__":

@@ -42,6 +42,9 @@ constexpr std::size_t timed_shared_bytes =
 
 static_assert(coefficient_bytes == 512);
 
+__constant__ dn::segment_coefficients
+    constant_bitcast_coefficients[dn::segment_count];
+
 class benchmark_error : public std::runtime_error {
 public:
   using std::runtime_error::runtime_error;
@@ -256,18 +259,44 @@ __global__ void generate_raw_values_kernel(float *values, std::size_t count,
 }
 
 __device__ __forceinline__ double
-decode_code(std::uint32_t code, const dn::segment_coefficients *coefficients) {
+decode_magnitude_i2f(std::uint32_t code,
+                     const dn::segment_coefficients *coefficients) {
   const auto rank = code & dn::magnitude_mask;
   const auto segment = dn::segment_from_rank(rank);
   const auto payload = dn::payload_for_segment(rank, segment);
   const auto coefficient = coefficients[segment];
-  const auto magnitude =
-      fma(static_cast<double>(payload), coefficient.step, coefficient.start);
+  return fma(static_cast<double>(payload), coefficient.step, coefficient.start);
+}
+
+__device__ __forceinline__ double
+decode_magnitude_bitcast(std::uint32_t code,
+                         const dn::segment_coefficients *coefficients) {
+  const auto rank = code & dn::magnitude_mask;
+  const auto segment = dn::segment_from_rank(rank);
+  const auto coordinate_bits = dn::bitcast_coordinate_bits(rank, segment);
+  const auto coordinate = __longlong_as_double(
+      static_cast<long long>(coordinate_bits));
+  const auto coefficient = coefficients[segment];
+  return fma(coordinate, coefficient.step, coefficient.start);
+}
+
+__device__ __forceinline__ double
+apply_sign(double magnitude, std::uint32_t sign_code) {
   const auto magnitude_bits =
       static_cast<unsigned long long>(__double_as_longlong(magnitude));
-  const auto sign_bits = static_cast<unsigned long long>(code >> 31) << 63;
+  const auto sign_bits = static_cast<unsigned long long>(sign_code >> 31) << 63;
   return __longlong_as_double(
       static_cast<long long>(magnitude_bits | sign_bits));
+}
+
+__device__ __forceinline__ double
+decode_code(std::uint32_t code, const dn::segment_coefficients *coefficients) {
+  return apply_sign(decode_magnitude_i2f(code, coefficients), code);
+}
+
+__device__ __forceinline__ double apply_combined_sign(
+    double magnitude, std::uint32_t left_code, std::uint32_t right_code) {
+  return apply_sign(magnitude, left_code ^ right_code);
 }
 
 __device__ __forceinline__ double block_sum(double value, double *shared) {
@@ -313,6 +342,90 @@ __global__ void dot_dyadic_normal32_kernel(
        index += static_cast<std::size_t>(gridDim.x) * blockDim.x) {
     const auto a = decode_code(left[index], coefficients);
     const auto b = decode_code(right[index], coefficients);
+    sum = fma(a, b, sum);
+  }
+  const auto reduced = block_sum(sum, reduction);
+  if (threadIdx.x == 0) {
+    partials[blockIdx.x] = reduced;
+  }
+}
+
+__global__ void dot_dyadic_sign_fused_kernel(
+    const std::uint32_t *left, const std::uint32_t *right, std::size_t count,
+    const dn::segment_coefficients *global_coefficients, double *partials) {
+  extern __shared__ __align__(16) unsigned char storage[];
+  auto *coefficients = reinterpret_cast<dn::segment_coefficients *>(storage);
+  auto *reduction = reinterpret_cast<double *>(storage + coefficient_bytes);
+  for (std::size_t index = threadIdx.x; index < dn::segment_count;
+       index += blockDim.x) {
+    coefficients[index] = global_coefficients[index];
+  }
+  __syncthreads();
+
+  double sum{};
+  for (auto index =
+           static_cast<std::size_t>(blockIdx.x) * blockDim.x + threadIdx.x;
+       index < count;
+       index += static_cast<std::size_t>(gridDim.x) * blockDim.x) {
+    const auto left_code = left[index];
+    const auto right_code = right[index];
+    auto a = decode_magnitude_i2f(left_code, coefficients);
+    const auto b = decode_magnitude_i2f(right_code, coefficients);
+    a = apply_combined_sign(a, left_code, right_code);
+    sum = fma(a, b, sum);
+  }
+  const auto reduced = block_sum(sum, reduction);
+  if (threadIdx.x == 0) {
+    partials[blockIdx.x] = reduced;
+  }
+}
+
+__global__ void dot_dyadic_bitcast_shared_kernel(
+    const std::uint32_t *left, const std::uint32_t *right, std::size_t count,
+    const dn::segment_coefficients *global_coefficients, double *partials) {
+  extern __shared__ __align__(16) unsigned char storage[];
+  auto *coefficients = reinterpret_cast<dn::segment_coefficients *>(storage);
+  auto *reduction = reinterpret_cast<double *>(storage + coefficient_bytes);
+  for (std::size_t index = threadIdx.x; index < dn::segment_count;
+       index += blockDim.x) {
+    coefficients[index] = global_coefficients[index];
+  }
+  __syncthreads();
+
+  double sum{};
+  for (auto index =
+           static_cast<std::size_t>(blockIdx.x) * blockDim.x + threadIdx.x;
+       index < count;
+       index += static_cast<std::size_t>(gridDim.x) * blockDim.x) {
+    const auto left_code = left[index];
+    const auto right_code = right[index];
+    auto a = decode_magnitude_bitcast(left_code, coefficients);
+    const auto b = decode_magnitude_bitcast(right_code, coefficients);
+    a = apply_combined_sign(a, left_code, right_code);
+    sum = fma(a, b, sum);
+  }
+  const auto reduced = block_sum(sum, reduction);
+  if (threadIdx.x == 0) {
+    partials[blockIdx.x] = reduced;
+  }
+}
+
+__global__ void dot_dyadic_bitcast_constant_kernel(
+    const std::uint32_t *left, const std::uint32_t *right, std::size_t count,
+    double *partials) {
+  __shared__ double reduction[threads];
+  double sum{};
+  for (auto index =
+           static_cast<std::size_t>(blockIdx.x) * blockDim.x + threadIdx.x;
+       index < count;
+       index += static_cast<std::size_t>(gridDim.x) * blockDim.x) {
+    const auto left_code = left[index];
+    const auto right_code = right[index];
+    auto a = decode_magnitude_bitcast(left_code,
+                                      constant_bitcast_coefficients);
+    const auto b = decode_magnitude_bitcast(right_code,
+                                            constant_bitcast_coefficients);
+    a = apply_combined_sign(a, left_code, right_code);
     sum = fma(a, b, sum);
   }
   const auto reduced = block_sum(sum, reduction);
@@ -441,6 +554,36 @@ decode_validation_kernel(const std::uint32_t *codes, std::size_t count,
   }
 }
 
+__global__ void decode_bitcast_shared_validation_kernel(
+    const std::uint32_t *codes, std::size_t count,
+    const dn::segment_coefficients *global_coefficients, double *values) {
+  __shared__ dn::segment_coefficients coefficients[dn::segment_count];
+  for (std::size_t index = threadIdx.x; index < dn::segment_count;
+       index += blockDim.x) {
+    coefficients[index] = global_coefficients[index];
+  }
+  __syncthreads();
+  for (auto index =
+           static_cast<std::size_t>(blockIdx.x) * blockDim.x + threadIdx.x;
+       index < count;
+       index += static_cast<std::size_t>(gridDim.x) * blockDim.x) {
+    const auto magnitude = decode_magnitude_bitcast(codes[index], coefficients);
+    values[index] = apply_sign(magnitude, codes[index]);
+  }
+}
+
+__global__ void decode_bitcast_constant_validation_kernel(
+    const std::uint32_t *codes, std::size_t count, double *values) {
+  for (auto index =
+           static_cast<std::size_t>(blockIdx.x) * blockDim.x + threadIdx.x;
+       index < count;
+       index += static_cast<std::size_t>(gridDim.x) * blockDim.x) {
+    const auto magnitude =
+        decode_magnitude_bitcast(codes[index], constant_bitcast_coefficients);
+    values[index] = apply_sign(magnitude, codes[index]);
+  }
+}
+
 class event_timer {
 public:
   event_timer() {
@@ -481,8 +624,12 @@ double measure_unique_segments(const std::uint32_t *codes, std::size_t count) {
 }
 
 void validate_gpu_decoder(
-    const std::array<dn::segment_coefficients, dn::segment_count> &coefficients,
-    const dn::segment_coefficients *device_coefficients,
+    const std::array<dn::segment_coefficients, dn::segment_count>
+        &linear_coefficients,
+    const std::array<dn::segment_coefficients, dn::segment_count>
+        &bitcast_coefficients,
+    const dn::segment_coefficients *device_linear_coefficients,
+    const dn::segment_coefficients *device_bitcast_coefficients,
     const std::string &output_path) {
   std::vector<std::uint32_t> codes;
   for (std::uint32_t segment = 0; segment < dn::segment_count; ++segment) {
@@ -498,52 +645,100 @@ void validate_gpu_decoder(
     codes.push_back(sample_code(index, 0x243f6a8885a308d3ULL, 1.0));
   }
   device_buffer<std::uint32_t> device_codes(codes.size());
-  device_buffer<double> device_values(codes.size());
+  device_buffer<double> device_current_values(codes.size());
+  device_buffer<double> device_bitcast_shared_values(codes.size());
+  device_buffer<double> device_bitcast_constant_values(codes.size());
   CUDA_CHECK(cudaMemcpy(device_codes.get(), codes.data(),
                         codes.size() * sizeof(std::uint32_t),
                         cudaMemcpyHostToDevice));
   decode_validation_kernel<<<32, threads>>>(device_codes.get(), codes.size(),
-                                            device_coefficients,
-                                            device_values.get());
+                                            device_linear_coefficients,
+                                            device_current_values.get());
+  decode_bitcast_shared_validation_kernel<<<32, threads>>>(
+      device_codes.get(), codes.size(), device_bitcast_coefficients,
+      device_bitcast_shared_values.get());
+  decode_bitcast_constant_validation_kernel<<<32, threads>>>(
+      device_codes.get(), codes.size(), device_bitcast_constant_values.get());
   CUDA_CHECK(cudaGetLastError());
-  std::vector<double> gpu_values(codes.size());
-  CUDA_CHECK(cudaMemcpy(gpu_values.data(), device_values.get(),
-                        gpu_values.size() * sizeof(double),
+  std::vector<double> current_values(codes.size());
+  std::vector<double> bitcast_shared_values(codes.size());
+  std::vector<double> bitcast_constant_values(codes.size());
+  CUDA_CHECK(cudaMemcpy(current_values.data(), device_current_values.get(),
+                        current_values.size() * sizeof(double),
+                        cudaMemcpyDeviceToHost));
+  CUDA_CHECK(cudaMemcpy(bitcast_shared_values.data(),
+                        device_bitcast_shared_values.get(),
+                        bitcast_shared_values.size() * sizeof(double),
+                        cudaMemcpyDeviceToHost));
+  CUDA_CHECK(cudaMemcpy(bitcast_constant_values.data(),
+                        device_bitcast_constant_values.get(),
+                        bitcast_constant_values.size() * sizeof(double),
                         cudaMemcpyDeviceToHost));
 
-  std::size_t mismatches{};
-  double maximum_absolute_error{};
+  std::size_t current_mismatches{};
+  std::size_t bitcast_shared_mismatches{};
+  std::size_t bitcast_constant_mismatches{};
+  double current_maximum_absolute_error{};
+  double bitcast_maximum_absolute_error{};
+  double bitcast_vs_current_maximum_absolute_error{};
   for (std::size_t index = 0; index < codes.size(); ++index) {
-    const auto expected = dn::decode(codes[index], coefficients);
-    std::uint64_t expected_bits{};
-    std::uint64_t actual_bits{};
-    std::memcpy(&expected_bits, &expected, sizeof(expected_bits));
-    std::memcpy(&actual_bits, &gpu_values[index], sizeof(actual_bits));
-    if (expected_bits != actual_bits) {
-      ++mismatches;
+    const auto current_expected =
+        dn::decode(codes[index], linear_coefficients);
+    const auto bitcast_expected =
+        dn::decode_bitcast(codes[index], bitcast_coefficients);
+    const auto value_bits = [](double value) {
+      std::uint64_t result{};
+      std::memcpy(&result, &value, sizeof(result));
+      return result;
+    };
+    if (value_bits(current_expected) != value_bits(current_values[index])) {
+      ++current_mismatches;
     }
-    maximum_absolute_error = std::max(maximum_absolute_error,
-                                      std::abs(expected - gpu_values[index]));
+    if (value_bits(bitcast_expected) !=
+        value_bits(bitcast_shared_values[index])) {
+      ++bitcast_shared_mismatches;
+    }
+    if (value_bits(bitcast_expected) !=
+        value_bits(bitcast_constant_values[index])) {
+      ++bitcast_constant_mismatches;
+    }
+    current_maximum_absolute_error =
+        std::max(current_maximum_absolute_error,
+                 std::abs(current_expected - current_values[index]));
+    bitcast_maximum_absolute_error =
+        std::max({bitcast_maximum_absolute_error,
+                  std::abs(bitcast_expected - bitcast_shared_values[index]),
+                  std::abs(bitcast_expected - bitcast_constant_values[index])});
+    bitcast_vs_current_maximum_absolute_error =
+        std::max(bitcast_vs_current_maximum_absolute_error,
+                 std::abs(bitcast_expected - current_expected));
   }
 
   constexpr std::size_t dot_validation_count = 8192;
   constexpr int dot_validation_blocks = dot_blocks;
   std::vector<std::uint32_t> dot_left(dot_validation_count);
   std::vector<std::uint32_t> dot_right(dot_validation_count);
-  long double cpu_dot{};
+  long double current_cpu_dot{};
+  long double bitcast_cpu_dot{};
   for (std::size_t index = 0; index < dot_validation_count; ++index) {
-    dot_left[index] =
-        sample_code(index, 0x13198a2e03707344ULL, 1.0) & dn::magnitude_mask;
-    dot_right[index] =
-        sample_code(index, 0xa4093822299f31d0ULL, 1.0) & dn::magnitude_mask;
-    cpu_dot +=
-        static_cast<long double>(dn::decode(dot_left[index], coefficients)) *
-        static_cast<long double>(dn::decode(dot_right[index], coefficients));
+    dot_left[index] = sample_code(index, 0x13198a2e03707344ULL, 1.0);
+    dot_right[index] = sample_code(index, 0xa4093822299f31d0ULL, 1.0);
+    current_cpu_dot += static_cast<long double>(
+                           dn::decode(dot_left[index], linear_coefficients)) *
+                       static_cast<long double>(
+                           dn::decode(dot_right[index], linear_coefficients));
+    bitcast_cpu_dot += static_cast<long double>(dn::decode_bitcast(
+                            dot_left[index], bitcast_coefficients)) *
+                       static_cast<long double>(dn::decode_bitcast(
+                           dot_right[index], bitcast_coefficients));
   }
   device_buffer<std::uint32_t> device_dot_left(dot_validation_count);
   device_buffer<std::uint32_t> device_dot_right(dot_validation_count);
   device_buffer<double> device_dot_partials(dot_validation_blocks);
-  device_buffer<double> device_dot_result(1);
+  std::array<device_buffer<double>, 4> device_dot_results;
+  for (auto &result : device_dot_results) {
+    result.reset(1);
+  }
   CUDA_CHECK(cudaMemcpy(device_dot_left.get(), dot_left.data(),
                         dot_left.size() * sizeof(std::uint32_t),
                         cudaMemcpyHostToDevice));
@@ -553,18 +748,51 @@ void validate_gpu_decoder(
   dot_dyadic_normal32_kernel<<<dot_validation_blocks, threads,
                                timed_shared_bytes>>>(
       device_dot_left.get(), device_dot_right.get(), dot_validation_count,
-      device_coefficients, device_dot_partials.get());
+      device_linear_coefficients, device_dot_partials.get());
   finalize_dot_kernel<<<1, threads>>>(device_dot_partials.get(),
                                       dot_validation_blocks,
-                                      device_dot_result.get());
+                                      device_dot_results[0].get());
+  dot_dyadic_sign_fused_kernel<<<dot_validation_blocks, threads,
+                                timed_shared_bytes>>>(
+      device_dot_left.get(), device_dot_right.get(), dot_validation_count,
+      device_linear_coefficients, device_dot_partials.get());
+  finalize_dot_kernel<<<1, threads>>>(device_dot_partials.get(),
+                                      dot_validation_blocks,
+                                      device_dot_results[1].get());
+  dot_dyadic_bitcast_shared_kernel<<<dot_validation_blocks, threads,
+                                     timed_shared_bytes>>>(
+      device_dot_left.get(), device_dot_right.get(), dot_validation_count,
+      device_bitcast_coefficients, device_dot_partials.get());
+  finalize_dot_kernel<<<1, threads>>>(device_dot_partials.get(),
+                                      dot_validation_blocks,
+                                      device_dot_results[2].get());
+  dot_dyadic_bitcast_constant_kernel<<<dot_validation_blocks, threads>>>(
+      device_dot_left.get(), device_dot_right.get(), dot_validation_count,
+      device_dot_partials.get());
+  finalize_dot_kernel<<<1, threads>>>(device_dot_partials.get(),
+                                      dot_validation_blocks,
+                                      device_dot_results[3].get());
   CUDA_CHECK(cudaGetLastError());
-  double gpu_dot{};
-  CUDA_CHECK(cudaMemcpy(&gpu_dot, device_dot_result.get(), sizeof(gpu_dot),
-                        cudaMemcpyDeviceToHost));
-  const auto cpu_dot_double = static_cast<double>(cpu_dot);
-  const auto dot_error = std::abs(gpu_dot - cpu_dot_double);
-  const auto dot_tolerance = 2e-12 * std::max(1.0, std::abs(cpu_dot_double));
-  const auto dot_passed = std::isfinite(gpu_dot) && dot_error <= dot_tolerance;
+  std::array<double, 4> gpu_dots{};
+  for (std::size_t index = 0; index < gpu_dots.size(); ++index) {
+    CUDA_CHECK(cudaMemcpy(&gpu_dots[index], device_dot_results[index].get(),
+                          sizeof(double), cudaMemcpyDeviceToHost));
+  }
+  const std::array<double, 4> cpu_dots{
+      static_cast<double>(current_cpu_dot),
+      static_cast<double>(current_cpu_dot),
+      static_cast<double>(bitcast_cpu_dot),
+      static_cast<double>(bitcast_cpu_dot)};
+  std::array<double, 4> dot_errors{};
+  std::array<double, 4> dot_tolerances{};
+  std::array<bool, 4> dot_passed{};
+  for (std::size_t index = 0; index < gpu_dots.size(); ++index) {
+    dot_errors[index] = std::abs(gpu_dots[index] - cpu_dots[index]);
+    dot_tolerances[index] =
+        2e-12 * std::max(1.0, std::abs(cpu_dots[index]));
+    dot_passed[index] = std::isfinite(gpu_dots[index]) &&
+                        dot_errors[index] <= dot_tolerances[index];
+  }
 
   ensure_parent(output_path);
   std::ofstream output(output_path);
@@ -572,13 +800,21 @@ void validate_gpu_decoder(
     throw benchmark_error("cannot open correctness output");
   }
   output << "cpu_gpu_cases=" << codes.size() << '\n'
-         << "cpu_gpu_bit_mismatches=" << mismatches << '\n'
-         << "cpu_gpu_maximum_absolute_error=" << std::setprecision(17)
-         << maximum_absolute_error << '\n'
+         << "current_cpu_gpu_bit_mismatches=" << current_mismatches << '\n'
+         << "bitcast_shared_cpu_gpu_bit_mismatches="
+         << bitcast_shared_mismatches << '\n'
+         << "bitcast_constant_cpu_gpu_bit_mismatches="
+         << bitcast_constant_mismatches << '\n'
+         << "current_cpu_gpu_maximum_absolute_error=" << std::setprecision(17)
+         << current_maximum_absolute_error << '\n'
+         << "bitcast_cpu_gpu_maximum_absolute_error="
+         << bitcast_maximum_absolute_error << '\n'
+         << "bitcast_vs_current_maximum_absolute_error="
+         << bitcast_vs_current_maximum_absolute_error << '\n'
          << "segments_covered=32\n"
          << "delimiter_endpoints_per_sign=64\n"
          << "terminal_rank=0x7fffffff\n"
-         << "terminal_value=" << coefficients[31].start << '\n'
+         << "terminal_value=" << linear_coefficients[31].start << '\n'
          << "coefficient_bytes=" << coefficient_bytes << '\n'
          << "genuine_n01_expected_unique_segments="
          << dn::expected_unique_segments_for_probabilities(
@@ -586,16 +822,27 @@ void validate_gpu_decoder(
          << '\n'
          << "genuine_n01_expected_x="
          << dn::genuine_standard_normal_dispersion() << '\n'
-         << "dot_validation_elements=" << dot_validation_count << '\n'
-         << "dot_validation_cpu=" << cpu_dot_double << '\n'
-         << "dot_validation_gpu=" << gpu_dot << '\n'
-         << "dot_validation_absolute_error=" << dot_error << '\n'
-         << "dot_validation_tolerance=" << dot_tolerance << '\n'
-         << "dot_validation_passed=" << (dot_passed ? 1 : 0) << '\n';
-  if (mismatches != 0) {
+         << "dot_validation_elements=" << dot_validation_count << '\n';
+  const std::array<const char *, 4> validation_names{
+      "current", "sign_fused", "bitcast_shared", "bitcast_constant"};
+  for (std::size_t index = 0; index < validation_names.size(); ++index) {
+    output << "dot_" << validation_names[index] << "_cpu=" << cpu_dots[index]
+           << '\n'
+           << "dot_" << validation_names[index] << "_gpu=" << gpu_dots[index]
+           << '\n'
+           << "dot_" << validation_names[index]
+           << "_absolute_error=" << dot_errors[index] << '\n'
+           << "dot_" << validation_names[index]
+           << "_tolerance=" << dot_tolerances[index] << '\n'
+           << "dot_" << validation_names[index]
+           << "_passed=" << (dot_passed[index] ? 1 : 0) << '\n';
+  }
+  if (current_mismatches != 0 || bitcast_shared_mismatches != 0 ||
+      bitcast_constant_mismatches != 0) {
     throw benchmark_error("CPU/GPU decoder bit mismatch");
   }
-  if (!dot_passed) {
+  if (std::any_of(dot_passed.begin(), dot_passed.end(),
+                  [](bool passed) { return !passed; })) {
     throw benchmark_error("CPU/GPU end-to-end DOT mismatch");
   }
 }
@@ -758,9 +1005,44 @@ void run_fp32_to_fp64(csv_context &context, const std::string &phase,
   std::cout << "fp32_to_fp64/" << phase << " complete\n";
 }
 
-int run_dyadic_normal32(csv_context &context,
-                        const dn::segment_coefficients *device_coefficients,
-                        int first_execution_order) {
+enum class dyadic_strategy {
+  current,
+  sign_fused,
+  bitcast_shared,
+  bitcast_constant,
+};
+
+struct dyadic_strategy_specification {
+  dyadic_strategy strategy;
+  const char *variant;
+  const char *label;
+  const char *table_location;
+};
+
+constexpr std::array<dyadic_strategy_specification, 4> dyadic_strategies{{
+    {dyadic_strategy::current, "dyadic_normal32", "Current DyadicNormal32",
+     "shared"},
+    {dyadic_strategy::sign_fused, "dyadic_sign_fused", "Sign-fused decoder",
+     "shared"},
+    {dyadic_strategy::bitcast_shared, "dyadic_bitcast_shared",
+     "BitCast decoder with shared coefficients", "shared"},
+    {dyadic_strategy::bitcast_constant, "dyadic_bitcast_constant",
+     "BitCast decoder with constant coefficients", "constant"},
+}};
+
+struct dyadic_run_result {
+  int final_execution_order{};
+  std::size_t current_sign_fused_bit_mismatches{};
+  std::size_t bitcast_shared_constant_bit_mismatches{};
+  double bitcast_vs_current_maximum_absolute_error{};
+  std::size_t timed_result_checks{};
+};
+
+dyadic_run_result run_dyadic_normal32(
+    csv_context &context,
+    const dn::segment_coefficients *device_linear_coefficients,
+    const dn::segment_coefficients *device_bitcast_coefficients,
+    int first_execution_order) {
   const auto &settings = context.configuration;
   device_buffer<std::uint32_t> left(settings.n);
   device_buffer<std::uint32_t> right(settings.n);
@@ -792,11 +1074,13 @@ int run_dyadic_normal32(csv_context &context,
   const auto first_batch_samples = (settings.samples + 1) / 2;
   const auto second_batch_samples = settings.samples / 2;
   const auto warmups_per_batch = (settings.warmup + 1) / 2;
+  dyadic_run_result run_result{};
 
   const auto run_batch = [&](const std::string &distribution,
                              const std::string &phase, double target_x,
                              double q, int sample_begin, int sample_count,
-                             int warmups_this_batch, bool record_metrics) {
+                             int warmups_this_batch, bool record_metrics,
+                             bool reverse_strategies) {
     const auto genuine = distribution == "genuine_n01";
     if (genuine) {
       generate_genuine_codes_kernel<<<generation_blocks, threads>>>(
@@ -823,70 +1107,138 @@ int run_dyadic_normal32(csv_context &context,
                       << mean_unique << ',' << actual_x << '\n';
     }
 
-    const auto launch = [&] {
-      dot_dyadic_normal32_kernel<<<dot_blocks, threads, timed_shared_bytes>>>(
-          left.get(), right.get(), settings.n, device_coefficients,
-          partials.get());
-      finalize_dot_kernel<<<1, threads>>>(partials.get(), dot_blocks,
-                                          result.get());
-    };
-    for (int warmup = 0; warmup < warmups_this_batch; ++warmup) {
-      launch();
+    std::array<std::vector<double>, dyadic_strategies.size()>
+        strategy_results;
+    for (auto &values : strategy_results) {
+      values.resize(sample_count);
     }
-    CUDA_CHECK(cudaGetLastError());
-    CUDA_CHECK(cudaDeviceSynchronize());
-    for (int local_sample = 0; local_sample < sample_count; ++local_sample) {
-      const auto sample = sample_begin + local_sample;
-      const auto milliseconds = timer.measure(launch);
-      double host_result{};
-      CUDA_CHECK(cudaMemcpy(&host_result, result.get(), sizeof(host_result),
-                            cudaMemcpyDeviceToHost));
-      if (!std::isfinite(host_result)) {
-        throw benchmark_error("nonfinite DyadicNormal32 result");
+    for (std::size_t strategy_position = 0;
+         strategy_position < dyadic_strategies.size(); ++strategy_position) {
+      const auto strategy_index =
+          reverse_strategies ? dyadic_strategies.size() - 1 - strategy_position
+                             : strategy_position;
+      const auto &specification = dyadic_strategies[strategy_index];
+      const auto launch = [&] {
+        switch (specification.strategy) {
+        case dyadic_strategy::current:
+          dot_dyadic_normal32_kernel<<<dot_blocks, threads,
+                                       timed_shared_bytes>>>(
+              left.get(), right.get(), settings.n, device_linear_coefficients,
+              partials.get());
+          break;
+        case dyadic_strategy::sign_fused:
+          dot_dyadic_sign_fused_kernel<<<dot_blocks, threads,
+                                         timed_shared_bytes>>>(
+              left.get(), right.get(), settings.n, device_linear_coefficients,
+              partials.get());
+          break;
+        case dyadic_strategy::bitcast_shared:
+          dot_dyadic_bitcast_shared_kernel<<<dot_blocks, threads,
+                                             timed_shared_bytes>>>(
+              left.get(), right.get(), settings.n, device_bitcast_coefficients,
+              partials.get());
+          break;
+        case dyadic_strategy::bitcast_constant:
+          dot_dyadic_bitcast_constant_kernel<<<dot_blocks, threads>>>(
+              left.get(), right.get(), settings.n, partials.get());
+          break;
+        }
+        finalize_dot_kernel<<<1, threads>>>(partials.get(), dot_blocks,
+                                            result.get());
+      };
+      for (int warmup = 0; warmup < warmups_this_batch; ++warmup) {
+        launch();
       }
-      result_sink += host_result;
-      context.samples << utc_timestamp() << ',' << context.gpu << ','
-                      << settings.mode << ",dyadic_normal32,DyadicNormal32,"
-                      << distribution << ',' << phase << ",dot," << settings.n
-                      << ',' << dot_blocks << ',' << threads
-                      << ",32,fp64,shared,32,512," << std::setprecision(17)
-                      << target_x << ',' << q << ',' << mean_unique << ','
-                      << actual_x << ','
-                      << dn::genuine_standard_normal_dispersion() << ','
-                      << settings.warmup << ',' << warmups_this_batch << ','
-                      << sample << ',' << execution_order << ',' << milliseconds
-                      << ',' << host_result << '\n';
+      CUDA_CHECK(cudaGetLastError());
+      CUDA_CHECK(cudaDeviceSynchronize());
+      for (int local_sample = 0; local_sample < sample_count; ++local_sample) {
+        const auto sample = sample_begin + local_sample;
+        const auto milliseconds = timer.measure(launch);
+        double host_result{};
+        CUDA_CHECK(cudaMemcpy(&host_result, result.get(), sizeof(host_result),
+                              cudaMemcpyDeviceToHost));
+        if (!std::isfinite(host_result)) {
+          throw benchmark_error(std::string("nonfinite result for ") +
+                                specification.variant);
+        }
+        strategy_results[strategy_index][local_sample] = host_result;
+        result_sink += host_result;
+        context.samples
+            << utc_timestamp() << ',' << context.gpu << ',' << settings.mode
+            << ',' << specification.variant << ',' << specification.label
+            << ',' << distribution << ',' << phase << ",dot," << settings.n
+            << ',' << dot_blocks << ',' << threads << ",32,fp64,"
+            << specification.table_location << ",32,512,"
+            << std::setprecision(17) << target_x << ',' << q << ','
+            << mean_unique << ',' << actual_x << ','
+            << dn::genuine_standard_normal_dispersion() << ','
+            << settings.warmup << ',' << warmups_this_batch << ',' << sample
+            << ',' << execution_order << ',' << milliseconds << ','
+            << host_result << '\n';
+      }
+      ++execution_order;
+      context.samples.flush();
+      std::cout << specification.variant << '/' << distribution << '/' << phase
+                << " target X=" << target_x << " actual X=" << actual_x
+                << " q=" << q << '\n';
     }
-    ++execution_order;
-    context.samples.flush();
+    const auto value_bits = [](double value) {
+      std::uint64_t result{};
+      std::memcpy(&result, &value, sizeof(result));
+      return result;
+    };
+    for (int sample = 0; sample < sample_count; ++sample) {
+      const auto current = strategy_results[0][sample];
+      const auto sign_fused = strategy_results[1][sample];
+      const auto bitcast_shared = strategy_results[2][sample];
+      const auto bitcast_constant = strategy_results[3][sample];
+      run_result.current_sign_fused_bit_mismatches +=
+          value_bits(current) != value_bits(sign_fused);
+      run_result.bitcast_shared_constant_bit_mismatches +=
+          value_bits(bitcast_shared) != value_bits(bitcast_constant);
+      const auto bitcast_error = std::abs(bitcast_shared - current);
+      run_result.bitcast_vs_current_maximum_absolute_error =
+          std::max(run_result.bitcast_vs_current_maximum_absolute_error,
+                   bitcast_error);
+      const auto tolerance = 2e-12 * std::max(1.0, std::abs(current));
+      if (bitcast_error > tolerance) {
+        throw benchmark_error("timed BitCast result differs from current decoder");
+      }
+      ++run_result.timed_result_checks;
+    }
+    if (run_result.current_sign_fused_bit_mismatches != 0) {
+      throw benchmark_error("timed sign-fused result differs from current decoder");
+    }
+    if (run_result.bitcast_shared_constant_bit_mismatches != 0) {
+      throw benchmark_error(
+          "timed shared and constant BitCast results differ");
+    }
     context.metrics.flush();
-    std::cout << "dyadic_normal32/" << distribution << '/' << phase
-              << " target X=" << target_x << " actual X=" << actual_x
-              << " q=" << q << '\n';
   };
 
   for (const auto target_x : targets) {
     const auto q =
         lut::q_for_normalized_dispersion(dn::segment_count, target_x);
     run_batch("hot_uniform", "forward", target_x, q, 0, first_batch_samples,
-              warmups_per_batch, true);
+              warmups_per_batch, true, false);
   }
   run_batch("genuine_n01", "forward", dn::genuine_standard_normal_dispersion(),
             std::numeric_limits<double>::quiet_NaN(), 0, first_batch_samples,
-            warmups_per_batch, true);
+            warmups_per_batch, true, false);
   run_batch("genuine_n01", "reverse", dn::genuine_standard_normal_dispersion(),
             std::numeric_limits<double>::quiet_NaN(), first_batch_samples,
-            second_batch_samples, warmups_per_batch, false);
+            second_batch_samples, warmups_per_batch, false, true);
   for (auto iterator = targets.rbegin(); iterator != targets.rend();
        ++iterator) {
     const auto target_x = *iterator;
     const auto q =
         lut::q_for_normalized_dispersion(dn::segment_count, target_x);
     run_batch("hot_uniform", "reverse", target_x, q, first_batch_samples,
-              second_batch_samples, warmups_per_batch, false);
+              second_batch_samples, warmups_per_batch, false, true);
   }
   std::cout << "dyadic_normal32 sink=" << result_sink << '\n';
-  return execution_order;
+  run_result.final_execution_order = execution_order;
+  return run_result;
 }
 
 void run(const settings &settings) {
@@ -906,14 +1258,16 @@ void run(const settings &settings) {
   std::cout << "N=" << settings.n << ", warmups=" << settings.warmup
             << ", samples=" << settings.samples << '\n';
 
-  const auto coefficients = dn::make_coefficients();
+  const auto linear_coefficients = dn::make_coefficients();
+  const auto bitcast_coefficients = dn::make_bitcast_coefficients();
   ensure_parent(settings.coefficients_output);
   std::ofstream coefficient_output(settings.coefficients_output);
   if (!coefficient_output) {
     throw benchmark_error("cannot open coefficient output");
   }
   coefficient_output << "segment,lower_boundary,upper_boundary,payload_bits,"
-                        "levels,A,B\n";
+                        "levels,linear_start,linear_step,bitcast_offset,"
+                        "bitcast_span\n";
   for (std::uint32_t segment = 0; segment < dn::segment_count; ++segment) {
     const auto payload_bits = segment < 30 ? 30u - segment : 0u;
     const auto levels = segment < 31 ? std::uint64_t{1} << payload_bits : 1u;
@@ -921,15 +1275,29 @@ void run(const settings &settings) {
                        << dn::half_normal_density_boundary(segment) << ','
                        << dn::half_normal_density_boundary(segment + 1) << ','
                        << payload_bits << ',' << levels << ','
-                       << coefficients[segment].start << ','
-                       << coefficients[segment].step << '\n';
+                       << linear_coefficients[segment].start << ','
+                       << linear_coefficients[segment].step << ','
+                       << bitcast_coefficients[segment].start << ','
+                       << bitcast_coefficients[segment].step << '\n';
   }
   coefficient_output.close();
-  device_buffer<dn::segment_coefficients> device_coefficients(
+  device_buffer<dn::segment_coefficients> device_linear_coefficients(
       dn::segment_count);
-  CUDA_CHECK(cudaMemcpy(device_coefficients.get(), coefficients.data(),
-                        coefficient_bytes, cudaMemcpyHostToDevice));
-  validate_gpu_decoder(coefficients, device_coefficients.get(),
+  device_buffer<dn::segment_coefficients> device_bitcast_coefficients(
+      dn::segment_count);
+  CUDA_CHECK(cudaMemcpy(device_linear_coefficients.get(),
+                        linear_coefficients.data(), coefficient_bytes,
+                        cudaMemcpyHostToDevice));
+  CUDA_CHECK(cudaMemcpy(device_bitcast_coefficients.get(),
+                        bitcast_coefficients.data(), coefficient_bytes,
+                        cudaMemcpyHostToDevice));
+  CUDA_CHECK(cudaMemcpyToSymbol(constant_bitcast_coefficients,
+                                bitcast_coefficients.data(),
+                                coefficient_bytes, 0,
+                                cudaMemcpyHostToDevice));
+  validate_gpu_decoder(linear_coefficients, bitcast_coefficients,
+                       device_linear_coefficients.get(),
+                       device_bitcast_coefficients.get(),
                        settings.correctness_output);
 
   ensure_parent(settings.output);
@@ -959,15 +1327,32 @@ void run(const settings &settings) {
   run_raw_fp32(context, "before", 0, first_batch_samples, warmups_per_batch, 1);
   run_fp32_to_fp64(context, "before", 0, first_batch_samples,
                    warmups_per_batch, 2);
-  const auto final_execution_order =
-      run_dyadic_normal32(context, device_coefficients.get(), 3);
+  const auto dyadic_result =
+      run_dyadic_normal32(context, device_linear_coefficients.get(),
+                          device_bitcast_coefficients.get(), 3);
   run_fp32_to_fp64(context, "after", first_batch_samples,
                    second_batch_samples, warmups_per_batch,
-                   final_execution_order);
+                   dyadic_result.final_execution_order);
   run_raw_fp32(context, "after", first_batch_samples, second_batch_samples,
-               warmups_per_batch, final_execution_order + 1);
+               warmups_per_batch, dyadic_result.final_execution_order + 1);
   run_raw_fp64(context, "after", first_batch_samples, second_batch_samples,
-               warmups_per_batch, final_execution_order + 2);
+               warmups_per_batch, dyadic_result.final_execution_order + 2);
+  {
+    std::ofstream correctness(settings.correctness_output, std::ios::app);
+    if (!correctness) {
+      throw benchmark_error("cannot append timed-result correctness output");
+    }
+    correctness
+        << "timed_result_checks=" << dyadic_result.timed_result_checks << '\n'
+        << "timed_current_sign_fused_bit_mismatches="
+        << dyadic_result.current_sign_fused_bit_mismatches << '\n'
+        << "timed_bitcast_shared_constant_bit_mismatches="
+        << dyadic_result.bitcast_shared_constant_bit_mismatches << '\n'
+        << "timed_bitcast_vs_current_maximum_absolute_error="
+        << std::setprecision(17)
+        << dyadic_result.bitcast_vs_current_maximum_absolute_error << '\n'
+        << "timed_result_validation_passed=1\n";
+  }
   std::cout << "Wrote " << settings.output << '\n';
   std::cout << "Wrote " << settings.metrics_output << '\n';
   std::cout << "Wrote " << settings.correctness_output << '\n';

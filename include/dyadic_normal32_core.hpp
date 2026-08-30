@@ -5,6 +5,7 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
+#include <cstring>
 #include <stdexcept>
 
 #include "lut_decomposition_core.hpp"
@@ -21,6 +22,8 @@ namespace aut::dyadic_normal32 {
 
 inline constexpr std::uint32_t magnitude_mask = 0x7fffffffu;
 inline constexpr std::uint32_t payload_mask = 0x3fffffffu;
+inline constexpr std::uint64_t fp64_exponent_one = 0x3ff0000000000000ull;
+inline constexpr std::uint64_t fp64_mantissa_mask = 0x000fffffffffffffull;
 inline constexpr std::size_t segment_count = 32;
 inline constexpr double source_sigma = 1.0;
 inline constexpr double density_sigma = 1.7320508075688772935;
@@ -105,6 +108,34 @@ inline std::array<segment_coefficients, segment_count> make_coefficients() {
   return result;
 }
 
+inline std::array<segment_coefficients, segment_count>
+make_bitcast_coefficients() {
+  const auto linear = make_coefficients();
+  std::array<segment_coefficients, segment_count> result{};
+  for (std::uint32_t segment = 0; segment < segment_count - 1; ++segment) {
+    const auto levels = std::ldexp(1.0, 30 - static_cast<int>(segment));
+    const auto span = linear[segment].step * levels;
+    result[segment] = {linear[segment].start - span, span};
+  }
+  result[31] = linear[31];
+  return result;
+}
+
+AUT_DN32_HD AUT_DN32_INLINE std::uint64_t
+bitcast_coordinate_bits(std::uint32_t rank, std::uint32_t segment) {
+  const auto fraction =
+      (static_cast<std::uint64_t>(rank) << (22u + segment)) &
+      fp64_mantissa_mask;
+  return fp64_exponent_one | fraction;
+}
+
+inline double bitcast_coordinate(std::uint32_t rank, std::uint32_t segment) {
+  const auto bits = bitcast_coordinate_bits(rank, segment);
+  double result{};
+  std::memcpy(&result, &bits, sizeof(result));
+  return result;
+}
+
 inline double
 decode(std::uint32_t code,
        const std::array<segment_coefficients, segment_count> &coefficients) {
@@ -113,6 +144,18 @@ decode(std::uint32_t code,
   const auto payload = payload_for_segment(rank, segment);
   const auto magnitude =
       std::fma(static_cast<double>(payload), coefficients[segment].step,
+               coefficients[segment].start);
+  return (code >> 31) != 0 ? -magnitude : magnitude;
+}
+
+inline double decode_bitcast(
+    std::uint32_t code,
+    const std::array<segment_coefficients, segment_count> &coefficients) {
+  const auto rank = code & magnitude_mask;
+  const auto segment = segment_from_rank(rank);
+  const auto coordinate = bitcast_coordinate(rank, segment);
+  const auto magnitude =
+      std::fma(coordinate, coefficients[segment].step,
                coefficients[segment].start);
   return (code >> 31) != 0 ? -magnitude : magnitude;
 }
