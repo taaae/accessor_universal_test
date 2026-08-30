@@ -1,0 +1,2234 @@
+{
+  "acceptance": {
+    "final_real_max_ape_max_percent": 15.0,
+    "final_real_median_ape_max_percent": 7.5,
+    "final_real_spearman_min": 0.9,
+    "synthetic_validation_median_ape_max_percent": 5.0,
+    "synthetic_validation_p90_ape_max_percent": 10.0
+  },
+  "cases": [
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "anchor_bitcast_f64",
+      "group": "anchors",
+      "kind": "anchor_bitcast",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {},
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "anchor_u32_to_f64",
+      "group": "anchors",
+      "kind": "numeric",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 1,
+        "source": "u32"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "anchor_s32_to_f64",
+      "group": "anchors",
+      "kind": "numeric",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 1,
+        "source": "s32"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "iadd3_1_chain",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 1,
+        "dependency": "chain",
+        "op": "iadd3"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "iadd3_1_ilp4",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 1,
+        "dependency": "ilp4",
+        "op": "iadd3"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "iadd3_4_chain",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 4,
+        "dependency": "chain",
+        "op": "iadd3"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "iadd3_4_ilp4",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 4,
+        "dependency": "ilp4",
+        "op": "iadd3"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "iadd3_16_chain",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 16,
+        "dependency": "chain",
+        "op": "iadd3"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "iadd3_16_ilp4",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 16,
+        "dependency": "ilp4",
+        "op": "iadd3"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "lop3_1_chain",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 1,
+        "dependency": "chain",
+        "op": "lop3"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "lop3_1_ilp4",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 1,
+        "dependency": "ilp4",
+        "op": "lop3"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "lop3_4_chain",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 4,
+        "dependency": "chain",
+        "op": "lop3"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "lop3_4_ilp4",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 4,
+        "dependency": "ilp4",
+        "op": "lop3"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "lop3_16_chain",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 16,
+        "dependency": "chain",
+        "op": "lop3"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "lop3_16_ilp4",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 16,
+        "dependency": "ilp4",
+        "op": "lop3"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "shf_1_chain",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 1,
+        "dependency": "chain",
+        "op": "shf"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "shf_1_ilp4",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 1,
+        "dependency": "ilp4",
+        "op": "shf"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "shf_4_chain",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 4,
+        "dependency": "chain",
+        "op": "shf"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "shf_4_ilp4",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 4,
+        "dependency": "ilp4",
+        "op": "shf"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "shf_16_chain",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 16,
+        "dependency": "chain",
+        "op": "shf"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "shf_16_ilp4",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 16,
+        "dependency": "ilp4",
+        "op": "shf"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "imad_1_chain",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 1,
+        "dependency": "chain",
+        "op": "imad"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "imad_1_ilp4",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 1,
+        "dependency": "ilp4",
+        "op": "imad"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "imad_4_chain",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 4,
+        "dependency": "chain",
+        "op": "imad"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "imad_4_ilp4",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 4,
+        "dependency": "ilp4",
+        "op": "imad"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "imad_16_chain",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 16,
+        "dependency": "chain",
+        "op": "imad"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "imad_16_ilp4",
+      "group": "integer_bit",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 16,
+        "dependency": "ilp4",
+        "op": "imad"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "clz_1",
+      "group": "expensive_integer",
+      "kind": "clz",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 1
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "clz_2",
+      "group": "expensive_integer",
+      "kind": "clz",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 2
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "clz_4",
+      "group": "expensive_integer",
+      "kind": "clz",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 4
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "int64_shift_alu_1",
+      "group": "expensive_integer",
+      "kind": "int64",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 1
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "int64_shift_alu_4",
+      "group": "expensive_integer",
+      "kind": "int64",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 4
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "int64_shift_alu_8",
+      "group": "expensive_integer",
+      "kind": "int64",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 8
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "cvt_u32_f64_1",
+      "group": "numeric_conversion",
+      "kind": "numeric",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 1,
+        "source": "u32"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "cvt_u32_f64_2",
+      "group": "numeric_conversion",
+      "kind": "numeric",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 2,
+        "source": "u32"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "cvt_u32_f64_4",
+      "group": "numeric_conversion",
+      "kind": "numeric",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 4,
+        "source": "u32"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "cvt_s32_f64_1",
+      "group": "numeric_conversion",
+      "kind": "numeric",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 1,
+        "source": "s32"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "cvt_s32_f64_2",
+      "group": "numeric_conversion",
+      "kind": "numeric",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 2,
+        "source": "s32"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "cvt_s32_f64_4",
+      "group": "numeric_conversion",
+      "kind": "numeric",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 4,
+        "source": "s32"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "cvt_f32_f64_1",
+      "group": "numeric_conversion",
+      "kind": "numeric",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 1,
+        "source": "f32"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "cvt_f32_f64_2",
+      "group": "numeric_conversion",
+      "kind": "numeric",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 2,
+        "source": "f32"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "cvt_f32_f64_4",
+      "group": "numeric_conversion",
+      "kind": "numeric",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 4,
+        "source": "f32"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "cvt_u32_f32_f64",
+      "group": "numeric_conversion",
+      "kind": "numeric_chain",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "source": "u32"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "cvt_s32_f32_f64",
+      "group": "numeric_conversion",
+      "kind": "numeric_chain",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "source": "s32"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "fp64_fma_1_chain",
+      "group": "floating_point",
+      "kind": "fp",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 1,
+        "dependency": "chain",
+        "op": "fma",
+        "precision": "fp64"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "fp64_fma_1_parallel",
+      "group": "floating_point",
+      "kind": "fp",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 1,
+        "dependency": "parallel",
+        "op": "fma",
+        "precision": "fp64"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "fp64_fma_4_chain",
+      "group": "floating_point",
+      "kind": "fp",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 4,
+        "dependency": "chain",
+        "op": "fma",
+        "precision": "fp64"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "fp64_fma_4_parallel",
+      "group": "floating_point",
+      "kind": "fp",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 4,
+        "dependency": "parallel",
+        "op": "fma",
+        "precision": "fp64"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "fp64_fma_16_chain",
+      "group": "floating_point",
+      "kind": "fp",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 16,
+        "dependency": "chain",
+        "op": "fma",
+        "precision": "fp64"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "fp64_fma_16_parallel",
+      "group": "floating_point",
+      "kind": "fp",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 16,
+        "dependency": "parallel",
+        "op": "fma",
+        "precision": "fp64"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "fp64_add_4",
+      "group": "floating_point",
+      "kind": "fp",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 4,
+        "dependency": "chain",
+        "op": "add",
+        "precision": "fp64"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "fp64_add_16",
+      "group": "floating_point",
+      "kind": "fp",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 16,
+        "dependency": "chain",
+        "op": "add",
+        "precision": "fp64"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "fp64_mul_4",
+      "group": "floating_point",
+      "kind": "fp",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 4,
+        "dependency": "chain",
+        "op": "mul",
+        "precision": "fp64"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "fp64_mul_16",
+      "group": "floating_point",
+      "kind": "fp",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 16,
+        "dependency": "chain",
+        "op": "mul",
+        "precision": "fp64"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "fp32_fma_4_chain",
+      "group": "floating_point",
+      "kind": "fp",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 4,
+        "dependency": "chain",
+        "op": "fma",
+        "precision": "fp32"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "fp32_fma_4_parallel",
+      "group": "floating_point",
+      "kind": "fp",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 4,
+        "dependency": "parallel",
+        "op": "fma",
+        "precision": "fp32"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "fp32_fma_16_chain",
+      "group": "floating_point",
+      "kind": "fp",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 16,
+        "dependency": "chain",
+        "op": "fma",
+        "precision": "fp32"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "fp32_fma_16_parallel",
+      "group": "floating_point",
+      "kind": "fp",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 16,
+        "dependency": "parallel",
+        "op": "fma",
+        "precision": "fp32"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "mixed_b4_c1_f1_chain",
+      "group": "mixed_pipeline",
+      "kind": "mixed",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "bitops": 4,
+        "conversions": 1,
+        "dependency": "chain",
+        "fmas": 1
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "mixed_b4_c1_f1_parallel",
+      "group": "mixed_pipeline",
+      "kind": "mixed",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "bitops": 4,
+        "conversions": 1,
+        "dependency": "parallel",
+        "fmas": 1
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "mixed_b8_c1_f4_chain",
+      "group": "mixed_pipeline",
+      "kind": "mixed",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "bitops": 8,
+        "conversions": 1,
+        "dependency": "chain",
+        "fmas": 4
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "mixed_b8_c1_f4_parallel",
+      "group": "mixed_pipeline",
+      "kind": "mixed",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "bitops": 8,
+        "conversions": 1,
+        "dependency": "parallel",
+        "fmas": 4
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "mixed_b16_c1_f8_chain",
+      "group": "mixed_pipeline",
+      "kind": "mixed",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "bitops": 16,
+        "conversions": 1,
+        "dependency": "chain",
+        "fmas": 8
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "mixed_b16_c1_f8_parallel",
+      "group": "mixed_pipeline",
+      "kind": "mixed",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "bitops": 16,
+        "conversions": 1,
+        "dependency": "parallel",
+        "fmas": 8
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "mixed_b8_c2_f4_chain",
+      "group": "mixed_pipeline",
+      "kind": "mixed",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "bitops": 8,
+        "conversions": 2,
+        "dependency": "chain",
+        "fmas": 4
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "mixed_b8_c2_f4_parallel",
+      "group": "mixed_pipeline",
+      "kind": "mixed",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "bitops": 8,
+        "conversions": 2,
+        "dependency": "parallel",
+        "fmas": 4
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "mixed_b16_c4_f8_chain",
+      "group": "mixed_pipeline",
+      "kind": "mixed",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "bitops": 16,
+        "conversions": 4,
+        "dependency": "chain",
+        "fmas": 8
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "mixed_b16_c4_f8_parallel",
+      "group": "mixed_pipeline",
+      "kind": "mixed",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "bitops": 16,
+        "conversions": 4,
+        "dependency": "parallel",
+        "fmas": 8
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "uniform independent raw u32 codes"
+      ],
+      "branch_probability": 0.5,
+      "case_id": "branch_p1_2_integer_4",
+      "group": "branches",
+      "kind": "branch",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "body": "integer",
+        "count": 4,
+        "denominator": 2
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "uniform independent raw u32 codes"
+      ],
+      "branch_probability": 0.5,
+      "case_id": "branch_p1_2_integer_16",
+      "group": "branches",
+      "kind": "branch",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "body": "integer",
+        "count": 16,
+        "denominator": 2
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "uniform independent raw u32 codes"
+      ],
+      "branch_probability": 0.5,
+      "case_id": "branch_p1_2_fp64_fma_4",
+      "group": "branches",
+      "kind": "branch",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "body": "fp64_fma",
+        "count": 4,
+        "denominator": 2
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "uniform independent raw u32 codes"
+      ],
+      "branch_probability": 0.5,
+      "case_id": "branch_p1_2_fp64_fma_16",
+      "group": "branches",
+      "kind": "branch",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "body": "fp64_fma",
+        "count": 16,
+        "denominator": 2
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "uniform independent raw u32 codes"
+      ],
+      "branch_probability": 0.0625,
+      "case_id": "branch_p1_16_integer_4",
+      "group": "branches",
+      "kind": "branch",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "body": "integer",
+        "count": 4,
+        "denominator": 16
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "uniform independent raw u32 codes"
+      ],
+      "branch_probability": 0.0625,
+      "case_id": "branch_p1_16_integer_16",
+      "group": "branches",
+      "kind": "branch",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "body": "integer",
+        "count": 16,
+        "denominator": 16
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "uniform independent raw u32 codes"
+      ],
+      "branch_probability": 0.0625,
+      "case_id": "branch_p1_16_fp64_fma_4",
+      "group": "branches",
+      "kind": "branch",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "body": "fp64_fma",
+        "count": 4,
+        "denominator": 16
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "uniform independent raw u32 codes"
+      ],
+      "branch_probability": 0.0625,
+      "case_id": "branch_p1_16_fp64_fma_16",
+      "group": "branches",
+      "kind": "branch",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "body": "fp64_fma",
+        "count": 16,
+        "denominator": 16
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "uniform independent raw u32 codes"
+      ],
+      "branch_probability": 0.015625,
+      "case_id": "branch_p1_64_integer_4",
+      "group": "branches",
+      "kind": "branch",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "body": "integer",
+        "count": 4,
+        "denominator": 64
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "uniform independent raw u32 codes"
+      ],
+      "branch_probability": 0.015625,
+      "case_id": "branch_p1_64_integer_16",
+      "group": "branches",
+      "kind": "branch",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "body": "integer",
+        "count": 16,
+        "denominator": 64
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "uniform independent raw u32 codes"
+      ],
+      "branch_probability": 0.015625,
+      "case_id": "branch_p1_64_fp64_fma_4",
+      "group": "branches",
+      "kind": "branch",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "body": "fp64_fma",
+        "count": 4,
+        "denominator": 64
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "uniform independent raw u32 codes"
+      ],
+      "branch_probability": 0.015625,
+      "case_id": "branch_p1_64_fp64_fma_16",
+      "group": "branches",
+      "kind": "branch",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "body": "fp64_fma",
+        "count": 16,
+        "denominator": 64
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "uniform independent raw u32 codes"
+      ],
+      "branch_probability": 0.00390625,
+      "case_id": "branch_p1_256_integer_4",
+      "group": "branches",
+      "kind": "branch",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "body": "integer",
+        "count": 4,
+        "denominator": 256
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "uniform independent raw u32 codes"
+      ],
+      "branch_probability": 0.00390625,
+      "case_id": "branch_p1_256_integer_16",
+      "group": "branches",
+      "kind": "branch",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "body": "integer",
+        "count": 16,
+        "denominator": 256
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "uniform independent raw u32 codes"
+      ],
+      "branch_probability": 0.00390625,
+      "case_id": "branch_p1_256_fp64_fma_4",
+      "group": "branches",
+      "kind": "branch",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "body": "fp64_fma",
+        "count": 4,
+        "denominator": 256
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "uniform independent raw u32 codes"
+      ],
+      "branch_probability": 0.00390625,
+      "case_id": "branch_p1_256_fp64_fma_16",
+      "group": "branches",
+      "kind": "branch",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "body": "fp64_fma",
+        "count": 16,
+        "denominator": 256
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "high-bit uniform LUT index"
+      ],
+      "branch_probability": null,
+      "case_id": "lut_global_1x_4",
+      "group": "luts",
+      "kind": "lut",
+      "lut_index_bits": 4,
+      "lut_loads": 1,
+      "lut_memory": "global",
+      "params": {
+        "bits": 4,
+        "loads": 1,
+        "memory": "global"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "high-bit uniform LUT index"
+      ],
+      "branch_probability": null,
+      "case_id": "lut_global_1x_8",
+      "group": "luts",
+      "kind": "lut",
+      "lut_index_bits": 8,
+      "lut_loads": 1,
+      "lut_memory": "global",
+      "params": {
+        "bits": 8,
+        "loads": 1,
+        "memory": "global"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "high-bit uniform LUT index"
+      ],
+      "branch_probability": null,
+      "case_id": "lut_global_1x_12",
+      "group": "luts",
+      "kind": "lut",
+      "lut_index_bits": 12,
+      "lut_loads": 1,
+      "lut_memory": "global",
+      "params": {
+        "bits": 12,
+        "loads": 1,
+        "memory": "global"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "high-bit uniform LUT index"
+      ],
+      "branch_probability": null,
+      "case_id": "lut_global_1x_16",
+      "group": "luts",
+      "kind": "lut",
+      "lut_index_bits": 16,
+      "lut_loads": 1,
+      "lut_memory": "global",
+      "params": {
+        "bits": 16,
+        "loads": 1,
+        "memory": "global"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "high-bit uniform LUT index"
+      ],
+      "branch_probability": null,
+      "case_id": "lut_global_1x_20",
+      "group": "luts",
+      "kind": "lut",
+      "lut_index_bits": 20,
+      "lut_loads": 1,
+      "lut_memory": "global",
+      "params": {
+        "bits": 20,
+        "loads": 1,
+        "memory": "global"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "high-bit uniform LUT index"
+      ],
+      "branch_probability": null,
+      "case_id": "lut_global_1x_24",
+      "group": "luts",
+      "kind": "lut",
+      "lut_index_bits": 24,
+      "lut_loads": 1,
+      "lut_memory": "global",
+      "params": {
+        "bits": 24,
+        "loads": 1,
+        "memory": "global"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "high-bit uniform LUT index"
+      ],
+      "branch_probability": null,
+      "case_id": "lut_constant_1x_4",
+      "group": "luts",
+      "kind": "lut",
+      "lut_index_bits": 4,
+      "lut_loads": 1,
+      "lut_memory": "constant",
+      "params": {
+        "bits": 4,
+        "loads": 1,
+        "memory": "constant"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "high-bit uniform LUT index"
+      ],
+      "branch_probability": null,
+      "case_id": "lut_constant_1x_8",
+      "group": "luts",
+      "kind": "lut",
+      "lut_index_bits": 8,
+      "lut_loads": 1,
+      "lut_memory": "constant",
+      "params": {
+        "bits": 8,
+        "loads": 1,
+        "memory": "constant"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "high-bit uniform LUT index"
+      ],
+      "branch_probability": null,
+      "case_id": "lut_constant_1x_12",
+      "group": "luts",
+      "kind": "lut",
+      "lut_index_bits": 12,
+      "lut_loads": 1,
+      "lut_memory": "constant",
+      "params": {
+        "bits": 12,
+        "loads": 1,
+        "memory": "constant"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "high-bit uniform LUT index"
+      ],
+      "branch_probability": null,
+      "case_id": "lut_shared_1x_4",
+      "group": "luts",
+      "kind": "lut",
+      "lut_index_bits": 4,
+      "lut_loads": 1,
+      "lut_memory": "shared",
+      "params": {
+        "bits": 4,
+        "loads": 1,
+        "memory": "shared"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "high-bit uniform LUT index"
+      ],
+      "branch_probability": null,
+      "case_id": "lut_shared_1x_8",
+      "group": "luts",
+      "kind": "lut",
+      "lut_index_bits": 8,
+      "lut_loads": 1,
+      "lut_memory": "shared",
+      "params": {
+        "bits": 8,
+        "loads": 1,
+        "memory": "shared"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "high-bit uniform LUT index"
+      ],
+      "branch_probability": null,
+      "case_id": "lut_shared_1x_12",
+      "group": "luts",
+      "kind": "lut",
+      "lut_index_bits": 12,
+      "lut_loads": 1,
+      "lut_memory": "shared",
+      "params": {
+        "bits": 12,
+        "loads": 1,
+        "memory": "shared"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "high-bit uniform LUT index"
+      ],
+      "branch_probability": null,
+      "case_id": "lut_global_2x_8",
+      "group": "luts",
+      "kind": "lut",
+      "lut_index_bits": 8,
+      "lut_loads": 2,
+      "lut_memory": "global",
+      "params": {
+        "bits": 8,
+        "loads": 2,
+        "memory": "global"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "high-bit uniform LUT index"
+      ],
+      "branch_probability": null,
+      "case_id": "lut_global_2x_16",
+      "group": "luts",
+      "kind": "lut",
+      "lut_index_bits": 16,
+      "lut_loads": 2,
+      "lut_memory": "global",
+      "params": {
+        "bits": 16,
+        "loads": 2,
+        "memory": "global"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "high-bit uniform LUT index"
+      ],
+      "branch_probability": null,
+      "case_id": "lut_global_3x_8",
+      "group": "luts",
+      "kind": "lut",
+      "lut_index_bits": 8,
+      "lut_loads": 3,
+      "lut_memory": "global",
+      "params": {
+        "bits": 8,
+        "loads": 3,
+        "memory": "global"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "high-bit uniform LUT index"
+      ],
+      "branch_probability": null,
+      "case_id": "lut_global_3x_16",
+      "group": "luts",
+      "kind": "lut",
+      "lut_index_bits": 16,
+      "lut_loads": 3,
+      "lut_memory": "global",
+      "params": {
+        "bits": 16,
+        "loads": 3,
+        "memory": "global"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [
+        "high-bit uniform LUT index"
+      ],
+      "branch_probability": null,
+      "case_id": "lut_global_3x_20",
+      "group": "luts",
+      "kind": "lut",
+      "lut_index_bits": 20,
+      "lut_loads": 3,
+      "lut_memory": "global",
+      "params": {
+        "bits": 20,
+        "loads": 3,
+        "memory": "global"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "special_exp2",
+      "group": "special_operations",
+      "kind": "special",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "op": "exp2"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "special_log2",
+      "group": "special_operations",
+      "kind": "special",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "op": "log2"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "special_sqrt",
+      "group": "special_operations",
+      "kind": "special",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "op": "sqrt"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "special_div_f64",
+      "group": "special_operations",
+      "kind": "special",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "op": "div_f64"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "special_div_u32",
+      "group": "special_operations",
+      "kind": "special",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "op": "div_u32"
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "latency_32fma_1chains",
+      "group": "latency_occupancy",
+      "kind": "latency",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "chains": 1,
+        "fmas": 32
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "latency_32fma_2chains",
+      "group": "latency_occupancy",
+      "kind": "latency",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "chains": 2,
+        "fmas": 32
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "latency_32fma_4chains",
+      "group": "latency_occupancy",
+      "kind": "latency",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "chains": 4,
+        "fmas": 32
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "latency_32fma_8chains",
+      "group": "latency_occupancy",
+      "kind": "latency",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "chains": 8,
+        "fmas": 32
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "latency_32fma_16chains",
+      "group": "latency_occupancy",
+      "kind": "latency",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "chains": 16,
+        "fmas": 32
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "latency_32fma_32chains",
+      "group": "latency_occupancy",
+      "kind": "latency",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "chains": 32,
+        "fmas": 32
+      },
+      "split": "train"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "val_iadd3_2_chain",
+      "group": "synthetic_validation",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 2,
+        "dependency": "chain",
+        "op": "iadd3"
+      },
+      "split": "synthetic_validation"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "val_lop3_8_parallel",
+      "group": "synthetic_validation",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 8,
+        "dependency": "ilp4",
+        "op": "lop3"
+      },
+      "split": "synthetic_validation"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "val_shf_8_chain",
+      "group": "synthetic_validation",
+      "kind": "integer",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 8,
+        "dependency": "chain",
+        "op": "shf"
+      },
+      "split": "synthetic_validation"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "val_clz2_shift4",
+      "group": "synthetic_validation",
+      "kind": "clz_shift",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "clz": 2,
+        "shifts": 4
+      },
+      "split": "synthetic_validation"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "val_fp64_fma_8_chain",
+      "group": "synthetic_validation",
+      "kind": "fp",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "count": 8,
+        "dependency": "chain",
+        "op": "fma",
+        "precision": "fp64"
+      },
+      "split": "synthetic_validation"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "val_fp64_fma_24_8chains",
+      "group": "synthetic_validation",
+      "kind": "latency",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "chains": 8,
+        "fmas": 24
+      },
+      "split": "synthetic_validation"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "val_mixed_b6_c1_f3",
+      "group": "synthetic_validation",
+      "kind": "mixed",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "bitops": 6,
+        "conversions": 1,
+        "dependency": "chain",
+        "fmas": 3
+      },
+      "split": "synthetic_validation"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "val_mixed_b12_c2_f6",
+      "group": "synthetic_validation",
+      "kind": "mixed",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "bitops": 12,
+        "conversions": 2,
+        "dependency": "parallel",
+        "fmas": 6
+      },
+      "split": "synthetic_validation"
+    },
+    {
+      "assumptions": [
+        "uniform independent raw u32 codes"
+      ],
+      "branch_probability": 0.25,
+      "case_id": "val_branch_p1_4_integer_8",
+      "group": "synthetic_validation",
+      "kind": "branch",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "body": "integer",
+        "count": 8,
+        "denominator": 4
+      },
+      "split": "synthetic_validation"
+    },
+    {
+      "assumptions": [
+        "uniform independent raw u32 codes"
+      ],
+      "branch_probability": 0.0078125,
+      "case_id": "val_branch_p1_128_fp64_fma_8",
+      "group": "synthetic_validation",
+      "kind": "branch",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "body": "fp64_fma",
+        "count": 8,
+        "denominator": 128
+      },
+      "split": "synthetic_validation"
+    },
+    {
+      "assumptions": [
+        "high-bit uniform LUT index"
+      ],
+      "branch_probability": null,
+      "case_id": "val_lut_global_2x_14",
+      "group": "synthetic_validation",
+      "kind": "lut",
+      "lut_index_bits": 14,
+      "lut_loads": 2,
+      "lut_memory": "global",
+      "params": {
+        "bits": 14,
+        "loads": 2,
+        "memory": "global"
+      },
+      "split": "synthetic_validation"
+    },
+    {
+      "assumptions": [
+        "high-bit uniform LUT index"
+      ],
+      "branch_probability": null,
+      "case_id": "val_lut_global_3x_18",
+      "group": "synthetic_validation",
+      "kind": "lut",
+      "lut_index_bits": 18,
+      "lut_loads": 3,
+      "lut_memory": "global",
+      "params": {
+        "bits": 18,
+        "loads": 3,
+        "memory": "global"
+      },
+      "split": "synthetic_validation"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "dev_raw_fp32_to_fp64",
+      "group": "real_development",
+      "kind": "real",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "format": "raw_fp32"
+      },
+      "split": "development"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "dev_e11m20_shifter",
+      "group": "real_development",
+      "kind": "real",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "format": "e11m20_shifter"
+      },
+      "split": "development"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "dev_e9m22_branchy",
+      "group": "real_development",
+      "kind": "real",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "format": "e9m22_branchy"
+      },
+      "split": "development"
+    },
+    {
+      "assumptions": [
+        "prefix index is sign plus exponent"
+      ],
+      "branch_probability": null,
+      "case_id": "dev_e9m22_prefix_global",
+      "group": "real_development",
+      "kind": "real",
+      "lut_index_bits": 10,
+      "lut_loads": 1,
+      "lut_memory": "global",
+      "params": {
+        "format": "e9m22_prefix_global"
+      },
+      "split": "development"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "dev_quadnormal32",
+      "group": "real_development",
+      "kind": "real",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "format": "quadnormal32"
+      },
+      "split": "development"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "final_pwlnormal32_16_16",
+      "group": "real_final",
+      "kind": "real",
+      "lut_index_bits": 16,
+      "lut_loads": 1,
+      "lut_memory": "global",
+      "params": {
+        "format": "pwlnormal32_16_16"
+      },
+      "split": "final"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "final_pwqnormal32_8_24",
+      "group": "real_final",
+      "kind": "real",
+      "lut_index_bits": 8,
+      "lut_loads": 1,
+      "lut_memory": "global",
+      "params": {
+        "format": "pwqnormal32_8_24"
+      },
+      "split": "final"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "final_posit32_es2",
+      "group": "real_final",
+      "kind": "real",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "format": "posit32_es2"
+      },
+      "split": "final"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "final_takum32_linear",
+      "group": "real_final",
+      "kind": "real",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "format": "takum32_linear"
+      },
+      "split": "final"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "final_takum32_log",
+      "group": "real_final",
+      "kind": "real",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "format": "takum32_log"
+      },
+      "split": "final"
+    },
+    {
+      "assumptions": [],
+      "branch_probability": null,
+      "case_id": "final_lns32_r23_reference_exp2",
+      "group": "real_final",
+      "kind": "real",
+      "lut_index_bits": 0,
+      "lut_loads": 0,
+      "lut_memory": null,
+      "params": {
+        "format": "lns32_r23_reference_exp2"
+      },
+      "split": "final"
+    }
+  ],
+  "experiment": "conversion_cost_calibration",
+  "fixed": {
+    "arithmetic": "fp64",
+    "blocks": 512,
+    "compile_flags": [
+      "-O3",
+      "-lineinfo",
+      "-Xptxas=-v"
+    ],
+    "cuda_arch": 90,
+    "cuda_module": "cuda/13.1.1",
+    "fast_math": false,
+    "generator": "Philox4x32-10",
+    "gpu": "NVIDIA H200 NVL",
+    "iterations_per_thread": 1024,
+    "kernel": "scalar x1 DOT",
+    "left_seed_hex": "0x6bd87c012a53f9e1",
+    "n": 134217728,
+    "preferred_node": "gpu-nvidia-h200-2",
+    "right_seed_hex": "0xf5ef05b8551985f4",
+    "rounds": 3,
+    "samples_per_round": 10,
+    "shuffle_seed_hex": "0x5c41b3a7",
+    "storage": "two uint32 arrays",
+    "target_event_interval_ms": 20.0,
+    "threads": 256,
+    "timing_scope": "first reduction plus final reduction",
+    "warmups": 10
+  },
+  "generated_header_sha256": "23011c0e0f66c837be400532e3d34d5b49d079a109e703d1be84097a66470cc9",
+  "version": 1
+}

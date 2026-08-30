@@ -132,6 +132,29 @@ set_target_properties(
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )
 
+add_executable(conversion_calibration_bench
+    src/conversion_calibration_bench.cu)
+target_link_libraries(conversion_calibration_bench PRIVATE CUDA::cudart_static)
+target_include_directories(
+    conversion_calibration_bench
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+        "${CMAKE_CURRENT_SOURCE_DIR}/generated"
+)
+target_compile_options(
+    conversion_calibration_bench
+    PRIVATE
+        "$<$<COMPILE_LANGUAGE:CXX>:-O3>"
+        "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v>"
+)
+set_target_properties(
+    conversion_calibration_bench
+    PROPERTIES
+        CUDA_RUNTIME_LIBRARY Static
+        CUDA_SEPARABLE_COMPILATION OFF
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
 function(add_bitwidth_strategy_benchmark bits)
     set(target "bitwidth_strategy_bench_${bits}")
     add_executable(${target} src/bitwidth_strategy_bench.cu)
