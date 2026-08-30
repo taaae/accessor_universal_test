@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import unittest
 
-from conversion_calibration.sass import critical_depth, main_loop, parse_functions
+from conversion_calibration.manifest import CASES
+from conversion_calibration.sass import critical_depth, feature_row, main_loop, parse_functions
 
 
 FIXTURE = r'''
@@ -25,6 +26,15 @@ class SassTest(unittest.TestCase):
         self.assertEqual([item.address for item in loop], [0x10, 0x20, 0x30, 0x40])
         self.assertEqual(sum(item.predicate for item in loop), 1)
         self.assertGreaterEqual(critical_depth(loop), 3)
+
+    def test_global_lut_sector_work_counts_both_operands(self):
+        index = next(i for i, case in enumerate(CASES)
+                     if case.case_id == "lut_global_1x_4")
+        row = feature_row(index, [])
+        sectors = 4  # 16 doubles occupy four 32-byte sectors.
+        one_lookup = sectors * (1.0 - (1.0 - 1.0 / sectors) ** 32)
+        self.assertAlmostEqual(row["lut_expected_sectors_per_warp"],
+                               2.0 * one_lookup)
 
 
 if __name__ == "__main__":

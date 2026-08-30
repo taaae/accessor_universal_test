@@ -17,7 +17,7 @@ set -u
 module load "${CUDA_MODULE:-cuda/13.1.1}"
 cd "${repo_dir}"
 commit_short="$(git rev-parse --short=12 HEAD)"
-build_dir="${repo_dir}/build-conversion-calibration-${commit_short}"
+build_dir="${repo_dir}/build-conversion-calibration-${commit_short}-${SLURM_JOB_ID}"
 python3 -m unittest discover -s analysis/tests -p 'test_conversion_calibration*.py' -v
 cmake -S "${repo_dir}" -B "${build_dir}" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTURES=90
 cmake --build "${build_dir}" --parallel 2 --target conversion_calibration_bench 2>&1 | tee "results/028_conversion_cost_calibration/build-${SLURM_JOB_ID}.txt"

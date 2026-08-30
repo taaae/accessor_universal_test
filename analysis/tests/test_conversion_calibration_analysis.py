@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from conversion_calibration.analysis import analyze
+from conversion_calibration.analysis import analyze, load_timings
 from conversion_calibration.manifest import CASES
 from conversion_calibration.report import build
 
@@ -70,6 +70,18 @@ class AnalysisTest(unittest.TestCase):
             report=(run/"analysis"/"report.html").read_text()
             self.assertIn("H200 conversion-cost calibration",report)
             self.assertIn("final_lns32_r23_reference_exp2",report)
+
+    def test_missing_anchors_are_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory); timing,_=self.make_fixture(root)
+            rows=[]
+            with timing.open(newline="") as handle:
+                rows=list(csv.DictReader(handle)); fields=list(rows[0])
+            with timing.open("w",newline="") as handle:
+                writer=csv.DictWriter(handle,fieldnames=fields);writer.writeheader()
+                writer.writerows(row for row in rows if "anchor" not in row["stage"])
+            with self.assertRaisesRegex(ValueError,"anchor"):
+                load_timings(timing)
 
 
 if __name__=="__main__":unittest.main()

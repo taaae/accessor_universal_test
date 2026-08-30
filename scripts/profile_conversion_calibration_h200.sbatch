@@ -16,7 +16,10 @@ source /etc/profile
 set -u
 module load "${CUDA_MODULE:-cuda/13.1.1}"
 cd "${repo_dir}"
-binary="${repo_dir}/build-conversion-calibration-$(git rev-parse --short=12 HEAD)/bin/conversion_calibration_bench"
+build_dir="${repo_dir}/build-conversion-calibration-$(git rev-parse --short=12 HEAD)-${SLURM_JOB_ID}"
+cmake -S "${repo_dir}" -B "${build_dir}" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTURES=90
+cmake --build "${build_dir}" --parallel 2 --target conversion_calibration_bench
+binary="${build_dir}/bin/conversion_calibration_bench"
 profile_dir="${RUN_DIR:?set RUN_DIR}/profile"
 [[ ! -e "${profile_dir}" ]] || { echo "refusing to overwrite profile" >&2; exit 2; }
 mkdir "${profile_dir}"

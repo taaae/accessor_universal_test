@@ -19,5 +19,5 @@ module load "${CUDA_MODULE:-cuda/13.1.1}"
 cd "${repo_dir}"
 srun --ntasks=1 --cpus-per-task="${SLURM_CPUS_PER_TASK}" \
   env MODE="${MODE:-smoke}" RUN_DIR="${RUN_DIR:?set one protected run directory}" \
-  BUILD_DIR="${repo_dir}/build-conversion-calibration-$(git rev-parse --short=12 HEAD)" BUILD_JOBS=2 \
+  BUILD_DIR="${repo_dir}/build-conversion-calibration-$(git rev-parse --short=12 HEAD)-${SLURM_JOB_ID}" BUILD_JOBS=2 \
   "${repo_dir}/scripts/run_conversion_calibration.sh"

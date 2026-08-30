@@ -41,11 +41,10 @@ __device__ __forceinline__ double finite_from_u32(std::uint32_t value) {
 }
 
 __device__ __forceinline__ std::uint32_t op_iadd3(std::uint32_t a,
-                                                   std::uint32_t b,
-                                                   std::uint32_t c) {
+                                                   std::uint32_t b) {
   std::uint32_t out;
   asm volatile("add.u32 %0, %1, %2;"
-               : "=r"(out) : "r"(a), "r"(b), "r"(c));
+               : "=r"(out) : "r"(a), "r"(b));
   return out;
 }
 __device__ __forceinline__ std::uint32_t op_lop3(std::uint32_t a,
@@ -161,7 +160,7 @@ def _base_prelude(shared_bytes: int = 0, context: str = "device_tables") -> str:
 
 
 def _integer_body(op: str, count: int, dependency: str) -> str:
-    call = {"iadd3": "op_iadd3({a}, 0x9e3779b9u + {i}u, 0x7f4a7c15u)", "lop3": "op_lop3({a}, 0xa5a5a5a5u + {i}u, 0x3c6ef372u)", "shf": "op_shf({a}, {shift}u)", "imad": "op_imad({a}, 1664525u + 2u * {i}u, 1013904223u)"}[op]
+    call = {"iadd3": "op_iadd3({a}, 0x9e3779b9u + {i}u)", "lop3": "op_lop3({a}, 0xa5a5a5a5u + {i}u, 0x3c6ef372u)", "shf": "op_shf({a}, {shift}u)", "imad": "op_imad({a}, 1664525u + 2u * {i}u, 1013904223u)"}[op]
     lines: list[str] = []
     if dependency == "chain":
         lines.append("    std::uint32_t v = raw;")

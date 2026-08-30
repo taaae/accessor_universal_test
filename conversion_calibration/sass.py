@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import math
 import re
 from dataclasses import dataclass
@@ -115,12 +116,15 @@ def feature_row(index: int, instructions: list[Instruction]) -> dict[str, float 
     expected_sectors = 0.0
     if case.lut_index_bits and case.lut_memory == "global":
         sectors = max(1, (lut_bytes + 31) // 32)
-        expected_sectors = sectors * (1.0 - (1.0 - 1.0 / sectors) ** 32) * case.lut_loads
+        expected_sectors = (2.0 * sectors *
+                            (1.0 - (1.0 - 1.0 / sectors) ** 32) *
+                            case.lut_loads)
     return {
         "case_id": case.case_id,
         "split": case.split,
         "group": case.group,
         "function": next((name for name, seq in []), ""),
+        "loop_opcode_signature": hashlib.sha256(" ".join(opcodes).encode()).hexdigest(),
         "loop_instruction_count": len(loop),
         "integer_alu": _count(opcodes, ("IADD", "UIADD", "LOP", "SHF", "IMAD", "LEA", "BFE", "BFI", "PRMT", "POPC", "FLO")),
         "integer_multiply": _count(opcodes, ("IMAD", "XMAD")),
@@ -188,6 +192,9 @@ def extract(text: str) -> list[dict[str, float | int | str]]:
             nominal = 1; primary = "special"
         elif case.kind == "lut":
             nominal = int(case.lut_loads); primary = f"{case.lut_memory}_loads"
+        # The converter is inlined twice in each loop iteration: once for the
+        # left operand and once for the right operand.
+        nominal *= 2
         row["nominal_primary_operations"] = nominal
         row["primary_operation_family"] = primary
         if primary.endswith("_loads"):
@@ -239,6 +246,18 @@ def validate_acceptance(rows: list[dict]) -> list[str]:
             warnings.append(f"branch body has neither explicit branch nor predication: {case.case_id}")
         if case.kind in {"integer", "clz", "int64", "numeric", "numeric_chain", "fp", "latency", "special"} and row["compiled_primary_operations"] == 0:
             raise ValueError(f"primary operation family optimized away: {case.case_id}")
+        if case.kind == "mixed":
+            for family in ("integer_alu", "conversion", "fp64"):
+                if row[f"decoder_{family}"] == 0:
+                    raise ValueError(f"mixed pipeline lost {family}: {case.case_id}")
+        if case.kind == "clz_shift" and row["decoder_integer_alu"] == 0:
+            raise ValueError(f"CLZ/shift validation body optimized away: {case.case_id}")
+        if case.kind == "branch":
+            family = "integer_alu" if case.params["body"] == "integer" else "fp64"
+            if row[f"decoder_{family}"] == 0:
+                raise ValueError(f"branch body optimized away: {case.case_id}")
+        if case.kind == "real" and row["loop_opcode_signature"] == by_id[CASES[0].case_id]["loop_opcode_signature"]:
+            raise ValueError(f"real converter opcode stream indistinguishable from bitcast anchor: {case.case_id}")
         if row["compiler_count_status"] == "changed":
             warnings.append(f"compiler changed nominal primary count for {case.case_id}: nominal={row['nominal_primary_operations']} compiled={row['compiled_primary_operations']}")
     training_branches = [by_id[case.case_id] for case in CASES if case.split == "train" and case.kind == "branch"]

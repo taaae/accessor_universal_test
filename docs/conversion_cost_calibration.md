@@ -47,8 +47,9 @@ Failure is a valid result and must be reported without final-split tuning.
 
 ## Job safety
 
-The Slurm scripts request one GPU on the non-student `gpu-nvidia-h200-2` node.
-Submission is external to the scripts and must occur only after `squeue -u
+The reusable Slurm script requests one GPU; submission supplies
+`--nodelist=gpu-nvidia-h200-2` so node choice remains visible at the command
+line. Submission must occur only after `squeue -u
 timofeirusanov` confirms the user's queue is empty. Smoke precedes full timing;
 profiling is a later, separate one-GPU job. Every result directory refuses
 overwrite.

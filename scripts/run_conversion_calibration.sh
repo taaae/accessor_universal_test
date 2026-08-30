@@ -3,11 +3,17 @@ set -euo pipefail
 
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 commit_short="$(git -C "${repo_dir}" rev-parse --short=12 HEAD)"
-build_dir="${BUILD_DIR:-${repo_dir}/build-conversion-calibration-${commit_short}}"
+build_tag="${SLURM_JOB_ID:-local}"
+build_dir="${BUILD_DIR:-${repo_dir}/build-conversion-calibration-${commit_short}-${build_tag}}"
 results_root="${RESULTS_ROOT:-${repo_dir}/results/028_conversion_cost_calibration}"
 run_dir="${RUN_DIR:-${results_root}/run_$(date -u +%Y%m%dT%H%M%SZ)}"
 mode="${MODE:-smoke}"
 mode_dir="${run_dir}/${mode}"
+if [[ "${mode}" == "smoke" ]]; then
+  actual_n="${SMOKE_N:-1048576}"
+else
+  actual_n="134217728"
+fi
 started="$(date +%s)"
 stage="initialization"
 
@@ -30,7 +36,7 @@ fi
   echo "slurm_job_id=${SLURM_JOB_ID:-none}"
   echo "slurm_node=${SLURMD_NODENAME:-local}"
   echo "cuda_visible_devices=${CUDA_VISIBLE_DEVICES:-unset}"
-  echo "n=${CALIBRATION_N:-134217728}"
+  echo "n=${actual_n}"
   echo "blocks=512"
   echo "threads=256"
   echo "storage=two_uint32_streams"

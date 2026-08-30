@@ -79,6 +79,9 @@ def load_timings(path: Path) -> tuple[list[dict], dict]:
         mode = "smoke"
     else:
         raise ValueError(f"wrong per-case measurement counts: {counts}")
+    expected_anchor_rounds = {0, 1, 2} if mode == "full" else {0}
+    if set(anchors) != expected_anchor_rounds:
+        raise ValueError(f"missing or extra anchor rounds: {set(anchors)}")
     summaries=[]
     for case in CASES:
         summary=summarize_samples(measurements[case.case_id], seed=0x4F3C2D1A ^ len(summaries))
@@ -101,7 +104,7 @@ def load_timings(path: Path) -> tuple[list[dict], dict]:
 
 def load_features(path: Path) -> dict[str, dict[str, float | str]]:
     with path.open(newline="") as handle: rows=list(csv.DictReader(handle))
-    numeric=set(rows[0])-{"case_id","split","group","function",
+    numeric=set(rows[0])-{"case_id","split","group","function","loop_opcode_signature",
                          "primary_operation_family","compiler_count_status"}
     result={}
     for row in rows:
@@ -127,7 +130,7 @@ def raw_model_features(row: dict[str,float|str]) -> dict[str,float]:
         "special":value("decoder_special", "special"),
         "lut_global":float(row["lut_expected_sectors_per_warp"]) if case.lut_memory == "global" else 0.0,
         "lut_shared":value("decoder_shared_loads", "shared_loads") * max(1.0, 1.0 / max(float(row["estimated_occupancy"]), 0.125)) if case.lut_memory == "shared" else 0.0,
-        "lut_constant":unique_addresses * case.lut_loads if case.lut_memory == "constant" else 0.0,
+        "lut_constant":2.0 * unique_addresses * case.lut_loads if case.lut_memory == "constant" else 0.0,
         "dependency":float(row["critical_dependency_depth"])*(1.0-float(row["estimated_occupancy"])*0.5),
         "divergence":max(0.0,float(row["expected_true_warp_path"])+float(row["expected_false_warp_path"])-1.0)*float(row["predicated_instruction_count"]+row["branch_count"]),
         "spills":float(row["local_loads"])+float(row["local_stores"])+float(row["local_bytes_per_thread"])/8.0,
