@@ -85,7 +85,7 @@ sample_index(std::size_t index, std::uint64_t seed, int field_bits,
     return 0;
   }
   const auto mask = field_bits == 32
-                        ? std::numeric_limits<std::uint32_t>::max()
+                        ? std::uint32_t{0xffffffffu}
                         : ((std::uint32_t{1} << field_bits) - 1u);
   return static_cast<std::uint32_t>(payload) & mask;
 }

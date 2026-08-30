@@ -229,7 +229,7 @@ __global__ void dot_global_tables_kernel(const Storage *left,
                                          std::size_t count, const T *tables,
                                          T *partials) {
   constexpr std::uint32_t mask =
-      FieldBits == 32 ? std::numeric_limits<std::uint32_t>::max()
+      FieldBits == 32 ? std::uint32_t{0xffffffffu}
                       : ((std::uint32_t{1} << FieldBits) - 1u);
   constexpr std::size_t entries = std::size_t{1} << FieldBits;
   __shared__ T reduction[threads];
@@ -265,7 +265,7 @@ __global__ void dot_shared_tables_kernel(const Storage *left,
                                          const T *global_tables,
                                          T *partials) {
   constexpr std::uint32_t mask =
-      FieldBits == 32 ? std::numeric_limits<std::uint32_t>::max()
+      FieldBits == 32 ? std::uint32_t{0xffffffffu}
                       : ((std::uint32_t{1} << FieldBits) - 1u);
   constexpr std::size_t entries = std::size_t{1} << FieldBits;
   constexpr std::size_t total_entries = entries * Components;
