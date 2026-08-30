@@ -116,7 +116,7 @@ template <> struct decoder<3> {
   __device__ __forceinline__ static context prepare(device_tables t, unsigned char *) { return t; }
   __device__ __forceinline__ static double decode(std::uint32_t raw, context ctx) {
     std::uint32_t v = raw;
-    v = op_iadd3(v, 0x9e3779b9u + 0u);
+    v = op_iadd3(v, raw ^ (0x9e3779b9u + 0u));
     return finite_from_u32(v);
   }
 };
@@ -126,7 +126,7 @@ template <> struct decoder<4> {
   __device__ __forceinline__ static context prepare(device_tables t, unsigned char *) { return t; }
   __device__ __forceinline__ static double decode(std::uint32_t raw, context ctx) {
     std::uint32_t v0=raw, v1=raw^0x55555555u, v2=raw^0xaaaaaaaau, v3=~raw;
-    v0 = op_iadd3(v0, 0x9e3779b9u + 0u);
+    v0 = op_iadd3(v0, raw ^ (0x9e3779b9u + 0u));
     return finite_from_u32(v0 ^ v1 ^ v2 ^ v3);
   }
 };
@@ -136,10 +136,10 @@ template <> struct decoder<5> {
   __device__ __forceinline__ static context prepare(device_tables t, unsigned char *) { return t; }
   __device__ __forceinline__ static double decode(std::uint32_t raw, context ctx) {
     std::uint32_t v = raw;
-    v = op_iadd3(v, 0x9e3779b9u + 0u);
-    v = op_iadd3(v, 0x9e3779b9u + 1u);
-    v = op_iadd3(v, 0x9e3779b9u + 2u);
-    v = op_iadd3(v, 0x9e3779b9u + 3u);
+    v = op_iadd3(v, raw ^ (0x9e3779b9u + 0u));
+    v = op_iadd3(v, raw ^ (0x9e3779b9u + 1u));
+    v = op_iadd3(v, raw ^ (0x9e3779b9u + 2u));
+    v = op_iadd3(v, raw ^ (0x9e3779b9u + 3u));
     return finite_from_u32(v);
   }
 };
@@ -149,10 +149,10 @@ template <> struct decoder<6> {
   __device__ __forceinline__ static context prepare(device_tables t, unsigned char *) { return t; }
   __device__ __forceinline__ static double decode(std::uint32_t raw, context ctx) {
     std::uint32_t v0=raw, v1=raw^0x55555555u, v2=raw^0xaaaaaaaau, v3=~raw;
-    v0 = op_iadd3(v0, 0x9e3779b9u + 0u);
-    v1 = op_iadd3(v1, 0x9e3779b9u + 1u);
-    v2 = op_iadd3(v2, 0x9e3779b9u + 2u);
-    v3 = op_iadd3(v3, 0x9e3779b9u + 3u);
+    v0 = op_iadd3(v0, raw ^ (0x9e3779b9u + 0u));
+    v1 = op_iadd3(v1, raw ^ (0x9e3779b9u + 1u));
+    v2 = op_iadd3(v2, raw ^ (0x9e3779b9u + 2u));
+    v3 = op_iadd3(v3, raw ^ (0x9e3779b9u + 3u));
     return finite_from_u32(v0 ^ v1 ^ v2 ^ v3);
   }
 };
@@ -162,22 +162,22 @@ template <> struct decoder<7> {
   __device__ __forceinline__ static context prepare(device_tables t, unsigned char *) { return t; }
   __device__ __forceinline__ static double decode(std::uint32_t raw, context ctx) {
     std::uint32_t v = raw;
-    v = op_iadd3(v, 0x9e3779b9u + 0u);
-    v = op_iadd3(v, 0x9e3779b9u + 1u);
-    v = op_iadd3(v, 0x9e3779b9u + 2u);
-    v = op_iadd3(v, 0x9e3779b9u + 3u);
-    v = op_iadd3(v, 0x9e3779b9u + 4u);
-    v = op_iadd3(v, 0x9e3779b9u + 5u);
-    v = op_iadd3(v, 0x9e3779b9u + 6u);
-    v = op_iadd3(v, 0x9e3779b9u + 7u);
-    v = op_iadd3(v, 0x9e3779b9u + 8u);
-    v = op_iadd3(v, 0x9e3779b9u + 9u);
-    v = op_iadd3(v, 0x9e3779b9u + 10u);
-    v = op_iadd3(v, 0x9e3779b9u + 11u);
-    v = op_iadd3(v, 0x9e3779b9u + 12u);
-    v = op_iadd3(v, 0x9e3779b9u + 13u);
-    v = op_iadd3(v, 0x9e3779b9u + 14u);
-    v = op_iadd3(v, 0x9e3779b9u + 15u);
+    v = op_iadd3(v, raw ^ (0x9e3779b9u + 0u));
+    v = op_iadd3(v, raw ^ (0x9e3779b9u + 1u));
+    v = op_iadd3(v, raw ^ (0x9e3779b9u + 2u));
+    v = op_iadd3(v, raw ^ (0x9e3779b9u + 3u));
+    v = op_iadd3(v, raw ^ (0x9e3779b9u + 4u));
+    v = op_iadd3(v, raw ^ (0x9e3779b9u + 5u));
+    v = op_iadd3(v, raw ^ (0x9e3779b9u + 6u));
+    v = op_iadd3(v, raw ^ (0x9e3779b9u + 7u));
+    v = op_iadd3(v, raw ^ (0x9e3779b9u + 8u));
+    v = op_iadd3(v, raw ^ (0x9e3779b9u + 9u));
+    v = op_iadd3(v, raw ^ (0x9e3779b9u + 10u));
+    v = op_iadd3(v, raw ^ (0x9e3779b9u + 11u));
+    v = op_iadd3(v, raw ^ (0x9e3779b9u + 12u));
+    v = op_iadd3(v, raw ^ (0x9e3779b9u + 13u));
+    v = op_iadd3(v, raw ^ (0x9e3779b9u + 14u));
+    v = op_iadd3(v, raw ^ (0x9e3779b9u + 15u));
     return finite_from_u32(v);
   }
 };
@@ -187,22 +187,22 @@ template <> struct decoder<8> {
   __device__ __forceinline__ static context prepare(device_tables t, unsigned char *) { return t; }
   __device__ __forceinline__ static double decode(std::uint32_t raw, context ctx) {
     std::uint32_t v0=raw, v1=raw^0x55555555u, v2=raw^0xaaaaaaaau, v3=~raw;
-    v0 = op_iadd3(v0, 0x9e3779b9u + 0u);
-    v1 = op_iadd3(v1, 0x9e3779b9u + 1u);
-    v2 = op_iadd3(v2, 0x9e3779b9u + 2u);
-    v3 = op_iadd3(v3, 0x9e3779b9u + 3u);
-    v0 = op_iadd3(v0, 0x9e3779b9u + 4u);
-    v1 = op_iadd3(v1, 0x9e3779b9u + 5u);
-    v2 = op_iadd3(v2, 0x9e3779b9u + 6u);
-    v3 = op_iadd3(v3, 0x9e3779b9u + 7u);
-    v0 = op_iadd3(v0, 0x9e3779b9u + 8u);
-    v1 = op_iadd3(v1, 0x9e3779b9u + 9u);
-    v2 = op_iadd3(v2, 0x9e3779b9u + 10u);
-    v3 = op_iadd3(v3, 0x9e3779b9u + 11u);
-    v0 = op_iadd3(v0, 0x9e3779b9u + 12u);
-    v1 = op_iadd3(v1, 0x9e3779b9u + 13u);
-    v2 = op_iadd3(v2, 0x9e3779b9u + 14u);
-    v3 = op_iadd3(v3, 0x9e3779b9u + 15u);
+    v0 = op_iadd3(v0, raw ^ (0x9e3779b9u + 0u));
+    v1 = op_iadd3(v1, raw ^ (0x9e3779b9u + 1u));
+    v2 = op_iadd3(v2, raw ^ (0x9e3779b9u + 2u));
+    v3 = op_iadd3(v3, raw ^ (0x9e3779b9u + 3u));
+    v0 = op_iadd3(v0, raw ^ (0x9e3779b9u + 4u));
+    v1 = op_iadd3(v1, raw ^ (0x9e3779b9u + 5u));
+    v2 = op_iadd3(v2, raw ^ (0x9e3779b9u + 6u));
+    v3 = op_iadd3(v3, raw ^ (0x9e3779b9u + 7u));
+    v0 = op_iadd3(v0, raw ^ (0x9e3779b9u + 8u));
+    v1 = op_iadd3(v1, raw ^ (0x9e3779b9u + 9u));
+    v2 = op_iadd3(v2, raw ^ (0x9e3779b9u + 10u));
+    v3 = op_iadd3(v3, raw ^ (0x9e3779b9u + 11u));
+    v0 = op_iadd3(v0, raw ^ (0x9e3779b9u + 12u));
+    v1 = op_iadd3(v1, raw ^ (0x9e3779b9u + 13u));
+    v2 = op_iadd3(v2, raw ^ (0x9e3779b9u + 14u));
+    v3 = op_iadd3(v3, raw ^ (0x9e3779b9u + 15u));
     return finite_from_u32(v0 ^ v1 ^ v2 ^ v3);
   }
 };
@@ -2066,8 +2066,8 @@ template <> struct decoder<112> {
   __device__ __forceinline__ static context prepare(device_tables t, unsigned char *) { return t; }
   __device__ __forceinline__ static double decode(std::uint32_t raw, context ctx) {
     std::uint32_t v = raw;
-    v = op_iadd3(v, 0x9e3779b9u + 0u);
-    v = op_iadd3(v, 0x9e3779b9u + 1u);
+    v = op_iadd3(v, raw ^ (0x9e3779b9u + 0u));
+    v = op_iadd3(v, raw ^ (0x9e3779b9u + 1u));
     return finite_from_u32(v);
   }
 };

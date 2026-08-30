@@ -160,7 +160,7 @@ def _base_prelude(shared_bytes: int = 0, context: str = "device_tables") -> str:
 
 
 def _integer_body(op: str, count: int, dependency: str) -> str:
-    call = {"iadd3": "op_iadd3({a}, 0x9e3779b9u + {i}u)", "lop3": "op_lop3({a}, 0xa5a5a5a5u + {i}u, 0x3c6ef372u)", "shf": "op_shf({a}, {shift}u)", "imad": "op_imad({a}, 1664525u + 2u * {i}u, 1013904223u)"}[op]
+    call = {"iadd3": "op_iadd3({a}, raw ^ (0x9e3779b9u + {i}u))", "lop3": "op_lop3({a}, 0xa5a5a5a5u + {i}u, 0x3c6ef372u)", "shf": "op_shf({a}, {shift}u)", "imad": "op_imad({a}, 1664525u + 2u * {i}u, 1013904223u)"}[op]
     lines: list[str] = []
     if dependency == "chain":
         lines.append("    std::uint32_t v = raw;")

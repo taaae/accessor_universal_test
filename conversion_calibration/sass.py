@@ -126,7 +126,12 @@ def feature_row(index: int, instructions: list[Instruction]) -> dict[str, float 
         "function": next((name for name, seq in []), ""),
         "loop_opcode_signature": hashlib.sha256(" ".join(opcodes).encode()).hexdigest(),
         "loop_instruction_count": len(loop),
-        "integer_alu": _count(opcodes, ("IADD", "UIADD", "LOP", "SHF", "IMAD", "LEA", "BFE", "BFI", "PRMT", "POPC", "FLO")),
+        "integer_alu": _count(opcodes, ("IADD", "UIADD", "VIADD", "LOP", "SHF", "IMAD", "LEA", "BFE", "BFI", "PRMT", "POPC", "FLO")),
+        "iadd3_sass": _count(opcodes, ("IADD3", "UIADD3")),
+        "viadd_sass": _count(opcodes, ("VIADD",)),
+        "lop3_sass": _count(opcodes, ("LOP3",)),
+        "shf_sass": _count(opcodes, ("SHF",)),
+        "imad_sass": _count(opcodes, ("IMAD",)),
         "integer_multiply": _count(opcodes, ("IMAD", "XMAD")),
         "integer_divide": _count(opcodes, ("CALL",)) if case.params.get("op") == "div_u32" else 0,
         "conversion": _count(opcodes, ("I2F", "F2I", "F2F")),
@@ -169,7 +174,8 @@ def extract(text: str) -> list[dict[str, float | int | str]]:
         rows.append(row)
     baseline = rows[0]
     delta_fields = ("loop_instruction_count", "integer_alu", "integer_multiply",
-                    "integer_divide", "conversion", "fp32", "fp64", "special",
+                    "integer_divide", "iadd3_sass", "viadd_sass", "lop3_sass",
+                    "shf_sass", "imad_sass", "conversion", "fp32", "fp64", "special",
                     "global_loads", "shared_loads", "constant_loads", "local_loads",
                     "local_stores", "branch_count", "predicated_instruction_count")
     for row in rows:
@@ -246,6 +252,11 @@ def validate_acceptance(rows: list[dict]) -> list[str]:
             warnings.append(f"branch body has neither explicit branch nor predication: {case.case_id}")
         if case.kind in {"integer", "clz", "int64", "numeric", "numeric_chain", "fp", "latency", "special"} and row["compiled_primary_operations"] == 0:
             raise ValueError(f"primary operation family optimized away: {case.case_id}")
+        if case.kind == "integer":
+            required = {"iadd3": "iadd3_sass", "lop3": "lop3_sass",
+                        "shf": "shf_sass", "imad": "imad_sass"}[case.params["op"]]
+            if row[f"decoder_{required}"] == 0:
+                raise ValueError(f"requested SASS opcode family missing: {case.case_id}")
         if case.kind == "mixed":
             for family in ("integer_alu", "conversion", "fp64"):
                 if row[f"decoder_{family}"] == 0:
