@@ -130,6 +130,26 @@ set_target_properties(
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )
 
+add_executable(raw_fp32_reference_bench src/raw_fp32_reference_bench.cu)
+target_include_directories(
+    raw_fp32_reference_bench
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+target_compile_options(
+    raw_fp32_reference_bench
+    PRIVATE
+        "$<$<COMPILE_LANGUAGE:CXX>:-O3>"
+        "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v;--ftz=false>"
+)
+set_target_properties(
+    raw_fp32_reference_bench
+    PROPERTIES
+        CUDA_RUNTIME_LIBRARY Static
+        CUDA_SEPARABLE_COMPILATION OFF
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
 function(add_bitwidth_strategy_benchmark bits)
     set(target "bitwidth_strategy_bench_${bits}")
     add_executable(${target} src/bitwidth_strategy_bench.cu)

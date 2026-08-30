@@ -28,3 +28,10 @@ where `U_uniform = 8192 * (1 - (1 - 1/8192)^32)`.
 The full run uses `N=2^26`, 10 warmups, and 50 measured launches per format and
 point. The generated run directory contains raw timing samples, access metrics,
 a summary CSV, the single combined SVG graph, and an HTML wrapper.
+
+A later raw-FP32 follow-up uses the same `N`, 512 × 256 first-stage geometry,
+final reduction, warmups, samples, and CUDA-event timing boundary. It is stored
+in a separate `raw_fp32_followup_<timestamp>` directory and does not alter the
+original LUT samples. Because raw FP32 has no LUT access, its X value is
+undefined; the derived graph shows its measured median as a horizontal dotted
+reference line rather than inventing an X coordinate.

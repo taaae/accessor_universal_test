@@ -16,3 +16,14 @@ fixed. The final reviewer verdict was: **No material blocker remains.**
 
 The reviewer found no CUDA deadlock, synchronization, race, indexing, timing,
 format-table, distribution, or GPU-allocation defect.
+
+## Raw-FP32 follow-up
+
+A second focused read-only review checked the raw-FP32 kernel against the LUT
+kernel geometry and timing boundary, deterministic untimed input generation,
+metadata validation, immutable-source behavior, plotting semantics, and Slurm
+safety. It found two reporting-validation gaps: LUT and raw datasets did not
+yet require the same GPU model, and the pre-run estimate needed clearer naming
+as the `N=2^26` linear projection obtained by halving the `N=2^27` result. Both
+were fixed and covered by the analysis test. The final verdict was: **No
+blocker.**

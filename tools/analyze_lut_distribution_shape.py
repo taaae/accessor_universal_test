@@ -5,6 +5,7 @@ import argparse
 import csv
 import html
 import math
+import os
 import statistics
 from collections import defaultdict
 from pathlib import Path
@@ -28,6 +29,9 @@ CANONICAL_WARMUP = 10
 CANONICAL_SAMPLES = 50
 CANONICAL_LEFT_SEED = 0x243F6A8885A308D3
 CANONICAL_RIGHT_SEED = 0x13198A2E03707344
+RAW_LEFT_SEED = 0xA4093822299F31D0
+RAW_RIGHT_SEED = 0x082EFA98EC4E6C89
+RAW_N2P26_SANITY_ESTIMATE_MS = 0.25982871422400845
 UNIFORM_UNIQUE = 8192 * (1 - (1 - 1 / 8192) ** 32)
 
 
@@ -58,6 +62,7 @@ def validate_contract(
             f"full reports require exactly {CANONICAL_SAMPLES} samples, got {expected_samples}"
         )
     required = {
+        "gpu",
         "mode",
         "kernel",
         "N",
@@ -96,6 +101,8 @@ def validate_contract(
         "lut_bytes": "262144",
         "warmup": str(CANONICAL_WARMUP),
     }
+    if len({row["gpu"] for row in rows}) != 1:
+        raise ValueError("LUT timing rows contain more than one GPU model")
     for row_index, row in enumerate(rows, start=2):
         for field, expected in expected_constant.items():
             if row[field] != expected:
@@ -252,6 +259,82 @@ def summarize(rows: list[dict[str, str]], expected_samples: int | None) -> list[
     return summary
 
 
+def validate_raw_fp32(rows: list[dict[str, str]]) -> None:
+    required = {
+        "gpu", "mode", "kernel", "N", "blocks", "threads", "storage_bits",
+        "arithmetic_type", "storage_layout", "access_method", "packet_values",
+        "lut_entries", "lut_bytes", "format", "x_semantics", "left_seed",
+        "right_seed", "warmup", "sample", "kernel_ms", "result",
+    }
+    missing = required - set(rows[0])
+    if missing:
+        raise ValueError(f"raw-FP32 CSV is missing columns: {sorted(missing)}")
+    expected = {
+        "mode": "full",
+        "kernel": "dot",
+        "N": str(CANONICAL_N),
+        "blocks": "512",
+        "threads": "256",
+        "storage_bits": "32",
+        "arithmetic_type": "fp32",
+        "storage_layout": "natural",
+        "access_method": "scalar",
+        "packet_values": "1",
+        "lut_entries": "0",
+        "lut_bytes": "0",
+        "format": "raw_fp32",
+        "x_semantics": "undefined_no_lut",
+        "left_seed": str(RAW_LEFT_SEED),
+        "right_seed": str(RAW_RIGHT_SEED),
+        "warmup": str(CANONICAL_WARMUP),
+    }
+    if len(rows) != CANONICAL_SAMPLES:
+        raise ValueError(
+            f"raw FP32 requires {CANONICAL_SAMPLES} samples, got {len(rows)}"
+        )
+    if len({row["gpu"] for row in rows}) != 1:
+        raise ValueError("raw-FP32 rows contain more than one GPU model")
+    for row_index, row in enumerate(rows, start=2):
+        for field, value in expected.items():
+            if row[field] != value:
+                raise ValueError(
+                    f"raw-FP32 row {row_index}: {field}={row[field]!r}, expected {value!r}"
+                )
+        milliseconds = float(row["kernel_ms"])
+        result = float(row["result"])
+        if not math.isfinite(milliseconds) or milliseconds <= 0:
+            raise ValueError(f"raw-FP32 row {row_index}: invalid kernel time")
+        if not math.isfinite(result):
+            raise ValueError(f"raw-FP32 row {row_index}: nonfinite DOT result")
+    if {int(row["sample"]) for row in rows} != set(range(CANONICAL_SAMPLES)):
+        raise ValueError("raw FP32 contains duplicate or missing sample indices")
+
+
+def summarize_raw_fp32(rows: list[dict[str, str]]) -> dict[str, float | int | str]:
+    values = [float(row["kernel_ms"]) for row in rows]
+    return {
+        "format": "raw_fp32",
+        "label": "Raw FP32",
+        "samples": len(values),
+        "median_ms": statistics.median(values),
+        "q1_ms": percentile(values, 0.25),
+        "q3_ms": percentile(values, 0.75),
+        "minimum_ms": min(values),
+        "maximum_ms": max(values),
+    }
+
+
+def write_raw_summary(path: Path, row: dict[str, float | int | str]) -> None:
+    fields = (
+        "format", "label", "samples", "median_ms", "q1_ms", "q3_ms",
+        "minimum_ms", "maximum_ms",
+    )
+    with path.open("w", newline="") as destination:
+        writer = csv.DictWriter(destination, fieldnames=fields, lineterminator="\n")
+        writer.writeheader()
+        writer.writerow(row)
+
+
 def write_summary(path: Path, rows: list[dict[str, object]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fields = (
@@ -281,13 +364,19 @@ def marker_svg(kind: str, x: float, y: float, color: str) -> str:
     return f'<circle cx="{x:.2f}" cy="{y:.2f}" r="4.4" fill="{color}"/>'
 
 
-def make_svg(rows: list[dict[str, object]]) -> str:
+def make_svg(
+    rows: list[dict[str, object]],
+    raw_fp32: dict[str, float | int | str] | None = None,
+) -> str:
     width, height = 1120, 660
     left, right, top, bottom = 92, 210, 64, 88
     plot_width = width - left - right
     plot_height = height - top - bottom
     all_low = [float(row["q1_ms"]) for row in rows]
     all_high = [float(row["q3_ms"]) for row in rows]
+    if raw_fp32 is not None:
+        all_low.append(float(raw_fp32["q1_ms"]))
+        all_high.append(float(raw_fp32["q3_ms"]))
     y_min, y_max = min(all_low), max(all_high)
     padding = max((y_max - y_min) * 0.14, y_max * 0.015)
     y_min -= padding
@@ -302,11 +391,11 @@ def make_svg(rows: list[dict[str, object]]) -> str:
     pieces = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
         '<title id="title">16-bit global LUT DOT performance versus access dispersion</title>',
-        '<desc id="desc">Median kernel time and interquartile range for T16, posit 16 es1, and LNS 16 r11.</desc>',
+        '<desc id="desc">Median kernel time and interquartile range for T16, posit 16 es1, and LNS 16 r11, with a raw FP32 horizontal reference.</desc>',
         '<rect width="100%" height="100%" fill="#ffffff"/>',
         '<style>text{font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#263238}.title{font-size:24px;font-weight:700}.subtitle{font-size:14px;fill:#607078}.axis{stroke:#263238;stroke-width:1.5}.grid{stroke:#dfe5e8;stroke-width:1}.tick{font-size:12px;fill:#607078}.axis-label{font-size:15px;font-weight:600}.curve{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.iqr{stroke-width:1.5;opacity:.7}.direct{font-size:14px;font-weight:700}.note{font-size:12px;fill:#607078}</style>',
-        f'<text class="title" x="{left}" y="31">Same LUT kernel, different table contents</text>',
-        f'<text class="subtitle" x="{left}" y="52">DOT, N=2²⁶, uint16 storage, 65,536-entry global FP32 LUT, scalar x1</text>',
+        f'<text class="title" x="{left}" y="31">LUT dispersion versus raw FP32</text>' if raw_fp32 is not None else f'<text class="title" x="{left}" y="31">Same LUT kernel, different table contents</text>',
+        f'<text class="subtitle" x="{left}" y="52">DOT, N=2²⁶, scalar x1, FP32 arithmetic; LUT series use uint16 storage</text>' if raw_fp32 is not None else f'<text class="subtitle" x="{left}" y="52">DOT, N=2²⁶, uint16 storage, 65,536-entry global FP32 LUT, scalar x1</text>',
     ]
     for index in range(6):
         value = y_min + (y_max - y_min) * index / 5
@@ -326,6 +415,21 @@ def make_svg(rows: list[dict[str, object]]) -> str:
             f'<text class="axis-label" transform="translate(25 {top + plot_height / 2}) rotate(-90)" text-anchor="middle">DOT kernel time (ms)</text>',
         ]
     )
+
+    if raw_fp32 is not None:
+        raw_q1 = py(float(raw_fp32["q1_ms"]))
+        raw_q3 = py(float(raw_fp32["q3_ms"]))
+        raw_y = py(float(raw_fp32["median_ms"]))
+        band_y = min(raw_q1, raw_q3)
+        band_height = abs(raw_q3 - raw_q1)
+        pieces.extend(
+            [
+                f'<rect x="{left}" y="{band_y:.2f}" width="{plot_width}" height="{max(band_height, 1.0):.2f}" fill="#263238" opacity="0.08"/>',
+                f'<line x1="{left}" y1="{raw_y:.2f}" x2="{left + plot_width}" y2="{raw_y:.2f}" stroke="#111820" stroke-width="2.2" stroke-dasharray="8 6"/>',
+                f'<line x1="{left + plot_width}" y1="{raw_y:.2f}" x2="{left + plot_width + 30}" y2="{raw_y:.2f}" stroke="#111820" stroke-width="1.5" stroke-dasharray="4 4"/>',
+                f'<text class="direct" x="{left + plot_width + 42}" y="{raw_y + 5:.2f}" fill="#111820">Raw FP32</text>',
+            ]
+        )
 
     by_format: dict[str, list[dict[str, object]]] = defaultdict(list)
     for row in rows:
@@ -376,7 +480,8 @@ def make_svg(rows: list[dict[str, object]]) -> str:
         pieces.append(
             f'<text class="direct" x="{label_x}" y="{label_y + 5:.2f}" fill="{color}">{html.escape(LABELS[fmt])}</text>'
         )
-    pieces.append(f'<text class="note" x="{left}" y="{height - 8}">Points: median of 50 launches; bars: interquartile range. X is calculated from the actual left/right code arrays.</text>')
+    note = "Points: median of 50 launches; bars: interquartile range. Raw FP32 has no LUT, so X is undefined and its dotted line is only a reference." if raw_fp32 is not None else "Points: median of 50 launches; bars: interquartile range. X is calculated from the actual left/right code arrays."
+    pieces.append(f'<text class="note" x="{left}" y="{height - 8}">{note}</text>')
     pieces.append("</svg>")
     return "".join(pieces)
 
@@ -389,13 +494,36 @@ def spread_statistics(rows: list[dict[str, object]]) -> tuple[float, float]:
     return statistics.median(relative), max(relative)
 
 
-def make_report(summary: list[dict[str, object]], svg_name: str, raw_name: str, summary_name: str) -> str:
+def make_report(
+    summary: list[dict[str, object]],
+    svg_name: str,
+    lut_raw_href: str,
+    summary_name: str,
+    raw_fp32: dict[str, float | int | str] | None = None,
+    raw_fp32_href: str | None = None,
+) -> str:
     median_spread, maximum_spread = spread_statistics(summary)
     conclusion = (
         "The curves overlap closely: LUT contents did not materially change runtime."
         if maximum_spread < 0.05
         else "The curves do not fully overlap; inspect the measured spread before treating LUT contents as performance-neutral."
     )
+    raw_result = ""
+    raw_artifact = ""
+    if raw_fp32 is not None:
+        raw_median = float(raw_fp32["median_ms"])
+        estimate_delta = (
+            raw_median / RAW_N2P26_SANITY_ESTIMATE_MS - 1.0
+        ) * 100.0
+        raw_result = (
+            f" Raw FP32 measured {raw_median:.6f} ms median "
+            f"[{float(raw_fp32['q1_ms']):.6f}, {float(raw_fp32['q3_ms']):.6f}] IQR. "
+            f"That is {estimate_delta:+.2f}% versus the pre-run half-N sanity estimate "
+            f"of {RAW_N2P26_SANITY_ESTIMATE_MS:.6f} ms (obtained by halving the "
+            "0.519657 ms N=2²⁷ bare-H200 result). Its X is undefined because it performs no LUT lookup; "
+            "the horizontal dotted line is a reference, not a sampled X series."
+        )
+        raw_artifact = f' · <a href="{html.escape(raw_fp32_href or "")}">raw FP32 samples</a> · <a href="raw_fp32_summary.csv">raw FP32 summary</a>'
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>16-bit LUT distribution experiment</title>
@@ -404,8 +532,8 @@ def make_report(summary: list[dict[str, object]], svg_name: str, raw_name: str, 
 <body><main><h1>Does LUT content affect the dispersion curve?</h1>
 <p class="lead">Three 16-bit formats use the same uint16 → global FP32 LUT → FP32 DOT kernel. The code arrays are byte-for-byte identical across formats at every dispersion point; only the 256 KiB table contents change.</p>
 <section class="card"><img src="{html.escape(svg_name)}" alt="Kernel time versus normalized LUT-sector dispersion for T16, posit 16 es1, and LNS 16 r11"></section>
-<section class="result"><strong>Result.</strong> {html.escape(conclusion)} The median relative spread between formats is {median_spread * 100:.2f}% across X points; the maximum is {maximum_spread * 100:.2f}%.</section>
-<section class="meta"><div><b>Input</b><code>N=2^26</code>, independent left/right codes</div><div><b>Timing</b>10 warmups, 50 measured launches per format and X</div><div><b>Kernel</b>Scalar x1 loads, FP32 multiplication and accumulation</div><div><b>Artifacts</b><a href="{html.escape(raw_name)}">raw samples</a> · <a href="{html.escape(summary_name)}">summary CSV</a></div></section>
+<section class="result"><strong>Result.</strong> {html.escape(conclusion)} The median relative spread between formats is {median_spread * 100:.2f}% across X points; the maximum is {maximum_spread * 100:.2f}%.{html.escape(raw_result)}</section>
+<section class="meta"><div><b>Input</b><code>N=2^26</code>, independent left/right arrays</div><div><b>Timing</b>10 warmups, 50 measured launches per case</div><div><b>Kernel</b>512 × 256 first stage, same final reduction and event boundary</div><div><b>Artifacts</b><a href="{html.escape(lut_raw_href)}">LUT raw samples</a> · <a href="{html.escape(summary_name)}">LUT summary</a>{raw_artifact}</div></section>
 </main></body></html>"""
 
 
@@ -413,6 +541,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--samples", required=True, type=Path)
     parser.add_argument("--metrics", required=True, type=Path)
+    parser.add_argument("--raw-fp32-samples", type=Path)
     parser.add_argument("--output-dir", required=True, type=Path)
     arguments = parser.parse_args()
 
@@ -420,14 +549,40 @@ def main() -> None:
     metric_rows = read_rows(arguments.metrics)
     validate_contract(rows, metric_rows, CANONICAL_SAMPLES)
     summary = summarize(rows, CANONICAL_SAMPLES)
+    raw_summary = None
+    if arguments.raw_fp32_samples is not None:
+        raw_rows = read_rows(arguments.raw_fp32_samples)
+        validate_raw_fp32(raw_rows)
+        lut_gpu = {row["gpu"] for row in rows}
+        raw_gpu = {row["gpu"] for row in raw_rows}
+        if lut_gpu != raw_gpu:
+            raise ValueError(
+                f"LUT/raw GPU mismatch: LUT={sorted(lut_gpu)}, raw={sorted(raw_gpu)}"
+            )
+        raw_summary = summarize_raw_fp32(raw_rows)
     arguments.output_dir.mkdir(parents=True, exist_ok=True)
     summary_path = arguments.output_dir / "timing_summary.csv"
     svg_path = arguments.output_dir / "lut-distribution-shape.svg"
     report_path = arguments.output_dir / "report.html"
     write_summary(summary_path, summary)
-    svg_path.write_text(make_svg(summary))
+    if raw_summary is not None:
+        write_raw_summary(arguments.output_dir / "raw_fp32_summary.csv", raw_summary)
+    svg_path.write_text(make_svg(summary, raw_summary))
+    lut_raw_href = os.path.relpath(arguments.samples, arguments.output_dir)
+    raw_fp32_href = (
+        os.path.relpath(arguments.raw_fp32_samples, arguments.output_dir)
+        if arguments.raw_fp32_samples is not None
+        else None
+    )
     report_path.write_text(
-        make_report(summary, svg_path.name, arguments.samples.name, summary_path.name)
+        make_report(
+            summary,
+            svg_path.name,
+            lut_raw_href,
+            summary_path.name,
+            raw_summary,
+            raw_fp32_href,
+        )
     )
     median_spread, maximum_spread = spread_statistics(summary)
     print(f"wrote {summary_path}")
@@ -435,6 +590,12 @@ def main() -> None:
     print(f"wrote {report_path}")
     print(f"median relative format spread: {median_spread * 100:.3f}%")
     print(f"maximum relative format spread: {maximum_spread * 100:.3f}%")
+    if raw_summary is not None:
+        print(
+            "raw FP32 median [IQR]: "
+            f"{float(raw_summary['median_ms']):.9f} "
+            f"[{float(raw_summary['q1_ms']):.9f}, {float(raw_summary['q3_ms']):.9f}] ms"
+        )
 
 
 if __name__ == "__main__":

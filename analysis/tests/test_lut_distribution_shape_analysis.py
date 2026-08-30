@@ -17,7 +17,7 @@ def test_summary_and_svg(tmp_path: Path) -> None:
     samples = tmp_path / "timing_samples.csv"
     metrics = tmp_path / "access_metrics.csv"
     fields = [
-        "mode", "kernel", "N", "storage_bits", "arithmetic_type",
+        "gpu", "mode", "kernel", "N", "storage_bits", "arithmetic_type",
         "access_method", "packet_values", "lut_entries", "lut_bytes", "q",
         "q_eighths", "mean_unique_left", "mean_unique_right", "mean_unique_both",
         "normalized_sector_dispersion", "format", "sanitized_lut_entries",
@@ -33,6 +33,7 @@ def test_summary_and_svg(tmp_path: Path) -> None:
                 for sample in range(50):
                     writer.writerow(
                         {
+                            "gpu": "NVIDIA H200 NVL",
                             "mode": "full",
                             "kernel": "dot",
                             "N": MODULE.CANONICAL_N,
@@ -88,10 +89,61 @@ def test_summary_and_svg(tmp_path: Path) -> None:
     MODULE.validate_contract(rows, metric_rows, 50)
     summary = MODULE.summarize(rows, 50)
     assert len(summary) == 27
-    svg = MODULE.make_svg(summary)
+    raw_samples = tmp_path / "raw_fp32_timing_samples.csv"
+    raw_fields = [
+        "gpu", "mode", "kernel", "N", "blocks", "threads", "storage_bits",
+        "arithmetic_type", "storage_layout", "access_method", "packet_values",
+        "lut_entries", "lut_bytes", "format", "x_semantics", "left_seed",
+        "right_seed", "warmup", "sample", "kernel_ms", "result",
+    ]
+    with raw_samples.open("w", newline="") as destination:
+        writer = csv.DictWriter(destination, fieldnames=raw_fields)
+        writer.writeheader()
+        for sample in range(50):
+            writer.writerow(
+                {
+                    "gpu": "NVIDIA H200 NVL",
+                    "mode": "full",
+                    "kernel": "dot",
+                    "N": MODULE.CANONICAL_N,
+                    "blocks": 512,
+                    "threads": 256,
+                    "storage_bits": 32,
+                    "arithmetic_type": "fp32",
+                    "storage_layout": "natural",
+                    "access_method": "scalar",
+                    "packet_values": 1,
+                    "lut_entries": 0,
+                    "lut_bytes": 0,
+                    "format": "raw_fp32",
+                    "x_semantics": "undefined_no_lut",
+                    "left_seed": MODULE.RAW_LEFT_SEED,
+                    "right_seed": MODULE.RAW_RIGHT_SEED,
+                    "warmup": MODULE.CANONICAL_WARMUP,
+                    "sample": sample,
+                    "kernel_ms": 0.26 + sample * 0.00001,
+                    "result": 1.0,
+                }
+            )
+    raw_rows = MODULE.read_rows(raw_samples)
+    MODULE.validate_raw_fp32(raw_rows)
+    raw_summary = MODULE.summarize_raw_fp32(raw_rows)
+    svg = MODULE.make_svg(summary, raw_summary)
     assert "Normalized LUT-sector dispersion" in svg
     assert "posit&lt;16,1&gt;" in svg
     assert "lns&lt;16,11&gt;" in svg
+    assert "Raw FP32" in svg
+    assert "stroke-dasharray=\"8 6\"" in svg
+    report = MODULE.make_report(
+        summary,
+        "graph.svg",
+        "../lut.csv",
+        "summary.csv",
+        raw_summary,
+        "../raw.csv",
+    )
+    assert "X is undefined" in report
+    assert "0.259829 ms" in report
 
 
 if __name__ == "__main__":

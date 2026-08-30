@@ -29,7 +29,7 @@ build_dir="${repo_dir}/build-h200-lut-distribution-${commit_short}"
 cmake -S "${repo_dir}" -B "${build_dir}" \
     -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTURES=90
 cmake --build "${build_dir}" --parallel 4 \
-    --target lut_distribution_core_test lut_distribution_bench
+    --target lut_distribution_core_test lut_distribution_bench raw_fp32_reference_bench
 ctest --test-dir "${build_dir}" \
     --output-on-failure -R '^lut_distribution_core_test$'
 python3 -m py_compile "${repo_dir}/tools/analyze_lut_distribution_shape.py"
