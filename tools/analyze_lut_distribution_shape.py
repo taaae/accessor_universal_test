@@ -268,7 +268,7 @@ def write_summary(path: Path, rows: list[dict[str, object]]) -> None:
         "maximum_ms",
     )
     with path.open("w", newline="") as destination:
-        writer = csv.DictWriter(destination, fieldnames=fields)
+        writer = csv.DictWriter(destination, fieldnames=fields, lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 
