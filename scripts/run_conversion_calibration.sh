@@ -2,6 +2,7 @@
 set -euo pipefail
 
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export PYTHONPATH="${repo_dir}${PYTHONPATH:+:${PYTHONPATH}}"
 commit_short="$(git -C "${repo_dir}" rev-parse --short=12 HEAD)"
 build_tag="${SLURM_JOB_ID:-local}"
 build_dir="${BUILD_DIR:-${repo_dir}/build-conversion-calibration-${commit_short}-${build_tag}}"

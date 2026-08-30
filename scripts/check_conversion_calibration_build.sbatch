@@ -16,6 +16,7 @@ source /etc/profile
 set -u
 module load "${CUDA_MODULE:-cuda/13.1.1}"
 cd "${repo_dir}"
+export PYTHONPATH="${repo_dir}${PYTHONPATH:+:${PYTHONPATH}}"
 commit_short="$(git rev-parse --short=12 HEAD)"
 build_dir="${repo_dir}/build-conversion-calibration-${commit_short}-${SLURM_JOB_ID}"
 python3 -m unittest discover -s analysis/tests -p 'test_conversion_calibration*.py' -v
