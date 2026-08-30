@@ -1,0 +1,33 @@
+GPU: NVIDIA H200 NVL
+N=67108864, warmups=10, samples=50
+raw_fp64/before complete
+raw_fp32/before complete
+fp32_to_fp64/before complete
+dyadic_normal32/hot_uniform/forward target X=0 actual X=0 q=0
+dyadic_normal32/hot_uniform/forward target X=0.125 actual X=0.124977 q=0.0814135
+dyadic_normal32/hot_uniform/forward target X=0.25 actual X=0.250007 q=0.169822
+dyadic_normal32/hot_uniform/forward target X=0.375 actual X=0.375024 q=0.266566
+dyadic_normal32/hot_uniform/forward target X=0.5 actual X=0.500045 q=0.373418
+dyadic_normal32/hot_uniform/forward target X=0.625 actual X=0.625035 q=0.492786
+dyadic_normal32/hot_uniform/forward target X=0.75 actual X=0.750073 q=0.628065
+dyadic_normal32/hot_uniform/forward target X=0.875 actual X=0.875034 q=0.784274
+dyadic_normal32/hot_uniform/forward target X=1 actual X=1.00004 q=1
+dyadic_normal32/genuine_n01/forward target X=0.100185 actual X=0.10018 q=nan
+dyadic_normal32/genuine_n01/reverse target X=0.100185 actual X=0.10018 q=nan
+dyadic_normal32/hot_uniform/reverse target X=1 actual X=1.00004 q=1
+dyadic_normal32/hot_uniform/reverse target X=0.875 actual X=0.875034 q=0.784274
+dyadic_normal32/hot_uniform/reverse target X=0.75 actual X=0.750073 q=0.628065
+dyadic_normal32/hot_uniform/reverse target X=0.625 actual X=0.625035 q=0.492786
+dyadic_normal32/hot_uniform/reverse target X=0.5 actual X=0.500045 q=0.373418
+dyadic_normal32/hot_uniform/reverse target X=0.375 actual X=0.375024 q=0.266566
+dyadic_normal32/hot_uniform/reverse target X=0.25 actual X=0.250007 q=0.169822
+dyadic_normal32/hot_uniform/reverse target X=0.125 actual X=0.124977 q=0.0814135
+dyadic_normal32/hot_uniform/reverse target X=0 actual X=0 q=0
+dyadic_normal32 sink=-7.41589e+07
+fp32_to_fp64/after complete
+raw_fp32/after complete
+raw_fp64/after complete
+Wrote /storage/home/timofeirusanov/accessor_universal_test_dyadic_normal32/results/030_dyadic_normal32_dispersion/run_20260830T182253Z/full/timing_samples.csv
+Wrote /storage/home/timofeirusanov/accessor_universal_test_dyadic_normal32/results/030_dyadic_normal32_dispersion/run_20260830T182253Z/full/access_metrics.csv
+Wrote /storage/home/timofeirusanov/accessor_universal_test_dyadic_normal32/results/030_dyadic_normal32_dispersion/run_20260830T182253Z/full/correctness_checks.txt
+Wrote /storage/home/timofeirusanov/accessor_universal_test_dyadic_normal32/results/030_dyadic_normal32_dispersion/run_20260830T182253Z/full/coefficient_table.csv

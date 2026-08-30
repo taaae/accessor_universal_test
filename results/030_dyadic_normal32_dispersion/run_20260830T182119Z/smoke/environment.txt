@@ -1,0 +1,15 @@
+stage=smoke
+hostname=gpu-nvidia-h200-2.int.coma-cluster.de
+SLURM_JOB_ID=454742
+SLURM_JOB_NAME=dn32-smoke
+SLURM_JOB_NODELIST=gpu-nvidia-h200-2
+CUDA_VISIBLE_DEVICES=0
+GPU 0: NVIDIA H200 NVL (UUID: GPU-b6d611b2-961c-7bbb-45a8-2e00bfca1e85)
+name, uuid, pci.bus_id, driver_version, memory.total [MiB]
+NVIDIA H200 NVL, GPU-b6d611b2-961c-7bbb-45a8-2e00bfca1e85, 00000000:42:00.0, 610.57.04, 143771 MiB
+
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Tue_Dec_16_07:23:41_PM_PST_2025
+Cuda compilation tools, release 13.1, V13.1.115
+Build cuda_13.1.r13.1/compiler.37061995_0

@@ -1,0 +1,7 @@
+wrote /storage/home/timofeirusanov/accessor_universal_test_dyadic_normal32/results/030_dyadic_normal32_dispersion/run_20260830T182253Z/full/dyadic-normal32-dispersion.svg and /storage/home/timofeirusanov/accessor_universal_test_dyadic_normal32/results/030_dyadic_normal32_dispersion/run_20260830T182253Z/full/report.html
+PNG generated: no converter available
+Raw FP64 median: 0.311503991 ms
+Raw FP32 median: 0.261824012 ms
+FP32 to FP64 median: 0.264191985 ms
+DyadicNormal32 endpoint medians: X=0 0.288719997 ms, X=1 0.297215998 ms
+genuine N(0,1): expected X 0.100184915, actual X 0.100179695, median 0.290672004 ms

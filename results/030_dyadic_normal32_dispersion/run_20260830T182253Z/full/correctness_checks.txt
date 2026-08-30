@@ -1,0 +1,16 @@
+cpu_gpu_cases=4224
+cpu_gpu_bit_mismatches=0
+cpu_gpu_maximum_absolute_error=0
+segments_covered=32
+delimiter_endpoints_per_sign=64
+terminal_rank=0x7fffffff
+terminal_value=10.977664847112319
+coefficient_bytes=512
+genuine_n01_expected_unique_segments=2.9450130637563969
+genuine_n01_expected_x=0.10018491535533834
+dot_validation_elements=8192
+dot_validation_cpu=400871.49184256507
+dot_validation_gpu=400871.49184256507
+dot_validation_absolute_error=0
+dot_validation_tolerance=8.0174298368513017e-07
+dot_validation_passed=1

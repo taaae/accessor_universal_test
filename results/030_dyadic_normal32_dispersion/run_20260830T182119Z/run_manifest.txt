@@ -1,0 +1,43 @@
+experiment=030_dyadic_normal32_dispersion
+started_utc=2026-08-30T18:21:19Z
+git_commit=12d6a003e520657a9d866c46d551e33f1fd0a529
+kernel=dot
+full_n=67108864
+blocks=512
+threads=256
+access=scalar_x1
+arithmetic=fp64
+target_x=0,0.125,0.25,0.375,0.5,0.625,0.75,0.875,1
+additional_distribution=genuine_n01_segment_probabilities
+full_warmup=10
+full_warmups_per_half_batch=5
+full_samples=50
+sample_order=raw_fp64_before,raw_fp32_before,fp32_to_fp64_before,ascending_half,genuine_forward,genuine_reverse,descending_half,fp32_to_fp64_after,raw_fp32_after,raw_fp64_after
+baselines=raw_fp64,raw_fp32,fp32_to_fp64
+dyadic_storage_bits=32
+coefficient_entries=32
+coefficient_bytes=512
+coefficient_location=shared
+shared_staging=inside_timed_first_stage_once_per_block
+source_sigma=1
+density_sigma=sqrt(3)
+terminal_convention=h31_maps_to_half_normal_tail_boundary_2^-32
+left_seed=7640891576956012809
+right_seed=13503953896175478587
+slurm_job_id=454742
+slurm_job_name=dn32-smoke
+slurm_node_list=gpu-nvidia-h200-2
+git_status_begin
+?? results/030_dyadic_normal32_dispersion/run_20260830T180705Z/
+?? results/030_dyadic_normal32_dispersion/run_20260830T180835Z/
+?? results/030_dyadic_normal32_dispersion/run_20260830T182119Z/
+?? results/030_dyadic_normal32_dispersion/slurm-build-454540.out
+?? results/030_dyadic_normal32_dispersion/slurm-full-454741.out
+?? results/030_dyadic_normal32_dispersion/slurm-smoke-454740.out
+?? results/030_dyadic_normal32_dispersion/slurm-smoke-454742.out
+git_status_end
+stage=smoke
+finished_utc=2026-08-30T18:21:26Z
+wall_time_seconds=7
+final_stage=complete
+exit_status=0
