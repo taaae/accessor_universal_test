@@ -118,7 +118,11 @@ def main() -> None:
             if opcode.startswith(("LDC", "ULDC"))
             and re.search(r"c\[[^]]+\]\[[^]]*R[0-9]+", line)
         ]
-        select_ops = [opcode for opcode in opcodes if opcode.startswith("SEL")]
+        select_ops = [
+            opcode
+            for opcode in opcodes
+            if opcode.startswith(("SEL", "FSEL"))
+        ]
         fma_ops = [opcode for opcode in opcodes if "FMA" in opcode]
         if local_ops:
             passed = False
