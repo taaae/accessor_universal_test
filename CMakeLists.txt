@@ -217,6 +217,15 @@ target_include_directories(
 target_compile_options(normal32_formats_test PRIVATE -O3)
 add_test(NAME normal32_formats_test COMMAND normal32_formats_test)
 
+add_executable(compander32_core_test tests/compander32_core_test.cpp)
+target_include_directories(
+    compander32_core_test
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+target_compile_options(compander32_core_test PRIVATE -O3)
+add_test(NAME compander32_core_test COMMAND compander32_core_test)
+
 add_executable(normal32_dot_bench src/normal32_dot_bench.cu)
 target_link_libraries(normal32_dot_bench PRIVATE CUDA::curand_static)
 target_include_directories(
@@ -232,6 +241,26 @@ target_compile_options(
 )
 set_target_properties(
     normal32_dot_bench
+    PROPERTIES
+        CUDA_RUNTIME_LIBRARY Static
+        CUDA_SEPARABLE_COMPILATION OFF
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
+add_executable(compander32_bench src/compander32_bench.cu)
+target_include_directories(
+    compander32_bench
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+target_compile_options(
+    compander32_bench
+    PRIVATE
+        "$<$<COMPILE_LANGUAGE:CXX>:-O3>"
+        "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v;--ftz=false>"
+)
+set_target_properties(
+    compander32_bench
     PROPERTIES
         CUDA_RUNTIME_LIBRARY Static
         CUDA_SEPARABLE_COMPILATION OFF
