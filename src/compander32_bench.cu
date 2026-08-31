@@ -1100,9 +1100,9 @@ void validate_variants(const std::string &path, buffers &data,
                  if (lns::is_zero<lns_format>(code)) {
                    return 0.0;
                  }
-                 const auto magnitude = std::exp2(
+                 const double magnitude = static_cast<double>(std::exp2(
                      static_cast<float>(lns::log_code<lns_format>(code)) /
-                     static_cast<float>(std::uint32_t{1} << 23));
+                     static_cast<float>(std::uint32_t{1} << 23)));
                  return lns::sign<lns_format>(code) ? -magnitude : magnitude;
                },
                1.0));
