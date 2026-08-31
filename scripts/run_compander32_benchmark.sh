@@ -75,6 +75,7 @@ cuobjdump --dump-sass "${build_dir}/bin/compander32_bench" \
 python3 "${repo_dir}/tools/check_compander32_codegen.py" \
     --sass "${run_dir}/compander32.sass.txt" \
     --build-log "${run_dir}/build.txt" \
+    --source "${repo_dir}/include/compander32_core.hpp" \
     --output "${run_dir}/compiler_checks.txt"
 
 timeout "$([[ "${mode}" == full ]] && echo "${FULL_TIMEOUT:-45m}" || echo "${SMOKE_TIMEOUT:-10m}")" \

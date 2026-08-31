@@ -972,19 +972,19 @@ void validate_variants(const std::string &path, buffers &data,
        maximum_encoding_error(
            raw64_left, e11_left,
            [](e11_storage code) { return storage::decode<storage::e11m20>(code); }),
-       5.0e-6});
+       2.1e-6});
   encoding_checks.push_back(
       {"e10m21",
        maximum_encoding_error(
            raw64_left, e10_left,
            [](e10_storage code) { return storage::decode<storage::e10m21>(code); }),
-       5.0e-6});
+       1.1e-6});
   encoding_checks.push_back(
       {"dyadic_normal32",
        maximum_encoding_error(
            raw64_left, dyadic_left,
            [&](std::uint32_t code) { return dn::decode(code, coefficients); }),
-       5.0e-6});
+       5.0e-9});
   encoding_checks.push_back(
       {"posit32_es2",
        maximum_encoding_error(
@@ -992,7 +992,7 @@ void validate_variants(const std::string &path, buffers &data,
            [](std::uint32_t code) {
              return pt::decode_posit<32, 2, double>(code);
            }),
-       5.0e-6});
+       2.0e-8});
   encoding_checks.push_back(
       {"takum32",
        maximum_encoding_error(
@@ -1000,7 +1000,7 @@ void validate_variants(const std::string &path, buffers &data,
            [](std::uint32_t code) {
              return pt::decode_linear_takum<32, double>(code);
            }),
-       5.0e-6});
+       2.0e-8});
   encoding_checks.push_back(
       {"lns32_r23",
        maximum_encoding_error(
@@ -1008,7 +1008,7 @@ void validate_variants(const std::string &path, buffers &data,
            [](std::uint32_t code) {
              return lns::decode<lns_format, double>(code);
            }),
-       5.0e-6});
+       4.0e-7});
   std::vector<std::pair<std::string, double>> expected;
   expected.emplace_back("raw_fp64",
                         host_dot(raw64_left, raw64_right,

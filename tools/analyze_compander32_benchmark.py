@@ -180,7 +180,7 @@ def escape(value: object) -> str:
     return html.escape(str(value), quote=True)
 
 
-def line_graph(rows: list[dict[str, object]]) -> str:
+def line_graph(rows: list[dict[str, object]], sample_count: int) -> str:
     width, height = 1420, 850
     left, right, top, bottom = 105, 1040, 72, 725
     by_variant: dict[str, list[dict[str, object]]] = defaultdict(list)
@@ -206,7 +206,7 @@ def line_graph(rows: list[dict[str, object]]) -> str:
         '.legend{font-size:13px}.line{fill:none;stroke-width:2.5}.point{stroke:#fff;stroke-width:1.2}</style>',
         f'<rect width="{width}" height="{height}" rx="18" fill="#fff"/>',
         '<text x="105" y="35" class="title">DOT kernel time versus prefix length</text>',
-        '<text x="105" y="57" class="sub">512 blocks × 256 threads, scalar x1, medians of 50 launches, logarithmic time axis</text>',
+        f'<text x="105" y="57" class="sub">512 blocks × 256 threads, scalar x1, medians of {sample_count} launches, logarithmic time axis</text>',
     ]
     for exponent in (20, 22, 24, 26, 28):
         xpos = x(1 << exponent)
@@ -417,7 +417,7 @@ def main() -> None:
     summary = summarize(raw)
     args.output_dir.mkdir(parents=True, exist_ok=True)
     write_summary(args.output_dir / "timing_summary.csv", summary)
-    graph = line_graph(summary)
+    graph = line_graph(summary, samples)
     target_n = max(int(row["N"]) for row in summary)
     ranking = ranking_graph(summary, target_n)
     (args.output_dir / "time_vs_n.svg").write_text(graph)

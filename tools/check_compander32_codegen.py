@@ -38,11 +38,13 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--sass", type=Path, required=True)
     parser.add_argument("--build-log", type=Path, required=True)
+    parser.add_argument("--source", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
 
     sass = args.sass.read_text(errors="replace")
     build = args.build_log.read_text(errors="replace")
+    source = args.source.read_text(errors="replace")
     sections = function_sections(sass)
     findings: list[str] = []
     passed = True
@@ -55,6 +57,27 @@ def main() -> None:
         findings.append(f"FAIL nonzero ptxas spill report: {nonzero_spills}")
     else:
         findings.append("PASS ptxas reports no nonzero spill loads or stores")
+
+    for function in ("decode_pwl2", "decode_pwl4"):
+        match = re.search(
+            rf"\b{function}\s*\([^)]*\)\s*\{{(?P<body>.*?)\n\}}",
+            source,
+            re.DOTALL,
+        )
+        if match is None:
+            passed = False
+            findings.append(f"FAIL source audit: could not locate {function}")
+            continue
+        body = match.group("body")
+        if re.search(r"\b(?:table|coefficients?)\b|[A-Za-z_][A-Za-z0-9_]*\s*\[", body):
+            passed = False
+            findings.append(
+                f"FAIL source audit: {function} contains an array or coefficient-table reference"
+            )
+        else:
+            findings.append(
+                f"PASS source audit: {function} uses scalar compile-time coefficients only"
+            )
 
     baseline_matches = [
         section for symbol, section in sections.items() if BASELINE_KERNEL in symbol
