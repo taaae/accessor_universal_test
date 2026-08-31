@@ -245,16 +245,42 @@ def line_graph(rows: list[dict[str, object]], sample_count: int) -> str:
     return "".join(parts)
 
 
-def ranking_graph(rows: list[dict[str, object]], target_n: int) -> str:
+def ranking_graph(
+    rows: list[dict[str, object]],
+    target_n: int,
+    maximum_ms: float | None = None,
+    title: str | None = None,
+    subtitle: str | None = None,
+) -> str:
     selected = sorted(
-        (row for row in rows if int(row["N"]) == target_n),
+        (
+            row for row in rows
+            if int(row["N"]) == target_n
+            and (maximum_ms is None or float(row["median_ms"]) <= maximum_ms)
+        ),
         key=lambda row: float(row["median_ms"]),
     )
+    if not selected:
+        raise ValueError("ranking graph has no selected rows")
     width, height = 1500, 1020
     left, solid_end, label_x = 110, 1040, 1190
     top, bottom = 90, 900
-    minimum = min(float(row["median_ms"]) for row in selected) * 0.92
-    maximum = max(float(row["median_ms"]) for row in selected) * 1.05
+    selected_minimum = min(float(row["median_ms"]) for row in selected)
+    selected_maximum = max(float(row["median_ms"]) for row in selected)
+    if maximum_ms is None:
+        minimum = selected_minimum * 0.92
+        maximum = selected_maximum * 1.05
+    else:
+        span = selected_maximum - selected_minimum
+        margin = max(span * 0.12, selected_minimum * 0.005)
+        minimum = selected_minimum - margin
+        maximum = selected_maximum + margin
+
+    exponent = int(math.log2(target_n))
+    graph_title = title or f"32-bit storage decoder ranking at N = 2^{exponent}"
+    graph_subtitle = subtitle or (
+        "Line height is the median DOT time. Dotted extensions connect crowded lines to direct labels."
+    )
 
     def actual_y(value: float) -> float:
         return bottom - (value - minimum) / (maximum - minimum) * (bottom - top)
@@ -277,8 +303,8 @@ def ranking_graph(rows: list[dict[str, object]], target_n: int) -> str:
         '.grid{stroke:#dbe3e8;stroke-width:1}.axis{stroke:#53636e;stroke-width:1.4}'
         '.title{font-size:23px;font-weight:750}.sub{font-size:14px;fill:#61717d}.tick{font-size:13px}.label{font-size:14px;font-weight:650}</style>',
         f'<rect width="{width}" height="{height}" rx="18" fill="#fff"/>',
-        f'<text x="110" y="36" class="title">32-bit storage decoder ranking at N = 2^{int(math.log2(target_n))}</text>',
-        '<text x="110" y="59" class="sub">Line height is the median DOT time. Dotted extensions connect crowded lines to direct labels.</text>',
+        f'<text x="110" y="36" class="title">{escape(graph_title)}</text>',
+        f'<text x="110" y="59" class="sub">{escape(graph_subtitle)}</text>',
     ]
     for index in range(7):
         value = minimum + index / 6 * (maximum - minimum)
@@ -328,6 +354,7 @@ def build_report(
     rows: list[dict[str, object]],
     line_svg: str,
     ranking_svg: str,
+    fast_ranking_svg: str,
     correctness: str,
     compiler: str,
     environment: str,
@@ -386,6 +413,8 @@ main{{max-width:1510px;margin:0 auto;padding:38px 28px 70px}}h1{{font-size:36px;
 </div>
 <h2>Scaling with N</h2><div class="panel">{line_svg}</div>
 <p class="note">The time axis is logarithmic so the slow reference decoders do not flatten the low-cost group. Every N uses a prefix of the same maximum-size encoded arrays.</p>
+<h2>Formats no slower than Raw FP64 at N = 2^28</h2><div class="panel">{fast_ranking_svg}</div>
+<p>This view uses the same measurements as the full ranking and keeps Raw FP64 as the upper cutoff. The narrower time range separates the low-cost decoders that overlap in the full chart.</p>
 <h2>Ranking at N = 2^28</h2><div class="panel">{ranking_svg}</div>
 <p>The labels use the FP32-to-FP64 median at the same N as 1.00×. “Promising” means within 5%. “Marginal” ends at the DyadicNormal32 time. Results at or above DyadicNormal32 are unattractive for this use, and results at or above raw FP64 are poor.</p>
 <h2>N = 2^28 timing table</h2>
@@ -420,14 +449,29 @@ def main() -> None:
     graph = line_graph(summary, samples)
     target_n = max(int(row["N"]) for row in summary)
     ranking = ranking_graph(summary, target_n)
+    raw_fp64_ms = next(
+        float(row["median_ms"])
+        for row in summary
+        if row["format"] == "raw_fp64" and int(row["N"]) == target_n
+    )
+    fast_ranking = ranking_graph(
+        summary,
+        target_n,
+        maximum_ms=raw_fp64_ms,
+        title=f"32-bit decoders no slower than Raw FP64 at N = 2^{int(math.log2(target_n))}",
+        subtitle="The chart omits every format with a median above Raw FP64 so the low-cost group remains visible.",
+    )
     (args.output_dir / "time_vs_n.svg").write_text(graph)
     ranking_name = f"ranking_n2p{int(math.log2(target_n))}.svg"
     (args.output_dir / ranking_name).write_text(ranking)
+    fast_ranking_name = f"ranking_n2p{int(math.log2(target_n))}_at_or_below_raw_fp64.svg"
+    (args.output_dir / fast_ranking_name).write_text(fast_ranking)
     if mode == "full":
         report = build_report(
             summary,
             graph,
             ranking,
+            fast_ranking,
             read_optional(args.correctness),
             read_optional(args.compiler),
             read_optional(args.environment),
