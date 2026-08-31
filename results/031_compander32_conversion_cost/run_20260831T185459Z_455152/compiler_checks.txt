@@ -1,0 +1,19 @@
+PASS ptxas reports no nonzero spill loads or stores
+PASS source audit: decode_pwl2 uses scalar compile-time coefficients only
+PASS source audit: decode_pwl4 uses scalar compile-time coefficients only
+INFO dot_int32_kernel: 5 static branch instructions
+PASS dot_pwl2_compand32_kernel: no local-memory loads or stores
+PASS dot_pwl2_compand32_kernel: no indirect branch or jump table
+PASS dot_pwl2_compand32_kernel: 5 static branches, no more than Int32
+PASS dot_pwl2_compand32_kernel: 2 static global-load instructions, no coefficient table
+PASS dot_pwl2_compand32_kernel: no dynamically indexed constant-memory load
+PASS dot_pwl2_compand32_kernel: 8 predicated select instructions
+PASS dot_pwl2_compand32_kernel: 5 FMA-family instructions
+PASS dot_pwl4_compand32_kernel: no local-memory loads or stores
+PASS dot_pwl4_compand32_kernel: no indirect branch or jump table
+PASS dot_pwl4_compand32_kernel: 5 static branches, no more than Int32
+PASS dot_pwl4_compand32_kernel: 2 static global-load instructions, no coefficient table
+PASS dot_pwl4_compand32_kernel: no dynamically indexed constant-memory load
+PASS dot_pwl4_compand32_kernel: 24 predicated select instructions
+PASS dot_pwl4_compand32_kernel: 5 FMA-family instructions
+all_codegen_checks_passed=1

@@ -1,0 +1,10 @@
+Allocating maximum-size inputs for N=268435456
+Generating one deterministic clipped N(0,1) input and all offline encodings
+Correctness validation passed for all 15 variants
+Timing N=1048576
+Timing N=4194304
+Timing N=16777216
+Timing N=67108864
+Timing N=268435456
+Compander32 benchmark complete on NVIDIA H200 NVL
+Raw timing samples: /storage/home/timofeirusanov/accessor_universal_test/results/031_compander32_conversion_cost/run_20260831T185459Z_455152/full/timing_samples.csv

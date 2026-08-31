@@ -1,0 +1,36 @@
+experiment=031_compander32_conversion_cost
+started_utc=2026-08-31T18:54:59Z
+git_commit=319cafd24b41ce65b6ce5e89095b22714141512e
+mode=full
+kernel=dot
+N_values=1048576,4194304,16777216,67108864,268435456
+maximum_allocation_N=268435456
+prefix_reuse=1
+distribution=deterministic_normal_clipped_-8_8
+geometry=512_blocks_x_256_threads
+access=scalar_x1
+warmups=10
+samples=50
+one_gpu_only=1
+node=gpu-nvidia-h200-2
+gpu=NVIDIA H200 NVL
+git_status_begin
+?? results/024_posit_takum_strategy_performance/slurm-build-452777.out
+?? results/024_posit_takum_strategy_performance/slurm-build-452778.out
+?? results/024_posit_takum_strategy_performance/slurm-build-452786.out
+?? results/024_posit_takum_strategy_performance/slurm-build-452794.out
+?? results/024_posit_takum_strategy_performance/slurm-build-452796.out
+?? results/024_posit_takum_strategy_performance/slurm-build-452798.out
+?? results/024_posit_takum_strategy_performance/slurm-build-452800.out
+?? results/024_posit_takum_strategy_performance/slurm-build-452802.out
+?? results/024_posit_takum_strategy_performance/slurm-build-452805.out
+?? results/024_posit_takum_strategy_performance/slurm-build-452807.out
+?? results/024_posit_takum_strategy_performance/slurm-build-452816.out
+?? results/031_compander32_conversion_cost/run_20260831T185104Z_455151/
+?? results/031_compander32_conversion_cost/run_20260831T185459Z_455152/
+?? results/031_compander32_conversion_cost/slurm-full-455152.out
+?? results/031_compander32_conversion_cost/slurm-smoke-455151.out
+git_status_end
+finished_utc=2026-08-31T18:55:10Z
+wall_time_seconds=11
+completed_stage=full

@@ -1,0 +1,125 @@
+[  0%] Building CXX object CMakeFiles/compander32_core_test.dir/tests/compander32_core_test.cpp.o
+[100%] Linking CXX executable compander32_core_test
+[100%] Built target compander32_core_test
+[  0%] Building CUDA object CMakeFiles/compander32_bench.dir/src/compander32_bench.cu.o
+/storage/home/timofeirusanov/accessor_universal_test/include/lns_benchmark_core.hpp(203): warning #20013-D: calling a constexpr __host__ function("max") from a __host__ __device__ function("encode") is not allowed. The experimental flag '--expt-relaxed-constexpr' can be used to allow this.
+    constexpr auto finite_limit = std::numeric_limits<double>::max();
+                                  ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/storage/home/timofeirusanov/accessor_universal_test/include/lns_benchmark_core.hpp(186): warning #20013-D: calling a constexpr __host__ function("quiet_NaN") from a __host__ __device__ function("decode") is not allowed. The experimental flag '--expt-relaxed-constexpr' can be used to allow this.
+      return std::numeric_limits<Target>::quiet_NaN();
+             ^
+          detected during instantiation of "Target aut::lns::decode<Format,Target>(uint32_t) [with Format=<unnamed>::lns_format, Target=double]" at line 1009 of /storage/home/timofeirusanov/accessor_universal_test/src/compander32_bench.cu
+
+ptxas info    : 272 bytes gmem
+ptxas info    : Compiling entry function '_ZN49_GLOBAL__N__9e20bf44_20_compander32_bench_cu_main20encode_dyadic_kernelEPKdPjPKN3aut15dyadic_normal3220segment_coefficientsES1_m' for 'sm_90'
+ptxas info    : Function properties for _ZN49_GLOBAL__N__9e20bf44_20_compander32_bench_cu_main20encode_dyadic_kernelEPKdPjPKN3aut15dyadic_normal3220segment_coefficientsES1_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 0 barriers
+ptxas info    : Compile time = 9.786 ms
+ptxas info    : Compiling entry function '_ZN49_GLOBAL__N__9e20bf44_20_compander32_bench_cu_main25encode_posit_takum_kernelEPKdPjS2_m' for 'sm_90'
+ptxas info    : Function properties for _ZN49_GLOBAL__N__9e20bf44_20_compander32_bench_cu_main25encode_posit_takum_kernelEPKdPjS2_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 29 registers, used 0 barriers
+ptxas info    : Compile time = 16.643 ms
+ptxas info    : Compiling entry function '_ZN49_GLOBAL__N__9e20bf44_20_compander32_bench_cu_main20encode_simple_kernelEPKdPiS2_S2_S2_PjS3_S3_S3_S3_m' for 'sm_90'
+ptxas info    : Function properties for _ZN49_GLOBAL__N__9e20bf44_20_compander32_bench_cu_main20encode_simple_kernelEPKdPiS2_S2_S2_PjS3_S3_S3_S3_m
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 36 registers, used 0 barriers
+ptxas info    : Compile time = 18.565 ms
+ptxas info    : Compiling entry function '_ZN49_GLOBAL__N__9e20bf44_20_compander32_bench_cu_main22generate_source_kernelEPdPfmm' for 'sm_90'
+ptxas info    : Function properties for _ZN49_GLOBAL__N__9e20bf44_20_compander32_bench_cu_main22generate_source_kernelEPdPfmm
+    40 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 0 barriers, 40 bytes cumulative stack size
+ptxas info    : Compile time = 12.037 ms
+ptxas info    : Function properties for __internal_trig_reduction_slowpathd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Compiling entry function 'finalize_dot_fp32_kernel' for 'sm_90'
+ptxas info    : Function properties for finalize_dot_fp32_kernel
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 10 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 2.135 ms
+ptxas info    : Compiling entry function 'finalize_dot_fp64_kernel' for 'sm_90'
+ptxas info    : Function properties for finalize_dot_fp64_kernel
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 2.049 ms
+ptxas info    : Compiling entry function 'dot_raw_fp32_kernel' for 'sm_90'
+ptxas info    : Function properties for dot_raw_fp32_kernel
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 2.447 ms
+ptxas info    : Compiling entry function 'dot_dyadic_normal32_sign_fused_kernel' for 'sm_90'
+ptxas info    : Function properties for dot_dyadic_normal32_sign_fused_kernel
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 31 registers, used 1 barriers, 2560 bytes smem
+ptxas info    : Compile time = 3.470 ms
+ptxas info    : Compiling entry function 'dot_lns32_r23_kernel' for 'sm_90'
+ptxas info    : Function properties for dot_lns32_r23_kernel
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 3.582 ms
+ptxas info    : Compiling entry function 'dot_takum32_kernel' for 'sm_90'
+ptxas info    : Function properties for dot_takum32_kernel
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 6.752 ms
+ptxas info    : Compiling entry function 'dot_posit32_kernel' for 'sm_90'
+ptxas info    : Function properties for dot_posit32_kernel
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 8.236 ms
+ptxas info    : Compiling entry function 'dot_e10m21_kernel' for 'sm_90'
+ptxas info    : Function properties for dot_e10m21_kernel
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 23 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.240 ms
+ptxas info    : Compiling entry function 'dot_e11m20_kernel' for 'sm_90'
+ptxas info    : Function properties for dot_e11m20_kernel
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 2.510 ms
+ptxas info    : Compiling entry function 'dot_pwl4_compand32_kernel' for 'sm_90'
+ptxas info    : Function properties for dot_pwl4_compand32_kernel
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 3.401 ms
+ptxas info    : Compiling entry function 'dot_pwl2_compand32_kernel' for 'sm_90'
+ptxas info    : Function properties for dot_pwl2_compand32_kernel
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 29 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 3.042 ms
+ptxas info    : Compiling entry function 'dot_blended_cubic32_kernel' for 'sm_90'
+ptxas info    : Function properties for dot_blended_cubic32_kernel
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 2.666 ms
+ptxas info    : Compiling entry function 'dot_blended_quadratic32_kernel' for 'sm_90'
+ptxas info    : Function properties for dot_blended_quadratic32_kernel
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 2.620 ms
+ptxas info    : Compiling entry function 'dot_quadratic32_kernel' for 'sm_90'
+ptxas info    : Function properties for dot_quadratic32_kernel
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 2.517 ms
+ptxas info    : Compiling entry function 'dot_int32_kernel' for 'sm_90'
+ptxas info    : Function properties for dot_int32_kernel
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 2.481 ms
+ptxas info    : Compiling entry function 'dot_fp32_to_fp64_kernel' for 'sm_90'
+ptxas info    : Function properties for dot_fp32_to_fp64_kernel
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 2.470 ms
+ptxas info    : Compiling entry function 'dot_raw_fp64_kernel' for 'sm_90'
+ptxas info    : Function properties for dot_raw_fp64_kernel
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 2.423 ms
+[100%] Linking CUDA executable bin/compander32_bench
+[100%] Built target compander32_bench

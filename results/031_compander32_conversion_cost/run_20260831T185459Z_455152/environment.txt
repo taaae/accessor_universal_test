@@ -1,0 +1,8 @@
+name, uuid, pci.bus_id, driver_version, memory.total [MiB], power.limit [W]
+NVIDIA H200 NVL, GPU-2f0cf880-c4aa-4183-6561-bb060502acfb, 00000001:44:00.0, 610.57.04, 143771 MiB, 600.00 W
+
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Tue_Dec_16_07:23:41_PM_PST_2025
+Cuda compilation tools, release 13.1, V13.1.115
+Build cuda_13.1.r13.1/compiler.37061995_0
