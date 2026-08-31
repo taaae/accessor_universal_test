@@ -1163,9 +1163,21 @@ void write_samples(const options &settings, const std::string &gpu,
       const auto result = std::find_if(
           entry.results.begin(), entry.results.end(),
           [&](const auto &point) { return point.n == sample.n; });
-      output << timestamp << ',' << gpu << ',' << settings.mode
-             << ",normal_clipped,-8,8,dot," << entry.id << ',' << entry.label
-             << ',' << entry.group << ',' << entry.storage_bits << ','
+      const auto csv_string = [](const std::string &value) {
+        if (value.find_first_of(",\"\r\n") == std::string::npos) {
+          return value;
+        }
+        std::string escaped{"\""};
+        for (const auto character : value) {
+          escaped += character == '\"' ? "\"\"" : std::string(1, character);
+        }
+        escaped += '\"';
+        return escaped;
+      };
+      output << csv_string(timestamp) << ',' << csv_string(gpu) << ','
+             << csv_string(settings.mode) << ",normal_clipped,-8,8,dot,"
+             << csv_string(entry.id) << ',' << csv_string(entry.label) << ','
+             << csv_string(entry.group) << ',' << entry.storage_bits << ','
              << entry.arithmetic << ",natural,scalar,1," << entry.decoder << ','
              << entry.id << ',' << sample.n << ','
              << (2ull * sample.n * static_cast<std::size_t>(entry.storage_bits) /
