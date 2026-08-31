@@ -2,13 +2,14 @@
 set -euo pipefail
 
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-build_dir="${BUILD_DIR:-${repo_dir}/build-h200-compander32}"
+job_tag="${SLURM_JOB_ID:-local-$$}"
+build_dir="${BUILD_DIR:-${repo_dir}/build-h200-compander32-${job_tag}}"
 results_root="${RESULTS_ROOT:-${repo_dir}/results/031_compander32_conversion_cost}"
 mode="${MODE:-full}"
 build_jobs="${BUILD_JOBS:-8}"
 cuda_arch="${CUDA_ARCH:-90}"
 timestamp="$(date -u +%Y%m%dT%H%M%SZ)"
-run_dir="${RUN_DIR:-${results_root}/run_${timestamp}}"
+run_dir="${RUN_DIR:-${results_root}/run_${timestamp}_${job_tag}}"
 stage_dir="${run_dir}/${mode}"
 started_epoch="$(date +%s)"
 
@@ -18,6 +19,19 @@ if [[ "${mode}" != "smoke" && "${mode}" != "full" ]]; then
 fi
 
 mkdir -p "${stage_dir}"
+node_name="${HOSTNAME%%.*}"
+gpu_name="$(nvidia-smi --query-gpu=name --format=csv,noheader | head -n 1)"
+case "${node_name}" in
+    gpu-nvidia-h200-2|gpu-nvidia-h200-3) ;;
+    *)
+        echo "error: this benchmark may run only on gpu-nvidia-h200-2 or gpu-nvidia-h200-3, got ${node_name}" >&2
+        exit 3
+        ;;
+esac
+if [[ "${gpu_name}" != *H200* ]]; then
+    echo "error: expected an H200 GPU, got ${gpu_name}" >&2
+    exit 3
+fi
 {
     echo "experiment=031_compander32_conversion_cost"
     echo "started_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
@@ -33,6 +47,8 @@ mkdir -p "${stage_dir}"
     echo "warmups=$([[ "${mode}" == full ]] && echo 10 || echo 1)"
     echo "samples=$([[ "${mode}" == full ]] && echo 50 || echo 3)"
     echo "one_gpu_only=1"
+    echo "node=${node_name}"
+    echo "gpu=${gpu_name}"
     echo "git_status_begin"
     git -C "${repo_dir}" status --short
     echo "git_status_end"

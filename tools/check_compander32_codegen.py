@@ -10,6 +10,7 @@ PWL_KERNELS = (
     "dot_pwl2_compand32_kernel",
     "dot_pwl4_compand32_kernel",
 )
+BASELINE_KERNEL = "dot_int32_kernel"
 
 
 def function_sections(text: str) -> dict[str, str]:
@@ -19,6 +20,18 @@ def function_sections(text: str) -> dict[str, str]:
         end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
         sections[match.group(1).strip()] = text[match.start():end]
     return sections
+
+
+def instructions(section: str) -> list[tuple[str, str]]:
+    result: list[tuple[str, str]] = []
+    pattern = re.compile(
+        r"/\*[^*]+\*/\s+(?:@!?P[0-9]+\s+)?([A-Z][A-Z0-9_.]+)"
+    )
+    for line in section.splitlines():
+        match = pattern.search(line)
+        if match:
+            result.append((match.group(1), line))
+    return result
 
 
 def main() -> None:
@@ -43,6 +56,25 @@ def main() -> None:
     else:
         findings.append("PASS ptxas reports no nonzero spill loads or stores")
 
+    baseline_matches = [
+        section for symbol, section in sections.items() if BASELINE_KERNEL in symbol
+    ]
+    if len(baseline_matches) != 1:
+        passed = False
+        findings.append(
+            f"FAIL {BASELINE_KERNEL}: expected one SASS section, found {len(baseline_matches)}"
+        )
+        baseline_branch_count = -1
+    else:
+        baseline_instructions = instructions(baseline_matches[0])
+        baseline_branch_count = sum(
+            opcode.startswith(("BRA", "BRX", "JMP"))
+            for opcode, _ in baseline_instructions
+        )
+        findings.append(
+            f"INFO {BASELINE_KERNEL}: {baseline_branch_count} static branch instructions"
+        )
+
     for name in PWL_KERNELS:
         matching = [section for symbol, section in sections.items() if name in symbol]
         if len(matching) != 1:
@@ -50,10 +82,19 @@ def main() -> None:
             findings.append(f"FAIL {name}: expected one SASS section, found {len(matching)}")
             continue
         section = matching[0]
-        opcodes = re.findall(r"/\*[^*]+\*/\s+([A-Z0-9_.]+)", section)
+        decoded = instructions(section)
+        opcodes = [opcode for opcode, _ in decoded]
         local_ops = [opcode for opcode in opcodes if opcode.startswith(("LDL", "STL"))]
         branch_indirect = [opcode for opcode in opcodes if opcode.startswith("BRX")]
+        branch_count = sum(
+            opcode.startswith(("BRA", "BRX", "JMP")) for opcode in opcodes
+        )
         global_loads = [opcode for opcode in opcodes if opcode.startswith("LDG")]
+        indexed_constant_loads = [
+            line for opcode, line in decoded
+            if opcode.startswith(("LDC", "ULDC"))
+            and re.search(r"c\[[^]]+\]\[[^]]*R[0-9]+", line)
+        ]
         select_ops = [opcode for opcode in opcodes if opcode.startswith("SEL")]
         fma_ops = [opcode for opcode in opcodes if "FMA" in opcode]
         if local_ops:
@@ -66,6 +107,16 @@ def main() -> None:
             findings.append(f"FAIL {name}: indirect branch operations {branch_indirect}")
         else:
             findings.append(f"PASS {name}: no indirect branch or jump table")
+        if baseline_branch_count >= 0 and branch_count > baseline_branch_count:
+            passed = False
+            findings.append(
+                f"FAIL {name}: {branch_count} static branches versus "
+                f"{baseline_branch_count} in Int32, indicating extra control flow"
+            )
+        else:
+            findings.append(
+                f"PASS {name}: {branch_count} static branches, no more than Int32"
+            )
         if len(global_loads) > 2:
             passed = False
             findings.append(
@@ -74,6 +125,16 @@ def main() -> None:
         else:
             findings.append(
                 f"PASS {name}: {len(global_loads)} static global-load instructions, no coefficient table"
+            )
+        if indexed_constant_loads:
+            passed = False
+            findings.append(
+                f"FAIL {name}: dynamically indexed constant-memory loads: "
+                f"{indexed_constant_loads}"
+            )
+        else:
+            findings.append(
+                f"PASS {name}: no dynamically indexed constant-memory load"
             )
         if not select_ops:
             passed = False

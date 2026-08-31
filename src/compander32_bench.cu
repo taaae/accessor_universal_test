@@ -660,6 +660,21 @@ double host_dot(const std::vector<Stored> &left,
   return static_cast<double>(sum * dot_scale);
 }
 
+template <typename Stored, typename Decoder>
+double maximum_encoding_error(const std::vector<double> &source,
+                              const std::vector<Stored> &codes,
+                              Decoder decoder, double value_scale = 1.0) {
+  double maximum{};
+  for (std::size_t index = 0; index < source.size(); ++index) {
+    const auto decoded = decoder(codes[index]) * value_scale;
+    if (!std::isfinite(decoded)) {
+      return std::numeric_limits<double>::infinity();
+    }
+    maximum = std::max(maximum, std::abs(decoded - source[index]));
+  }
+  return maximum;
+}
+
 double relative_error(double actual, double expected) {
   return std::abs(actual - expected) /
          std::max({1.0, std::abs(actual), std::abs(expected)});
@@ -896,6 +911,104 @@ void validate_variants(const std::string &path, buffers &data,
     return *std::find_if(variants.begin(), variants.end(),
                          [&](const auto &entry) { return entry.id == id; });
   };
+  struct encoding_check {
+    std::string id;
+    double maximum_absolute_error{};
+    double tolerance{};
+  };
+  std::vector<encoding_check> encoding_checks;
+  encoding_checks.push_back(
+      {"raw_fp32",
+       maximum_encoding_error(
+           raw64_left, raw32_left,
+           [](float value) { return static_cast<double>(value); }),
+       5.0e-7});
+  encoding_checks.push_back(
+      {"int32",
+       maximum_encoding_error(
+           raw64_left, integer_left,
+           [](std::int32_t code) { return c32::decode_integer(code); },
+           c32::int_value_scale),
+       1.0e-8});
+  encoding_checks.push_back(
+      {"quadratic32",
+       maximum_encoding_error(
+           raw64_left, quadratic_left,
+           [](std::int32_t code) { return c32::decode_quadratic(code); },
+           c32::quadratic_value_scale),
+       2.0e-8});
+  encoding_checks.push_back(
+      {"blended_quadratic32",
+       maximum_encoding_error(
+           raw64_left, bq_left,
+           [](std::int32_t code) {
+             return c32::decode_blended_quadratic(code);
+           },
+           c32::blended_value_scale),
+       2.0e-8});
+  encoding_checks.push_back(
+      {"blended_cubic32",
+       maximum_encoding_error(
+           raw64_left, bc_left,
+           [](std::int32_t code) {
+             return c32::decode_blended_cubic(code);
+           },
+           c32::blended_value_scale),
+       2.0e-8});
+  encoding_checks.push_back(
+      {"pwl2_compand32",
+       maximum_encoding_error(
+           raw64_left, pwl2_left,
+           [](std::uint32_t code) { return c32::decode_pwl2(code); }),
+       1.0e-8});
+  encoding_checks.push_back(
+      {"pwl4_compand32",
+       maximum_encoding_error(
+           raw64_left, pwl4_left,
+           [](std::uint32_t code) { return c32::decode_pwl4(code); }),
+       1.0e-8});
+  encoding_checks.push_back(
+      {"e11m20",
+       maximum_encoding_error(
+           raw64_left, e11_left,
+           [](e11_storage code) { return storage::decode<storage::e11m20>(code); }),
+       5.0e-6});
+  encoding_checks.push_back(
+      {"e10m21",
+       maximum_encoding_error(
+           raw64_left, e10_left,
+           [](e10_storage code) { return storage::decode<storage::e10m21>(code); }),
+       5.0e-6});
+  encoding_checks.push_back(
+      {"dyadic_normal32",
+       maximum_encoding_error(
+           raw64_left, dyadic_left,
+           [&](std::uint32_t code) { return dn::decode(code, coefficients); }),
+       5.0e-6});
+  encoding_checks.push_back(
+      {"posit32_es2",
+       maximum_encoding_error(
+           raw64_left, posit_left,
+           [](std::uint32_t code) {
+             return pt::decode_posit<32, 2, double>(code);
+           }),
+       5.0e-6});
+  encoding_checks.push_back(
+      {"takum32",
+       maximum_encoding_error(
+           raw64_left, takum_left,
+           [](std::uint32_t code) {
+             return pt::decode_linear_takum<32, double>(code);
+           }),
+       5.0e-6});
+  encoding_checks.push_back(
+      {"lns32_r23",
+       maximum_encoding_error(
+           raw64_left, lns_left,
+           [](std::uint32_t code) {
+             return lns::decode<lns_format, double>(code);
+           }),
+       5.0e-6});
   std::vector<std::pair<std::string, double>> expected;
   expected.emplace_back("raw_fp64",
                         host_dot(raw64_left, raw64_right,
@@ -1001,6 +1114,14 @@ void validate_variants(const std::string &path, buffers &data,
   }
   output << "validation_n=" << validation_n << '\n';
   bool all_passed = true;
+  for (const auto &check : encoding_checks) {
+    const auto passed = check.maximum_absolute_error <= check.tolerance;
+    all_passed = all_passed && passed;
+    output << check.id << "_encoding_max_abs_error=" << std::setprecision(17)
+           << check.maximum_absolute_error << '\n'
+           << check.id << "_encoding_tolerance=" << check.tolerance << '\n'
+           << check.id << "_encoding_passed=" << (passed ? 1 : 0) << '\n';
+  }
   for (const auto &[id, reference] : expected) {
     auto &entry = find(id);
     entry.launch(validation_n);

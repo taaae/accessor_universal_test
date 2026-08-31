@@ -1,23 +1,31 @@
 #include "compander32_core.hpp"
 
 #include <array>
-#include <cassert>
 #include <cmath>
 #include <cstdint>
+#include <iostream>
 #include <limits>
+#include <stdexcept>
 
 namespace c = aut::compander32;
 
 namespace {
 
 void require_close(double actual, double expected, double tolerance) {
-  assert(std::isfinite(actual));
-  assert(std::abs(actual - expected) <= tolerance);
+  if (!std::isfinite(actual) || std::abs(actual - expected) > tolerance) {
+    throw std::runtime_error("compander round-trip check failed");
+  }
+}
+
+void require(bool condition, const char *message) {
+  if (!condition) {
+    throw std::runtime_error(message);
+  }
 }
 
 } // namespace
 
-int main() {
+int main() try {
   static_assert(c::minimum_code != std::numeric_limits<std::int32_t>::min());
   static_assert(c::maximum_code == std::numeric_limits<std::int32_t>::max());
 
@@ -46,10 +54,20 @@ int main() {
     require_close(c::decode_pwl4(c::encode_pwl4(value)), value, 1.0e-8);
   }
 
-  assert(c::encode_integer(-9.0) == c::minimum_code);
-  assert(c::encode_integer(9.0) == c::maximum_code);
-  assert(c::decode_pwl2(c::encode_pwl2(-1.0)) < 0.0);
-  assert(c::decode_pwl4(c::encode_pwl4(-1.0)) < 0.0);
-  assert(c::decode_pwl2(c::encode_pwl2(1.0)) > 0.0);
-  assert(c::decode_pwl4(c::encode_pwl4(1.0)) > 0.0);
+  require(c::encode_integer(-9.0) == c::minimum_code,
+          "negative saturation failed");
+  require(c::encode_integer(9.0) == c::maximum_code,
+          "positive saturation failed");
+  require(c::decode_pwl2(c::encode_pwl2(-1.0)) < 0.0,
+          "PWL2 negative sign failed");
+  require(c::decode_pwl4(c::encode_pwl4(-1.0)) < 0.0,
+          "PWL4 negative sign failed");
+  require(c::decode_pwl2(c::encode_pwl2(1.0)) > 0.0,
+          "PWL2 positive sign failed");
+  require(c::decode_pwl4(c::encode_pwl4(1.0)) > 0.0,
+          "PWL4 positive sign failed");
+  return 0;
+} catch (const std::exception &error) {
+  std::cerr << "compander32_core_test: " << error.what() << '\n';
+  return 1;
 }

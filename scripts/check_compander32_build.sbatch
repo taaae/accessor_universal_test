@@ -20,7 +20,7 @@ set -u
 module load "${CUDA_MODULE:-cuda/13.1.1}"
 cd "${repo_dir}"
 
-build_dir="${repo_dir}/build-h200-compander32"
+build_dir="${repo_dir}/build-h200-compander32-build-${SLURM_JOB_ID}"
 cmake -S "${repo_dir}" -B "${build_dir}" \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CUDA_ARCHITECTURES=90

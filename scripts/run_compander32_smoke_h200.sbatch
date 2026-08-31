@@ -10,6 +10,9 @@
 #SBATCH --output=results/031_compander32_conversion_cost/slurm-smoke-%j.out
 #SBATCH --export=ALL,TMPDIR=/tmp
 
+# Submit with --nodelist=gpu-nvidia-h200-2 or gpu-nvidia-h200-3. The runner
+# rejects every other host and verifies that CUDA exposes an H200.
+
 set -eo pipefail
 repo_dir="${SLURM_SUBMIT_DIR:?submit from the repository root}"
 if [[ ! -x "${repo_dir}/scripts/run_compander32_benchmark.sh" ]]; then

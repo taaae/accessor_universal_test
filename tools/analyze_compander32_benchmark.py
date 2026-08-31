@@ -245,9 +245,9 @@ def line_graph(rows: list[dict[str, object]]) -> str:
     return "".join(parts)
 
 
-def ranking_graph(rows: list[dict[str, object]]) -> str:
+def ranking_graph(rows: list[dict[str, object]], target_n: int) -> str:
     selected = sorted(
-        (row for row in rows if int(row["N"]) == 1 << 28),
+        (row for row in rows if int(row["N"]) == target_n),
         key=lambda row: float(row["median_ms"]),
     )
     width, height = 1500, 1020
@@ -272,12 +272,12 @@ def ranking_graph(rows: list[dict[str, object]]) -> str:
         label_positions = [value + shift for value in label_positions]
 
     parts = [
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" role="img" aria-label="N equals 2 to the 28 DOT kernel timing ranking">',
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" role="img" aria-label="N equals {target_n} DOT kernel timing ranking">',
         '<style>text{font-family:Inter,ui-sans-serif,system-ui,sans-serif;fill:#26343d}'
         '.grid{stroke:#dbe3e8;stroke-width:1}.axis{stroke:#53636e;stroke-width:1.4}'
         '.title{font-size:23px;font-weight:750}.sub{font-size:14px;fill:#61717d}.tick{font-size:13px}.label{font-size:14px;font-weight:650}</style>',
         f'<rect width="{width}" height="{height}" rx="18" fill="#fff"/>',
-        '<text x="110" y="36" class="title">32-bit storage decoder ranking at N = 2^28</text>',
+        f'<text x="110" y="36" class="title">32-bit storage decoder ranking at N = 2^{int(math.log2(target_n))}</text>',
         '<text x="110" y="59" class="sub">Line height is the median DOT time. Dotted extensions connect crowded lines to direct labels.</text>',
     ]
     for index in range(7):
@@ -418,9 +418,11 @@ def main() -> None:
     args.output_dir.mkdir(parents=True, exist_ok=True)
     write_summary(args.output_dir / "timing_summary.csv", summary)
     graph = line_graph(summary)
-    ranking = ranking_graph(summary)
+    target_n = max(int(row["N"]) for row in summary)
+    ranking = ranking_graph(summary, target_n)
     (args.output_dir / "time_vs_n.svg").write_text(graph)
-    (args.output_dir / "ranking_n2p28.svg").write_text(ranking)
+    ranking_name = f"ranking_n2p{int(math.log2(target_n))}.svg"
+    (args.output_dir / ranking_name).write_text(ranking)
     if mode == "full":
         report = build_report(
             summary,
