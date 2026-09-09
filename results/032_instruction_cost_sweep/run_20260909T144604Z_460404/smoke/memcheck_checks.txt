@@ -1,0 +1,9 @@
+generator_distinct=1
+finite_inputs=1
+host_reference=1
+actual_dot_shapes=1,31,32,33,257,4099
+actual_gemv_shapes=3x33,17x257
+actual_all_family_k_cpu_gpu=1
+baseline_dot_cpu_gpu=1
+baseline_gemv_cpu_gpu=1
+all_passed=1

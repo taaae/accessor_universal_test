@@ -8,6 +8,7 @@ import numpy as np
 FAMS=["add32f","mul32f","fma32f","rot32"]
 LABEL={"add32f":"FP32 addition","mul32f":"FP32 multiplication","fma32f":"FP32 FMA","rot32":"UInt32 rotation"}
 COL=dict(zip(FAMS,["#2878b5","#d95f02","#2a9d55","#88419d","#d73027"]))
+LABEL_DY={"add32f":0,"mul32f":-13,"fma32f":13,"rot32":0}
 BASES=["raw_fp32","fp32_to_fp64","raw_fp64"]
 def q(v): return np.quantile(v,[.25,.5,.75]).tolist()
 def plot(rows,kernel,path):
@@ -19,11 +20,11 @@ def plot(rows,kernel,path):
  for fam in FAMS:
   points={k:q(v) for (stage,f,k),v in groups.items() if f==fam and stage in (base_stage,"extension")};xs=[0]+sorted(points); vals=[q(groups[(base_stage,"u32_base",0)])]+[points[x] for x in xs[1:]];ys=[v[1] for v in vals]
   ax.plot(xs,ys,"o-",lw=2,color=COL[fam]);ax.fill_between(xs,[v[0] for v in vals],[v[2] for v in vals],color=COL[fam],alpha=.12)
-  ax.annotate(LABEL[fam],(xs[-1],ys[-1]),xytext=(18,0),textcoords="offset points",va="center",color=COL[fam],arrowprops=dict(arrowstyle="-",linestyle=":",color=COL[fam]))
+  ax.annotate(LABEL[fam],(xs[-1],ys[-1]),xytext=(18,LABEL_DY[fam]),textcoords="offset points",va="center",color=COL[fam],arrowprops=dict(arrowstyle="-",linestyle=":",color=COL[fam]))
  for b,style in zip(BASES,["--","-.",":"]):
   qq=q(groups[(base_stage,b,0)]);ax.axhspan(qq[0],qq[2],alpha=.06,color="black");ax.axhline(qq[1],ls=style,color="#333",lw=1.3,label=b)
  ax.set(xlabel="Retained target-family instructions per decoded value",ylabel="Total kernel time (ms)",title=f"{kernel.upper()} instruction-cost sweep")
- ax.grid(alpha=.2);ax.legend(loc="upper left",frameon=False);ax.text(.01,.01,f"X=0 shared UInt32-to-FP64 anchor: {base0:.3f} ms",transform=ax.transAxes,fontsize=9);fig.tight_layout(rect=(0,0,.84,1));fig.savefig(path.with_suffix(".png"),dpi=180);fig.savefig(path.with_suffix(".svg"));plt.close(fig)
+ ax.grid(alpha=.2);ax.legend(loc="upper left",frameon=False);ax.text(.01,.01,f"X=0 shared UInt32-to-FP32-to-FP64 anchor: {base0:.3f} ms",transform=ax.transAxes,fontsize=9);fig.tight_layout(rect=(0,0,.80,1));fig.savefig(path.with_suffix(".png"),dpi=180);fig.savefig(path.with_suffix(".svg"));plt.close(fig)
 def main():
  p=argparse.ArgumentParser();p.add_argument("--samples",required=True);p.add_argument("--output-dir",required=True);p.add_argument("--manifest",required=True);p.add_argument("--audit",required=True);a=p.parse_args();out=Path(a.output_dir);out.mkdir(parents=True,exist_ok=True)
  with open(a.samples,newline="") as f: rows=list(csv.DictReader(f))

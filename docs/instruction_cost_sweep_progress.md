@@ -1,49 +1,50 @@
 # Instruction cost sweep progress
 
-- Stage: implementing highest-precedence FP32 four-curve amendment.
+- Stage: complete. The highest-precedence FP32 four-curve experiment ran on an
+  H200 and the raw data, correctness evidence, audited SASS, summaries, plots,
+  and standalone HTML report were collected locally.
 - Branch: `codex/instruction-cost-sweep`.
-- Contract commit: `eedebba`.
-- Implementation commit: `b69bef9` (pushed to origin).
-- Current evidence: host C++ test passed; 4 negative SASS-audit tests passed;
-  Python compilation, shell syntax, and `git diff --check` passed. Review found
-  and prompted fixes for FP32 GEMV allocation, Release assertions, GPU decoder
-  comparison, and conditional extensions.
-- Cluster: VPN restored. A separate remote worktree at
-  `/storage/home/timofeirusanov/accessor_universal_test_instruction_cost` keeps
-  prior untracked result files untouched.
-- Preflight job `460369` requested 0 GPUs, 8 CPUs, 16 GiB, and 15 minutes. It
-  failed during CUDA compilation at `src/instruction_cost_bench.cu:111` due to
-  a malformed compressed lambda body. No executable or SASS was produced.
-- Preflight job `460371` compiled commit `e158c79` but the initial symbol parser
-  did not recognize the actual Itanium enum mangling. The SASS was preserved.
-- Preflight job `460373` compiled commit `cb3b465` after changing every helper
-  to in-place inline-PTX constraints. The actual timed DOT K=2 SASS still folds:
-  add32 is one `IMAD` per operand with multiplier 2, xor32 is one
-  `LOP3.LUT ... 0xaa` identity per operand, and mul32 is one `IMAD` per operand
-  with a composed multiplier. Rotation retains two SHFs and FMA retains two
-  reconstruction DFMAs per operand plus accumulation. This fails the hard gate.
-  Local evidence is under `results/032_instruction_cost_sweep/preflight_460373/`.
-- No GPU job has been submitted. The parent research agent has the concrete
-  SASS evidence and must choose whether the recipe may change. Full timing must
-  not run with these folded curves.
-- Current approved curves are `add32f`, `mul32f`, `fma32f`, and `rot32` under
-  `instruction_cost_fp32_four_curve_amendment.md`. The FP64 amendment is
-  historical and superseded. A new zero-GPU preflight is next after local tests.
-- Zero-GPU preflight `460381` compiled commit `6797d4d`. Its timed K=2 SASS
-  contains two dependent FADD, FMUL, FFMA, or SHF instructions per operand,
-  followed by `F2F.F64.F32` and one DFMA accumulation. There were no spills.
-  The audit correctly failed closed because Hopper spells UInt32-to-FP32 as
-  `I2FP.F32.U32`, which the parser had not yet listed. That alias is now handled.
-- Follow-up review found provenance, baseline-validation, metadata, drift and
-  parser negative-test gaps. Commit `d323179` addressed them; subsequent local
-  edits add baseline GEMV checks, direct binary/SASS/audit hash binding, exact
-  inventories and two more audit counterexamples. A fresh preflight is required.
-- FP32 implementation commit `6797d4d`; validation/provenance follow-up commit
-  `d323179`. Local Release host test, six SASS-audit unit tests, Python compile,
-  shell syntax and diff checks pass.
-- Zero-GPU preflight `460381` was submitted from `6797d4d` with the user queue
-  empty. VPN connectivity failed during every status check, so its outcome is
-  not yet collected. Its 15-minute Slurm limit prevents an indefinite job.
-- TCP connections to `10.152.225.230:22` continue to time out. When VPN access
-  returns, inspect `460381`, fast-forward the remote to `d323179`, and submit a
-  fresh zero-GPU preflight. Do not use the older binary for smoke or timing.
+- Experiment commit: `c6ed81f164e2b74ad42f6eec23f23b47d6a11821`.
+- Approved curves: `add32f`, `mul32f`, `fma32f`, and `rot32`. Floating curves
+  decode UInt32 to FP32, execute explicitly rounded FP32 operations, widen to
+  FP64, and accumulate in FP64. Rotation precedes that same decoder. The shared
+  X=0 anchor is therefore UInt32-to-FP32-to-FP64, not exact UInt32-to-FP64.
+  Coefficient bit patterns were `a=0x44800333` and `m=0x3f800347`.
+- Independent review was completed and its material findings were fixed before
+  GPU timing. The follow-up review found no remaining CUDA correctness,
+  compilation, smoke, or job-safety blocker. Its final report-only findings
+  (assert-based failure and incomplete rerun/extension inventories) were fixed
+  in `c6ed81f`.
+- Local Release-mode gates pass: `instruction_cost_core_test`, six positive and
+  negative assembly-audit tests, Python compilation, shell syntax, and
+  `git diff --check`.
+- Zero-GPU preflight job `460399` passed the host test and all 88 timed-kernel
+  SASS audits (two kernels, four families, eleven K values), with exactly `2*K`
+  dependent target operations in each hot loop and no spills. Evidence is in
+  `results/032_instruction_cost_sweep/preflight_460399/`.
+- Preflight binary SHA-256:
+  `06352edc2abad2a832f2e257bd152bc1b2846d34ca17675296a01a4b21c25fbd`.
+  SASS SHA-256:
+  `5923dcd01523c128079109a330651637c50ce6bd9a812e6e1ce7d0e6ffb3a1aa`.
+  Audit JSON SHA-256:
+  `acea87ec75dff9fe24a6233d91d4c282b3f89d1983711562f5d2fd61bf7777d6`.
+- One-GPU smoke job `460404` ran on `gpu-nvidia-h200-3`. Compute Sanitizer
+  memcheck and synccheck both reported zero errors; exact decoder comparisons,
+  ragged DOT/GEMV CPU-GPU comparisons for every family/K, and all baseline
+  comparisons passed. It produced 216 timing rows over three rounds.
+- One-GPU full job `460407` ran on `gpu-nvidia-h200-3` after a fresh empty-user-
+  queue and node-capacity check. All correctness gates passed and it produced
+  exactly 3,600 initial timing rows: 72 cases, 50 samples each. No curve was
+  eligible for K=48/64 extension because every K=32 median was already at or
+  above its stage-matched raw-FP64 median. Baseline drift was at most 0.25%, so
+  no rerun was required. Raw timing CSV SHA-256:
+  `bd8d8e85c00f9fc00cab412ec0c9e3e788ef1b8ed9f93b210df8a7203b4846c9`.
+- The full job completed measurement but the cluster report step lacked
+  Matplotlib. The fail-closed analyzer was run locally against the collected
+  CSV, manifest, and audited-SASS JSON and passed: 3,600 rows and 72 exact
+  groups. Report-only label spacing and X=0 decoder wording were corrected and
+  the analyzer reran successfully.
+- Final artifacts are under
+  `results/032_instruction_cost_sweep/run_20260909T144906Z_460407/report/`:
+  standalone `report.html`, separate DOT/GEMV PNG and SVG plots, a combined PNG,
+  and `timing_summary.csv`.
