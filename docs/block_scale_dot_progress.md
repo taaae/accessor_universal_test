@@ -53,5 +53,5 @@
   manifest/audit/correctness bindings. The PNG was inspected at full resolution;
   all 15 direct labels and dotted connectors are present and legible.
 
-- Next: commit and push this progress record plus the immutable experiment
-  evidence and rendered report.
+- Evidence/report commit: `19e6d07`; pushed to `origin/codex/block-scale-dot`.
+- Next: none; experiment 033 is complete.
