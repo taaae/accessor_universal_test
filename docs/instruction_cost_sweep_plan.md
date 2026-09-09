@@ -1,5 +1,10 @@
 # Experiment 032: dependent instruction cost inside DOT and GEMV
 
+CURRENT AMENDMENT: read `instruction_cost_four_curve_amendment.md` first.
+The user approved four curves after observing integer-chain folding. That
+amendment supersedes the five-family recipes, counts, and associated audit
+requirements below; all other safety and experimental-integrity rules remain.
+
 Implementation contract from Astra, 2026-09-09. Read together with
 `implementation_worker_context.md`. The user authorized end-to-end execution
 and automatic scoped fixes/retries. This is a new small experiment, not a rerun
