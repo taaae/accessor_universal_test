@@ -1,0 +1,10 @@
+device_memory_free=149549219840 total=150101688320
+preparing N=16384
+progress N=16384 stage=initial round=1/3 completed=15/90 elapsed_s=0.00100319
+progress N=16384 stage=initial round=2/3 completed=30/90 elapsed_s=0.00135143
+progress N=16384 stage=initial round=3/3 completed=45/90 elapsed_s=0.00168136
+preparing N=1048576
+progress N=1048576 stage=initial round=1/3 completed=60/90 elapsed_s=0.0190434
+progress N=1048576 stage=initial round=2/3 completed=75/90 elapsed_s=0.0194416
+progress N=1048576 stage=initial round=3/3 completed=90/90 elapsed_s=0.0198229
+SMOKE_MEASUREMENTS_COMPLETE rows=90

@@ -58,5 +58,14 @@ two FP64 loads consumed by one DFMA. The two final reducers each load one
 partial per loop iteration, accumulate with FADD or DADD, execute the common
 shared-memory tree, and store a distinct final result. Across all timed kernels
 the SASS contains no division, vectorized payload load, local-memory spill or
-device call. The saved final audit will bind these findings to the successful
-preflight SASS hash; job 460435 itself remains a failed checker calibration run.
+device call. Preflight `460443` saved the successful final audit. Its SASS
+SHA-256 is
+`2127db92b13fe61e799dffdb8388c4aaa626b3a0fb4b624ea5d47038a6e1dc91` and
+its audit SHA-256 is
+`af181c9ec0eaefeaf3d4a52470e912119d604e7248dc654b07b404de31bcc337`.
+Job `460435` remains a preserved failed checker-calibration run. The independent
+reviewer manually checked the identical final SASS across all 17 symbols and
+found no CUDA/SASS blocker to GPU execution. The checker can still accept a
+synthetic deferred sequence whose shuffles do not feed DADD and whose scale
+widens are unpredicated; this limitation does not apply to the manually
+inspected, hash-bound cubin and is recorded rather than silently generalized.

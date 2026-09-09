@@ -1,0 +1,22 @@
+/storage/home/timofeirusanov/accessor_universal_test_block_scale/results/033_block_scale_dot/preflight_460437/block_scale.sass.txt: OK
+/storage/home/timofeirusanov/accessor_universal_test_block_scale/results/033_block_scale_dot/preflight_460437/assembly_audit.json: OK
+device_memory_free=149549219840 total=150101688320
+preparing N=16384
+progress N=16384 stage=initial round=1/3 completed=15/90 elapsed_s=0.00100319
+progress N=16384 stage=initial round=2/3 completed=30/90 elapsed_s=0.00135143
+progress N=16384 stage=initial round=3/3 completed=45/90 elapsed_s=0.00168136
+preparing N=1048576
+progress N=1048576 stage=initial round=1/3 completed=60/90 elapsed_s=0.0190434
+progress N=1048576 stage=initial round=2/3 completed=75/90 elapsed_s=0.0194416
+progress N=1048576 stage=initial round=3/3 completed=90/90 elapsed_s=0.0198229
+SMOKE_MEASUREMENTS_COMPLETE rows=90
+Traceback (most recent call last):
+  File "/storage/home/timofeirusanov/accessor_universal_test_block_scale/tools/validate_block_scale_results.py", line 56, in <module>
+    if __name__=="__main__":main()
+  File "/storage/home/timofeirusanov/accessor_universal_test_block_scale/tools/validate_block_scale_results.py", line 55, in main
+    p=argparse.ArgumentParser();p.add_argument("--samples",required=True);p.add_argument("--manifest",required=True);p.add_argument("--mode",choices=["full","smoke"]);a=p.parse_args();validate(a.samples,a.manifest,a.mode)
+  File "/storage/home/timofeirusanov/accessor_universal_test_block_scale/tools/validate_block_scale_results.py", line 31, in validate
+    if r[col]!=str(manifest.get(mkey,"")):fail(f"manifest binding mismatch {col}")
+  File "/storage/home/timofeirusanov/accessor_universal_test_block_scale/tools/validate_block_scale_results.py", line 15, in fail
+    def fail(msg):raise ValueError(msg)
+ValueError: manifest binding mismatch node

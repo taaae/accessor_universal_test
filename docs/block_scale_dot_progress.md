@@ -1,27 +1,57 @@
 # Block-scale DOT progress
 
-- Stage: initial independent-review fixes and local verification.
+- Stage: complete; measured artifacts and locally rendered report verified.
 - Branch: `codex/block-scale-dot`.
 - Contract commit: `9a6d603`.
-- Cluster precheck on 2026-09-09 found an empty user queue. H200-2 had all
-  eight GPUs allocated; H200-3 had seven of eight allocated. No job submitted.
-- Release host tests and 13 Python validator/audit tests pass. Initial review
-  confirmed the CUDA synchronization structure and found material assembly,
-  large-validation, tolerance, drift and provenance gaps. These are addressed
-  locally and await follow-up review. The actual compiled SASS remains a hard
-  gate before GPU smoke.
-- Follow-up review accepted the runtime, validation, drift, manifest and report
-  fixes. It demonstrated four remaining false passes in the pre-SASS structural
-  checker. The authorized zero-GPU preflight may collect the concrete Hopper
-  assembly, but GPU smoke remains blocked until explicit saved dataflow and
-  predicate review plus appropriate checker hardening pass.
-- Next: commit and push, create the separate remote worktree, and run the
-  authorized zero-GPU preflight to obtain actual machine code.
-- Zero-GPU preflight `460435` compiled every specialization at commit
-  `2ddfbb3`, passed the host test and reported zero spills. The initial checker
-  intentionally failed because it expected one shuffle instruction per FP64
-  value; Hopper emits one `SHFL.DOWN` for each 32-bit half. Its SASS and build
-  log are preserved under `results/033_block_scale_dot/preflight_460435/`.
-  Inspection confirmed 8 shuffles for B16 and 10 for B32/B128. It also exposed
-  concrete register/pointer lineages used to harden the checker. A new preflight
-  is required after committing these checks.
+- Implementation/SASS-hardening commits: `2ddfbb3`, `316aa6b`.
+- Final measured source commit: `99410d5765f9e7e34b3dc8570f44c2d70fcfdcb0`.
+- Local verification: Release host test passed; all 17 Python audit/result tests
+  passed; Python compilation, shell syntax and `git diff --check` passed.
+- Independent review: the implementation review findings were fixed. A final
+  read-only inspection of all 17 actual Hopper kernels found no blocker to GPU
+  execution. One documented checker limitation remains non-blocking because the
+  saved cubin was also inspected manually for the missing deferred dataflow and
+  predicate properties.
+
+## Cluster execution
+
+- Preflight `460435` at `2ddfbb3` compiled all specializations with no spills,
+  but intentionally failed the first audit because Hopper emits two shuffles
+  per FP64 value. The evidence is preserved for audit history.
+- Job `460436` was canceled before execution after a remote fast-forward
+  conflict left the old commit selected. No GPU was requested or used. The
+  conflicting remote evidence was preserved separately rather than overwritten.
+- Preflight `460437` at `316aa6b` passed the host test and 17-kernel SASS audit.
+- Smoke `460442` was rejected before sanitizers: its CSV used the exact FQDN
+  reported by the binary while the manifest used the short hostname. Its
+  incomplete output is preserved and is not used as result input.
+- Wrapper fix commit `99410d5` records the exact hostname. Replacement preflight
+  `460443` passed. Binary SHA-256 is
+  `ec4d92bccca4c2ebb8197b6daf4d59d89ca35fbbe6d9bdf700cf828079d3533b`;
+  SASS SHA-256 is
+  `2127db92b13fe61e799dffdb8388c4aaa626b3a0fb4b624ea5d47038a6e1dc91`;
+  audit SHA-256 is
+  `af181c9ec0eaefeaf3d4a52470e912119d604e7248dc654b07b404de31bcc337`.
+- Replacement smoke `460444` ran on `gpu-nvidia-h200-3.int.coma-cluster.de`
+  (NVIDIA H200 NVL). It passed the strict 90-row inventory, all 240 independent
+  correctness cases, memcheck and synccheck with zero errors.
+- Full job `460445` ran on the same node. It passed the strict 3,750-row initial
+  inventory. The complete N=2^20 block was rerun after baseline drift, adding
+  750 rows; the final 4,500-row/90-group file passed strict validation. No cases
+  were pruned.
+
+## Final artifacts
+
+- Exact run: `results/033_block_scale_dot/run_20260909T163444Z_460445/`.
+- Raw samples: `full/timing_samples.csv`; manifest: `manifest.json`;
+  correctness: `full/correctness_checks.txt`.
+- Report: `report/report.html`; standalone screenshot page:
+  `report/screenshot.html`; all-15 plot: `report/dot_block_scale_all.png` and
+  `.svg`; official 75-case summary: `report/timing_summary.csv`.
+- Local analyzer revalidated all 4,500 rows, selected the complete drift rerun
+  for N=2^20, produced exactly 75 official summaries, and verified the exact
+  manifest/audit/correctness bindings. The PNG was inspected at full resolution;
+  all 15 direct labels and dotted connectors are present and legible.
+
+- Next: commit and push this progress record plus the immutable experiment
+  evidence and rendered report.

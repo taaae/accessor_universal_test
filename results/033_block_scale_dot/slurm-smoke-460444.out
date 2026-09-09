@@ -1,0 +1,14 @@
+/storage/home/timofeirusanov/accessor_universal_test_block_scale/results/033_block_scale_dot/preflight_460443/block_scale.sass.txt: OK
+/storage/home/timofeirusanov/accessor_universal_test_block_scale/results/033_block_scale_dot/preflight_460443/assembly_audit.json: OK
+device_memory_free=149549219840 total=150101688320
+preparing N=16384
+progress N=16384 stage=initial round=1/3 completed=15/90 elapsed_s=0.00100366
+progress N=16384 stage=initial round=2/3 completed=30/90 elapsed_s=0.00135061
+progress N=16384 stage=initial round=3/3 completed=45/90 elapsed_s=0.00167982
+preparing N=1048576
+progress N=1048576 stage=initial round=1/3 completed=60/90 elapsed_s=0.0192045
+progress N=1048576 stage=initial round=2/3 completed=75/90 elapsed_s=0.0195913
+progress N=1048576 stage=initial round=3/3 completed=90/90 elapsed_s=0.0199655
+SMOKE_MEASUREMENTS_COMPLETE rows=90
+validation passed: 90 rows, 30 groups, mode=smoke
+SMOKE_COMPLETE=results/033_block_scale_dot/run_20260909T163334Z_460444
