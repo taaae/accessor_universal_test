@@ -15,8 +15,9 @@ set -u
 module load cuda/13.1.1
 repo="${SLURM_SUBMIT_DIR:?}"
 cd "$repo"
-node="${HOSTNAME%%.*}"
-case "$node" in gpu-nvidia-h200-2|gpu-nvidia-h200-3);;*) echo "ineligible node $node";exit 3;;esac
+node="$(hostname)"
+node_short="${node%%.*}"
+case "$node_short" in gpu-nvidia-h200-2|gpu-nvidia-h200-3);;*) echo "ineligible node $node";exit 3;;esac
 build="${PREFLIGHT_BUILD:?}"
 evidence="${PREFLIGHT_EVIDENCE:?}"
 bin="$build/bin/block_scale_dot_bench"
