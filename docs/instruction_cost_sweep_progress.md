@@ -29,6 +29,15 @@
 - Current approved curves are `add32f`, `mul32f`, `fma32f`, and `rot32` under
   `instruction_cost_fp32_four_curve_amendment.md`. The FP64 amendment is
   historical and superseded. A new zero-GPU preflight is next after local tests.
+- Zero-GPU preflight `460381` compiled commit `6797d4d`. Its timed K=2 SASS
+  contains two dependent FADD, FMUL, FFMA, or SHF instructions per operand,
+  followed by `F2F.F64.F32` and one DFMA accumulation. There were no spills.
+  The audit correctly failed closed because Hopper spells UInt32-to-FP32 as
+  `I2FP.F32.U32`, which the parser had not yet listed. That alias is now handled.
+- Follow-up review found provenance, baseline-validation, metadata, drift and
+  parser negative-test gaps. Commit `d323179` addressed them; subsequent local
+  edits add baseline GEMV checks, direct binary/SASS/audit hash binding, exact
+  inventories and two more audit counterexamples. A fresh preflight is required.
 - FP32 implementation commit `6797d4d`; validation/provenance follow-up commit
   `d323179`. Local Release host test, six SASS-audit unit tests, Python compile,
   shell syntax and diff checks pass.

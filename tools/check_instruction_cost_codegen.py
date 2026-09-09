@@ -46,7 +46,7 @@ def audit_symbol(symbol,seq,kernel,fam,k,resource=None):
    regs=REG.findall(args)
    if not regs:continue
    dest,sources=regs[0],regs[1:];uses=current in sources
-   if uses and op.startswith("I2F.F32.U32"):current=dest;c1=True;continue
+   if uses and op.startswith(("I2F.F32.U32","I2FP.F32.U32")):current=dest;c1=True;continue
    if uses and is_target(op,fam):
     if fam=="rot32" and sources.count(current)<2:reasons.append("rotation_not_wrap_same_source")
     current=dest;count+=1;continue
