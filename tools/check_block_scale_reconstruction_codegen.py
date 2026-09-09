@@ -176,29 +176,24 @@ def row(symbol, kind, block, scale, sequence, resource):
             reasons.append("deferred_local_shape")
         payload = [item for item in dfmas if len(item[2]) >= 2 and item[2][0] == {"load0"} and item[2][1] == {"load1"}]
         scale_product = [item for item in dmuls if len(item[2]) >= 2 and {frozenset(item[2][0]), frozenset(item[2][1])} == {frozenset({"load2"}), frozenset({"load3"})}]
-        final = [item for item in dfmas if len(item[2]) >= 2 and item[2][0] == {"load2", "load3"} and item[2][1] == {"load0", "load1"}]
+        final = [item for item in dfmas if len(item[2]) >= 2 and {frozenset(item[2][0]), frozenset(item[2][1])} == {frozenset({"load0", "load1"}), frozenset({"load2", "load3"})}]
         if len(payload) != 1 or len(scale_product) != 1 or len(final) != 1 or not payload[0][0] < scale_product[0][0] < final[0][0]:
             reasons.append("deferred_local_subtotal_dataflow")
-        if len(load_registers) == 4:
-            expected_widen_sources = set(load_registers if scale == "fp32" else load_registers[:2])
-            payload_registers = {register.replace(".reuse", "") for register in REGISTER.findall(payload[0][5])[1:3]} if len(payload) == 1 else set()
-            scale_registers = {register.replace(".reuse", "") for register in REGISTER.findall(scale_product[0][5])[1:3]} if len(scale_product) == 1 else set()
-            expected_payload = {widen_map.get(load_registers[0]), widen_map.get(load_registers[1])}
-            expected_scale = {widen_map.get(load_registers[2], load_registers[2]), widen_map.get(load_registers[3], load_registers[3])}
-            if set(widen_map) != expected_widen_sources or payload_registers != expected_payload or scale_registers != expected_scale:
-                reasons.append("deferred_local_widen_chain")
-            required_writers = {item[4]: (item[0], item[1]) for item in widens}
-            for load in loads:
-                required_writers.setdefault(load[2], (load[0], load[1]))
-            for item in payload + scale_product:
-                registers = [register.replace(".reuse", "") for register in REGISTER.findall(item[5])]
-                if any(last_writer(source, item[0]) != required_writers.get(source) for source in registers[1:3]):
-                    reasons.append("deferred_local_intervening_operand_write")
-            if len(final) == 1 and len(payload) == 1 and len(scale_product) == 1:
-                registers = [register.replace(".reuse", "") for register in REGISTER.findall(final[0][5])]
-                final_writers = {payload[0][4]: (payload[0][0], payload[0][1]), scale_product[0][4]: (scale_product[0][0], scale_product[0][1])}
-                if any(last_writer(source, final[0][0]) != final_writers.get(source) for source in registers[1:3]):
-                    reasons.append("deferred_local_intervening_subtotal_write")
+        if len(payload) == 1 and len(scale_product) == 1:
+            widen_writers = {(item[0], item[1]) for item in widens}
+            load_writers = {(item[0], item[1]) for item in loads}
+            payload_registers = [register.replace(".reuse", "") for register in REGISTER.findall(payload[0][5])[1:3]]
+            scale_registers = [register.replace(".reuse", "") for register in REGISTER.findall(scale_product[0][5])[1:3]]
+            if any(last_writer(source, payload[0][0]) not in widen_writers for source in payload_registers):
+                reasons.append("deferred_local_payload_widen_chain")
+            permitted_scale_writers = widen_writers if scale == "fp32" else load_writers
+            if any(last_writer(source, scale_product[0][0]) not in permitted_scale_writers for source in scale_registers):
+                reasons.append("deferred_local_scale_widen_chain")
+        if len(final) == 1 and len(payload) == 1 and len(scale_product) == 1:
+            registers = [register.replace(".reuse", "") for register in REGISTER.findall(final[0][5])]
+            required = {(payload[0][0], payload[0][1]), (scale_product[0][0], scale_product[0][1])}
+            if {last_writer(source, final[0][0]) for source in registers[1:3]} != required:
+                reasons.append("deferred_local_intervening_subtotal_write")
     elif kind == "raw_fp32":
         if len(loads) != 2 or loads64 or count("FFMA") != 1:
             reasons.append("raw_fp32_shape")
