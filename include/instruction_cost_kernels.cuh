@@ -7,22 +7,22 @@
 namespace aut::instruction_cost {
 
 __device__ __forceinline__ std::uint32_t ptx_add(std::uint32_t x, std::uint32_t a) {
-  std::uint32_t o; asm volatile("add.u32 %0,%1,%2;" : "=r"(o) : "r"(x), "r"(a)); return o;
+  asm volatile("add.u32 %0,%0,%1;" : "+r"(x) : "r"(a)); return x;
 }
 __device__ __forceinline__ std::uint32_t ptx_xor(std::uint32_t x, std::uint32_t a) {
-  std::uint32_t o; asm volatile("xor.b32 %0,%1,%2;" : "=r"(o) : "r"(x), "r"(a)); return o;
+  asm volatile("xor.b32 %0,%0,%1;" : "+r"(x) : "r"(a)); return x;
 }
 __device__ __forceinline__ std::uint32_t ptx_rot(std::uint32_t x, std::uint32_t s) {
-  std::uint32_t o; asm volatile("shf.l.wrap.b32 %0,%1,%1,%2;" : "=r"(o) : "r"(x), "r"(s)); return o;
+  asm volatile("shf.l.wrap.b32 %0,%0,%0,%1;" : "+r"(x) : "r"(s)); return x;
 }
 __device__ __forceinline__ std::uint32_t ptx_mul(std::uint32_t x, std::uint32_t m) {
-  std::uint32_t o; asm volatile("mul.lo.u32 %0,%1,%2;" : "=r"(o) : "r"(x), "r"(m)); return o;
+  asm volatile("mul.lo.u32 %0,%0,%1;" : "+r"(x) : "r"(m)); return x;
 }
 __device__ __forceinline__ double ptx_cvt(std::uint32_t x) {
   double o; asm volatile("cvt.rn.f64.u32 %0,%1;" : "=d"(o) : "r"(x)); return o;
 }
 __device__ __forceinline__ double ptx_fma(double x, double a, double b) {
-  double o; asm volatile("fma.rn.f64 %0,%1,%2,%3;" : "=d"(o) : "d"(x),"d"(a),"d"(b)); return o;
+  asm volatile("fma.rn.f64 %0,%0,%1,%2;" : "+d"(x) : "d"(a),"d"(b)); return x;
 }
 
 template <family F, int K> __device__ __forceinline__ double decode(

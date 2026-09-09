@@ -7,7 +7,7 @@ from pathlib import Path
 FUN=re.compile(r"(?:Function\s*:\s*|\.section\s+\.text\.)(.+?)\s*$")
 INS=re.compile(r"/\*([0-9a-fA-F]+)\*/\s+(?:@!?P\d+\s+)?([A-Z][A-Z0-9_.]*)(?:\s+([^;]*))?;")
 REG=re.compile(r"\b(?:U?R(?:Z|\d+))\b")
-CASE=re.compile(r"(dot|gemv)_timed_kernel.*family(?:IL)?([0-4]).*Li(0|1|2|4|8|12|16|24|32|48|64)")
+CASE=re.compile(r"(dot|gemv)_timed_kernel.*familyE([0-4])E.*Li(0|1|2|4|8|12|16|24|32|48|64)E")
 FAMS=["add32","xor32","rot32","mul32","fma64"]
 def parse(text):
  out={};cur=None
