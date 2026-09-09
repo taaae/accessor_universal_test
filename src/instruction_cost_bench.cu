@@ -11,6 +11,7 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
+#include <limits>
 #include <numeric>
 #include <random>
 #include <stdexcept>
@@ -94,13 +95,17 @@ int main(int argc,char**argv)try{
     for(std::size_t i=0;i<got.size();++i){double want=ic::decode_reference(hA[i],f,k);if(std::memcmp(&got[i],&want,sizeof(double))!=0)throw std::runtime_error("GPU decoder/reference mismatch");}
   }
   checks<<"host_reference=1\n";
-  if(o.mode=="validate"){
-    for(auto f:ic::families)for(int k:{0,1,32,64}){launch_dot(f,k,A.p,B.p,4099,pd.p);ic::reduce64_kernel<<<1,256>>>(pd.p,512,result.p);launch_gemv(f,k,A.p,V.p,17,257,pd.p);}
-    CK(cudaDeviceSynchronize());checks<<"actual_kernel_ragged_launches=1\nall_passed=1\n";checks.close();return 0;
-  }
-  checks<<"all_passed=1\n";checks.close();
   std::vector<caze> cases;for(auto kernel:{std::string("dot"),std::string("gemv")}){for(auto base:{"raw_fp32","fp32_to_fp64","raw_fp64","u32_base"})cases.push_back({kernel,base,"initial",0});for(auto f:ic::families)for(int k:ic::initial_k)cases.push_back({kernel,std::string(ic::name(f)),"initial",k});}
   auto launch=[&](const caze&c){if(c.kernel=="dot"){if(c.family=="raw_fp32"){ic::dot_raw32_kernel<<<512,256>>>(AF.p,BF.p,dotn,pf.p);ic::reduce32_kernel<<<1,256>>>(pf.p,512,pf.p);}else if(c.family=="fp32_to_fp64"){ic::dot_fp32_to_fp64_kernel<<<512,256>>>(AF.p,BF.p,dotn,pd.p);ic::reduce64_kernel<<<1,256>>>(pd.p,512,result.p);}else if(c.family=="raw_fp64"){ic::dot_raw64_kernel<<<512,256>>>(AD.p,BD.p,dotn,pd.p);ic::reduce64_kernel<<<1,256>>>(pd.p,512,result.p);}else{auto f=c.family=="u32_base"?ic::family::add32:*std::find_if(ic::families.begin(),ic::families.end(),[&](auto x){return ic::name(x)==c.family;});launch_dot(f,c.k,A.p,B.p,dotn,pd.p);ic::reduce64_kernel<<<1,256>>>(pd.p,512,result.p);}}else{if(c.family=="raw_fp32")ic::gemv_raw32_kernel<<<rows,256>>>(AF.p,VF.p,rows,cols,pf.p);else if(c.family=="fp32_to_fp64")ic::gemv_fp32_to_fp64_kernel<<<rows,256>>>(AF.p,VF.p,rows,cols,pd.p);else if(c.family=="raw_fp64")ic::gemv_raw64_kernel<<<rows,256>>>(AD.p,VD.p,rows,cols,pd.p);else{auto f=c.family=="u32_base"?ic::family::add32:*std::find_if(ic::families.begin(),ic::families.end(),[&](auto x){return ic::name(x)==c.family;});launch_gemv(f,c.k,A.p,V.p,rows,cols,pd.p);}}};
+  auto close_enough=[](double got,long double want,long double sum_abs,std::size_t terms,double eps){long double gamma=(terms*eps)/(1.0L-terms*eps);long double bound=8.0L*gamma*sum_abs+std::numeric_limits<double>::min();return std::abs((long double)got-want)<=bound;};
+  for(auto f:ic::families)for(int k:{0,1,2,4,8,12,16,24,32,48,64}){
+    for(std::size_t n:{std::size_t(1),std::size_t(31),std::size_t(32),std::size_t(33),std::size_t(257),std::size_t(4099)}){
+      launch_dot(f,k,A.p,B.p,n,pd.p);ic::reduce64_kernel<<<1,256>>>(pd.p,512,result.p);double got;CK(cudaMemcpy(&got,result.p,sizeof got,cudaMemcpyDeviceToHost));long double want=0,sumabs=0;for(std::size_t i=0;i<n;++i){long double term=(long double)ic::decode_reference(hA[i],f,k)*ic::decode_reference(hB[i],f,k);want+=term;sumabs+=std::abs(term);}if(!close_enough(got,want,sumabs,n+512,std::numeric_limits<double>::epsilon()))throw std::runtime_error("DOT CPU/GPU mismatch");
+    }
+    for(auto shape:{std::pair<int,int>{3,33},std::pair<int,int>{17,257}}){int vr=shape.first,vc=shape.second;launch_gemv(f,k,A.p,V.p,vr,vc,pd.p);std::vector<double> got(vr);CK(cudaMemcpy(got.data(),pd.p,vr*sizeof(double),cudaMemcpyDeviceToHost));for(int r=0;r<vr;++r){long double want=0,sumabs=0;for(int c=0;c<vc;++c){long double term=(long double)ic::decode_reference(hA[std::size_t(r)*vc+c],f,k)*ic::decode_reference(hV[c],f,k);want+=term;sumabs+=std::abs(term);}if(!close_enough(got[r],want,sumabs,vc+256,std::numeric_limits<double>::epsilon()))throw std::runtime_error("GEMV CPU/GPU mismatch");}}
+  }
+  checks<<"actual_dot_shapes=1,31,32,33,257,4099\nactual_gemv_shapes=3x33,17x257\nactual_all_family_k_cpu_gpu=1\nall_passed=1\n";checks.close();
+  if(o.mode=="validate")return 0;
   ensure(o.output);std::ofstream csv(o.output);csv<<"mode,stage,kernel,family,k,observed_instructions,round,order,ms,result,valid\n";
   std::mt19937 order_rng(0x0325eedu);std::map<std::tuple<std::string,std::string,int>,std::vector<float>> measured;auto began=std::chrono::steady_clock::now();int done=0;
   auto measure_stage=[&](std::vector<caze> stage_cases){
@@ -110,8 +115,9 @@ int main(int argc,char**argv)try{
       std::shuffle(stage_cases.begin(),stage_cases.end(),order_rng);
       for(int pos=0;pos<int(stage_cases.size());++pos){
         auto&c=stage_cases[pos];float ms=timed([&]{launch(c);});double value=0;
-        if(c.family=="raw_fp32"){float x;CK(cudaMemcpy(&x,pf.p,sizeof x,cudaMemcpyDeviceToHost));value=x;}
-        else if(c.kernel=="gemv") CK(cudaMemcpy(&value,pd.p,sizeof value,cudaMemcpyDeviceToHost));
+        if(c.kernel=="gemv"&&c.family=="raw_fp32"){std::vector<float> values(rows);CK(cudaMemcpy(values.data(),pf.p,rows*sizeof(float),cudaMemcpyDeviceToHost));for(float x:values){if(!std::isfinite(x))throw std::runtime_error("nonfinite GEMV row");value+=x;}}
+        else if(c.family=="raw_fp32"){float x;CK(cudaMemcpy(&x,pf.p,sizeof x,cudaMemcpyDeviceToHost));value=x;}
+        else if(c.kernel=="gemv"){std::vector<double> values(rows);CK(cudaMemcpy(values.data(),pd.p,rows*sizeof(double),cudaMemcpyDeviceToHost));for(double x:values){if(!std::isfinite(x))throw std::runtime_error("nonfinite GEMV row");value+=x;}}
         else CK(cudaMemcpy(&value,result.p,sizeof value,cudaMemcpyDeviceToHost));
         if(!std::isfinite(value))throw std::runtime_error("nonfinite result");
         measured[{c.kernel,c.family,c.k}].push_back(ms);

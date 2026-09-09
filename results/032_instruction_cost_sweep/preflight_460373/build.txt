@@ -1,0 +1,872 @@
+[100%] Building CXX object CMakeFiles/instruction_cost_core_test.dir/tests/instruction_cost_core_test.cpp.o
+[100%] Linking CXX executable bin/instruction_cost_core_test
+[100%] Built target instruction_cost_core_test
+[100%] Building CUDA object CMakeFiles/instruction_cost_bench.dir/src/instruction_cost_bench.cu.o
+ptxas info    : 0 bytes gmem
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost24gemv_fp32_to_fp64_kernelEPKfS2_iiPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost24gemv_fp32_to_fp64_kernelEPKfS2_iiPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.871 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_raw32_kernelEPKfS2_iiPf' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_raw32_kernelEPKfS2_iiPf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 4.522 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_raw64_kernelEPKdS2_iiPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_raw64_kernelEPKdS2_iiPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.549 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost23dot_fp32_to_fp64_kernelEPKfS2_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost23dot_fp32_to_fp64_kernelEPKfS2_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.985 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_raw32_kernelEPKfS2_mPf' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_raw32_kernelEPKfS2_mPf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 5.126 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_raw64_kernelEPKdS2_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_raw64_kernelEPKdS2_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.901 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost15reduce32_kernelEPKfiPf' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost15reduce32_kernelEPKfiPf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 11 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 3.786 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost15reduce64_kernelEPKdiPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost15reduce64_kernelEPKdiPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 3.836 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE4ELi64EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE4ELi64EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 3.766 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE4ELi48EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE4ELi48EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 3.433 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE4ELi32EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE4ELi32EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 3.061 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE4ELi24EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE4ELi24EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 2.864 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE4ELi16EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE4ELi16EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 2.710 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE4ELi12EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE4ELi12EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 2.642 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE4ELi8EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE4ELi8EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.514 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE4ELi4EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE4ELi4EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.431 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE4ELi2EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE4ELi2EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.572 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE4ELi1EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE4ELi1EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.333 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE4ELi0EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE4ELi0EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 2.170 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE3ELi64EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE3ELi64EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 0 barriers
+ptxas info    : Compile time = 3.482 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE3ELi48EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE3ELi48EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 0 barriers
+ptxas info    : Compile time = 3.126 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE3ELi32EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE3ELi32EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 0 barriers
+ptxas info    : Compile time = 2.817 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE3ELi24EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE3ELi24EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 0 barriers
+ptxas info    : Compile time = 2.694 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE3ELi16EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE3ELi16EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 0 barriers
+ptxas info    : Compile time = 2.549 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE3ELi12EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE3ELi12EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 13 registers, used 0 barriers
+ptxas info    : Compile time = 2.449 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE3ELi8EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE3ELi8EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 15 registers, used 0 barriers
+ptxas info    : Compile time = 2.380 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE3ELi4EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE3ELi4EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 15 registers, used 0 barriers
+ptxas info    : Compile time = 2.305 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE3ELi2EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE3ELi2EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 15 registers, used 0 barriers
+ptxas info    : Compile time = 2.313 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE3ELi1EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE3ELi1EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 2.318 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE3ELi0EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE3ELi0EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 2.385 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE2ELi64EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE2ELi64EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 0 barriers
+ptxas info    : Compile time = 3.585 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE2ELi48EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE2ELi48EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 0 barriers
+ptxas info    : Compile time = 3.210 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE2ELi32EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE2ELi32EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 0 barriers
+ptxas info    : Compile time = 2.875 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE2ELi24EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE2ELi24EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 0 barriers
+ptxas info    : Compile time = 2.997 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE2ELi16EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE2ELi16EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 0 barriers
+ptxas info    : Compile time = 2.602 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE2ELi12EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE2ELi12EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 13 registers, used 0 barriers
+ptxas info    : Compile time = 2.507 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE2ELi8EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE2ELi8EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 15 registers, used 0 barriers
+ptxas info    : Compile time = 2.411 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE2ELi4EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE2ELi4EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 15 registers, used 0 barriers
+ptxas info    : Compile time = 2.317 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE2ELi2EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE2ELi2EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 15 registers, used 0 barriers
+ptxas info    : Compile time = 2.282 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE2ELi1EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE2ELi1EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 2.281 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE2ELi0EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE2ELi0EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 2.172 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE1ELi64EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE1ELi64EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.705 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE1ELi48EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE1ELi48EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.579 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE1ELi32EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE1ELi32EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.459 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE1ELi24EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE1ELi24EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.400 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE1ELi16EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE1ELi16EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.389 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE1ELi12EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE1ELi12EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.334 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE1ELi8EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE1ELi8EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.310 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE1ELi4EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE1ELi4EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.289 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE1ELi2EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE1ELi2EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.274 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE1ELi1EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE1ELi1EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 2.308 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE1ELi0EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE1ELi0EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 2.191 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE0ELi64EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE0ELi64EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 3.225 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE0ELi48EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE0ELi48EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 2.967 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE0ELi32EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE0ELi32EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 2.734 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE0ELi24EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE0ELi24EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 2.630 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE0ELi16EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE0ELi16EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.559 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE0ELi12EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE0ELi12EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.582 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE0ELi8EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE0ELi8EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.366 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE0ELi4EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE0ELi4EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.340 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE0ELi2EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE0ELi2EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 2.272 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE0ELi1EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE0ELi1EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 2.468 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE0ELi0EEEvPKjPdmjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost25decoder_validation_kernelILNS0_6familyE0ELi0EEEvPKjPdmjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 2.197 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE4ELi64EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE4ELi64EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 8.360 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE4ELi48EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE4ELi48EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 7.269 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE4ELi32EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE4ELi32EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 6.414 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE4ELi24EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE4ELi24EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 6.049 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE4ELi16EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE4ELi16EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.609 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE4ELi12EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE4ELi12EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.435 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE4ELi8EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE4ELi8EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.169 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE4ELi4EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE4ELi4EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.941 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE4ELi2EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE4ELi2EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.842 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE4ELi1EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE4ELi1EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.748 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE4ELi0EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE4ELi0EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.669 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE3ELi64EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE3ELi64EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 7.343 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE3ELi48EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE3ELi48EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 6.676 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE3ELi32EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE3ELi32EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.967 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE3ELi24EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE3ELi24EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.701 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE3ELi16EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE3ELi16EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.293 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE3ELi12EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE3ELi12EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.145 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE3ELi8EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE3ELi8EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.054 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE3ELi4EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE3ELi4EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.827 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE3ELi2EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE3ELi2EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.930 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE3ELi1EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE3ELi1EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.050 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE3ELi0EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE3ELi0EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.659 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE2ELi64EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE2ELi64EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 7.681 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE2ELi48EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE2ELi48EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 6.777 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE2ELi32EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE2ELi32EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 6.084 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE2ELi24EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE2ELi24EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.716 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE2ELi16EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE2ELi16EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.340 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE2ELi12EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE2ELi12EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.186 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE2ELi8EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE2ELi8EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.069 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE2ELi4EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE2ELi4EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.909 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE2ELi2EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE2ELi2EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.828 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE2ELi1EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE2ELi1EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.721 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE2ELi0EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE2ELi0EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.618 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE1ELi64EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE1ELi64EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.743 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE1ELi48EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE1ELi48EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.436 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE1ELi32EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE1ELi32EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.212 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE1ELi24EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE1ELi24EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.100 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE1ELi16EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE1ELi16EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.981 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE1ELi12EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE1ELi12EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.977 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE1ELi8EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE1ELi8EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.870 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE1ELi4EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE1ELi4EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.806 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE1ELi2EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE1ELi2EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.787 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE1ELi1EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE1ELi1EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.747 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE1ELi0EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE1ELi0EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.653 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE0ELi64EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE0ELi64EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 6.756 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE0ELi48EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE0ELi48EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 6.189 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE0ELi32EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE0ELi32EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 6.070 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE0ELi24EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE0ELi24EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.449 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE0ELi16EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE0ELi16EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.266 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE0ELi12EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE0ELi12EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.085 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE0ELi8EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE0ELi8EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.955 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE0ELi4EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE0ELi4EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.839 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE0ELi2EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE0ELi2EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.756 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE0ELi1EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE0ELi1EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.726 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE0ELi0EEEvPKjS4_iiPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost17gemv_timed_kernelILNS0_6familyE0ELi0EEEvPKjS4_iiPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.636 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE4ELi64EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE4ELi64EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 8.668 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE4ELi48EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE4ELi48EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 7.748 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE4ELi32EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE4ELi32EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 6.928 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE4ELi24EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE4ELi24EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 6.451 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE4ELi16EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE4ELi16EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 6.021 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE4ELi12EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE4ELi12EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.736 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE4ELi8EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE4ELi8EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.647 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE4ELi4EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE4ELi4EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.399 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE4ELi2EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE4ELi2EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.255 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE4ELi1EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE4ELi1EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.208 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE4ELi0EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE4ELi0EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.041 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE3ELi64EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE3ELi64EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 7.774 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE3ELi48EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE3ELi48EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 7.063 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE3ELi32EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE3ELi32EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 6.395 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE3ELi24EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE3ELi24EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 6.066 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE3ELi16EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE3ELi16EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.726 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE3ELi12EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE3ELi12EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.545 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE3ELi8EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE3ELi8EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.805 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE3ELi4EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE3ELi4EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 23 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.307 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE3ELi2EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE3ELi2EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.188 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE3ELi1EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE3ELi1EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.118 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE3ELi0EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE3ELi0EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.010 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE2ELi64EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE2ELi64EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 8.109 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE2ELi48EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE2ELi48EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 7.231 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE2ELi32EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE2ELi32EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 6.491 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE2ELi24EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE2ELi24EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 6.232 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE2ELi16EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE2ELi16EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.775 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE2ELi12EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE2ELi12EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.572 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE2ELi8EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE2ELi8EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.484 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE2ELi4EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE2ELi4EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.288 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE2ELi2EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE2ELi2EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.168 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE2ELi1EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE2ELi1EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.156 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE2ELi0EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE2ELi0EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.027 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE1ELi64EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE1ELi64EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 6.144 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE1ELi48EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE1ELi48EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.853 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE1ELi32EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE1ELi32EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.612 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE1ELi24EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE1ELi24EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.513 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE1ELi16EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE1ELi16EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.376 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE1ELi12EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE1ELi12EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.331 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE1ELi8EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE1ELi8EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.284 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE1ELi4EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE1ELi4EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.234 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE1ELi2EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE1ELi2EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.184 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE1ELi1EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE1ELi1EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.125 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE1ELi0EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE1ELi0EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.025 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE0ELi64EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE0ELi64EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 7.201 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE0ELi48EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE0ELi48EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 6.592 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE0ELi32EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE0ELi32EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 6.093 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE0ELi24EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE0ELi24EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.891 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE0ELi16EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE0ELi16EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.679 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE0ELi12EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE0ELi12EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.965 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE0ELi8EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE0ELi8EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.433 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE0ELi4EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE0ELi4EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.261 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE0ELi2EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE0ELi2EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.177 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE0ELi1EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE0ELi1EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.128 ms
+ptxas info    : Compiling entry function '_ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE0ELi0EEEvPKjS4_mPdjdd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut16instruction_cost16dot_timed_kernelILNS0_6familyE0ELi0EEEvPKjS4_mPdjdd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 4.994 ms
+[100%] Linking CUDA executable bin/instruction_cost_bench
+[100%] Built target instruction_cost_bench
