@@ -5,8 +5,8 @@ from collections import defaultdict
 from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
-FAMS=["add32","xor32","rot32","mul32","fma64"]
-LABEL={"add32":"UInt32 addition","xor32":"UInt32 XOR","rot32":"UInt32 rotation","mul32":"UInt32 multiplication","fma64":"FP64 FMA"}
+FAMS=["add32f","mul32f","fma32f","rot32"]
+LABEL={"add32f":"FP32 addition","mul32f":"FP32 multiplication","fma32f":"FP32 FMA","rot32":"UInt32 rotation"}
 COL=dict(zip(FAMS,["#2878b5","#d95f02","#2a9d55","#88419d","#d73027"]))
 BASES=["raw_fp32","fp32_to_fp64","raw_fp64"]
 def q(v): return np.quantile(v,[.25,.5,.75]).tolist()
@@ -28,12 +28,12 @@ def main():
  with open(a.samples,newline="") as f: rows=list(csv.DictReader(f))
  if not rows or any(r["mode"]!="full" for r in rows): raise ValueError("report accepts full rows only")
  initial=[r for r in rows if r["stage"]=="initial"]
- if len(initial)!=4400: raise ValueError(f"expected 4400 initial rows, got {len(initial)}")
+ if len(initial)!=3600: raise ValueError(f"expected 3600 initial rows, got {len(initial)}")
  keys=defaultdict(list)
  for r in rows:
   ms=float(r["ms"]);assert math.isfinite(ms) and ms>0 and r["valid"]=="1";keys[(r["stage"],r["kernel"],r["family"],int(r["k"]))].append(ms)
  initial_keys=[k for k in keys if k[0]=="initial"]
- if len(initial_keys)!=88 or any(len(v)!=50 for v in keys.values()):raise ValueError("group inventory/count mismatch")
+ if len(initial_keys)!=72 or any(len(v)!=50 for v in keys.values()):raise ValueError("group inventory/count mismatch")
  for key in [k for k in keys if k[0]=="extension"]:
   if key[3] not in (0,48,64):raise ValueError("bad extension K")
  summary=[]
@@ -53,7 +53,7 @@ def main():
    pts=[x for x in summary if x["kernel"]==kernel and x["family"]==fam];within=[x["k"] for x in pts if x["median_ms"]<=1.05*fp];cross=[x["k"] for x in pts if x["median_ms"]>=raw];findings.append(f"{kernel} {LABEL[fam]}: largest tested K within +5% of FP32-to-FP64 = {max(within) if within else 'none'}; first measured K at/above raw FP64 = {min(cross) if cross else 'not reached through 32'}.")
  manifest=Path(a.manifest).read_text() if a.manifest else "not supplied"
  def datauri(p):return "data:image/png;base64,"+base64.b64encode(p.read_bytes()).decode()
- body=f"""<!doctype html><meta charset=utf-8><title>Instruction cost sweep</title><style>body{{font:16px system-ui;max-width:1150px;margin:40px auto;color:#17202a}}img{{width:100%;height:auto}}code,pre{{background:#f4f5f6;padding:8px;white-space:pre-wrap}}li{{margin:.35em}}</style><h1>Dependent instruction cost inside DOT and GEMV</h1><p>H200 measurements with scalar x1 access, 32-bit encoded storage and FP64 arithmetic. Integer operations wrap modulo 2^32. X counts retained target-family SASS instructions per decoded operand. Each term decodes two operands.</p><h2>DOT</h2><img src='{datauri(out/'dot_instruction_cost.png')}'><h2>GEMV</h2><img src='{datauri(out/'gemv_instruction_cost.png')}'><h2>Threshold observations</h2><ul>{''.join('<li>'+html.escape(x)+'</li>' for x in findings)}</ul><p>This is a synthetic retained-instruction test. Repeated add/XOR is not a useful compression method, and these results are not a universal instruction-cost model.</p><h2>Run manifest</h2><pre>{html.escape(manifest)}</pre>"""
+ body=f"""<!doctype html><meta charset=utf-8><title>Instruction cost sweep</title><style>body{{font:16px system-ui;max-width:1150px;margin:40px auto;color:#17202a}}img{{width:100%;height:auto}}code,pre{{background:#f4f5f6;padding:8px;white-space:pre-wrap}}li{{margin:.35em}}</style><h1>Dependent instruction cost inside DOT and GEMV</h1><p>H200 measurements with scalar x1 access, 32-bit encoded storage and FP64 accumulation. The shared X=0 decoder rounds UInt32 to FP32 and widens to FP64, so it does not preserve every UInt32 exactly. Floating curves execute FP32 operations before widening. X counts retained target-family SASS instructions per decoded operand.</p><h2>DOT</h2><img src='{datauri(out/'dot_instruction_cost.png')}'><h2>GEMV</h2><img src='{datauri(out/'gemv_instruction_cost.png')}'><h2>Threshold observations</h2><ul>{''.join('<li>'+html.escape(x)+'</li>' for x in findings)}</ul><p>This is a synthetic retained-instruction test, not a universal instruction-cost model.</p><h2>Run manifest</h2><pre>{html.escape(manifest)}</pre>"""
  (out/"report.html").write_text(body)
  print(f"analysis passed: {len(rows)} rows, {len(keys)} groups")
 if __name__=="__main__":main()

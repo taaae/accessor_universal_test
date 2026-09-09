@@ -26,32 +26,29 @@ template<class T> struct dbuf { T*p{}; std::size_t n{}; explicit dbuf(std::size_
 struct event { cudaEvent_t e; event(){CK(cudaEventCreate(&e));} ~event(){cudaEventDestroy(e);} };
 struct opts { std::string mode="full",output="timing_samples.csv",checks="correctness_checks.txt"; int warmups=10,samples=50; };
 opts parse(int argc,char**argv){opts o;for(int i=1;i<argc;++i){std::string a=argv[i];auto v=[&]{if(++i>=argc)throw std::runtime_error("missing value");return std::string(argv[i]);};if(a=="--mode")o.mode=v();else if(a=="--output")o.output=v();else if(a=="--correctness-output")o.checks=v();else if(a=="--warmups")o.warmups=std::stoi(v());else if(a=="--samples")o.samples=std::stoi(v());else throw std::runtime_error("unknown option "+a);}if(o.mode=="smoke"){o.warmups=1;o.samples=3;}else if(o.mode=="validate"){o.warmups=0;o.samples=0;}else if(o.mode!="full")throw std::runtime_error("bad mode");return o;}
-std::uint32_t operand(ic::family f){if(f==ic::family::add32)return ic::add_operand;if(f==ic::family::xor32)return ic::xor_operand;if(f==ic::family::rot32)return ic::rotate_operand;if(f==ic::family::mul32)return ic::multiply_operand;return 0;}
+std::uint32_t operand(ic::family f){return f==ic::family::rot32?ic::rotate_operand:0;}
 
 #define KS(M,F) M(F,0) M(F,1) M(F,2) M(F,4) M(F,8) M(F,12) M(F,16) M(F,24) M(F,32) M(F,48) M(F,64)
-#define DOT_CASE(F,K) case K: ic::dot_timed_kernel<ic::family::F,K><<<512,256>>>(a,b,n,p,operand(ic::family::F),ic::fma_multiplier,ic::fma_addend); break;
+#define DOT_CASE(F,K) case K: ic::dot_timed_kernel<ic::family::F,K><<<512,256>>>(a,b,n,p,operand(ic::family::F),ic::fp_multiplier,ic::fp_addend); break;
 void launch_dot(ic::family f,int k,const std::uint32_t*a,const std::uint32_t*b,std::size_t n,double*p){switch(f){
-case ic::family::add32:switch(k){KS(DOT_CASE,add32)default:throw std::runtime_error("bad K");}break;
-case ic::family::xor32:switch(k){KS(DOT_CASE,xor32)default:throw std::runtime_error("bad K");}break;
-case ic::family::rot32:switch(k){KS(DOT_CASE,rot32)default:throw std::runtime_error("bad K");}break;
-case ic::family::mul32:switch(k){KS(DOT_CASE,mul32)default:throw std::runtime_error("bad K");}break;
-case ic::family::fma64:switch(k){KS(DOT_CASE,fma64)default:throw std::runtime_error("bad K");}break;}}
+case ic::family::add32f:switch(k){KS(DOT_CASE,add32f)default:throw std::runtime_error("bad K");}break;
+case ic::family::mul32f:switch(k){KS(DOT_CASE,mul32f)default:throw std::runtime_error("bad K");}break;
+case ic::family::fma32f:switch(k){KS(DOT_CASE,fma32f)default:throw std::runtime_error("bad K");}break;
+case ic::family::rot32:switch(k){KS(DOT_CASE,rot32)default:throw std::runtime_error("bad K");}break;}}
 #undef DOT_CASE
-#define GEMV_CASE(F,K) case K: ic::gemv_timed_kernel<ic::family::F,K><<<rows,256>>>(a,b,rows,cols,p,operand(ic::family::F),ic::fma_multiplier,ic::fma_addend); break;
+#define GEMV_CASE(F,K) case K: ic::gemv_timed_kernel<ic::family::F,K><<<rows,256>>>(a,b,rows,cols,p,operand(ic::family::F),ic::fp_multiplier,ic::fp_addend); break;
 void launch_gemv(ic::family f,int k,const std::uint32_t*a,const std::uint32_t*b,int rows,int cols,double*p){switch(f){
-case ic::family::add32:switch(k){KS(GEMV_CASE,add32)default:throw std::runtime_error("bad K");}break;
-case ic::family::xor32:switch(k){KS(GEMV_CASE,xor32)default:throw std::runtime_error("bad K");}break;
-case ic::family::rot32:switch(k){KS(GEMV_CASE,rot32)default:throw std::runtime_error("bad K");}break;
-case ic::family::mul32:switch(k){KS(GEMV_CASE,mul32)default:throw std::runtime_error("bad K");}break;
-case ic::family::fma64:switch(k){KS(GEMV_CASE,fma64)default:throw std::runtime_error("bad K");}break;}}
+case ic::family::add32f:switch(k){KS(GEMV_CASE,add32f)default:throw std::runtime_error("bad K");}break;
+case ic::family::mul32f:switch(k){KS(GEMV_CASE,mul32f)default:throw std::runtime_error("bad K");}break;
+case ic::family::fma32f:switch(k){KS(GEMV_CASE,fma32f)default:throw std::runtime_error("bad K");}break;
+case ic::family::rot32:switch(k){KS(GEMV_CASE,rot32)default:throw std::runtime_error("bad K");}break;}}
 #undef GEMV_CASE
-#define VALIDATE_CASE(F,K) case K: ic::decoder_validation_kernel<ic::family::F,K><<<17,256>>>(a,p,n,operand(ic::family::F),ic::fma_multiplier,ic::fma_addend); break;
+#define VALIDATE_CASE(F,K) case K: ic::decoder_validation_kernel<ic::family::F,K><<<17,256>>>(a,p,n,operand(ic::family::F),ic::fp_multiplier,ic::fp_addend); break;
 void launch_decoder(ic::family f,int k,const std::uint32_t*a,double*p,std::size_t n){switch(f){
-case ic::family::add32:switch(k){KS(VALIDATE_CASE,add32)default:throw std::runtime_error("bad K");}break;
-case ic::family::xor32:switch(k){KS(VALIDATE_CASE,xor32)default:throw std::runtime_error("bad K");}break;
-case ic::family::rot32:switch(k){KS(VALIDATE_CASE,rot32)default:throw std::runtime_error("bad K");}break;
-case ic::family::mul32:switch(k){KS(VALIDATE_CASE,mul32)default:throw std::runtime_error("bad K");}break;
-case ic::family::fma64:switch(k){KS(VALIDATE_CASE,fma64)default:throw std::runtime_error("bad K");}break;}}
+case ic::family::add32f:switch(k){KS(VALIDATE_CASE,add32f)default:throw std::runtime_error("bad K");}break;
+case ic::family::mul32f:switch(k){KS(VALIDATE_CASE,mul32f)default:throw std::runtime_error("bad K");}break;
+case ic::family::fma32f:switch(k){KS(VALIDATE_CASE,fma32f)default:throw std::runtime_error("bad K");}break;
+case ic::family::rot32:switch(k){KS(VALIDATE_CASE,rot32)default:throw std::runtime_error("bad K");}break;}}
 #undef VALIDATE_CASE
 
 struct caze{std::string kernel,family,stage;int k;};
@@ -96,7 +93,7 @@ int main(int argc,char**argv)try{
   }
   checks<<"host_reference=1\n";
   std::vector<caze> cases;for(auto kernel:{std::string("dot"),std::string("gemv")}){for(auto base:{"raw_fp32","fp32_to_fp64","raw_fp64","u32_base"})cases.push_back({kernel,base,"initial",0});for(auto f:ic::families)for(int k:ic::initial_k)cases.push_back({kernel,std::string(ic::name(f)),"initial",k});}
-  auto launch=[&](const caze&c){if(c.kernel=="dot"){if(c.family=="raw_fp32"){ic::dot_raw32_kernel<<<512,256>>>(AF.p,BF.p,dotn,pf.p);ic::reduce32_kernel<<<1,256>>>(pf.p,512,pf.p);}else if(c.family=="fp32_to_fp64"){ic::dot_fp32_to_fp64_kernel<<<512,256>>>(AF.p,BF.p,dotn,pd.p);ic::reduce64_kernel<<<1,256>>>(pd.p,512,result.p);}else if(c.family=="raw_fp64"){ic::dot_raw64_kernel<<<512,256>>>(AD.p,BD.p,dotn,pd.p);ic::reduce64_kernel<<<1,256>>>(pd.p,512,result.p);}else{auto f=c.family=="u32_base"?ic::family::add32:*std::find_if(ic::families.begin(),ic::families.end(),[&](auto x){return ic::name(x)==c.family;});launch_dot(f,c.k,A.p,B.p,dotn,pd.p);ic::reduce64_kernel<<<1,256>>>(pd.p,512,result.p);}}else{if(c.family=="raw_fp32")ic::gemv_raw32_kernel<<<rows,256>>>(AF.p,VF.p,rows,cols,pf.p);else if(c.family=="fp32_to_fp64")ic::gemv_fp32_to_fp64_kernel<<<rows,256>>>(AF.p,VF.p,rows,cols,pd.p);else if(c.family=="raw_fp64")ic::gemv_raw64_kernel<<<rows,256>>>(AD.p,VD.p,rows,cols,pd.p);else{auto f=c.family=="u32_base"?ic::family::add32:*std::find_if(ic::families.begin(),ic::families.end(),[&](auto x){return ic::name(x)==c.family;});launch_gemv(f,c.k,A.p,V.p,rows,cols,pd.p);}}};
+  auto launch=[&](const caze&c){if(c.kernel=="dot"){if(c.family=="raw_fp32"){ic::dot_raw32_kernel<<<512,256>>>(AF.p,BF.p,dotn,pf.p);ic::reduce32_kernel<<<1,256>>>(pf.p,512,pf.p);}else if(c.family=="fp32_to_fp64"){ic::dot_fp32_to_fp64_kernel<<<512,256>>>(AF.p,BF.p,dotn,pd.p);ic::reduce64_kernel<<<1,256>>>(pd.p,512,result.p);}else if(c.family=="raw_fp64"){ic::dot_raw64_kernel<<<512,256>>>(AD.p,BD.p,dotn,pd.p);ic::reduce64_kernel<<<1,256>>>(pd.p,512,result.p);}else{auto f=c.family=="u32_base"?ic::family::add32f:*std::find_if(ic::families.begin(),ic::families.end(),[&](auto x){return ic::name(x)==c.family;});launch_dot(f,c.k,A.p,B.p,dotn,pd.p);ic::reduce64_kernel<<<1,256>>>(pd.p,512,result.p);}}else{if(c.family=="raw_fp32")ic::gemv_raw32_kernel<<<rows,256>>>(AF.p,VF.p,rows,cols,pf.p);else if(c.family=="fp32_to_fp64")ic::gemv_fp32_to_fp64_kernel<<<rows,256>>>(AF.p,VF.p,rows,cols,pd.p);else if(c.family=="raw_fp64")ic::gemv_raw64_kernel<<<rows,256>>>(AD.p,VD.p,rows,cols,pd.p);else{auto f=c.family=="u32_base"?ic::family::add32f:*std::find_if(ic::families.begin(),ic::families.end(),[&](auto x){return ic::name(x)==c.family;});launch_gemv(f,c.k,A.p,V.p,rows,cols,pd.p);}}};
   auto close_enough=[](double got,long double want,long double sum_abs,std::size_t terms,double eps){long double gamma=(terms*eps)/(1.0L-terms*eps);long double bound=8.0L*gamma*sum_abs+std::numeric_limits<double>::min();return std::abs((long double)got-want)<=bound;};
   for(auto f:ic::families)for(int k:{0,1,2,4,8,12,16,24,32,48,64}){
     for(std::size_t n:{std::size_t(1),std::size_t(31),std::size_t(32),std::size_t(33),std::size_t(257),std::size_t(4099)}){

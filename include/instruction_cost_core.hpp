@@ -9,27 +9,22 @@ namespace aut::instruction_cost {
 
 inline constexpr std::uint64_t left_seed = 0x6bd87c012a53f9e1ULL;
 inline constexpr std::uint64_t right_seed = left_seed ^ 0x9e3779b97f4a7c15ULL;
-inline constexpr std::uint32_t add_operand = 0x9e3779b9u;
-inline constexpr std::uint32_t xor_operand = 0xa5a5c3c3u;
 inline constexpr std::uint32_t rotate_operand = 7u;
-inline constexpr std::uint32_t multiply_operand = 0x0019660du;
-inline constexpr double fma_multiplier = 0x1.001p0;
-inline constexpr double fma_addend = 0x1p-12;
+inline constexpr float fp_multiplier = 1.0001f;
+inline constexpr float fp_addend = 1024.1f;
 inline constexpr std::array<int, 8> initial_k{1, 2, 4, 8, 12, 16, 24, 32};
 inline constexpr std::array<int, 2> extension_k{48, 64};
 
-enum class family { add32, xor32, rot32, mul32, fma64 };
-inline constexpr std::array<family, 5> families{family::add32, family::xor32,
-                                                family::rot32, family::mul32,
-                                                family::fma64};
+enum class family { add32f, mul32f, fma32f, rot32 };
+inline constexpr std::array<family, 4> families{family::add32f, family::mul32f,
+                                                family::fma32f, family::rot32};
 
 constexpr std::string_view name(family f) {
   switch (f) {
-  case family::add32: return "add32";
-  case family::xor32: return "xor32";
+  case family::add32f: return "add32f";
+  case family::mul32f: return "mul32f";
+  case family::fma32f: return "fma32f";
   case family::rot32: return "rot32";
-  case family::mul32: return "mul32";
-  case family::fma64: return "fma64";
   }
   return "invalid";
 }
@@ -49,21 +44,14 @@ constexpr std::uint32_t rotl32(std::uint32_t x, unsigned s) {
 }
 inline double decode_reference(std::uint32_t u, family f, int k) {
   if (k < 0 || k > 64) throw "invalid instruction count";
-  if (f == family::fma64) {
-    double v = static_cast<double>(u);
-    for (int i = 0; i < k; ++i) v = std::fma(v, fma_multiplier, fma_addend);
-    return v;
+  if (f == family::rot32) for (int i=0;i<k;++i) u=rotl32(u,rotate_operand);
+  float v=static_cast<float>(u);
+  for(int i=0;i<k;++i) {
+    if(f==family::add32f) v=v+fp_addend;
+    else if(f==family::mul32f) v=v*fp_multiplier;
+    else if(f==family::fma32f) v=std::fma(v,fp_multiplier,fp_addend);
   }
-  for (int i = 0; i < k; ++i) {
-    switch (f) {
-    case family::add32: u += add_operand; break;
-    case family::xor32: u ^= xor_operand; break;
-    case family::rot32: u = rotl32(u, rotate_operand); break;
-    case family::mul32: u *= multiply_operand; break;
-    case family::fma64: break;
-    }
-  }
-  return static_cast<double>(u);
+  return static_cast<double>(v);
 }
 
 } // namespace aut::instruction_cost

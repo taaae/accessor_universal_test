@@ -19,10 +19,9 @@ int main() {
   for (auto f : ic::families) for (int k : {0,1,2,4,8,12,16,24,32,48,64}) {
     for (auto u : edges) require(std::isfinite(ic::decode_reference(u, f, k)));
   }
-  require(ic::decode_reference(7, ic::family::xor32, 2) == 7.0);
   require(ic::decode_reference(7, ic::family::rot32, 32) == 7.0);
-  require(ic::decode_reference(0xffffffffu, ic::family::add32, 1) ==
-         static_cast<double>(std::uint32_t(0xffffffffu + ic::add_operand)));
+  require(ic::decode_reference(7, ic::family::add32f, 1) == static_cast<double>(7.0f + ic::fp_addend));
+  require(ic::decode_reference(7, ic::family::mul32f, 1) == static_cast<double>(7.0f * ic::fp_multiplier));
   std::mt19937_64 random(0x123456789abcdef0ULL);
   for (int i = 0; i < 4096; ++i) {
     auto u = static_cast<std::uint32_t>(random());

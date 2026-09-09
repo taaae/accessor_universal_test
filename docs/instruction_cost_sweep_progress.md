@@ -1,6 +1,6 @@
 # Instruction cost sweep progress
 
-- Stage: blocked at assembly gate after real sm_90 compilation.
+- Stage: implementing highest-precedence FP32 four-curve amendment.
 - Branch: `codex/instruction-cost-sweep`.
 - Contract commit: `eedebba`.
 - Implementation commit: `b69bef9` (pushed to origin).
@@ -26,3 +26,6 @@
 - No GPU job has been submitted. The parent research agent has the concrete
   SASS evidence and must choose whether the recipe may change. Full timing must
   not run with these folded curves.
+- Current approved curves are `add32f`, `mul32f`, `fma32f`, and `rot32` under
+  `instruction_cost_fp32_four_curve_amendment.md`. The FP64 amendment is
+  historical and superseded. A new zero-GPU preflight is next after local tests.

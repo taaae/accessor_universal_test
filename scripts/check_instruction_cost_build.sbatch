@@ -18,5 +18,5 @@ cmake -S . -B "$build" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTURES=90
 cmake --build "$build" --parallel 8 --target instruction_cost_core_test instruction_cost_bench 2>&1 | tee "$evidence/build.txt"
 "$build/bin/instruction_cost_core_test" | tee "$evidence/host_test.txt"
 cuobjdump --dump-sass "$build/bin/instruction_cost_bench" > "$evidence/instruction_cost.sass.txt"
-python3 tools/check_instruction_cost_codegen.py --sass "$evidence/instruction_cost.sass.txt" --output-dir "$evidence"
+python3 tools/check_instruction_cost_codegen.py --sass "$evidence/instruction_cost.sass.txt" --build-log "$evidence/build.txt" --output-dir "$evidence"
 sha256sum "$build/bin/instruction_cost_bench" | tee "$evidence/binary.sha256";git rev-parse HEAD | tee "$evidence/commit.txt";echo PREFLIGHT_COMPLETE

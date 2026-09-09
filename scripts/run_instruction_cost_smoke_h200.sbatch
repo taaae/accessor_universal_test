@@ -15,4 +15,4 @@ build="${PREFLIGHT_BUILD:?set PREFLIGHT_BUILD}";bin="$build/bin/instruction_cost
 sha256sum "$bin" | tee "$run/binary.sha256";timeout 4m "$bin" --mode smoke --output "$run/smoke/timing_samples.csv" --correctness-output "$run/smoke/correctness_checks.txt" | tee "$run/smoke/stdout.txt"
 timeout 4m compute-sanitizer --tool memcheck --error-exitcode=9 "$bin" --mode validate --correctness-output "$run/smoke/memcheck_checks.txt" > "$run/smoke/memcheck.txt" 2>&1
 timeout 4m compute-sanitizer --tool synccheck --error-exitcode=9 "$bin" --mode validate --correctness-output "$run/smoke/synccheck_checks.txt" > "$run/smoke/synccheck.txt" 2>&1
-test "$(wc -l < "$run/smoke/timing_samples.csv")" -eq 265;grep -q all_passed=1 "$run/smoke/correctness_checks.txt";echo SMOKE_COMPLETE
+test "$(wc -l < "$run/smoke/timing_samples.csv")" -eq 217;grep -q all_passed=1 "$run/smoke/correctness_checks.txt";echo SMOKE_COMPLETE
