@@ -4,6 +4,7 @@
 #include <chrono>
 #include <cmath>
 #include <cstdint>
+#include <cstdlib>
 #include <cstring>
 #include <filesystem>
 #include <functional>
@@ -101,10 +102,13 @@ int main(int argc,char**argv)try{
     }
     for(auto shape:{std::pair<int,int>{3,33},std::pair<int,int>{17,257}}){int vr=shape.first,vc=shape.second;launch_gemv(f,k,A.p,V.p,vr,vc,pd.p);std::vector<double> got(vr);CK(cudaMemcpy(got.data(),pd.p,vr*sizeof(double),cudaMemcpyDeviceToHost));for(int r=0;r<vr;++r){long double want=0,sumabs=0;for(int c=0;c<vc;++c){long double term=(long double)ic::decode_reference(hA[std::size_t(r)*vc+c],f,k)*ic::decode_reference(hV[c],f,k);want+=term;sumabs+=std::abs(term);}if(!close_enough(got[r],want,sumabs,vc+256,std::numeric_limits<double>::epsilon()))throw std::runtime_error("GEMV CPU/GPU mismatch");}}
   }
-  checks<<"actual_dot_shapes=1,31,32,33,257,4099\nactual_gemv_shapes=3x33,17x257\nactual_all_family_k_cpu_gpu=1\nall_passed=1\n";checks.close();
+  constexpr std::size_t bn=4099;long double raw32want=0,fp64want=0,raw64want=0,raw32abs=0,fp64abs=0,raw64abs=0;for(std::size_t i=0;i<bn;++i){long double x=(long double)fA[i]*fB[i],y=(long double)dA[i]*dB[i];raw32want+=x;fp64want+=x;raw64want+=y;raw32abs+=std::abs(x);fp64abs+=std::abs(x);raw64abs+=std::abs(y);}ic::dot_raw32_kernel<<<512,256>>>(AF.p,BF.p,bn,pf.p);ic::reduce32_kernel<<<1,256>>>(pf.p,512,pf.p);float r32;CK(cudaMemcpy(&r32,pf.p,sizeof r32,cudaMemcpyDeviceToHost));if(!close_enough(r32,raw32want,raw32abs,bn+512,std::numeric_limits<float>::epsilon()))throw std::runtime_error("raw FP32 DOT mismatch");ic::dot_fp32_to_fp64_kernel<<<512,256>>>(AF.p,BF.p,bn,pd.p);ic::reduce64_kernel<<<1,256>>>(pd.p,512,result.p);double rd;CK(cudaMemcpy(&rd,result.p,sizeof rd,cudaMemcpyDeviceToHost));if(!close_enough(rd,fp64want,fp64abs,bn+512,std::numeric_limits<double>::epsilon()))throw std::runtime_error("FP32-to-FP64 DOT mismatch");ic::dot_raw64_kernel<<<512,256>>>(AD.p,BD.p,bn,pd.p);ic::reduce64_kernel<<<1,256>>>(pd.p,512,result.p);CK(cudaMemcpy(&rd,result.p,sizeof rd,cudaMemcpyDeviceToHost));if(!close_enough(rd,raw64want,raw64abs,bn+512,std::numeric_limits<double>::epsilon()))throw std::runtime_error("raw FP64 DOT mismatch");
+  constexpr int br=17,bc=257;std::vector<float> gr32(br);std::vector<double> grd(br);ic::gemv_raw32_kernel<<<br,256>>>(AF.p,VF.p,br,bc,pf.p);CK(cudaMemcpy(gr32.data(),pf.p,br*sizeof(float),cudaMemcpyDeviceToHost));for(int r=0;r<br;++r){long double want=0,sa=0;for(int c=0;c<bc;++c){long double t=(long double)fA[std::size_t(r)*bc+c]*fV[c];want+=t;sa+=std::abs(t);}if(!close_enough(gr32[r],want,sa,bc+256,std::numeric_limits<float>::epsilon()))throw std::runtime_error("raw FP32 GEMV mismatch");}ic::gemv_fp32_to_fp64_kernel<<<br,256>>>(AF.p,VF.p,br,bc,pd.p);CK(cudaMemcpy(grd.data(),pd.p,br*sizeof(double),cudaMemcpyDeviceToHost));for(int r=0;r<br;++r){long double want=0,sa=0;for(int c=0;c<bc;++c){long double t=(long double)fA[std::size_t(r)*bc+c]*fV[c];want+=t;sa+=std::abs(t);}if(!close_enough(grd[r],want,sa,bc+256,std::numeric_limits<double>::epsilon()))throw std::runtime_error("FP32-to-FP64 GEMV mismatch");}ic::gemv_raw64_kernel<<<br,256>>>(AD.p,VD.p,br,bc,pd.p);CK(cudaMemcpy(grd.data(),pd.p,br*sizeof(double),cudaMemcpyDeviceToHost));for(int r=0;r<br;++r){long double want=0,sa=0;for(int c=0;c<bc;++c){long double t=(long double)dA[std::size_t(r)*bc+c]*dV[c];want+=t;sa+=std::abs(t);}if(!close_enough(grd[r],want,sa,bc+256,std::numeric_limits<double>::epsilon()))throw std::runtime_error("raw FP64 GEMV mismatch");}
+  checks<<"actual_dot_shapes=1,31,32,33,257,4099\nactual_gemv_shapes=3x33,17x257\nactual_all_family_k_cpu_gpu=1\nbaseline_dot_cpu_gpu=1\nbaseline_gemv_cpu_gpu=1\nall_passed=1\n";checks.close();
   if(o.mode=="validate")return 0;
-  ensure(o.output);std::ofstream csv(o.output);csv<<"mode,stage,kernel,family,k,observed_instructions,round,order,ms,result,valid\n";
-  std::mt19937 order_rng(0x0325eedu);std::map<std::tuple<std::string,std::string,int>,std::vector<float>> measured;auto began=std::chrono::steady_clock::now();int done=0;
+  const char*job_env=std::getenv("SLURM_JOB_ID");const char*node_env=std::getenv("HOSTNAME");
+  ensure(o.output);std::ofstream csv(o.output);csv<<"mode,stage,kernel,family,k,observed_instructions,n,rows,cols,storage,arithmetic,left_seed,right_seed,round,order,ms,result,valid,job_id,node\n";
+  std::mt19937 order_rng(0x0325eedu);std::map<std::tuple<std::string,std::string,std::string,int>,std::vector<float>> measured;auto began=std::chrono::steady_clock::now();int done=0;
   auto measure_stage=[&](std::vector<caze> stage_cases){
     for(auto&c:stage_cases)for(int w=0;w<o.warmups;++w){launch(c);CK(cudaDeviceSynchronize());}
     int stage_total=o.samples*int(stage_cases.size());int stage_done=0;
@@ -117,8 +121,9 @@ int main(int argc,char**argv)try{
         else if(c.kernel=="gemv"){std::vector<double> values(rows);CK(cudaMemcpy(values.data(),pd.p,rows*sizeof(double),cudaMemcpyDeviceToHost));for(double x:values){if(!std::isfinite(x))throw std::runtime_error("nonfinite GEMV row");value+=x;}}
         else CK(cudaMemcpy(&value,result.p,sizeof value,cudaMemcpyDeviceToHost));
         if(!std::isfinite(value))throw std::runtime_error("nonfinite result");
-        measured[{c.kernel,c.family,c.k}].push_back(ms);
-        csv<<o.mode<<','<<c.stage<<','<<c.kernel<<','<<c.family<<','<<c.k<<','<<c.k<<','<<round<<','<<pos<<','<<std::setprecision(9)<<ms<<','<<std::setprecision(17)<<value<<",1\n";
+        measured[{c.stage,c.kernel,c.family,c.k}].push_back(ms);
+        const char*storage=c.family=="raw_fp64"?"float64":(c.family=="raw_fp32"||c.family=="fp32_to_fp64"?"float32":"uint32");const char*arithmetic=c.family=="raw_fp32"?"fp32":"fp64";
+        csv<<o.mode<<','<<c.stage<<','<<c.kernel<<','<<c.family<<','<<c.k<<','<<c.k<<','<<(c.kernel=="dot"?dotn:std::size_t(rows)*cols)<<','<<(c.kernel=="gemv"?rows:0)<<','<<(c.kernel=="gemv"?cols:0)<<','<<storage<<','<<arithmetic<<",0x6bd87c012a53f9e1,0xf5ef05b8551985f4,"<<round<<','<<pos<<','<<std::setprecision(9)<<ms<<','<<std::setprecision(17)<<value<<",1,"<<(job_env?job_env:"")<<','<<(node_env?node_env:"")<<'\n';
         ++done;++stage_done;
       }
       csv.flush();auto sec=std::chrono::duration<double>(std::chrono::steady_clock::now()-began).count();
@@ -127,8 +132,11 @@ int main(int argc,char**argv)try{
   };
   measure_stage(cases);
   if(o.mode=="full"){
-    auto median=[](std::vector<float> v){std::sort(v.begin(),v.end());return v[v.size()/2];};std::vector<caze> extension;
-    for(auto kernel:{std::string("dot"),std::string("gemv")}){bool any=false;for(auto f:ic::families)if(median(measured[{kernel,std::string(ic::name(f)),32}])<median(measured[{kernel,"raw_fp64",0}])){if(!any){for(auto b:{"raw_fp32","fp32_to_fp64","raw_fp64","u32_base"})extension.push_back({kernel,b,"extension",0});any=true;}for(int k:ic::extension_k)extension.push_back({kernel,std::string(ic::name(f)),"extension",k});}}
+    auto median=[](std::vector<float> v){std::sort(v.begin(),v.end());return v[v.size()/2];};auto drift=[&](const std::vector<float>&v){std::vector<float>a(v.begin(),v.begin()+v.size()/2),b(v.begin()+v.size()/2,v.end());return std::abs(median(a)-median(b))/median(a);};std::string official="initial";bool unstable=false;
+    for(auto kernel:{std::string("dot"),std::string("gemv")})for(auto base:{"raw_fp32","fp32_to_fp64","raw_fp64","u32_base"})unstable|=drift(measured[{"initial",kernel,base,0}])>0.05;
+    if(unstable){auto rerun=cases;for(auto&c:rerun)c.stage="rerun";measure_stage(rerun);official="rerun";}
+    std::vector<caze> extension;
+    for(auto kernel:{std::string("dot"),std::string("gemv")}){bool any=false;for(auto f:ic::families)if(median(measured[{official,kernel,std::string(ic::name(f)),32}])<median(measured[{official,kernel,"raw_fp64",0}])){if(!any){for(auto b:{"raw_fp32","fp32_to_fp64","raw_fp64","u32_base"})extension.push_back({kernel,b,"extension",0});any=true;}for(int k:ic::extension_k)extension.push_back({kernel,std::string(ic::name(f)),"extension",k});}}
     if(!extension.empty())measure_stage(extension);
   }
   return 0;

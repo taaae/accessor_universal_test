@@ -34,6 +34,7 @@ def audit_symbol(symbol,seq,kernel,fam,k,resource=None):
  try:loop=hot_loop(seq)
  except ValueError as e:return {"symbol":symbol,"kernel":kernel,"family":fam,"k":k,"status":"fail","reason":str(e)}
  if any(op.startswith(("LDL","STL","CALL")) for _,op,_ in loop):reasons.append("spill_or_call_in_hot_loop")
+ if any(op.startswith(("LDC","ULDC")) for _,op,_ in loop):reasons.append("constant_load_in_hot_loop")
  loads=[]
  for pos,(_,op,args) in enumerate(loop):
   regs=REG.findall(args)
@@ -50,7 +51,7 @@ def audit_symbol(symbol,seq,kernel,fam,k,resource=None):
     if fam=="rot32" and sources.count(current)<2:reasons.append("rotation_not_wrap_same_source")
     current=dest;count+=1;continue
    if uses and op.startswith("F2F.F64"):current=dest;c2=True;continue
-   if dest==current and not uses:alive=False;break
+   if dest==current:alive=False;break
   states.append((current,count,c1,c2,alive))
  if len(states)!=2:reasons.append("not_two_source_loads")
  else:
@@ -58,12 +59,14 @@ def audit_symbol(symbol,seq,kernel,fam,k,resource=None):
    if count!=k:reasons.append(f"chain_{index}_length_{count}_expected_{k}")
    if not c1 or not c2:reasons.append(f"chain_{index}_missing_conversion")
    if not alive:reasons.append(f"chain_{index}_overwritten")
+  if states[0][0]==states[1][0]:reasons.append("operand_chains_merged")
   acc=[x for x in loop if x[1].startswith("DFMA") and states[0][0] in REG.findall(x[2])[1:] and states[1][0] in REG.findall(x[2])[1:]]
   if len(acc)!=1:reasons.append(f"accumulation_consumption_count_{len(acc)}")
  total=sum(is_target(op,fam) for _,op,_ in loop)
  if total!=2*k:reasons.append(f"target_total_{total}_expected_{2*k}")
+ if any(resource.get(key) is None for key in ("registers","spill_loads","spill_stores","shared_bytes")):reasons.append("missing_ptxas_resource_evidence")
  if resource.get("spill_loads",0) or resource.get("spill_stores",0):reasons.append("ptxas_spills")
- return {"symbol":symbol,"kernel":kernel,"family":fam,"k":k,"chain_a":states[0][1] if states else -1,"chain_b":states[1][1] if len(states)>1 else -1,"target_opcode_count":total,"opcode_histogram":dict(Counter(op for _,op,_ in loop)),"registers":resource.get("registers"),"spill_loads":resource.get("spill_loads"),"spill_stores":resource.get("spill_stores"),"shared_bytes":resource.get("shared_bytes"),"status":"pass" if not reasons else "fail","reason":";".join(dict.fromkeys(reasons))}
+ return {"symbol":symbol,"kernel":kernel,"family":fam,"k":k,"chain_a":states[0][1] if states else -1,"chain_b":states[1][1] if len(states)>1 else -1,"target_opcode_count":total,"loop_instruction_count":len(loop),"opcode_histogram":dict(Counter(op for _,op,_ in loop)),"registers":resource.get("registers"),"spill_loads":resource.get("spill_loads"),"spill_stores":resource.get("spill_stores"),"shared_bytes":resource.get("shared_bytes"),"status":"pass" if not reasons else "fail","reason":";".join(dict.fromkeys(reasons))}
 def resources(text):
  out={};current=None
  for line in text.splitlines():
