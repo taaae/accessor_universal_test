@@ -35,3 +35,16 @@ deferred body runs four rounds for every lane rather than once under a leader
 predicate. The successful preflight must therefore retain a hash-bound manual
 inspection of the actual Hopper loop and predicate dataflow. The checker alone
 must not be described as proof of that property.
+
+The reviewer then inspected the actual Hopper artifact independently. The
+review is bound to SASS SHA-256
+`e01239c142bf3e5b59cb2b529e46ac2b5e57ad31de6b20a660908da8e0e51d32`,
+which both preflights `460481` and `460482` reproduced. It confirmed all 16
+symbols, argument roles, scalar load pairing, FP32 and FP64 reconstruction
+chains, baseline and reducer lineage, and the absence of spills and forbidden
+operations. For both deferred kernels it traced the warp ownership and tail
+predicates, the loop counter from zero through four dynamic rounds, the single
+loop-carried subtotal, the warp-uniform invalid-block branch, and unpredicated
+scale application by every valid lane. No leader predicate or processing-region
+shuffle was present. The reviewer reran the hardened audit and all 32 tests,
+normally and under `python -O`, and reported no material blocker.

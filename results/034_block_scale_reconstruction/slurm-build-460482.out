@@ -1,0 +1,113 @@
+-- The CXX compiler identification is GNU 11.5.0
+-- The CUDA compiler identification is NVIDIA 13.1.115
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Detecting CUDA compiler ABI info
+-- Detecting CUDA compiler ABI info - done
+-- Check for working CUDA compiler: /storage/apps/opt/spack/opt/spack/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spac/linux-x86_64_v3/cuda-13.1.1-ob4osjedbwoxkf5l3w5bvc3kycejthpt/bin/nvcc - skipped
+-- Detecting CUDA compile features
+-- Detecting CUDA compile features - done
+-- Found CUDAToolkit: /storage/apps/opt/spack/opt/spack/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spac/linux-x86_64_v3/cuda-13.1.1-ob4osjedbwoxkf5l3w5bvc3kycejthpt/include (found version "13.1.115") 
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
+-- Configuring done (2.9s)
+-- Generating done (2.3s)
+-- Build files have been written to: /storage/home/timofeirusanov/accessor_universal_test_block_scale/build-block-scale-reconstruction-460482
+[100%] Building CXX object CMakeFiles/block_scale_reconstruction_core_test.dir/tests/block_scale_reconstruction_core_test.cpp.o
+[100%] Linking CXX executable bin/block_scale_reconstruction_core_test
+[100%] Built target block_scale_reconstruction_core_test
+Building CUDA object CMakeFiles/block_scale_reconstruction_bench.dir/src/block_scale_reconstruction_bench.cu.o
+ptxas info    : 0 bytes gmem
+ptxas info    : Compiling entry function '_ZN3aut26block_scale_reconstruction15reduce64_kernelEPKdPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut26block_scale_reconstruction15reduce64_kernelEPKdPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.124 ms
+ptxas info    : Compiling entry function '_ZN3aut26block_scale_reconstruction15reduce32_kernelEPKfPf' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut26block_scale_reconstruction15reduce32_kernelEPKfPf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 11 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 4.038 ms
+ptxas info    : Compiling entry function '_ZN3aut26block_scale_reconstruction12raw64_kernelEPKdS2_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut26block_scale_reconstruction12raw64_kernelEPKdS2_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.271 ms
+ptxas info    : Compiling entry function '_ZN3aut26block_scale_reconstruction16widened32_kernelEPKfS2_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut26block_scale_reconstruction16widened32_kernelEPKfS2_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.059 ms
+ptxas info    : Compiling entry function '_ZN3aut26block_scale_reconstruction12raw32_kernelEPKfS2_mPf' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut26block_scale_reconstruction12raw32_kernelEPKfS2_mPf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 4.843 ms
+ptxas info    : Compiling entry function '_ZN3aut26block_scale_reconstruction26deferred_local_b128_kernelIdEEvPKfS3_PKT_S6_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut26block_scale_reconstruction26deferred_local_b128_kernelIdEEvPKfS3_PKT_S6_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 29 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 7.117 ms
+ptxas info    : Compiling entry function '_ZN3aut26block_scale_reconstruction26deferred_local_b128_kernelIfEEvPKfS3_PKT_S6_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut26block_scale_reconstruction26deferred_local_b128_kernelIfEEvPKfS3_PKT_S6_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 29 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 7.077 ms
+ptxas info    : Compiling entry function '_ZN3aut26block_scale_reconstruction20reconstruct64_kernelILi128EdEEvPKfS3_PKT0_S6_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut26block_scale_reconstruction20reconstruct64_kernelILi128EdEEvPKfS3_PKT0_S6_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.519 ms
+ptxas info    : Compiling entry function '_ZN3aut26block_scale_reconstruction20reconstruct64_kernelILi32EdEEvPKfS3_PKT0_S6_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut26block_scale_reconstruction20reconstruct64_kernelILi32EdEEvPKfS3_PKT0_S6_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.515 ms
+ptxas info    : Compiling entry function '_ZN3aut26block_scale_reconstruction20reconstruct64_kernelILi16EdEEvPKfS3_PKT0_S6_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut26block_scale_reconstruction20reconstruct64_kernelILi16EdEEvPKfS3_PKT0_S6_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.505 ms
+ptxas info    : Compiling entry function '_ZN3aut26block_scale_reconstruction20reconstruct64_kernelILi128EfEEvPKfS3_PKT0_S6_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut26block_scale_reconstruction20reconstruct64_kernelILi128EfEEvPKfS3_PKT0_S6_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.563 ms
+ptxas info    : Compiling entry function '_ZN3aut26block_scale_reconstruction20reconstruct64_kernelILi32EfEEvPKfS3_PKT0_S6_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut26block_scale_reconstruction20reconstruct64_kernelILi32EfEEvPKfS3_PKT0_S6_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.573 ms
+ptxas info    : Compiling entry function '_ZN3aut26block_scale_reconstruction20reconstruct64_kernelILi16EfEEvPKfS3_PKT0_S6_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut26block_scale_reconstruction20reconstruct64_kernelILi16EfEEvPKfS3_PKT0_S6_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.615 ms
+ptxas info    : Compiling entry function '_ZN3aut26block_scale_reconstruction20reconstruct32_kernelILi128EEEvPKfS3_S3_S3_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut26block_scale_reconstruction20reconstruct32_kernelILi128EEEvPKfS3_S3_S3_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.501 ms
+ptxas info    : Compiling entry function '_ZN3aut26block_scale_reconstruction20reconstruct32_kernelILi32EEEvPKfS3_S3_S3_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut26block_scale_reconstruction20reconstruct32_kernelILi32EEEvPKfS3_S3_S3_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.488 ms
+ptxas info    : Compiling entry function '_ZN3aut26block_scale_reconstruction20reconstruct32_kernelILi16EEEvPKfS3_S3_S3_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut26block_scale_reconstruction20reconstruct32_kernelILi16EEEvPKfS3_S3_S3_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.500 ms
+Linking CUDA executable bin/block_scale_reconstruction_bench
+Built target block_scale_reconstruction_bench
+block_scale_reconstruction_core_test passed
+SASS audit passed: 16 timed kernels
+2c15934e478e315cb6d22236ee2aab21cefef5da
+ae9e60226560cdf4e1b6d56d66cbc165d2b21579b1f669f3b57bbf296626c9fb  /storage/home/timofeirusanov/accessor_universal_test_block_scale/build-block-scale-reconstruction-460482/bin/block_scale_reconstruction_bench
+e01239c142bf3e5b59cb2b529e46ac2b5e57ad31de6b20a660908da8e0e51d32  /storage/home/timofeirusanov/accessor_universal_test_block_scale/results/034_block_scale_reconstruction/preflight_460482/block_scale_reconstruction.sass.txt
+0a6d508208722d651b1e12cb42ce9534ff3d1011c24e47ce29f37314a9c84dc8  /storage/home/timofeirusanov/accessor_universal_test_block_scale/results/034_block_scale_reconstruction/preflight_460482/assembly_audit.json
+PREFLIGHT_COMPLETE
