@@ -246,6 +246,20 @@ target_compile_options(block_scale_dot_bench PRIVATE
 set_target_properties(block_scale_dot_bench PROPERTIES CUDA_RUNTIME_LIBRARY Static
   CUDA_SEPARABLE_COMPILATION OFF RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
+add_executable(block_scale_reconstruction_core_test tests/block_scale_reconstruction_core_test.cpp)
+target_include_directories(block_scale_reconstruction_core_test PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_compile_options(block_scale_reconstruction_core_test PRIVATE -O3)
+set_target_properties(block_scale_reconstruction_core_test PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+add_test(NAME block_scale_reconstruction_core_test COMMAND block_scale_reconstruction_core_test)
+
+add_executable(block_scale_reconstruction_bench src/block_scale_reconstruction_bench.cu)
+target_include_directories(block_scale_reconstruction_bench PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_compile_options(block_scale_reconstruction_bench PRIVATE
+  "$<$<COMPILE_LANGUAGE:CXX>:-O3>"
+  "$<$<COMPILE_LANGUAGE:CUDA>:-O3;-lineinfo;-Xptxas=-v;--ftz=false>")
+set_target_properties(block_scale_reconstruction_bench PROPERTIES CUDA_RUNTIME_LIBRARY Static
+  CUDA_SEPARABLE_COMPILATION OFF RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+
 add_executable(instruction_cost_bench src/instruction_cost_bench.cu)
 target_include_directories(instruction_cost_bench PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_compile_options(instruction_cost_bench PRIVATE
