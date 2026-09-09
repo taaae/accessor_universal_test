@@ -1,6 +1,6 @@
 # Instruction cost sweep progress
 
-- Stage: local implementation committed; cluster preflight blocked by network.
+- Stage: CUDA preflight retry after compile syntax fix.
 - Branch: `codex/instruction-cost-sweep`.
 - Contract commit: `eedebba`.
 - Implementation commit: `b69bef9` (pushed to origin).
@@ -8,8 +8,11 @@
   Python compilation, shell syntax, and `git diff --check` passed. Review found
   and prompted fixes for FP32 GEMV allocation, Release assertions, GPU decoder
   comparison, and conditional extensions.
-- Blocker: three SSH connections to `10.152.225.230:22` timed out before
-  authentication on 2026-09-09. No Slurm jobs were submitted.
-- Next action: when cluster/VPN reachability returns, inspect the remote status,
-  fast-forward it to `b69bef9`, inspect the user queue, and submit the zero-GPU
-  compile/SASS preflight.
+- Cluster: VPN restored. A separate remote worktree at
+  `/storage/home/timofeirusanov/accessor_universal_test_instruction_cost` keeps
+  prior untracked result files untouched.
+- Preflight job `460369` requested 0 GPUs, 8 CPUs, 16 GiB, and 15 minutes. It
+  failed during CUDA compilation at `src/instruction_cost_bench.cu:111` due to
+  a malformed compressed lambda body. No executable or SASS was produced.
+- Next action: push the syntax fix, fast-forward the remote worktree, and rerun
+  the zero-GPU preflight after confirming the user queue is empty.

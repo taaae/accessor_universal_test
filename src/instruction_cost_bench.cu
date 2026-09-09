@@ -106,7 +106,20 @@ int main(int argc,char**argv)try{
   auto measure_stage=[&](std::vector<caze> stage_cases){
     for(auto&c:stage_cases)for(int w=0;w<o.warmups;++w){launch(c);CK(cudaDeviceSynchronize());}
     int stage_total=o.samples*int(stage_cases.size());int stage_done=0;
-    for(int round=0;round<o.samples;++round){std::shuffle(stage_cases.begin(),stage_cases.end(),order_rng);for(int pos=0;pos<int(stage_cases.size());++pos){auto&c=stage_cases[pos];float ms=timed([&]{launch(c);});double value=0;if(c.family=="raw_fp32"){float x;CK(cudaMemcpy(&x,pf.p,sizeof x,cudaMemcpyDeviceToHost));value=x;}else if(c.kernel=="gemv")CK(cudaMemcpy(&value,pd.p,sizeof value,cudaMemcpyDeviceToHost));else CK(cudaMemcpy(&value,result.p,sizeof value,cudaMemcpyDeviceToHost));if(!std::isfinite(value))throw std::runtime_error("nonfinite result");measured[{c.kernel,c.family,c.k}].push_back(ms);csv<<o.mode<<','<<c.stage<<','<<c.kernel<<','<<c.family<<','<<c.k<<','<<c.k<<','<<round<<','<<pos<<','<<std::setprecision(9)<<ms<<','<<std::setprecision(17)<<value<<",1\n";++done;++stage_done;}csv.flush();auto sec=std::chrono::duration<double>(std::chrono::steady_clock::now()-began).count();std::cout<<"progress stage="<<stage_cases.front().stage<<" round="<<round+1<<'/'<<o.samples<<" cases="<<stage_done<<'/'<<stage_total<<" elapsed_s="<<sec<<std::endl;}
+    for(int round=0;round<o.samples;++round){
+      std::shuffle(stage_cases.begin(),stage_cases.end(),order_rng);
+      for(int pos=0;pos<int(stage_cases.size());++pos){
+        auto&c=stage_cases[pos];float ms=timed([&]{launch(c);});double value=0;
+        if(c.family=="raw_fp32"){float x;CK(cudaMemcpy(&x,pf.p,sizeof x,cudaMemcpyDeviceToHost));value=x;}
+        else if(c.kernel=="gemv") CK(cudaMemcpy(&value,pd.p,sizeof value,cudaMemcpyDeviceToHost));
+        else CK(cudaMemcpy(&value,result.p,sizeof value,cudaMemcpyDeviceToHost));
+        if(!std::isfinite(value))throw std::runtime_error("nonfinite result");
+        measured[{c.kernel,c.family,c.k}].push_back(ms);
+        csv<<o.mode<<','<<c.stage<<','<<c.kernel<<','<<c.family<<','<<c.k<<','<<c.k<<','<<round<<','<<pos<<','<<std::setprecision(9)<<ms<<','<<std::setprecision(17)<<value<<",1\n";
+        ++done;++stage_done;
+      }
+      csv.flush();auto sec=std::chrono::duration<double>(std::chrono::steady_clock::now()-began).count();
+      std::cout<<"progress stage="<<stage_cases.front().stage<<" round="<<round+1<<'/'<<o.samples<<" cases="<<stage_done<<'/'<<stage_total<<" elapsed_s="<<sec<<std::endl;
     }
   };
   measure_stage(cases);
