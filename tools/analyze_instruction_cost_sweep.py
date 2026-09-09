@@ -32,17 +32,28 @@ def main():
  if len(initial)!=3600: raise ValueError(f"expected 3600 initial rows, got {len(initial)}")
  keys=defaultdict(list)
  for r in rows:
-  ms=float(r["ms"]);assert math.isfinite(ms) and ms>0 and r["valid"]=="1";keys[(r["stage"],r["kernel"],r["family"],int(r["k"]))].append(ms)
+  ms=float(r["ms"])
+  if not math.isfinite(ms) or ms<=0 or r["valid"]!="1":raise ValueError("nonpositive, nonfinite, or invalid timing row")
+  keys[(r["stage"],r["kernel"],r["family"],int(r["k"]))].append(ms)
  initial_keys=[k for k in keys if k[0]=="initial"]
  if len(initial_keys)!=72 or any(len(v)!=50 for v in keys.values()):raise ValueError("group inventory/count mismatch")
  expected={("initial",kernel,fam,k) for kernel in ("dot","gemv") for fam in FAMS for k in (1,2,4,8,12,16,24,32)}|{("initial",kernel,b,0) for kernel in ("dot","gemv") for b in ("raw_fp32","fp32_to_fp64","raw_fp64","u32_base")}
  if set(initial_keys)!=expected:raise ValueError("exact initial case inventory mismatch")
+ rerun_keys={k for k in keys if k[0]=="rerun"}
+ expected_rerun={("rerun",)+k[1:] for k in expected}
+ if rerun_keys and rerun_keys!=expected_rerun:raise ValueError("incomplete rerun inventory")
  stage_round=defaultdict(list)
  for r in rows:stage_round[(r["stage"],int(r["round"]))].append(int(r["order"]))
  if any(sorted(v)!=list(range(len(v))) for v in stage_round.values()):raise ValueError("duplicate or missing execution-order index")
  if any({int(r["round"]) for r in rows if (r["stage"],r["kernel"],r["family"],int(r["k"]))==key}!=set(range(50)) for key in keys):raise ValueError("round inventory mismatch")
  for key in [k for k in keys if k[0]=="extension"]:
   if key[3] not in (0,48,64):raise ValueError("bad extension K")
+ extension_keys={k for k in keys if k[0]=="extension"}
+ for kernel in ("dot","gemv"):
+  present={k for k in extension_keys if k[1]==kernel};official="rerun" if rerun_keys else "initial";raw=np.median(keys[(official,kernel,"raw_fp64",0)])
+  eligible={fam for fam in FAMS if np.median(keys[(official,kernel,fam,32)])<raw}
+  wanted={("extension",kernel,b,0) for b in ("raw_fp32","fp32_to_fp64","raw_fp64","u32_base")}|{("extension",kernel,fam,k) for fam in eligible for k in (48,64)} if eligible else set()
+  if present!=wanted:raise ValueError(f"extension inventory mismatch for {kernel}")
  audit=json.loads(Path(a.audit).read_text());passed={(x["kernel"],x["family"],int(x["k"])) for x in audit if x["status"]=="pass"}
  plotted={(r["kernel"],r["family"],int(r["k"])) for r in rows if r["family"] in FAMS}
  if not plotted<=passed:raise ValueError(f"plotted cases lack passing assembly audit: {sorted(plotted-passed)}")
