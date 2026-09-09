@@ -29,3 +29,12 @@
 - Current approved curves are `add32f`, `mul32f`, `fma32f`, and `rot32` under
   `instruction_cost_fp32_four_curve_amendment.md`. The FP64 amendment is
   historical and superseded. A new zero-GPU preflight is next after local tests.
+- FP32 implementation commit `6797d4d`; validation/provenance follow-up commit
+  `d323179`. Local Release host test, six SASS-audit unit tests, Python compile,
+  shell syntax and diff checks pass.
+- Zero-GPU preflight `460381` was submitted from `6797d4d` with the user queue
+  empty. VPN connectivity failed during every status check, so its outcome is
+  not yet collected. Its 15-minute Slurm limit prevents an indefinite job.
+- TCP connections to `10.152.225.230:22` continue to time out. When VPN access
+  returns, inspect `460381`, fast-forward the remote to `d323179`, and submit a
+  fresh zero-GPU preflight. Do not use the older binary for smoke or timing.
