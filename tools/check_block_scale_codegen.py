@@ -5,7 +5,7 @@ import argparse,csv,json,re
 from collections import Counter
 from pathlib import Path
 FUN=re.compile(r"(?:Function\s*:\s*|\.section\s+\.text\.)(.+?)\s*$")
-INS=re.compile(r"/\*([0-9a-fA-F]+)\*/\s+(?:@!?P\d+\s+)?([A-Z][A-Z0-9_.]*)(?:\s+([^;]*))?;")
+INS=re.compile(r"/\*([0-9a-fA-F]+)\*/\s+(@!?P\d+\s+)?([A-Z][A-Z0-9_.]*)(?:\s+([^;]*))?;")
 CASE=re.compile(r"(per_element|deferred)_kernelILi(16|32|128)E([fd])E")
 BASE={"raw32_kernel":"raw_fp32","widened32_kernel":"fp32_to_fp64","raw64_kernel":"raw_fp64"}
 REDUCE={"reduce32_kernel":"reduce32","reduce64_kernel":"reduce64"}
@@ -16,7 +16,7 @@ def parse(text):
   m=FUN.search(line)
   if m:cur=m.group(1).strip();out.setdefault(cur,[]);continue
   m=INS.search(line)
-  if m and cur:out[cur].append((int(m.group(1),16),m.group(2),m.group(3) or ""))
+  if m and cur:out[cur].append((int(m.group(1),16),m.group(3),((m.group(2) or "")+(m.group(4) or "")).strip()))
  return out
 def resources(text):
  out={};cur=None
@@ -55,24 +55,37 @@ def row(sym,kind,b,scale,seq,res):
  dmul=sum(op.startswith("DMUL") for op in ops);dfma=sum(op.startswith("DFMA") for op in ops);shfl=sum(op.startswith("SHFL") for op in ops)
  traced_loads,traced_dmuls,traced_dfmas=lineage(seq)
  if kind=="per_element" and (dmul!=2 or dfma!=1 or shfl!=0):reasons.append("generic_reconstruction_shape")
- if kind=="deferred" and (dmul!=1 or dfma!=2 or shfl!=(4 if b==16 else 5)):reasons.append("deferred_reduction_shape")
+ if kind=="deferred" and (dmul!=1 or dfma!=2 or shfl!=(8 if b==16 else 10)):reasons.append("deferred_reduction_shape")
  if kind in ("per_element","deferred"):
   if len(loads)!=4 or len(loads64)!=(0 if scale=="fp32" else 2):reasons.append("scaled_load_width_or_count")
   expected_widens=4 if scale=="fp32" else 2
   if sum(op.startswith("F2F.F64.F32") for op in ops)!=expected_widens:reasons.append("widen_count")
  if kind=="per_element":
   products=[x for x in traced_dmuls if len(x[2])==2]
-  if len(products)!=2 or products[0][2]&products[1][2] or len(products[0][2]|products[1][2])!=4:reasons.append("reconstruction_load_lineage")
-  elif not any(len(x[1])>=2 and x[1][0]==products[0][2] and x[1][1]==products[1][2] for x in traced_dfmas):reasons.append("dot_fma_does_not_consume_reconstructed_operands")
+  wanted=[{"load0","load2"},{"load1","load3"}]
+  if len(products)!=2 or [x[2] for x in products]!=wanted:reasons.append("reconstruction_pointer_pairing")
+  elif len(traced_dfmas)!=1 or traced_dfmas[0][1][:2]!=wanted:reasons.append("dot_fma_does_not_consume_reconstructed_operands")
+  elif not(products[0][0]+1==products[1][0] and products[1][0]+1==traced_dfmas[0][0]):reasons.append("intervening_reconstruction_operation")
  if kind=="deferred":
-  payload=[x for x in traced_dfmas if len(x[1])>=2 and len(x[1][0])==1 and len(x[1][1])==1]
-  scale_products=[x for x in traced_dmuls if len(x[2])==2]
+  payload=[x for x in traced_dfmas if len(x[1])>=2 and x[1][0]=={"load0"} and x[1][1]=={"load1"}]
+  scale_products=[x for x in traced_dmuls if len(x[1])>=2 and {frozenset(x[1][0]),frozenset(x[1][1])}=={frozenset({"load2"}),frozenset({"load3"})}]
   shfl_pos=[i for i,(_,op,_) in enumerate(seq) if op.startswith("SHFL")]
-  if not payload or not scale_products or not shfl_pos or not(payload[0][0]<min(shfl_pos)<scale_products[-1][0]):reasons.append("deferred_operation_order_or_lineage")
-  elif not any(x[0]>scale_products[-1][0] and scale_products[-1][2].issubset(x[2]) for x in traced_dfmas):reasons.append("deferred_final_fma_lineage")
+  shfl_args=[args for _,op,args in seq if op.startswith("SHFL")]
+  expected_offsets=("0x8","0x4","0x2","0x1") if b==16 else ("0x10","0x8","0x4","0x2","0x1")
+  expected_control="0x101f" if b==16 else "0x1f"
+  if any(sum(f", {off}, {expected_control}" in x for x in shfl_args)!=2 for off in expected_offsets):reasons.append("shuffle_width_or_offsets")
+  final=[x for x in traced_dfmas if len(x[1])>=2 and x[1][0]=={"load0","load1"} and x[1][1]=={"load2","load3"}]
+  if len(payload)!=1 or len(scale_products)!=1 or len(final)!=1 or not shfl_pos or not(payload[0][0]<min(shfl_pos)<=max(shfl_pos)<scale_products[0][0]<final[0][0]):reasons.append("deferred_completed_subtotal_lineage")
+  if scale_products and final:
+   positions=[traced_loads[2][0],traced_loads[3][0],scale_products[0][0],final[0][0]]
+   predicates=[seq[pos][2].split()[0] if seq[pos][2].startswith("@!P") else "" for pos in positions]
+   if not predicates[0] or len(set(predicates))!=1:reasons.append("deferred_leader_predicate")
  if kind=="raw_fp32" and (sum(op.startswith("FFMA") for op in ops)!=1 or len(loads)!=2 or loads64):reasons.append("raw_fp32_shape")
  if kind=="fp32_to_fp64" and (dfma!=1 or len(loads)!=2 or loads64 or sum(op.startswith("F2F.F64.F32") for op in ops)!=2):reasons.append("widened_fp32_shape")
  if kind=="raw_fp64" and (dfma!=1 or len(loads)!=2 or len(loads64)!=2):reasons.append("raw_fp64_shape")
+ if kind in ("raw_fp32","fp32_to_fp64","raw_fp64"):
+  fmas=traced_dfmas if kind!="raw_fp32" else []
+  if kind!="raw_fp32" and (len(fmas)!=1 or fmas[0][1][:2]!=[{"load0"},{"load1"}]):reasons.append("baseline_fma_load_lineage")
  if kind=="reduce32" and (len(loads)!=1 or not any(op.startswith("FADD") for op in ops)):reasons.append("reduce32_shape")
  if kind=="reduce64" and (len(loads)!=1 or not any(op.startswith("DADD") for op in ops)):reasons.append("reduce64_shape")
  for k in ("registers","spill_loads","spill_stores","shared_bytes"):

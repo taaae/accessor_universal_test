@@ -17,3 +17,11 @@
   predicate review plus appropriate checker hardening pass.
 - Next: commit and push, create the separate remote worktree, and run the
   authorized zero-GPU preflight to obtain actual machine code.
+- Zero-GPU preflight `460435` compiled every specialization at commit
+  `2ddfbb3`, passed the host test and reported zero spills. The initial checker
+  intentionally failed because it expected one shuffle instruction per FP64
+  value; Hopper emits one `SHFL.DOWN` for each 32-bit half. Its SASS and build
+  log are preserved under `results/033_block_scale_dot/preflight_460435/`.
+  Inspection confirmed 8 shuffles for B16 and 10 for B32/B128. It also exposed
+  concrete register/pointer lineages used to harden the checker. A new preflight
+  is required after committing these checks.

@@ -51,9 +51,6 @@ void launch_first(data&d,const variant&v){if(v.path=="baseline"){if(v.id=="raw_f
 #undef LAUNCH
 void launch(data&d,const variant&v){launch_first(d,v);if(v.id=="raw_fp32")bs::reduce32_kernel<<<1,bs::cta_threads>>>(d.p32.p,d.out32.p);else bs::reduce64_kernel<<<1,bs::cta_threads>>>(d.p64.p,d.out64.p);}
 double result(data&d,const variant&v){if(v.id=="raw_fp32"){float x;CK(cudaMemcpy(&x,d.out32.p,4,cudaMemcpyDeviceToHost));return x;}double x;CK(cudaMemcpy(&x,d.out64.p,8,cudaMemcpyDeviceToHost));return x;}
-struct ref{long double sum{},abs{};};
-ref reference(const data&,const variant&,std::size_t){return {};}
-bool close(double got,long double want,long double sumabs,std::size_t terms,bool fp32){long double eps=fp32?std::numeric_limits<float>::epsilon():std::numeric_limits<double>::epsilon();long double bound=64*eps*(terms+1024)*sumabs+64*eps;return std::abs((long double)got-want)<=bound;}
 void validate_dataset(std::size_t n,int fixture,std::ofstream&checks,long double&maxerr,long double&maxbound,int&count){const bool edge=fixture==1,positive=fixture==2;auto d=prepare(n,fixture);auto vs=variants();std::map<std::tuple<std::string,int>,double> width;
  for(const auto&v:vs){launch(d,v);CK(cudaDeviceSynchronize());double got=result(d,v);if(!std::isfinite(got))throw std::runtime_error("nonfinite validation result");long double want=0,sa=0;
   if(v.path=="baseline"){for(std::size_t i=0;i<n;++i){long double l=positive?.25f:bs::source_value(bs::value_left_seed,i),r=positive?.5f:bs::source_value(bs::value_right_seed,i);if(edge&&i<12){static const float q[]{0.f,1.f,-1.f,std::nextafter(1.f,2.f),std::nextafter(-1.f,-2.f),.5f,-.5f,.25f,-.25f,1.f,-1.f,0.f};l=q[i];r=q[11-i];}long double t=l*r;want+=t;sa+=std::abs(t);}}

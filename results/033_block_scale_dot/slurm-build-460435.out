@@ -1,0 +1,130 @@
+-- The CXX compiler identification is GNU 11.5.0
+-- The CUDA compiler identification is NVIDIA 13.1.115
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Detecting CUDA compiler ABI info
+-- Detecting CUDA compiler ABI info - done
+-- Check for working CUDA compiler: /storage/apps/opt/spack/opt/spack/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spac/linux-x86_64_v3/cuda-13.1.1-ob4osjedbwoxkf5l3w5bvc3kycejthpt/bin/nvcc - skipped
+-- Detecting CUDA compile features
+-- Detecting CUDA compile features - done
+-- Found CUDAToolkit: /storage/apps/opt/spack/opt/spack/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spack_path_placeholder__/__spac/linux-x86_64_v3/cuda-13.1.1-ob4osjedbwoxkf5l3w5bvc3kycejthpt/include (found version "13.1.115") 
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
+-- Configuring done (3.1s)
+-- Generating done (3.2s)
+-- Build files have been written to: /storage/home/timofeirusanov/accessor_universal_test_block_scale/build-block-scale-460435
+[100%] Building CXX object CMakeFiles/block_scale_core_test.dir/tests/block_scale_core_test.cpp.o
+[100%] Linking CXX executable bin/block_scale_core_test
+[100%] Built target block_scale_core_test
+[  0%] Building CUDA object CMakeFiles/block_scale_dot_bench.dir/src/block_scale_dot_bench.cu.o
+/storage/home/timofeirusanov/accessor_universal_test_block_scale/src/block_scale_dot_bench.cu(55): warning #177-D: function "<unnamed>::reference" was declared but never referenced
+  ref reference(const data&,const variant&,std::size_t){return {};}
+      ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/storage/home/timofeirusanov/accessor_universal_test_block_scale/src/block_scale_dot_bench.cu(56): warning #177-D: function "<unnamed>::close" was declared but never referenced
+  bool close(double got,long double want,long double sumabs,std::size_t terms,bool fp32){long double eps=fp32?std::numeric_limits<float>::epsilon():std::numeric_limits<double>::epsilon();long double bound=64*eps*(terms+1024)*sumabs+64*eps;return std::abs((long double)got-want)<=bound;}
+       ^
+
+ptxas info    : 0 bytes gmem
+ptxas info    : Compiling entry function '_ZN3aut11block_scale15reduce64_kernelEPKdPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut11block_scale15reduce64_kernelEPKdPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.619 ms
+ptxas info    : Compiling entry function '_ZN3aut11block_scale15reduce32_kernelEPKfPf' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut11block_scale15reduce32_kernelEPKfPf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 11 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 4.040 ms
+ptxas info    : Compiling entry function '_ZN3aut11block_scale12raw64_kernelEPKdS2_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut11block_scale12raw64_kernelEPKdS2_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.069 ms
+ptxas info    : Compiling entry function '_ZN3aut11block_scale16widened32_kernelEPKfS2_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut11block_scale16widened32_kernelEPKfS2_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.359 ms
+ptxas info    : Compiling entry function '_ZN3aut11block_scale12raw32_kernelEPKfS2_mPf' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut11block_scale12raw32_kernelEPKfS2_mPf
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 4.880 ms
+ptxas info    : Compiling entry function '_ZN3aut11block_scale15deferred_kernelILi128EdEEvPKfS3_PKT0_S6_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut11block_scale15deferred_kernelILi128EdEEvPKfS3_PKT0_S6_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 28 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 8.234 ms
+ptxas info    : Compiling entry function '_ZN3aut11block_scale15deferred_kernelILi32EdEEvPKfS3_PKT0_S6_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut11block_scale15deferred_kernelILi32EdEEvPKfS3_PKT0_S6_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 7.375 ms
+ptxas info    : Compiling entry function '_ZN3aut11block_scale15deferred_kernelILi16EdEEvPKfS3_PKT0_S6_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut11block_scale15deferred_kernelILi16EdEEvPKfS3_PKT0_S6_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 6.886 ms
+ptxas info    : Compiling entry function '_ZN3aut11block_scale15deferred_kernelILi128EfEEvPKfS3_PKT0_S6_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut11block_scale15deferred_kernelILi128EfEEvPKfS3_PKT0_S6_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 8.176 ms
+ptxas info    : Compiling entry function '_ZN3aut11block_scale15deferred_kernelILi32EfEEvPKfS3_PKT0_S6_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut11block_scale15deferred_kernelILi32EfEEvPKfS3_PKT0_S6_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 27 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 7.488 ms
+ptxas info    : Compiling entry function '_ZN3aut11block_scale15deferred_kernelILi16EfEEvPKfS3_PKT0_S6_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut11block_scale15deferred_kernelILi16EfEEvPKfS3_PKT0_S6_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 27 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 6.961 ms
+ptxas info    : Compiling entry function '_ZN3aut11block_scale18per_element_kernelILi128EdEEvPKfS3_PKT0_S6_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut11block_scale18per_element_kernelILi128EdEEvPKfS3_PKT0_S6_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.571 ms
+ptxas info    : Compiling entry function '_ZN3aut11block_scale18per_element_kernelILi32EdEEvPKfS3_PKT0_S6_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut11block_scale18per_element_kernelILi32EdEEvPKfS3_PKT0_S6_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.550 ms
+ptxas info    : Compiling entry function '_ZN3aut11block_scale18per_element_kernelILi16EdEEvPKfS3_PKT0_S6_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut11block_scale18per_element_kernelILi16EdEEvPKfS3_PKT0_S6_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.552 ms
+ptxas info    : Compiling entry function '_ZN3aut11block_scale18per_element_kernelILi128EfEEvPKfS3_PKT0_S6_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut11block_scale18per_element_kernelILi128EfEEvPKfS3_PKT0_S6_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.625 ms
+ptxas info    : Compiling entry function '_ZN3aut11block_scale18per_element_kernelILi32EfEEvPKfS3_PKT0_S6_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut11block_scale18per_element_kernelILi32EfEEvPKfS3_PKT0_S6_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.610 ms
+ptxas info    : Compiling entry function '_ZN3aut11block_scale18per_element_kernelILi16EfEEvPKfS3_PKT0_S6_mPd' for 'sm_90'
+ptxas info    : Function properties for _ZN3aut11block_scale18per_element_kernelILi16EfEEvPKfS3_PKT0_S6_mPd
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 5.604 ms
+[100%] Linking CUDA executable bin/block_scale_dot_bench
+[100%] Built target block_scale_dot_bench
+block_scale_core_test passed
+Traceback (most recent call last):
+  File "/storage/home/timofeirusanov/accessor_universal_test_block_scale/tools/check_block_scale_codegen.py", line 101, in <module>
+    if __name__=="__main__":main()
+  File "/storage/home/timofeirusanov/accessor_universal_test_block_scale/tools/check_block_scale_codegen.py", line 98, in main
+    p=argparse.ArgumentParser();p.add_argument("--sass",required=True);p.add_argument("--build-log",required=True);p.add_argument("--output-dir",required=True);a=p.parse_args();rows=run(Path(a.sass).read_text(errors="replace"),Path(a.build_log).read_text(errors="replace"));out=Path(a.output_dir);out.mkdir(parents=True,exist_ok=True);(out/"assembly_audit.json").write_text(json.dumps(rows,indent=2));
+  File "/storage/home/timofeirusanov/accessor_universal_test_block_scale/tools/check_block_scale_codegen.py", line 95, in run
+    if bad:raise ValueError(f"SASS audit failed: {bad}")
+ValueError: SASS audit failed: [{'symbol': '_ZN3aut11block_scale15deferred_kernelILi128EdEEvPKfS3_PKT0_S6_mPd', 'kind': 'deferred', 'B': 128, 'scale_type': 'fp64', 'dmul': 1, 'dfma': 2, 'shuffle': 10, 'opcode_histogram': {'LDC': 2, 'S2R': 4, 'ULDC.64': 5, 'UIADD3': 1, 'CS2R': 3, 'UIADD3.X': 1, 'USHF.R.U64': 1, 'USHF.R.U32.HI': 1, 'IMAD.WIDE.U32': 3, 'ISETP.GE.U32.AND': 4, 'ISETP.GE.U32.AND.EX': 3, 'BRA': 4, 'SHF.R.U32.HI': 1, 'IMAD.SHL.U32': 4, 'LOP3.LUT': 3, 'IADD3': 9, 'IMAD.MOV.U32': 3, 'IMAD.X': 7, 'SHF.L.U64.HI': 3, 'IADD3.X': 2, 'ISETP.GE.U32.OR.EX': 1, 'LDG.E': 2, 'VIADD': 1, 'ISETP.NE.AND': 2, 'F2F.F64.F32': 2, 'DFMA': 2, 'ISETP.NE.OR': 1, 'LDC.64': 3, 'LDG.E.64': 2, 'SHFL.DOWN': 10, 'DADD': 13, 'DMUL': 1, 'S2UR': 1, 'UMOV': 1, 'ULEA': 1, 'LEA': 1, 'ISETP.GT.U32.AND': 7, 'STS.64': 9, 'BAR.SYNC.DEFER_BLOCKING': 9, 'LDS.64': 17, 'EXIT': 2, 'STG.E.64': 1, 'NOP': 15}, 'registers': 28, 'shared_bytes': 2048, 'spill_loads': 0, 'spill_stores': 0, 'status': 'fail', 'reason': 'deferred_reduction_shape'}, {'symbol': '_ZN3aut11block_scale15deferred_kernelILi32EdEEvPKfS3_PKT0_S6_mPd', 'kind': 'deferred', 'B': 32, 'scale_type': 'fp64', 'dmul': 1, 'dfma': 2, 'shuffle': 10, 'opcode_histogram': {'LDC': 2, 'S2R': 3, 'ULDC.64': 4, 'UIADD3': 1, 'CS2R': 3, 'UIADD3.X': 1, 'USHF.R.U64': 1, 'USHF.R.U32.HI': 1, 'IMAD.WIDE.U32': 2, 'ISETP.GE.U32.AND': 4, 'ISETP.GE.U32.AND.EX': 3, 'BRA': 3, 'IMAD.MOV.U32': 3, 'LOP3.LUT': 2, 'LEA.HI': 1, 'IMAD.SHL.U32': 3, 'IMAD.X': 5, 'SHF.L.U64.HI': 3, 'ISETP.GE.U32.OR.EX': 1, 'LDC.64': 4, 'IADD3': 4, 'LDG.E': 2, 'ISETP.NE.OR': 1, 'LDG.E.64': 2, 'F2F.F64.F32': 2, 'DFMA': 2, 'SHFL.DOWN': 10, 'DADD': 13, 'DMUL': 1, 'S2UR': 2, 'UMOV': 1, 'ISETP.GT.U32.AND': 7, 'ULEA': 2, 'LEA': 1, 'STS.64': 9, 'BAR.SYNC.DEFER_BLOCKING': 9, 'LDS.64': 17, 'ISETP.NE.AND': 1, 'EXIT': 2, 'ULEA.HI.X': 1, 'IMAD.U32': 2, 'STG.E.64': 1, 'NOP': 10}, 'registers': 26, 'shared_bytes': 2048, 'spill_loads': 0, 'spill_stores': 0, 'status': 'fail', 'reason': 'deferred_reduction_shape'}, {'symbol': '_ZN3aut11block_scale15deferred_kernelILi16EdEEvPKfS3_PKT0_S6_mPd', 'kind': 'deferred', 'B': 16, 'scale_type': 'fp64', 'dmul': 1, 'dfma': 2, 'shuffle': 8, 'opcode_histogram': {'LDC': 2, 'S2R': 2, 'ULDC.64': 3, 'UIADD3': 1, 'CS2R': 3, 'UIADD3.X': 1, 'USHF.R.U64': 1, 'USHF.R.U32.HI': 1, 'IMAD.WIDE.U32': 3, 'ISETP.GE.U32.AND': 4, 'ISETP.GE.U32.AND.EX': 3, 'BRA': 3, 'LOP3.LUT': 2, 'LEA.HI': 1, 'IMAD.SHL.U32': 3, 'IMAD.X': 5, 'SHF.L.U64.HI': 3, 'ISETP.GE.U32.OR.EX': 1, 'LDC.64': 5, 'IADD3': 4, 'LDG.E': 2, 'ISETP.NE.OR': 1, 'LDG.E.64': 2, 'F2F.F64.F32': 2, 'DFMA': 2, 'SHFL.DOWN': 8, 'DADD': 12, 'DMUL': 1, 'S2UR': 1, 'UMOV': 1, 'ISETP.GT.U32.AND': 7, 'ULEA': 1, 'LEA': 1, 'STS.64': 9, 'BAR.SYNC.DEFER_BLOCKING': 9, 'LDS.64': 17, 'ISETP.NE.AND': 1, 'EXIT': 2, 'STG.E.64': 1, 'NOP': 13}, 'registers': 26, 'shared_bytes': 2048, 'spill_loads': 0, 'spill_stores': 0, 'status': 'fail', 'reason': 'deferred_reduction_shape'}, {'symbol': '_ZN3aut11block_scale15deferred_kernelILi128EfEEvPKfS3_PKT0_S6_mPd', 'kind': 'deferred', 'B': 128, 'scale_type': 'fp32', 'dmul': 1, 'dfma': 2, 'shuffle': 10, 'opcode_histogram': {'LDC': 2, 'S2R': 4, 'ULDC.64': 5, 'UIADD3': 1, 'CS2R': 3, 'UIADD3.X': 1, 'USHF.R.U64': 1, 'USHF.R.U32.HI': 1, 'IMAD.WIDE.U32': 3, 'ISETP.GE.U32.AND': 4, 'ISETP.GE.U32.AND.EX': 3, 'BRA': 4, 'SHF.R.U32.HI': 1, 'IMAD.SHL.U32': 4, 'LOP3.LUT': 3, 'IADD3': 9, 'IMAD.MOV.U32': 3, 'IMAD.X': 7, 'SHF.L.U64.HI': 3, 'IADD3.X': 2, 'ISETP.GE.U32.OR.EX': 1, 'LDG.E': 4, 'VIADD': 1, 'ISETP.NE.AND': 2, 'F2F.F64.F32': 4, 'DFMA': 2, 'ISETP.NE.OR': 1, 'LDC.64': 3, 'SHFL.DOWN': 10, 'DADD': 13, 'DMUL': 1, 'S2UR': 1, 'UMOV': 1, 'ULEA': 1, 'LEA': 1, 'ISETP.GT.U32.AND': 7, 'STS.64': 9, 'BAR.SYNC.DEFER_BLOCKING': 9, 'LDS.64': 17, 'EXIT': 2, 'STG.E.64': 1, 'NOP': 13}, 'registers': 26, 'shared_bytes': 2048, 'spill_loads': 0, 'spill_stores': 0, 'status': 'fail', 'reason': 'deferred_reduction_shape'}, {'symbol': '_ZN3aut11block_scale15deferred_kernelILi32EfEEvPKfS3_PKT0_S6_mPd', 'kind': 'deferred', 'B': 32, 'scale_type': 'fp32', 'dmul': 1, 'dfma': 2, 'shuffle': 10, 'opcode_histogram': {'LDC': 2, 'S2R': 3, 'ULDC.64': 4, 'UIADD3': 1, 'CS2R': 3, 'UIADD3.X': 1, 'USHF.R.U64': 1, 'USHF.R.U32.HI': 1, 'IMAD.WIDE.U32': 2, 'ISETP.GE.U32.AND': 4, 'ISETP.GE.U32.AND.EX': 3, 'BRA': 3, 'IMAD.MOV.U32': 3, 'LOP3.LUT': 2, 'LEA.HI': 1, 'IMAD.SHL.U32': 3, 'IMAD.X': 5, 'SHF.L.U64.HI': 3, 'ISETP.GE.U32.OR.EX': 1, 'LDC.64': 4, 'IADD3': 4, 'LDG.E': 4, 'ISETP.NE.OR': 1, 'F2F.F64.F32': 4, 'DFMA': 2, 'SHFL.DOWN': 10, 'DADD': 13, 'DMUL': 1, 'S2UR': 2, 'UMOV': 1, 'ISETP.GT.U32.AND': 7, 'ULEA': 2, 'LEA': 1, 'STS.64': 9, 'BAR.SYNC.DEFER_BLOCKING': 9, 'LDS.64': 17, 'ISETP.NE.AND': 1, 'EXIT': 2, 'ULEA.HI.X': 1, 'IMAD.U32': 2, 'STG.E.64': 1, 'NOP': 8}, 'registers': 27, 'shared_bytes': 2048, 'spill_loads': 0, 'spill_stores': 0, 'status': 'fail', 'reason': 'deferred_reduction_shape'}, {'symbol': '_ZN3aut11block_scale15deferred_kernelILi16EfEEvPKfS3_PKT0_S6_mPd', 'kind': 'deferred', 'B': 16, 'scale_type': 'fp32', 'dmul': 1, 'dfma': 2, 'shuffle': 8, 'opcode_histogram': {'LDC': 2, 'S2R': 2, 'ULDC.64': 3, 'UIADD3': 1, 'CS2R': 3, 'UIADD3.X': 1, 'USHF.R.U64': 1, 'USHF.R.U32.HI': 1, 'IMAD.WIDE.U32': 3, 'ISETP.GE.U32.AND': 4, 'ISETP.GE.U32.AND.EX': 3, 'BRA': 3, 'LOP3.LUT': 2, 'LEA.HI': 1, 'IMAD.SHL.U32': 3, 'IMAD.X': 5, 'SHF.L.U64.HI': 3, 'ISETP.GE.U32.OR.EX': 1, 'LDC.64': 5, 'IADD3': 4, 'LDG.E': 4, 'ISETP.NE.OR': 1, 'F2F.F64.F32': 4, 'DFMA': 2, 'SHFL.DOWN': 8, 'DADD': 12, 'DMUL': 1, 'S2UR': 1, 'UMOV': 1, 'ISETP.GT.U32.AND': 7, 'ULEA': 1, 'LEA': 1, 'STS.64': 9, 'BAR.SYNC.DEFER_BLOCKING': 9, 'LDS.64': 17, 'ISETP.NE.AND': 1, 'EXIT': 2, 'STG.E.64': 1, 'NOP': 11}, 'registers': 27, 'shared_bytes': 2048, 'spill_loads': 0, 'spill_stores': 0, 'status': 'fail', 'reason': 'deferred_reduction_shape'}]
